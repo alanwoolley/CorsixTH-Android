@@ -57,8 +57,8 @@ language = [[English]]
 -- Screen size. Must be at least 640x480. Larger sizes will require better
 -- hardware in order to maintain a playable framerate. The fullscreen setting
 -- can be true or false, and the game will run windowed if not fullscreen.
-width = 530
-height = 320
+width = 800
+height = 480
 fullscreen = true 
 -------------------------------------------------------------------------------
 
