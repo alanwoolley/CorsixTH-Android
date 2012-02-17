@@ -1,0 +1,14 @@
+This is a port of CorsixTH (code.google.com/p/corsix-th) to Android.
+
+You will need either a copy of the original Theme Hospital game or a demo of Theme Hospital in order to use this port. The demo is available at http://th.corsix.org/Demo.zip.
+
+Until I write a configuration file, it will attempt to look for files in /sdcard/th/. You should copy the files from the directory 'tosdcard' into /sdcard/th/ before installing the application, otherwise it will crash.
+
+I've only tested it on my ZTE Blade running Android 2.3.7 and on the emulator, so your mileage may vary.
+
+--------
+What's broken?
+	- Sound doesn't work yet. It doesn't compile yet.
+	- CorsixTH doesn't support screen resolutions below 640x480 yet, so some of the UI will be obscured or fall off the display.
+	
+
