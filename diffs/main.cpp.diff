@@ -1,0 +1,3 @@
+158a159,160
+>     "code = loadfile(\"/sdcard/th/\"..name)\n"
+>     "if code then return code end\n"
