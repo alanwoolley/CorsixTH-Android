@@ -25,7 +25,7 @@ SOFTWARE.
 #include "th.h"
 #include <SDL.h>
 #ifdef CORSIX_TH_USE_SDL_MIXER
-//#include <SDL_mixer.h>
+#include "SDL_mixer.h"
 #endif
 
 //! Utility class for accessing Theme Hospital's SOUND-0.DAT

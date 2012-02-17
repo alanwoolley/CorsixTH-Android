@@ -57,7 +57,7 @@ SOFTWARE.
 // SDL_mixer is used for ingame audio. If this library is not present on your
 // system, then you can comment out the next line and the game will not have
 // any music.
-//#define CORSIX_TH_USE_SDL_MIXER
+#define CORSIX_TH_USE_SDL_MIXER
 
 /** Font options **/
 // FreeType2 can be used for font support beyond the CP437 bitmap fonts which
