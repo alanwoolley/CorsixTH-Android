@@ -1,0 +1,338 @@
+-----------------------------------------
+Version Beta 8 - released 2011-09-24
+-----------------------------------------
+
+-- Gameplay --
+
+* Fix: Patients should manage to use benches more often now.
+* Fix: Staff will never have the "waiting for patient" mood when in a training  
+  room or a staff room anymore.
+* Change: Which diagnosis rooms different patients go to have been changed
+  to be more like the original game.
+* Change: No patients will arrive until you have both a receptionist and a reception 
+  desk. There will be no emergencies or VIP visits either until this criterion is met.
+* Added: People may now puke or pee on the floor.
+* Added: Various things such as litter and plants affect patient happiness.
+* Added: A doctor may now get crazy if he is waaay too tired.
+* Added: VIP visits. Watch out for those picky black suit visitors!
+* Added: The "guess cure" fax message will now properly pop up.
+
+-- User Interface --
+
+* Change: The save and load dialogs now look a little different. Autosaves are stored
+  in a separate folder and there can be up to 12 autosaves at the same time. One for
+  each month. The dialogs now show when a save was made, and the list can also be
+  sorted by this criterion.
+* Added: It is now possible to cycle through owned machines by right-clicking
+  the machine name in the machine dialog.
+* Added: Sound, announcement and music volumes and on/off settings are now
+  saved between sessions.s
+
+-- Graphics --
+
+* Added: Waiting patients may sometimes check their watch or start to tap their foot.
+* Added: Soda machines now sell more than soda cans. This can be seen through the 
+  litter people throw on the floor after using said machines.
+* Added: (Animation Viewer) A new export function has been added. Note that there
+  is currently no import equivalent, so it is mostly for people to try out and
+  see what graphics there are in the game. In the future we hope to make it possible
+  to import these graphics after changing them in your favourite graphics program.
+
+-- Translations --
+
+New language: Polish
+
+-----------------------------------------
+Version Beta 7 - released 2011-06-24
+-----------------------------------------
+
+-- Known Issues --
+
+* If the X-Ray Viewer is inaccessible in the Operating Theatre the whole
+  room will be unusable.
+* There are still many features which are not yet implemented including trash,
+  earthquakes, epidemics and awards.
+* The graph window doesn't show any graphs.
+* Handyman priorities are not yet fully implemented.
+
+-- Gameplay --
+
+* Added: Staff severance pay.
+* Added: Patients may die if they don't get treated in time.
+* Added: Doctors slowly gain skill when working.
+* Added: Extra objects and the number of trainees influence speed of training
+  in the training room.
+* Added: Even with no research new machines will eventually become available.
+* Added: Some patients have started littering your hospital with soda cans!
+  Make sure you have enough handymen to keep your hospital clean.
+* Added: Modern heating systems aren't as reliable as they used to be. Prepare
+  for breakdowns now and then.
+
+* New disease: Alien DNA! Note that there are still a few glitches to fix
+  concerning this new disease.
+
+* Change: Vending maintenance costs have increased throughout the world and
+  as a result Sodas now cost $20, up from $15.
+* Change: Heating costs are calculated on a per day basis, rather than per month.
+* Change: Machine and drug improvements are now made evenly across all eligible
+  objects rather than maxing one at a time.
+* Change: Humanoids never meander outside anymore.
+
+* Fix: Handymen no longer crash the game when trying to water an unreachable
+  plant.
+* Fix: Staff resting in the staff room should keep their sofa until fully
+  rested if there's nothing else to do.
+* Fix: The player can't hire new staff or pay bonuses without a positive balance.
+
+-- User Interface --
+
+* Added: The graph window, no graphs yet though.
+* Added: Right click menu in the queue dialog.
+* Added: Confirmation dialog when about to fire a member of staff.
+
+* Fix: If there is only one person who is in an emergency, use the singular
+  form in the sentence.
+* Fix: The pickup item button in the edit room dialog is now fully functional.
+* Fix: The pointer should no longer jump around in Linux when using SDL.
+
+-- Graphics --
+
+* Added: The scanner uses more than one animation.
+
+* Fix: Some objects were cut in half after a relocation.
+
+-- Translations --
+
+* Change: If the specified language is not found, try to revert to English.
+* Fix: Competitor names are now translatable.
+
+-----------------------------------------
+Version Beta 6 - released 2011-03-24
+-----------------------------------------
+
+-- Gameplay --
+
+* Feature: Staff speed!
+* Added: All parts of research have been implemented, including
+  machine strength improvements, drug improvements and the
+  "concentrate research" button in the drug casebook.
+* Added: Overdraft charges for having a negative balance.
+* Fix: The length of a day was about half as long as it should be.
+* Fix: A few occurrences of bone-idle patients have been resolved.
+* Fix: Juniors were not correctly labeled as Doctors after promotion.
+* Fix: Some crashes regarding receptionists.
+* Fix: Never charge less than initial cost when reputation is below 500.
+* Fix: Some repair animations were too short.
+* Fix: Don't check winning and losing conditions so often.
+* Fix: Taking loans can now make the player avoid losing.
+* Fix: Level 7 had an emergency with an unavailable disease.
+* Fix: Doctors on their way back to the research room or training room
+  will no longer answer to any calls.
+* Fix: Don't crash if a patient in a machine is sent home.
+* Fix: Various tweaks to the operating theatre logic.
+* Fix: Don't crash if the staff window of a leaving staff member
+  is open when he/she leaves the world.
+* Fix: Persistant data (salary, built rooms etc) are no longer lost
+  after restarting a level.
+
+-- User Interface --
+
+* Feature: The drug casebook now shows if you can treat a disease or not,
+  and in the latter case the tooltip tells you what is missing. Actual
+  price is shown after some time, instead of charge %.
+* Feature: Press and hold on value buttons will now make the value continue
+  to increase until the button is released again.
+* Feature: The Theme Hospital installation path can be changed from the 
+  options menu.
+* Added: The adviser will help out in a few more situations.
+* Fix: Mouse position events such as moving staff around didn't work
+  when scrolling using the arrow keys.
+* Fix: Tooltips are now updated more frequently, 
+  most evidently in the research pane.
+
+-- Translations --
+
+* Feature: CorsixTH now supports TrueType fonts via FreeType2!
+* Feature: To assist translators a new diff file is now created when you
+  choose the debug option "dump strings" (with languages other than English).
+  It contains those strings which are either found in English but not in
+  the given language, or found in the given language but not in English.
+
+* New languages: Traditional Chinese, Simplified Chinese, Russian.
+
+-----------------------------------------
+Version Beta 5 - released 2010-12-24
+-----------------------------------------
+
+-- Gameplay --
+
+* Feature: (Some) Cheats added. Type 24328 into the fax machine to get access to them.
+* Feature: Custom map "Avatar" added.
+* Feature: Player's "salary" (read: score) now increases over your level progress.
+* Feature: Level based interest rate.
+* Feature: Level based "starting staff" (e.g. original level 5).
+* Feature: "No deaths" trophy added.
+* Fix: Error could occur when losing a game.
+* Fix: Multiple handymen watering the same plant at the same time.
+* Fix: Some placements of opposite doors/objects were wrongly forbidden.
+* Fix: Error could occur when building a surgery.
+* Fix: Autopsy now has an appropriate impact on research.
+* Fix: Salaries for doctors were too high.
+* Fix: In some cases lose conditions were not triggered.
+* Fix: Research room door could disappear after autopsy.
+  ... and various other bugs fixed.
+
+-- User Interface --
+
+* Feature: The player is now told the reason why he lost, when he loses, instead of being left in the dark.
+* Fix: Wrong winning faxes shown for levels 5-11.
+* Fix: Weird scrolling behavior could occur after loading a game.
+* Fix: No tutorial when playing with demo files.
+* Fix: Adviser disappeared too quickly during tutorial.
+* Some improvements to textboxes.
+* Some improvements to windows.
+  ... and various other small improvements and fixes.
+
+-- Translations --
+
+* Fix: Error caused by some winning faxes in Norwegian.
+
+-----------------------------------------
+Version Beta 4 - released 2010-11-12
+-----------------------------------------
+
+-- Gameplay --
+
+* Feature: The Research Department and research policy dialog.
+* Feature: The Operating Theatre.
+* Feature: Not all parcels are owned by the player from the beginning, but
+  can now be bought from the Town Map dialog.
+* Feature: Calculate staff wages and properties for those for hire based
+  on the level files.
+
+* Added 7 new diseases related to the operating theatre.
+* Added treatment room: Operating Theatre.
+
+* Fix: The adviser no longer complains about watering of plants all the time.
+* Fix: Some crashes related to crashed rooms has been fixed.
+
+
+-- User Interface --
+
+* Feature: Possibility to choose difficulty level when starting a new game.
+* Feature: Zooming (only when using DirectX or OpenGL).
+* Feature: The Annual Report Dialog.
+
+* Graphics: Improved the main menu background.
+* Fix: Solved issues with non-English keyboard layouts.
+
+
+-- Translations --
+
+* New languages: Finnish and Danish
+* Fix: When playing the game in French it no longer crashes upon completion of a level.
+
+
+-----------------------------------------
+Version Beta 3 - released 2010-06-24
+-----------------------------------------
+
+-- Gameplay --
+
+* Feature: Swing doors (used by new diagnosis room ward).
+* Feature: Plants will now droop unless they are watered by a handyman.
+* Feature: Adjustable handyman priorities.
+* Feature: Existing rooms can now be edited and deleted.
+* Feature: Watch for initial opening of hospital at start of each level.
+* Feature: Each level has its own goals, shown at the beginning of the level and
+  in the new status dialog. When the goals have been achieved the player may go on
+  to the next one.
+* Feature: Not all implemented rooms and diseases appear anymore in each level, but
+  only those defined by the level script.
+* Feature: Support for custom levels with their own maps and level scripts.
+* Feature: A heating system that depends on outside temperature, adjacent tiles 
+  and radiators among other things.
+
+* Added 6 new diseases
+* Added treatment rooms: Jelly Vat, Decontamination
+* Added diagnosis rooms: Blood Machine, Ward, Scanner
+
+* Fix: Staff needed in rooms is handled much better.
+* Fix: Objects retain their statistics when moved.
+* Fix: A horde of other bugs have also been fixed.
+
+
+-- User Interface --
+
+* Feature: Savegames are no longer limited to 8 slots + autosave.
+* Feature: Fullscreen mode, screen resolution and interface language can be changed
+  ingame. The changes are saved in the config file and preserved.
+* Feature: Hovering the mouse over a room will mark all patients in queue for this room.
+* Feature: Patients can be moved to the head/tail of queues in the corresponding dialog. 
+  They can also be placed between other patients. 
+* New dialogs: Load Game, Save Game, Custom Level to cope with arbitrary number of
+  savegames/levels.
+* New dialog: Options
+* New dialog: Progress Report (Status) showing status of the current level's goals.
+* Added all tooltips that were still missing.
+
+
+-- Misc --
+
+* Translations: Italian, Spanish and French: added new strings not available in vanilla TH, 
+  Portuguese (WIP) and Dutch (WIP)
+* The configuration file and saved games can now, if desired, also be stored in the user's 
+  home directory or equivalent.
+
+
+-----------------------------------------
+Version Beta 2 - released 2010-03-24
+-----------------------------------------
+
+* Feature: Save / Load functionality.
+* Feature: Patients and staff now have a need for heat (from radiators) in
+  order to stay happy. Patients will also get thirsty (build drinks machines)
+  and will need a bathroom sooner or later, and staff will ask for a salary
+  raise when unhappy.
+* Feature: Machines will need repair now and then. A dialog that shows
+  necessarry information is displayed when the machine is clicked.
+* Feature: Dynamic Information Bar in the bottom right corner of the UI added.
+  It shows information about entities beneath the mouse cursor.
+* Feature: The training room can now be built, where doctors can increase
+  their skill and get additional traits if a consultant is present.
+* Feature: When a patient cannot be cured or a room is missing a fax will 
+  arrive and ask the player what to do.
+* Feature: A new string system that allows us to add new (translatable) text
+  to the game, correct mistakes in existing languages and add new languages.
+* Feature: A tutorial is offered to the player at the start of the game.
+* Feature: Tooltips are displayed when hovering over buttons for some time.
+* Feature: Emergencies may happen every now and then.
+* Feature: Hospital reputation system.
+* Feature: Humurous disease description faxes are now shown when a disease is
+  first diagnosed.
+* Feature: Room blueprints can be resized during the build process.
+
+* New Dialogs: Hospital Policy, Drug Casebook, Bank Manager, Staff Management,
+  Town Map (work in progress), Main Menu
+* Many new key shortcuts (see Hotkeys wiki page for full list).
+* Dialogs can now be re-positioned by dragging them to where they are wanted.
+* Added floating money signs to better indicate where money is coming from.
+* Added comments from the advisor in more situations.
+
+* 10 new diseases.
+* New treatment room: Hair Restorer
+* Additional functional diagnosis rooms: General Diagnosis, Ultrascan, X-Ray
+* Room queues should now re-balance themselves when new rooms are built.
+
+* Translation: Norwegian (bokmål).
+
+A lot of other small improvements.
+Also, a great number of bugs have been squashed. Most remaining bugs are no
+longer fatal, and can be continued from.
+
+
+-----------------------------------------
+Version Beta 1 - released 2009-12-24
+-----------------------------------------
+
+Initial release
