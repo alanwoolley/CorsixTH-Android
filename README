@@ -8,7 +8,7 @@ I've only tested it on my ZTE Blade running Android 2.3.7 and on the emulator, s
 
 --------
 What's broken?
-	- Sound doesn't work yet. It doesn't compile yet.
+	- Music
 	- CorsixTH doesn't support screen resolutions below 640x480 yet, so some of the UI will be obscured or fall off the display.
 	
 
