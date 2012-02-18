@@ -11,9 +11,15 @@ AGG_PATH := ../AGG
 CORSIX_TH_SRC := CorsixTH/Src
 LFS_SRC := LFS
 LPEG_SRC := LPEG
+FREETYPE_PATH := ../freetype
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include \
 					$(LOCAL_PATH)/$(AGG_PATH)/include \
+					$(LOCAL_PATH)/$(FREETYPE_PATH)/include \
+					$(LOCAL_PATH)/$(FREETYPE_PATH)/include/freetype \
+					$(LOCAL_PATH)/$(FREETYPE_PATH)/include/config \
+					$(LOCAL_PATH)/$(FREETYPE_PATH)/include/internal \
+					$(LOCAL_PATH)/$(FREETYPE_PATH)/include/internal/services \
 					$(LOCAL_PATH)/$(LUA_PATH) \
 					$(LOCAL_PATH)/$(SDL_MIXER_PATH) \
 					$(CORSIX_TH_SRC) \
@@ -55,7 +61,8 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.cpp \
 			$(LPEG_SRC)/lpeg.c
 			
 
-LOCAL_SHARED_LIBRARIES := libLUA libAGG libSDL libSDL_image libSDL_mixer
+LOCAL_SHARED_LIBRARIES := libLUA libAGG libSDL libSDL_image libSDL_mixer 
+LOCAL_STATIC_LIBRARIES := libfreetype
 
 LOCAL_LDLIBS := -lGLESv1_CM -llog 
 LOCAL_LDLIBS += -L$(LOCAL_PATH)/libs/

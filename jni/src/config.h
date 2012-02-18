@@ -63,7 +63,7 @@ SOFTWARE.
 // FreeType2 can be used for font support beyond the CP437 bitmap fonts which
 // come with Theme Hospital. It must be used if translations like Russian or
 // Chinese are desired.
-//#define CORSIX_TH_USE_FREETYPE2
+#define CORSIX_TH_USE_FREETYPE2
 
 /** Environment detection **/
 #if defined(__amd64__) || defined(__IA64__) || defined(__x86_64__) || \
