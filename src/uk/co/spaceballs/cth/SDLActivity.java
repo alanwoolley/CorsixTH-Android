@@ -1,6 +1,8 @@
 package uk.co.spaceballs.cth;
 
-import javax.microedition.khronos.egl.EGLConfig;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.microedition.khronos.egl.*;
 
 import android.app.*;
@@ -95,7 +97,7 @@ public class SDLActivity extends Activity {
 	public static native void onNativeKeyUp(int keycode);
 
 	public static native void onNativeTouch(int action, float x, float y,
-			float p);
+			float p, int pc);
 
 	public static native void onNativeAccel(float x, float y, float z);
 
@@ -480,9 +482,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		float x = event.getX();
 		float y = event.getY();
 		float p = event.getPressure();
-
+		int pc = event.getPointerCount();
+		Log.d(getClass().getSimpleName(), "Sending action: " + action + ", x: " + x + ", y: " + y + ", p: " + p + ", pc: " + pc + " to SDL");
 		// TODO: Anything else we need to pass?
-		SDLActivity.onNativeTouch(action, x, y, p);
+		SDLActivity.onNativeTouch(action, x, y, p, pc);
+
 		return true;
 	}
 

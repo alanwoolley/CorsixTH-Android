@@ -18,7 +18,7 @@ theme_hospital_install = [[/sdcard/th/theme_hospital]]
 -- Theme hospital option settings
 --
 -- Edge scrolling: By default enabled (prevent_edge_scrolling = false).
-prevent_edge_scrolling = false 
+prevent_edge_scrolling = true 
 --
 -- Background music: By default disabled at level 0.5
 play_music = true 
