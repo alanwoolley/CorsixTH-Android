@@ -483,7 +483,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		float y = event.getY();
 		float p = event.getPressure();
 		int pc = event.getPointerCount();
-		Log.d(getClass().getSimpleName(), "Sending action: " + action + ", x: " + x + ", y: " + y + ", p: " + p + ", pc: " + pc + " to SDL");
+		//Log.d(getClass().getSimpleName(), "Sending action: " + action + ", x: " + x + ", y: " + y + ", p: " + p + ", pc: " + pc + " to SDL");
 		// TODO: Anything else we need to pass?
 		SDLActivity.onNativeTouch(action, x, y, p, pc);
 
