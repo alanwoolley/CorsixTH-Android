@@ -1,9 +1,14 @@
 package uk.co.spaceballs.cth;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.microedition.khronos.egl.*;
+
+import com.bugsense.trace.BugSenseHandler;
 
 import android.app.*;
 import android.content.*;
@@ -18,6 +23,8 @@ import android.hardware.*;
  * SDL Activity
  */
 public class SDLActivity extends Activity {
+
+	private Properties properties;
 
 	// Main components
 	private static SDLActivity mSingleton;
@@ -41,8 +48,21 @@ public class SDLActivity extends Activity {
 
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
-		// Log.v("SDL", "onCreate()");
 		super.onCreate(savedInstanceState);
+
+		Properties properties = new Properties();
+		try {
+			InputStream inputStream = getAssets()
+					.open("application.properties");
+			properties.load(inputStream);
+		} catch (IOException e) {
+			Log.d("TAG", "No properties file found");
+		}
+
+		if (properties.containsKey("bugsense.key")) {
+			BugSenseHandler
+					.setup(this, (String) properties.get("bugsense.key"));
+		}
 
 		// So we can call stuff from static callbacks
 		mSingleton = this;
@@ -222,6 +242,7 @@ public class SDLActivity extends Activity {
 				mAudioThread.join();
 			} catch (Exception e) {
 				Log.v("SDL", "Problem stopping audio thread: " + e);
+				BugSenseHandler.log("SDL Audio", e);
 			}
 			mAudioThread = null;
 
@@ -300,6 +321,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			try {
 				mSDLThread.join();
 			} catch (Exception e) {
+				BugSenseHandler.log("SDL", e);
 				Log.v("SDL", "Problem stopping thread: " + e);
 			}
 			mSDLThread = null;
@@ -430,6 +452,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		} catch (Exception e) {
 			Log.v("SDL", e + "");
+			BugSenseHandler.log("SDL", e);
 			for (StackTraceElement s : e.getStackTrace()) {
 				Log.v("SDL", s.toString());
 			}
@@ -453,6 +476,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		} catch (Exception e) {
 			Log.v("SDL", "flipEGL(): " + e);
+			BugSenseHandler.log("SDL",e);
 			for (StackTraceElement s : e.getStackTrace()) {
 				Log.v("SDL", s.toString());
 			}
@@ -483,7 +507,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		float y = event.getY();
 		float p = event.getPressure();
 		int pc = event.getPointerCount();
-		//Log.d(getClass().getSimpleName(), "Sending action: " + action + ", x: " + x + ", y: " + y + ", p: " + p + ", pc: " + pc + " to SDL");
+		// Log.d(getClass().getSimpleName(), "Sending action: " + action +
+		// ", x: " + x + ", y: " + y + ", p: " + p + ", pc: " + pc + " to SDL");
 		// TODO: Anything else we need to pass?
 		SDLActivity.onNativeTouch(action, x, y, p, pc);
 
