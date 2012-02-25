@@ -820,6 +820,7 @@ end
 function Textbox:setActive(active)
   local ui = self.panel.window.ui
   if active then
+  	showkeyboard()
     -- Unselect any other textbox
     for _, textbox in ipairs(ui.textboxes) do
       if textbox ~= self and textbox.active then
@@ -835,6 +836,7 @@ function Textbox:setActive(active)
     -- Enable Keyboard repeat
     ui:enableKeyboardRepeat()
   else
+  	hidekeyboard()
     self.cursor_state = false
     -- Disable Keyboard repeat
     ui:disableKeyboardRepeat()

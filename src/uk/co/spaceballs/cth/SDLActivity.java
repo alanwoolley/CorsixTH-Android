@@ -13,6 +13,7 @@ import com.bugsense.trace.BugSenseHandler;
 import android.app.*;
 import android.content.*;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.os.*;
 import android.util.Log;
 import android.graphics.*;
@@ -125,6 +126,18 @@ public class SDLActivity extends Activity {
 
 	// Java functions called from C
 
+	public static void showSoftKeyboard() {
+		Log.d(SDLActivity.class.getSimpleName(), "Showing keyboard");
+		InputMethodManager mgr = (InputMethodManager) mSingleton.getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
+		
+	}
+	
+	public static void hideSoftKeyboard() {
+		Log.d(SDLActivity.class.getSimpleName(), "Hiding keyboard");
+		
+	}
+	
 	public static boolean createGLContext(int majorVersion, int minorVersion) {
 		return mSurface.initEGL(majorVersion, minorVersion);
 	}

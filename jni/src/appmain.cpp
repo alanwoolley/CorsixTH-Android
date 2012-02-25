@@ -43,6 +43,23 @@ struct types_equal<T1, T1>{ enum{
     result = 1,
 }; };
 
+JNIEnv* jEnv;
+
+static int showkeyboard(lua_State *L) {
+	LOGI("Showing keyboard");
+	jclass cls = jEnv->FindClass("uk/co/spaceballs/cth/SDLActivity");
+	jmethodID method = jEnv->GetStaticMethodID(cls, "showSoftKeyboard","()V");
+	jEnv->CallStaticVoidMethod(cls, method);
+	return 0;
+}
+
+static int hidekeyboard(lua_State *L) {
+	LOGI("Hiding keyboard");
+	return 0;
+}
+
+
+
 //! Program entry point
 /*!
     Prepares a Lua state for, and catches errors from, CorsixTH_lua_main(). By
@@ -50,13 +67,15 @@ struct types_equal<T1, T1>{ enum{
     sooner, hence this function does as little as possible and leaves the rest
     for CorsixTH_lua_main().
 */
-int SDL_main(int argc, char** argv)
+int SDL_main(int argc, char** argv, JNIEnv* env)
 {
+	jEnv = env;
+	/*
 	char dir[255];
 	getcwd(dir,sizeof(dir));
 
 	LOGI(dir);
-
+*/
     struct compile_time_lua_check
     {
         // Lua 5.1, not 5.0, is required
@@ -82,6 +101,8 @@ int SDL_main(int argc, char** argv)
         }
         lua_atpanic(L, CorsixTH_lua_panic);
         luaL_openlibs(L);
+        lua_register(L, "showkeyboard", showkeyboard);
+        lua_register(L, "hidekeyboard", hidekeyboard);
         lua_settop(L, 0);
         lua_pushcfunction(L, CorsixTH_lua_stacktrace);
         lua_pushcfunction(L, CorsixTH_lua_main);
@@ -147,3 +168,5 @@ int SDL_main(int argc, char** argv)
     }
     return 0;
 }
+
+

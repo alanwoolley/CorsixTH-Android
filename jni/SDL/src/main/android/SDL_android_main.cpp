@@ -27,7 +27,7 @@ extern "C" void Java_uk_co_spaceballs_cth_SDLActivity_nativeInit(JNIEnv* env, jc
     char *argv[2];
     argv[0] = strdup("SDL_app");
     argv[1] = NULL;
-    status = SDL_main(1, argv);
+    status = SDL_main(1, argv, env);
 
     /* We exit here for consistency with other platforms. */
     exit(status);
