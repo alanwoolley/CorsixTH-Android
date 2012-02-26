@@ -1,4 +1,4 @@
-package uk.co.spaceballs.cth;
+package uk.co.armedpineapple.corsixth;
 
 import java.io.IOException;
 import java.io.InputStream;
