@@ -18,14 +18,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
+
     <ViewFlipper
         android:id="@+id/flipper"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/leftbutton"
-        android:layout_gravity="top" >
-
+        android:layout_above="@+id/leftbutton" >
     </ViewFlipper>
 
     <Button
@@ -45,5 +43,13 @@
         android:layout_alignParentRight="true"
         android:drawableRight="@drawable/ic_menu_forward"
         android:text="Next" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/cth" />
 
 </RelativeLayout>

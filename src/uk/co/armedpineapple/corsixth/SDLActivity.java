@@ -27,6 +27,8 @@ public class SDLActivity extends Activity {
 
 	private Properties properties;
 
+	private final static int SURFACE_WIDTH = 640;
+	private final static int SURFACE_HEIGHT = 480;
 	// Main components
 	private static SDLActivity mSingleton;
 	private static SDLSurface mSurface;
@@ -50,19 +52,21 @@ public class SDLActivity extends Activity {
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		
+
 		Properties properties = new Properties();
 		try {
 			InputStream inputStream = getAssets()
 					.open("application.properties");
+			Log.d(getClass().getSimpleName(), "Loading properties");
 			properties.load(inputStream);
 		} catch (IOException e) {
-			Log.d("TAG", "No properties file found");
+			Log.d(getClass().getSimpleName(), "No properties file found");
 		}
 
 		if (properties.containsKey("bugsense.key")) {
+			Log.d(getClass().getSimpleName(), "Setting up bugsense");
 			BugSenseHandler
 					.setup(this, (String) properties.get("bugsense.key"));
 		}
@@ -71,10 +75,13 @@ public class SDLActivity extends Activity {
 		mSingleton = this;
 
 		// Set up the surface
-		mSurface = new SDLSurface(getApplication());
+		mSurface = new SDLSurface(getApplication(), SURFACE_WIDTH,
+				SURFACE_HEIGHT);
+
 		setContentView(mSurface);
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+		holder.setFixedSize(SURFACE_WIDTH, SURFACE_HEIGHT);
 	}
 
 	// Events
@@ -296,6 +303,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// This is what SDL runs in. It invokes SDL_main(), eventually
 	private Thread mSDLThread;
 
+	private int width;
+	private int height;
+
 	// EGL private objects
 	private EGLContext mEGLContext;
 	private EGLSurface mEGLSurface;
@@ -305,10 +315,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	private static SensorManager mSensorManager;
 
 	// Startup
-	public SDLSurface(Context context) {
+	public SDLSurface(Context context, int width, int height) {
 		super(context);
 		getHolder().addCallback(this);
-
+		this.width = width;
+		this.height = height;
 		setFocusable(true);
 		setFocusableInTouchMode(true);
 		requestFocus();
@@ -529,8 +540,13 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public boolean onTouch(View v, MotionEvent event) {
 
 		int action = event.getAction();
-		float x = event.getX();
-		float y = event.getY();
+		Log.d(getClass().getSimpleName(), "Surface dimensions: " + this.width
+				+ " x " + this.height);
+		Log.d(getClass().getSimpleName(), "View dimensions: " + v.getWidth()
+				+ " x " + v.getHeight());
+		float x = ((float) this.width / v.getWidth()) * event.getX();
+		float y = ((float) this.height / v.getHeight()) * event.getY();
+		Log.d(getClass().getSimpleName(), "Touching at: " + x + " x " + y);
 		float p = event.getPressure();
 		int pc = event.getPointerCount();
 		// Log.d(getClass().getSimpleName(), "Sending action: " + action +
