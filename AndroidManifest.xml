@@ -16,17 +16,18 @@
         <activity
             android:name="uk.co.armedpineapple.corsixth.SDLActivity"
             android:label="@string/app_name"
+            android:launchMode="standard"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="WizardActivity"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            <intent-filter>
-            </intent-filter>
         </activity>
     </application>
 

@@ -50,7 +50,9 @@ public class SDLActivity extends Activity {
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		
 		Properties properties = new Properties();
 		try {
 			InputStream inputStream = getAssets()
@@ -128,16 +130,17 @@ public class SDLActivity extends Activity {
 
 	public static void showSoftKeyboard() {
 		Log.d(SDLActivity.class.getSimpleName(), "Showing keyboard");
-		InputMethodManager mgr = (InputMethodManager) mSingleton.getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager mgr = (InputMethodManager) mSingleton
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
-		
+
 	}
-	
+
 	public static void hideSoftKeyboard() {
 		Log.d(SDLActivity.class.getSimpleName(), "Hiding keyboard");
-		
+
 	}
-	
+
 	public static boolean createGLContext(int majorVersion, int minorVersion) {
 		return mSurface.initEGL(majorVersion, minorVersion);
 	}
@@ -489,7 +492,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		} catch (Exception e) {
 			Log.v("SDL", "flipEGL(): " + e);
-			BugSenseHandler.log("SDL",e);
+			BugSenseHandler.log("SDL", e);
 			for (StackTraceElement s : e.getStackTrace()) {
 				Log.v("SDL", s.toString());
 			}
@@ -498,18 +501,28 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	// Key events
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_VOLUME_DOWN:
+			return false;
+		case KeyEvent.KEYCODE_VOLUME_UP:
+			return false;
+		case KeyEvent.KEYCODE_VOLUME_MUTE:
+			return false;
 
-		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			// Log.v("SDL", "key down: " + keyCode);
-			SDLActivity.onNativeKeyDown(keyCode);
-			return true;
-		} else if (event.getAction() == KeyEvent.ACTION_UP) {
-			// Log.v("SDL", "key up: " + keyCode);
-			SDLActivity.onNativeKeyUp(keyCode);
-			return true;
+		default:
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
+				// Log.v("SDL", "key down: " + keyCode);
+				SDLActivity.onNativeKeyDown(keyCode);
+				return true;
+			} else if (event.getAction() == KeyEvent.ACTION_UP) {
+				// Log.v("SDL", "key up: " + keyCode);
+				SDLActivity.onNativeKeyUp(keyCode);
+				return true;
+			}
+			return false;
+
 		}
 
-		return false;
 	}
 
 	// Touch events
