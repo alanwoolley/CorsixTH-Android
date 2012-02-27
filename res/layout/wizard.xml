@@ -11,25 +11,25 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
+
     <ViewFlipper
-        android:id="@+id/viewFlipper1"
+        android:id="@+id/flipper"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/button1"
+        android:layout_above="@+id/leftbutton"
         android:layout_gravity="top" >
 
     </ViewFlipper>
-    
-        <Button
-        android:id="@+id/button1"
+
+    <Button
+        android:id="@+id/leftbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -37,13 +37,13 @@
         android:drawableLeft="@drawable/ic_menu_back"
         android:text="Previous" />
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:drawableRight="@drawable/ic_menu_forward"
-            android:text="Next" />
+    <Button
+        android:id="@+id/rightbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:drawableRight="@drawable/ic_menu_forward"
+        android:text="Next" />
 
 </RelativeLayout>
