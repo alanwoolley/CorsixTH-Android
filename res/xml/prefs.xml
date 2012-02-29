@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="first_prefs"
+    android:persistent="true" >
+
+    
+    <PreferenceScreen
+        android:key="game_prefs"
+        android:title="Game" android:summary="Gameplay preferences">
+        <ListPreference
+            android:key="gamespeed_pref"
+            android:persistent="true"
+            android:title="Game Speed" android:summary="How fast the game should run"/>
+
+        <CheckBoxPreference
+            android:key="debug_pref"
+            android:title="Debug mode" android:summary="Debug + Cheats Enabled"/>
+        <MultiSelectListPreference android:key="language_pref" android:title="Language" android:persistent="true"/>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="audio_prefs"
+        android:title="Audio" android:summary="Audio preferences">
+        <PreferenceCategory
+            android:key="announcer_prefs"
+            android:title="Announcer" >
+            <CheckBoxPreference
+                android:key="announcer_pref"
+                android:persistent="true"
+                android:title="Announcer" android:summary="Announcer Enabled" android:defaultValue="true"/>
+
+            <ListPreference
+                android:key="announcervolume_pref"
+                android:persistent="true"
+                android:title="Announcer Volume" android:dependency="announcer_pref" android:entries="@array/volumes" android:entryValues="@array/volumes" android:defaultValue="5"/>
+        </PreferenceCategory>
+        <PreferenceCategory
+            android:key="music_prefs"
+            android:title="Music" >
+            <CheckBoxPreference
+                android:key="music_pref"
+                android:persistent="true"
+                android:title="Music" android:summary="Music Enabled" android:defaultValue="true"/>
+
+            <ListPreference
+                android:key="musicvolume_pref"
+                android:persistent="true"
+                android:title="Music Volume" android:dependency="music_pref" android:entries="@array/volumes" android:entryValues="@array/volumes" android:defaultValue="5"/>
+        </PreferenceCategory>
+        <PreferenceCategory
+            android:key="fx_prefs"
+            android:title="Sound FX" >
+            <CheckBoxPreference
+                android:key="fx_pref"
+                android:persistent="true"
+                android:title="Sound FX" android:summary="Sound FX Enabled" android:defaultValue="true"/>
+
+            <ListPreference
+                android:key="fxvolume_pref"
+                android:persistent="true"
+                android:title="Sound FX Volume" android:dependency="fx_pref" android:entries="@array/volumes" android:entryValues="@array/volumes" android:defaultValue="5"/>
+        </PreferenceCategory>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="display_prefs"
+        android:title="Display" android:summary="Display preferences">
+        <MultiSelectListPreference
+            android:key="resolution_pref"
+            android:persistent="true"
+            android:title="Resolution" />
+
+        <EditTextPreference
+            android:key="reswidth_pref"
+            android:persistent="true"
+            android:title="Width" />
+        <EditTextPreference
+            android:key="resheight_pref"
+            android:persistent="true"
+            android:title="Height" />
+    </PreferenceScreen><PreferenceScreen android:key="interals_prefs" android:title="Internals" android:summary="Do not change these unless you know what you are doing!">
+        <PreferenceCategory android:title="Game Scripts" android:key="gamescripts_prefs"><CheckBoxPreference android:title="Use Custom Scripts" android:key="customgamescripts_pref" android:defaultValue="false" android:persistent="true"/><EditTextPreference android:key="gamescripts_pref" android:persistent="true" android:title="Game Scripts Location" android:dependency="customgamescripts_pref"/></PreferenceCategory>
+        <EditTextPreference android:key="originalfiles_pref" android:persistent="true" android:title="Original TH Location" />
+        
+        
+    </PreferenceScreen>
+
+</PreferenceScreen>
