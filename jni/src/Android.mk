@@ -9,6 +9,7 @@ LUA_PATH := ../LUA
 SDL_MIXER_PATH :=../SDL_mixer
 AGG_PATH := ../AGG
 CORSIX_TH_SRC := CorsixTH/Src
+CTH_ASSETS := ../../assets/corsixth
 LFS_SRC := LFS
 LPEG_SRC := LPEG
 FREETYPE_PATH := ../freetype
@@ -23,6 +24,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include \
 					$(LOCAL_PATH)/$(LUA_PATH) \
 					$(LOCAL_PATH)/$(SDL_MIXER_PATH) \
 					$(CORSIX_TH_SRC) \
+					$(LOCAL_PATH)/$(CTH_ASSETS) \
 					$(LFS_SRC) \
 					$(LPEG)
 					
