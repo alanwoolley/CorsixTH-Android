@@ -1,10 +1,17 @@
 package uk.co.armedpineapple.corsixth;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 import javax.microedition.khronos.egl.*;
 
@@ -12,9 +19,12 @@ import com.bugsense.trace.BugSenseHandler;
 
 import android.app.*;
 import android.content.*;
+import android.content.SharedPreferences.Editor;
+import android.content.res.AssetManager;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.os.*;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.graphics.*;
 import android.media.*;
@@ -25,10 +35,13 @@ import android.hardware.*;
  */
 public class SDLActivity extends Activity {
 
+	private String scriptsPath = "";
+
 	private Properties properties;
 
 	private final static int SURFACE_WIDTH = 640;
 	private final static int SURFACE_HEIGHT = 480;
+
 	// Main components
 	private static SDLActivity mSingleton;
 	private static SDLSurface mSurface;
@@ -71,6 +84,110 @@ public class SDLActivity extends Activity {
 					.setup(this, (String) properties.get("bugsense.key"));
 		}
 
+		if (Environment.MEDIA_MOUNTED.equals(Environment
+				.getExternalStorageState())) {
+			File extDir = getExternalFilesDir(null);
+			Log.i(getClass().getSimpleName(),
+					"Directory: " + extDir.getAbsolutePath());
+
+		} else {
+			Log.e(getClass().getSimpleName(), "Can't get storage.");
+		}
+
+		final SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+
+		if (preferences.getAll().size() == 0) {
+			setDefaultPreferences(preferences);
+		}
+
+		if (preferences.getBoolean("customgamescripts_pref", false)) {
+			scriptsPath = preferences.getString("gamescripts_pref",
+					getExternalFilesDir(null).getAbsolutePath());
+		} else {
+			scriptsPath = getExternalFilesDir(null).getAbsolutePath();
+		}
+
+		if (!preferences.getBoolean("scripts_copied", false)) {
+			final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
+			final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
+			copyTask = new AsyncTask<ArrayList<String>, Integer, Void>() {
+				ProgressDialog dialog;
+
+				@Override
+				protected void onPreExecute() {
+					dialog = new ProgressDialog(SDLActivity.this);
+					dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+					dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
+					dialog.setIndeterminate(false);
+					dialog.show();
+
+				}
+
+				@Override
+				protected Void doInBackground(ArrayList<String>... params) {
+					int max = params[0].size();
+					for (int i = 0; i < max; i++) {
+						copyFile(params[0].get(i));
+						publishProgress(i + 1, max);
+					}
+					return null;
+				}
+
+				@Override
+				protected void onProgressUpdate(Integer... values) {
+					dialog.setMax(values[1]);
+					dialog.setProgress(values[0]);
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					dialog.hide();
+					continueLoad();
+				}
+
+			};
+			discoverTask = new AsyncTask<Void, Void, ArrayList<String>>() {
+				ProgressDialog dialog;
+				ArrayList<String> paths;
+
+				@Override
+				protected void onPreExecute() {
+					dialog = new ProgressDialog(SDLActivity.this);
+					dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
+					dialog.setIndeterminate(true);
+					dialog.show();
+				}
+
+				@Override
+				protected ArrayList<String> doInBackground(Void... params) {
+					paths = new ArrayList<String>();
+					discoverFiles("scripts", paths);
+					return paths;
+				}
+
+				@Override
+				protected void onPostExecute(ArrayList<String> result) {
+					dialog.hide();
+					copyTask.execute(result);
+					Editor edit = preferences.edit();
+					edit.putBoolean("scripts_copied", true);
+					edit.commit();
+				}
+
+			};
+
+			discoverTask.execute();
+
+		} else {
+			continueLoad();
+		}
+
+	}
+
+	void continueLoad() {
+
 		// So we can call stuff from static callbacks
 		mSingleton = this;
 
@@ -82,17 +199,101 @@ public class SDLActivity extends Activity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		holder.setFixedSize(SURFACE_WIDTH, SURFACE_HEIGHT);
+
+	}
+
+	private void setDefaultPreferences(SharedPreferences sharedPrefs) {
+		Editor sharedPrefsEditor = sharedPrefs.edit();
+		// Gameplay
+		sharedPrefsEditor.putString("gamespeed_pref", "3");
+		sharedPrefsEditor.putBoolean("debug_pref", false);
+
+		// Audio
+		sharedPrefsEditor.putBoolean("announcer_pref", true);
+		sharedPrefsEditor.putString("announcervolume_pref", "5");
+		sharedPrefsEditor.putBoolean("music_pref", true);
+		sharedPrefsEditor.putString("music_pref", "5");
+		sharedPrefsEditor.putBoolean("fx_pref", true);
+		sharedPrefsEditor.putString("fx_pref", "5");
+
+		// Display - todo
+
+		// Internals
+		sharedPrefsEditor.putBoolean("customgamescripts_pref", false);
+		sharedPrefsEditor.putString("gamescripts_pref", "");
+		sharedPrefsEditor.putString("originalfiles_pref", "/mnt/sdcard/th/");
+
+		sharedPrefsEditor.putBoolean("scripts_copied", false);
+		sharedPrefsEditor.commit();
+
+	}
+
+	void discoverFiles(String path, ArrayList<String> paths) {
+		AssetManager assetManager = this.getAssets();
+		String assets[] = null;
+		try {
+			assets = assetManager.list(path);
+
+			if (assets.length == 0) {
+				// copyFile(path);
+				paths.add(path);
+
+			} else {
+				String fullPath = scriptsPath + "/" + path;
+				File dir = new File(fullPath);
+				if (!dir.exists())
+					dir.mkdir();
+				for (int i = 0; i < assets.length; ++i) {
+					discoverFiles(path + "/" + assets[i], paths);
+				}
+			}
+		} catch (IOException ex) {
+			Log.e(getClass().getSimpleName(), "I/O Exception", ex);
+		}
+
+	}
+
+	void copyFile(String filename) {
+		AssetManager assetManager = this.getAssets();
+
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+			in = assetManager.open(filename);
+			String newFileName = scriptsPath + "/" + filename;
+			out = new FileOutputStream(newFileName);
+			Log.i(getClass().getSimpleName(), "Copying file [" + filename
+					+ "] to [" + newFileName + "]");
+
+			byte[] buffer = new byte[1024];
+			int read;
+			while ((read = in.read(buffer)) != -1) {
+				out.write(buffer, 0, read);
+			}
+			in.close();
+			in = null;
+			out.flush();
+			out.close();
+			out = null;
+		} catch (Exception e) {
+			Log.e(getClass().getSimpleName(), e.getMessage());
+		}
+
 	}
 
 	// Events
 	protected void onPause() {
-		// Log.v("SDL", "onPause()");
 		super.onPause();
 	}
 
 	protected void onResume() {
-		// Log.v("SDL", "onResume()");
 		super.onResume();
+	}
+
+	private void restartActivity() {
+		Intent intent = getIntent();
+		finish();
+		startActivity(intent);
 	}
 
 	// Messages from the SDLMain thread

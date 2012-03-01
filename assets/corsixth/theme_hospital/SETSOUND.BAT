@@ -1,2 +1,0 @@
-cd sound
-setsound.exe
