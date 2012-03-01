@@ -2,6 +2,7 @@ package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -188,6 +189,11 @@ public class SDLActivity extends Activity {
 
 	void continueLoad() {
 
+		updateConfigFile(PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext()));
+
+		setGamePath(scriptsPath + "/scripts/");
+
 		// So we can call stuff from static callbacks
 		mSingleton = this;
 
@@ -212,9 +218,9 @@ public class SDLActivity extends Activity {
 		sharedPrefsEditor.putBoolean("announcer_pref", true);
 		sharedPrefsEditor.putString("announcervolume_pref", "5");
 		sharedPrefsEditor.putBoolean("music_pref", true);
-		sharedPrefsEditor.putString("music_pref", "5");
+		sharedPrefsEditor.putString("musicvolume_pref", "5");
 		sharedPrefsEditor.putBoolean("fx_pref", true);
-		sharedPrefsEditor.putString("fx_pref", "5");
+		sharedPrefsEditor.putString("fxvolume_pref", "5");
 
 		// Display - todo
 
@@ -281,6 +287,58 @@ public class SDLActivity extends Activity {
 
 	}
 
+	void updateConfigFile(SharedPreferences preferences) {
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append("theme_hospital_install = [["
+				+ preferences.getString("originalfiles_pref", "") + "]]\n");
+		sbuilder.append("prevent_edge_scrolling = true\n");
+
+		sbuilder.append("audio = true\n");
+		sbuilder.append("audio_frequency = 22050\n");
+		sbuilder.append("audio_channels = 2\n");
+		sbuilder.append("audio_buffer_size = 2048\n");
+
+		sbuilder.append("play_music = "
+				+ String.valueOf(preferences.getBoolean("music_pref", true))
+				+ "\n");
+		sbuilder.append("music_volume = 0."
+				+ preferences.getString("musicvolume_pref", "5") + "\n");
+
+		sbuilder.append("play_announcements = "
+				+ String.valueOf(preferences.getBoolean("announcer_pref", true))
+				+ "\n");
+		sbuilder.append("announcement_volume = 0."
+				+ preferences.getString("announcervolume_pref", "5") + "\n");
+
+		sbuilder.append("play_sounds = "
+				+ String.valueOf(preferences.getBoolean("fx_pref", true))
+				+ "\n");
+		sbuilder.append("sound_volume = 0."
+				+ preferences.getString("fxvolume_pref", "5") + "\n");
+
+		sbuilder.append("language = [[English]]\n");
+
+		sbuilder.append("width = 640\n");
+		sbuilder.append("height = 480\n");
+		sbuilder.append("fullscreen = true\n");
+
+		sbuilder.append("debug = "
+				+ String.valueOf(preferences.getBoolean("debug_pref", false))
+				+ "\n");
+		sbuilder.append("track_fps = false\n");
+
+		String configFileName = scriptsPath + "/scripts/" + "config.txt";
+		try {
+			FileWriter writer = new FileWriter(configFileName, false);
+			writer.write(sbuilder.toString());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e(getClass().getSimpleName(), "Couldn't write config file");
+		}
+
+	}
+
 	// Events
 	protected void onPause() {
 		super.onPause();
@@ -333,6 +391,8 @@ public class SDLActivity extends Activity {
 	public static native void onNativeAccel(float x, float y, float z);
 
 	public static native void nativeRunAudioThread();
+
+	public static native void setGamePath(String path);
 
 	// Java functions called from C
 
