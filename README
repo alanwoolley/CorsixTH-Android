@@ -14,7 +14,7 @@ Prerequisites
 How to install
 --------
 1. 	Mount the phone/SD card on your computer.
-2.	Create a directory called 'th' on the SD Card.
+2.	Create a directory called 'th' on the root of the SD Card (/sdcard/th).
 3.	Copy your Theme Hospital Game/Demo files into here.
 4.	Download and install the APK.
 5.	Run
@@ -27,6 +27,5 @@ I've only tested it on my ZTE Blade running Android 2.3.7 and on the emulator, s
 What's broken?
 	- Music
 	- CorsixTH doesn't support screen resolutions below 640x480 yet, so some of the UI will be obscured or fall off the display.
-	- Saving. You can theoretically save if you edit the config.txt file to point to a directory with read and write access, but this will likely change.
 
 
