@@ -1,19 +1,11 @@
 package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-
 import javax.microedition.khronos.egl.*;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -21,7 +13,6 @@ import com.bugsense.trace.BugSenseHandler;
 import android.app.*;
 import android.content.*;
 import android.content.SharedPreferences.Editor;
-import android.content.res.AssetManager;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.os.*;
@@ -129,7 +120,8 @@ public class SDLActivity extends Activity {
 				protected Void doInBackground(ArrayList<String>... params) {
 					int max = params[0].size();
 					for (int i = 0; i < max; i++) {
-						copyFile(params[0].get(i));
+						Files.copyAsset(SDLActivity.this, params[0].get(i),
+								scriptsPath);
 						publishProgress(i + 1, max);
 					}
 					return null;
@@ -164,7 +156,7 @@ public class SDLActivity extends Activity {
 				@Override
 				protected ArrayList<String> doInBackground(Void... params) {
 					paths = new ArrayList<String>();
-					discoverFiles("scripts", paths);
+					paths = Files.listAssets(SDLActivity.this, "scripts");
 					return paths;
 				}
 
@@ -231,59 +223,6 @@ public class SDLActivity extends Activity {
 
 		sharedPrefsEditor.putBoolean("scripts_copied", false);
 		sharedPrefsEditor.commit();
-
-	}
-
-	void discoverFiles(String path, ArrayList<String> paths) {
-		AssetManager assetManager = this.getAssets();
-		String assets[] = null;
-		try {
-			assets = assetManager.list(path);
-
-			if (assets.length == 0) {
-				// copyFile(path);
-				paths.add(path);
-
-			} else {
-				String fullPath = scriptsPath + "/" + path;
-				File dir = new File(fullPath);
-				if (!dir.exists())
-					dir.mkdir();
-				for (int i = 0; i < assets.length; ++i) {
-					discoverFiles(path + "/" + assets[i], paths);
-				}
-			}
-		} catch (IOException ex) {
-			Log.e(getClass().getSimpleName(), "I/O Exception", ex);
-		}
-
-	}
-
-	void copyFile(String filename) {
-		AssetManager assetManager = this.getAssets();
-
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = assetManager.open(filename);
-			String newFileName = scriptsPath + "/" + filename;
-			out = new FileOutputStream(newFileName);
-			Log.i(getClass().getSimpleName(), "Copying file [" + filename
-					+ "] to [" + newFileName + "]");
-
-			byte[] buffer = new byte[1024];
-			int read;
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
-			in.close();
-			in = null;
-			out.flush();
-			out.close();
-			out = null;
-		} catch (Exception e) {
-			Log.e(getClass().getSimpleName(), e.getMessage());
-		}
 
 	}
 
@@ -433,8 +372,9 @@ public class SDLActivity extends Activity {
 				: AudioFormat.ENCODING_PCM_8BIT;
 		int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
-		Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono")
-				+ " " + (is16Bit ? "16-bit" : "8-bit") + " "
+		Log.v(SDLActivity.class.getSimpleName(), "SDL audio: wanted "
+				+ (isStereo ? "stereo" : "mono") + " "
+				+ (is16Bit ? "16-bit" : "8-bit") + " "
 				+ ((float) sampleRate / 1000f) + "kHz, " + desiredFrames
 				+ " frames buffer");
 
@@ -453,7 +393,7 @@ public class SDLActivity extends Activity {
 
 		audioStartThread();
 
-		Log.v("SDL",
+		Log.v(SDLActivity.class.getSimpleName(),
 				"SDL audio: got "
 						+ ((mAudioTrack.getChannelCount() >= 2) ? "stereo"
 								: "mono")
@@ -496,7 +436,8 @@ public class SDLActivity extends Activity {
 					// Nom nom
 				}
 			} else {
-				Log.w("SDL", "SDL audio: error return from write(short)");
+				Log.w(SDLActivity.class.getSimpleName(),
+						"SDL audio: error return from write(short)");
 				return;
 			}
 		}
@@ -514,7 +455,8 @@ public class SDLActivity extends Activity {
 					// Nom nom
 				}
 			} else {
-				Log.w("SDL", "SDL audio: error return from write(short)");
+				Log.w(SDLActivity.class.getSimpleName(),
+						"SDL audio: error return from write(short)");
 				return;
 			}
 		}
@@ -525,7 +467,8 @@ public class SDLActivity extends Activity {
 			try {
 				mAudioThread.join();
 			} catch (Exception e) {
-				Log.v("SDL", "Problem stopping audio thread: " + e);
+				Log.v(SDLActivity.class.getSimpleName(),
+						"Problem stopping audio thread: " + e);
 				BugSenseHandler.log("SDL Audio", e);
 			}
 			mAudioThread = null;
@@ -610,7 +553,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 				mSDLThread.join();
 			} catch (Exception e) {
 				BugSenseHandler.log("SDL", e);
-				Log.v("SDL", "Problem stopping thread: " + e);
+				Log.v(getClass().getSimpleName(), "Problem stopping thread: "
+						+ e);
 			}
 			mSDLThread = null;
 
@@ -628,45 +572,46 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
 		switch (format) {
 		case PixelFormat.A_8:
-			Log.v("SDL", "pixel format A_8");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format A_8");
 			break;
 		case PixelFormat.LA_88:
-			Log.v("SDL", "pixel format LA_88");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format LA_88");
 			break;
 		case PixelFormat.L_8:
-			Log.v("SDL", "pixel format L_8");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format L_8");
 			break;
 		case PixelFormat.RGBA_4444:
-			Log.v("SDL", "pixel format RGBA_4444");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_4444");
 			sdlFormat = 0x85421002; // SDL_PIXELFORMAT_RGBA4444
 			break;
 		case PixelFormat.RGBA_5551:
-			Log.v("SDL", "pixel format RGBA_5551");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_5551");
 			sdlFormat = 0x85441002; // SDL_PIXELFORMAT_RGBA5551
 			break;
 		case PixelFormat.RGBA_8888:
-			Log.v("SDL", "pixel format RGBA_8888");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_8888");
 			sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
 			break;
 		case PixelFormat.RGBX_8888:
-			Log.v("SDL", "pixel format RGBX_8888");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBX_8888");
 			sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
 			break;
 		case PixelFormat.RGB_332:
-			Log.v("SDL", "pixel format RGB_332");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_332");
 			sdlFormat = 0x84110801; // SDL_PIXELFORMAT_RGB332
 			break;
 		case PixelFormat.RGB_565:
-			Log.v("SDL", "pixel format RGB_565");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_565");
 			sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
 			break;
 		case PixelFormat.RGB_888:
-			Log.v("SDL", "pixel format RGB_888");
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_888");
 			// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
 			sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
 			break;
 		default:
-			Log.v("SDL", "pixel format unknown " + format);
+			Log.v(SDLActivity.class.getSimpleName(), "pixel format unknown "
+					+ format);
 			break;
 		}
 		SDLActivity.onNativeResize(width, height, sdlFormat);
