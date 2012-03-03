@@ -88,7 +88,7 @@
         <MultiSelectListPreference
             android:key="resolution_pref"
             android:persistent="true"
-            android:title="Resolution" android:entryValues="@array/resolutions" android:entries="@array/resolutions" android:defaultValue="Default"/>
+            android:title="Resolution" android:entryValues="@array/resolutions_values" android:entries="@array/resolutions" android:defaultValue="1"/>
 
         <EditTextPreference
             android:key="reswidth_pref"

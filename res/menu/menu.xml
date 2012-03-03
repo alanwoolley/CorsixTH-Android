@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menuitem_settings" android:title="Settings" android:icon="@drawable/ic_menu_manage"></item>
+    <item android:id="@+id/menuitem_help" android:title="Help" android:icon="@drawable/ic_menu_help"></item>
+    
+
+</menu>

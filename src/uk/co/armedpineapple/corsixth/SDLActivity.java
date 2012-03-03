@@ -27,10 +27,10 @@ import android.hardware.*;
  */
 public class SDLActivity extends Activity {
 
-	private String scriptsPath = "";
+	private String dataRoot = "";
 
 	private Properties properties;
-
+	private Configuration config;
 	private final static int SURFACE_WIDTH = 640;
 	private final static int SURFACE_HEIGHT = 480;
 
@@ -50,7 +50,6 @@ public class SDLActivity extends Activity {
 		System.loadLibrary("LUA");
 		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
-		// System.loadLibrary("SDL_ttf");
 		System.loadLibrary("appmain");
 	}
 
@@ -99,17 +98,9 @@ public class SDLActivity extends Activity {
 		final SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 
-		/*
-		 * if (preferences.getAll().size() == 0) {
-		 * setDefaultPreferences(preferences); }
-		 */
+		config = Configuration.loadFromPreferences(this, preferences);
 
-		if (preferences.getBoolean("customgamescripts_pref", false)) {
-			scriptsPath = preferences.getString("gamescripts_pref",
-					getExternalFilesDir(null).getAbsolutePath());
-		} else {
-			scriptsPath = getExternalFilesDir(null).getAbsolutePath();
-		}
+		dataRoot = config.getCthPath();
 
 		if (!preferences.getBoolean("scripts_copied", false)) {
 			final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
@@ -132,7 +123,7 @@ public class SDLActivity extends Activity {
 					int max = params[0].size();
 					for (int i = 0; i < max; i++) {
 						Files.copyAsset(SDLActivity.this, params[0].get(i),
-								scriptsPath);
+								dataRoot);
 						publishProgress(i + 1, max);
 					}
 					return null;
@@ -151,6 +142,7 @@ public class SDLActivity extends Activity {
 				}
 
 			};
+
 			discoverTask = new AsyncTask<Void, Void, ArrayList<String>>() {
 				ProgressDialog dialog;
 				ArrayList<String> paths;
@@ -192,10 +184,16 @@ public class SDLActivity extends Activity {
 
 	void continueLoad() {
 
-		updateConfigFile(PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext()));
+		try {
+			config.writeToFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.e(getClass().getSimpleName(),
+					"Couldn't write to configuration file");
+			BugSenseHandler.log("Config", e);
+		}
 
-		setGamePath(scriptsPath + "/scripts/");
+		setGamePath(dataRoot + "/scripts/");
 
 		// So we can call stuff from static callbacks
 		mSingleton = this;
@@ -208,61 +206,6 @@ public class SDLActivity extends Activity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		holder.setFixedSize(SURFACE_WIDTH, SURFACE_HEIGHT);
-
-	}
-
-	void updateConfigFile(SharedPreferences preferences) {
-		StringBuilder sbuilder = new StringBuilder();
-		sbuilder.append("theme_hospital_install = [["
-				+ preferences.getString("originalfiles_pref", "") + "]]\n");
-		sbuilder.append("prevent_edge_scrolling = true\n");
-
-		sbuilder.append("audio = "
-				+ String.valueOf(preferences.getBoolean("audio_pref", true))
-				+ "\n");
-		sbuilder.append("audio_frequency = 22050\n");
-		sbuilder.append("audio_channels = 2\n");
-		sbuilder.append("audio_buffer_size = 2048\n");
-
-		sbuilder.append("play_music = "
-				+ String.valueOf(preferences.getBoolean("music_pref", true))
-				+ "\n");
-		sbuilder.append("music_volume = 0."
-				+ preferences.getString("musicvolume_pref", "5") + "\n");
-
-		sbuilder.append("play_announcements = "
-				+ String.valueOf(preferences.getBoolean("announcer_pref", true))
-				+ "\n");
-		sbuilder.append("announcement_volume = 0."
-				+ preferences.getString("announcervolume_pref", "5") + "\n");
-
-		sbuilder.append("play_sounds = "
-				+ String.valueOf(preferences.getBoolean("fx_pref", true))
-				+ "\n");
-		sbuilder.append("sound_volume = 0."
-				+ preferences.getString("fxvolume_pref", "5") + "\n");
-
-		sbuilder.append("language = [["
-				+ preferences.getString("language_pref", "en") + "]]\n");
-
-		sbuilder.append("width = 640\n");
-		sbuilder.append("height = 480\n");
-		sbuilder.append("fullscreen = true\n");
-
-		sbuilder.append("debug = "
-				+ String.valueOf(preferences.getBoolean("debug_pref", false))
-				+ "\n");
-		sbuilder.append("track_fps = false\n");
-
-		String configFileName = scriptsPath + "/scripts/" + "config.txt";
-		try {
-			FileWriter writer = new FileWriter(configFileName, false);
-			writer.write(sbuilder.toString());
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			Log.e(getClass().getSimpleName(), "Couldn't write config file");
-		}
 
 	}
 
