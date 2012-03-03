@@ -54,10 +54,18 @@ public class SDLActivity extends Activity {
 		System.loadLibrary("appmain");
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// The volume buttons should change the media volume
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		Properties properties = new Properties();
@@ -86,12 +94,15 @@ public class SDLActivity extends Activity {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
 		}
 
+		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+
 		final SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 
-		if (preferences.getAll().size() == 0) {
-			setDefaultPreferences(preferences);
-		}
+		/*
+		 * if (preferences.getAll().size() == 0) {
+		 * setDefaultPreferences(preferences); }
+		 */
 
 		if (preferences.getBoolean("customgamescripts_pref", false)) {
 			scriptsPath = preferences.getString("gamescripts_pref",
@@ -200,39 +211,15 @@ public class SDLActivity extends Activity {
 
 	}
 
-	private void setDefaultPreferences(SharedPreferences sharedPrefs) {
-		Editor sharedPrefsEditor = sharedPrefs.edit();
-		// Gameplay
-		sharedPrefsEditor.putString("gamespeed_pref", "3");
-		sharedPrefsEditor.putBoolean("debug_pref", false);
-
-		// Audio
-		sharedPrefsEditor.putBoolean("announcer_pref", true);
-		sharedPrefsEditor.putString("announcervolume_pref", "5");
-		sharedPrefsEditor.putBoolean("music_pref", true);
-		sharedPrefsEditor.putString("musicvolume_pref", "5");
-		sharedPrefsEditor.putBoolean("fx_pref", true);
-		sharedPrefsEditor.putString("fxvolume_pref", "5");
-
-		// Display - todo
-
-		// Internals
-		sharedPrefsEditor.putBoolean("customgamescripts_pref", false);
-		sharedPrefsEditor.putString("gamescripts_pref", "");
-		sharedPrefsEditor.putString("originalfiles_pref", "/mnt/sdcard/th/");
-
-		sharedPrefsEditor.putBoolean("scripts_copied", false);
-		sharedPrefsEditor.commit();
-
-	}
-
 	void updateConfigFile(SharedPreferences preferences) {
 		StringBuilder sbuilder = new StringBuilder();
 		sbuilder.append("theme_hospital_install = [["
 				+ preferences.getString("originalfiles_pref", "") + "]]\n");
 		sbuilder.append("prevent_edge_scrolling = true\n");
 
-		sbuilder.append("audio = true\n");
+		sbuilder.append("audio = "
+				+ String.valueOf(preferences.getBoolean("audio_pref", true))
+				+ "\n");
 		sbuilder.append("audio_frequency = 22050\n");
 		sbuilder.append("audio_channels = 2\n");
 		sbuilder.append("audio_buffer_size = 2048\n");
@@ -255,7 +242,8 @@ public class SDLActivity extends Activity {
 		sbuilder.append("sound_volume = 0."
 				+ preferences.getString("fxvolume_pref", "5") + "\n");
 
-		sbuilder.append("language = [[English]]\n");
+		sbuilder.append("language = [["
+				+ preferences.getString("language_pref", "en") + "]]\n");
 
 		sbuilder.append("width = 640\n");
 		sbuilder.append("height = 480\n");
@@ -724,6 +712,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		case KeyEvent.KEYCODE_VOLUME_UP:
 			return false;
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
+			return false;
+		case KeyEvent.KEYCODE_MENU:
 			return false;
 		default:
 			break;
