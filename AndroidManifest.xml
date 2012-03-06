@@ -20,16 +20,19 @@
             android:launchMode="standard"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-            <intent-filter>
+             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="WizardActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:name=".wizard.WizardActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.AppTheme" >
+           
         </activity>
+
         <activity android:name="PrefsActivity" >
         </activity>
     </application>

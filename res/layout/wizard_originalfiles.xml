@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uk.co.armedpineapple.corsixth.wizard.OriginalFilesWizard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/originalfilesHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="Original Theme Hospital Files"
+        android:textAppearance="@style/WizardHeaderText" />
+
+    <TextView
+        android:id="@+id/originalfilesText"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/originalfilesHeader"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:text="You should place the original Theme Hospital files on your external storage in a directory called 'th', or choose an alternative below."
+        android:textAppearance="@style/WizardText" />
+
+    <RadioGroup
+        android:id="@+id/originalFilesRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/originalfilesText"
+        android:layout_marginLeft="30dp" >
+
+        <RadioButton
+            android:id="@+id/automaticRadio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Default (/mnt/sdcard/th)" />
+
+        <RadioButton
+            android:id="@+id/manualRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Custom" />
+
+        <RadioButton
+            android:id="@+id/downloadDemoRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Download Demo" />
+    </RadioGroup>
+
+</uk.co.armedpineapple.corsixth.wizard.OriginalFilesWizard>

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CorsixTH</string>
+    <string name="welcome_header">Welcome to CorsixTH!</string>
+    <string name="welcome_text">You are almost ready to start playing, but there are a few things that we must setup first.</string>
 </resources>

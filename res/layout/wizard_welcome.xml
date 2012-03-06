@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uk.co.armedpineapple.corsixth.wizard.WelcomeWizard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:src="@drawable/cth" />
+
+    <RelativeLayout
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" >
+
+        <TextView
+            android:id="@+id/welcomeHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="@string/welcome_header"
+            android:textAppearance="@style/WizardHeaderText" />
+
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="33dp"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="@string/welcome_text"
+            android:textAppearance="@style/WizardText" />
+    </RelativeLayout>
+
+</uk.co.armedpineapple.corsixth.wizard.WelcomeWizard>

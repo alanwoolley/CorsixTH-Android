@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.AppTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <color name="background">#FFFFFF</color>
+
+    <style name="WizardHeaderText" parent="@android:style/TextAppearance.Large">
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="WizardText" parent="@android:style/TextAppearance.Medium">
+   	<item name="android:textSize">15sp</item>
+    </style>
+
+</resources>

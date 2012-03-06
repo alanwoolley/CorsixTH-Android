@@ -7,24 +7,35 @@
         android:key="game_prefs"
         android:summary="Gameplay preferences"
         android:title="Game" >
-
         <CheckBoxPreference
+            android:defaultValue="false"
             android:key="debug_pref"
+            android:persistent="true"
             android:summary="Debug + Cheats Enabled"
-            android:title="Debug mode" android:persistent="true" android:defaultValue="false"/>
+            android:title="Debug mode" />
 
-        <MultiSelectListPreference
+        <ListPreference
+            android:defaultValue="en"
+            android:entries="@array/languages"
+            android:entryValues="@array/languages_values"
             android:key="language_pref"
             android:persistent="true"
-            android:title="Language" android:defaultValue="en" android:entryValues="@array/languages_values" android:entries="@array/languages"/>
+            android:title="Language" />
     </PreferenceScreen>
     <PreferenceScreen
         android:key="audio_prefs"
         android:summary="Audio preferences"
         android:title="Audio" >
-        <CheckBoxPreference android:key="audio_pref" android:persistent="true" android:title="Global Audio" android:defaultValue="true"/><PreferenceCategory
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="audio_pref"
+            android:persistent="true"
+            android:title="Global Audio" />
+
+        <PreferenceCategory
+            android:dependency="audio_pref"
             android:key="announcer_prefs"
-            android:title="Announcer" android:dependency="audio_pref">
+            android:title="Announcer" >
             <CheckBoxPreference
                 android:defaultValue="true"
                 android:key="announcer_pref"
@@ -42,8 +53,9 @@
                 android:title="Announcer Volume" />
         </PreferenceCategory>
         <PreferenceCategory
+            android:dependency="audio_pref"
             android:key="music_prefs"
-            android:title="Music" android:dependency="audio_pref">
+            android:title="Music" >
             <CheckBoxPreference
                 android:defaultValue="true"
                 android:key="music_pref"
@@ -61,8 +73,9 @@
                 android:title="Music Volume" />
         </PreferenceCategory>
         <PreferenceCategory
+            android:dependency="audio_pref"
             android:key="fx_prefs"
-            android:title="Sound FX" android:dependency="audio_pref">
+            android:title="Sound FX" >
             <CheckBoxPreference
                 android:defaultValue="true"
                 android:key="fx_pref"
@@ -79,25 +92,29 @@
                 android:persistent="true"
                 android:title="Sound FX Volume" />
         </PreferenceCategory>
-        
     </PreferenceScreen>
     <PreferenceScreen
         android:key="display_prefs"
         android:summary="Display preferences"
         android:title="Display" >
-        <MultiSelectListPreference
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/resolutions"
+            android:entryValues="@array/resolutions_values"
             android:key="resolution_pref"
             android:persistent="true"
-            android:title="Resolution" android:entryValues="@array/resolutions_values" android:entries="@array/resolutions" android:defaultValue="1"/>
+            android:title="Resolution" />
 
         <EditTextPreference
+            android:defaultValue="640"
             android:key="reswidth_pref"
             android:persistent="true"
-            android:title="Width" android:defaultValue="640"/>
+            android:title="Width" />
         <EditTextPreference
+            android:defaultValue="480"
             android:key="resheight_pref"
             android:persistent="true"
-            android:title="Height" android:defaultValue="480"/>
+            android:title="Height" />
     </PreferenceScreen>
     <PreferenceScreen
         android:key="interals_prefs"
@@ -120,9 +137,10 @@
         </PreferenceCategory>
 
         <EditTextPreference
+            android:defaultValue="/mnt/sdcard/th"
             android:key="originalfiles_pref"
             android:persistent="true"
-            android:title="Original TH Location" android:defaultValue="/mnt/sdcard/th"/>
+            android:title="Original TH Location" />
     </PreferenceScreen>
 
 </PreferenceScreen>

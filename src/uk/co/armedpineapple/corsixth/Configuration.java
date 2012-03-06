@@ -5,10 +5,15 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 public class Configuration {
+
+	public final static int RESOLUTION_DEFAULT = 1;
+	public final static int RESOLUTION_NATIVE = 2;
+	public final static int RESOLUTION_CUSTOM = 3;
 
 	private String originalFilesPath;
 	private String cthPath;
@@ -26,6 +31,27 @@ public class Configuration {
 	private Boolean debug;
 
 	private Configuration() {
+	}
+
+	public void saveToPreferences(Context ctx, SharedPreferences preferences) {
+		Editor editor = preferences.edit();
+		editor.putString("originalfiles_pref", originalFilesPath);
+		editor.putString("gamescripts_pref", cthPath);
+		editor.putBoolean("audio_pref", globalAudio);
+		editor.putBoolean("music_pref", playMusic);
+		editor.putBoolean("announcer_pref", playAnnouncements);
+		editor.putBoolean("fx_pref", playSoundFx);
+		editor.putString("fxvolume_pref", String.valueOf(sfxVol));
+		editor.putString("announcervolume_pref",
+				String.valueOf(announcementsVol));
+		editor.putString("msuicvolume_pref", String.valueOf(musicVol));
+		editor.putString("language_pref", language);
+		editor.putString("resolution_pref", String.valueOf(resolutionMode));
+		editor.putString("reswidth_pref", String.valueOf(displayWidth));
+		editor.putString("resheight_pref", String.valueOf(displayHeight));
+		editor.putBoolean("debug_pref", debug);
+		editor.commit();
+
 	}
 
 	public static Configuration loadFromPreferences(Context ctx,
@@ -54,27 +80,29 @@ public class Configuration {
 		config.resolutionMode = Integer.valueOf(preferences.getString(
 				"resolution_pref", "1"));
 
+		config.debug = preferences.getBoolean("debug_pref", false);
+
 		switch (config.resolutionMode) {
-		case 1:
-			// Default resolution
+		case RESOLUTION_DEFAULT:
 			config.displayWidth = 640;
 			config.displayHeight = 480;
 			break;
-		case 2:
-			// Native resolution
+
+		case RESOLUTION_NATIVE:
 			DisplayMetrics dm = new DisplayMetrics();
 			((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay().getMetrics(dm);
 			config.displayWidth = dm.widthPixels;
 			config.displayHeight = dm.heightPixels;
 			break;
-		case 3:
-			// Custom resolution
+
+		case RESOLUTION_CUSTOM:
 			config.displayWidth = Integer.valueOf(preferences.getString(
 					"reswidth_pref", "640"));
 			config.displayWidth = Integer.valueOf(preferences.getString(
 					"resheight_pref", "480"));
 			break;
+
 		}
 
 		return config;
@@ -174,6 +202,64 @@ public class Configuration {
 
 	public Boolean getDebug() {
 		return debug;
+	}
+
+	// Setters
+
+	public void setOriginalFilesPath(String originalFilesPath) {
+		this.originalFilesPath = originalFilesPath;
+	}
+
+	public void setCthPath(String cthPath) {
+		this.cthPath = cthPath;
+	}
+
+	public void setGlobalAudio(Boolean globalAudio) {
+		this.globalAudio = globalAudio;
+	}
+
+	public void setPlayMusic(Boolean playMusic) {
+		this.playMusic = playMusic;
+	}
+
+	public void setPlayAnnouncements(Boolean playAnnouncements) {
+		this.playAnnouncements = playAnnouncements;
+	}
+
+	public void setPlaySoundFx(Boolean playSoundFx) {
+		this.playSoundFx = playSoundFx;
+	}
+
+	public void setMusicVol(Integer musicVol) {
+		this.musicVol = musicVol;
+	}
+
+	public void setAnnouncementsVol(Integer announcementsVol) {
+		this.announcementsVol = announcementsVol;
+	}
+
+	public void setSfxVol(Integer sfxVol) {
+		this.sfxVol = sfxVol;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public void setResolutionMode(Integer resolutionMode) {
+		this.resolutionMode = resolutionMode;
+	}
+
+	public void setDisplayWidth(Integer displayWidth) {
+		this.displayWidth = displayWidth;
+	}
+
+	public void setDisplayHeight(Integer displayHeight) {
+		this.displayHeight = displayHeight;
+	}
+
+	public void setDebug(Boolean debug) {
+		this.debug = debug;
 	}
 
 }
