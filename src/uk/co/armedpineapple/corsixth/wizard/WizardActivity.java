@@ -5,13 +5,19 @@ import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.R.id;
 import uk.co.armedpineapple.corsixth.R.layout;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ViewFlipper;
@@ -26,38 +32,59 @@ public class WizardActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.wizard);
 
-		flipper = (ViewFlipper) findViewById(R.id.flipper);
-		previousButton = (Button) findViewById(R.id.leftbutton);
-		nextButton = (Button) findViewById(R.id.rightbutton);
+		if (!Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)) {
+			Log.e(getClass().getSimpleName(), "Can't get storage.");
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
-		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					finish();
+				}
 
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
+			};
 
-		config = Configuration.loadFromPreferences(this, preferences);
+			builder.setMessage(
+					getResources().getString(R.string.no_external_storage))
+					.setCancelable(false).setNeutralButton("OK", alertListener);
 
-		LayoutInflater inflater = getLayoutInflater();
-		loadAndAdd(inflater, flipper,
-				(WizardView) inflater.inflate(R.layout.wizard_welcome, null));
-		loadAndAdd(inflater, flipper, (OriginalFilesWizard) inflater.inflate(
-				R.layout.wizard_originalfiles, null));
-		loadAndAdd(inflater, flipper,
-				(DisplayWizard) inflater.inflate(R.layout.wizard_display, null));
-		loadAndAdd(inflater, flipper,
-				(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
-		loadAndAdd(inflater, flipper, (AdvancedWizard) inflater.inflate(
-				R.layout.wizard_advanced, null));
+			AlertDialog alert = builder.create();
+			alert.show();
+		} else {
+			setContentView(R.layout.wizard);
+			flipper = (ViewFlipper) findViewById(R.id.flipper);
+			previousButton = (Button) findViewById(R.id.leftbutton);
+			nextButton = (Button) findViewById(R.id.rightbutton);
 
-		// Setup Buttons
-		previousButton.setVisibility(View.GONE);
-		buttonClickListener = new WizardButtonClickListener();
+			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 
-		previousButton.setOnClickListener(buttonClickListener);
-		nextButton.setOnClickListener(buttonClickListener);
+			SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(getBaseContext());
 
+			config = Configuration.loadFromPreferences(this, preferences);
+
+			LayoutInflater inflater = getLayoutInflater();
+			loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
+					R.layout.wizard_welcome, null));
+			loadAndAdd(inflater, flipper,
+					(OriginalFilesWizard) inflater.inflate(
+							R.layout.wizard_originalfiles, null));
+			loadAndAdd(inflater, flipper, (DisplayWizard) inflater.inflate(
+					R.layout.wizard_display, null));
+			loadAndAdd(inflater, flipper,
+					(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
+			loadAndAdd(inflater, flipper, (AdvancedWizard) inflater.inflate(
+					R.layout.wizard_advanced, null));
+
+			// Setup Buttons
+			previousButton.setVisibility(View.GONE);
+			buttonClickListener = new WizardButtonClickListener();
+
+			previousButton.setOnClickListener(buttonClickListener);
+			nextButton.setOnClickListener(buttonClickListener);
+		}
 	}
 
 	public WizardView loadAndAdd(LayoutInflater inflater, ViewFlipper flipper,

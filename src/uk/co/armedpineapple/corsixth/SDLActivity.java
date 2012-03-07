@@ -46,7 +46,7 @@ public class SDLActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menuitem_settings:
-			startActivity(new Intent(this,PrefsActivity.class));
+			startActivity(new Intent(this, PrefsActivity.class));
 			break;
 		case R.id.menuitem_help:
 			break;
@@ -103,97 +103,112 @@ public class SDLActivity extends Activity {
 			Log.i(getClass().getSimpleName(),
 					"Directory: " + extDir.getAbsolutePath());
 
+			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+
+			final SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(getBaseContext());
+
+			config = Configuration.loadFromPreferences(this, preferences);
+
+			dataRoot = config.getCthPath();
+
+			if (!preferences.getBoolean("scripts_copied", false)) {
+				final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
+				final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
+				copyTask = new AsyncTask<ArrayList<String>, Integer, Void>() {
+					ProgressDialog dialog;
+
+					@Override
+					protected void onPreExecute() {
+						dialog = new ProgressDialog(SDLActivity.this);
+						dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+						dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
+						dialog.setIndeterminate(false);
+						dialog.show();
+
+					}
+
+					@Override
+					protected Void doInBackground(ArrayList<String>... params) {
+						int max = params[0].size();
+						for (int i = 0; i < max; i++) {
+							Files.copyAsset(SDLActivity.this, params[0].get(i),
+									dataRoot);
+							publishProgress(i + 1, max);
+						}
+						return null;
+					}
+
+					@Override
+					protected void onProgressUpdate(Integer... values) {
+						dialog.setMax(values[1]);
+						dialog.setProgress(values[0]);
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						dialog.hide();
+						continueLoad();
+					}
+
+				};
+
+				discoverTask = new AsyncTask<Void, Void, ArrayList<String>>() {
+					ProgressDialog dialog;
+					ArrayList<String> paths;
+
+					@Override
+					protected void onPreExecute() {
+						dialog = new ProgressDialog(SDLActivity.this);
+						dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+						dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
+						dialog.setIndeterminate(true);
+						dialog.show();
+					}
+
+					@Override
+					protected ArrayList<String> doInBackground(Void... params) {
+						paths = new ArrayList<String>();
+						paths = Files.listAssets(SDLActivity.this, "scripts");
+						return paths;
+					}
+
+					@Override
+					protected void onPostExecute(ArrayList<String> result) {
+						dialog.hide();
+						copyTask.execute(result);
+						Editor edit = preferences.edit();
+						edit.putBoolean("scripts_copied", true);
+						edit.commit();
+					}
+
+				};
+
+				discoverTask.execute();
+
+			} else {
+				continueLoad();
+			}
 		} else {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
-		}
 
-		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
-
-		final SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
-
-		config = Configuration.loadFromPreferences(this, preferences);
-
-		dataRoot = config.getCthPath();
-
-		if (!preferences.getBoolean("scripts_copied", false)) {
-			final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
-			final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
-			copyTask = new AsyncTask<ArrayList<String>, Integer, Void>() {
-				ProgressDialog dialog;
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
 				@Override
-				protected void onPreExecute() {
-					dialog = new ProgressDialog(SDLActivity.this);
-					dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-					dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
-					dialog.setIndeterminate(false);
-					dialog.show();
-
-				}
-
-				@Override
-				protected Void doInBackground(ArrayList<String>... params) {
-					int max = params[0].size();
-					for (int i = 0; i < max; i++) {
-						Files.copyAsset(SDLActivity.this, params[0].get(i),
-								dataRoot);
-						publishProgress(i + 1, max);
-					}
-					return null;
-				}
-
-				@Override
-				protected void onProgressUpdate(Integer... values) {
-					dialog.setMax(values[1]);
-					dialog.setProgress(values[0]);
-				}
-
-				@Override
-				protected void onPostExecute(Void result) {
-					dialog.hide();
-					continueLoad();
+				public void onClick(DialogInterface dialog, int which) {
+					finish();
 				}
 
 			};
 
-			discoverTask = new AsyncTask<Void, Void, ArrayList<String>>() {
-				ProgressDialog dialog;
-				ArrayList<String> paths;
+			builder.setMessage(
+					getResources().getString(R.string.no_external_storage))
+					.setCancelable(false).setNeutralButton("OK", alertListener);
 
-				@Override
-				protected void onPreExecute() {
-					dialog = new ProgressDialog(SDLActivity.this);
-					dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-					dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
-					dialog.setIndeterminate(true);
-					dialog.show();
-				}
-
-				@Override
-				protected ArrayList<String> doInBackground(Void... params) {
-					paths = new ArrayList<String>();
-					paths = Files.listAssets(SDLActivity.this, "scripts");
-					return paths;
-				}
-
-				@Override
-				protected void onPostExecute(ArrayList<String> result) {
-					dialog.hide();
-					copyTask.execute(result);
-					Editor edit = preferences.edit();
-					edit.putBoolean("scripts_copied", true);
-					edit.commit();
-				}
-
-			};
-
-			discoverTask.execute();
-
-		} else {
-			continueLoad();
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
-
 	}
 
 	void continueLoad() {
