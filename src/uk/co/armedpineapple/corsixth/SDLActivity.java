@@ -1,13 +1,10 @@
 package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
-import javax.microedition.khronos.egl.*;
-
 import com.bugsense.trace.BugSenseHandler;
 
 import android.app.*;
@@ -18,9 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.os.*;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.graphics.*;
 import android.media.*;
-import android.hardware.*;
 
 /**
  * SDL Activity
