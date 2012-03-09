@@ -4,9 +4,11 @@ import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.R.id;
 import uk.co.armedpineapple.corsixth.R.layout;
+import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ public class WizardActivity extends Activity {
 	private Button nextButton;
 	private WizardButtonClickListener buttonClickListener;
 	private Configuration config;
+	private SharedPreferences preferences;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,7 +63,7 @@ public class WizardActivity extends Activity {
 
 			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 
-			SharedPreferences preferences = PreferenceManager
+			preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
 
 			config = Configuration.loadFromPreferences(this, preferences);
@@ -106,9 +109,16 @@ public class WizardActivity extends Activity {
 						R.animator.wizard_anim_slideoutright);
 				flipper.showPrevious();
 			} else if (v.equals(nextButton)) {
-				if (nextButton.getText() == "Play!") {
+				((WizardView) flipper.getCurrentView())
+						.saveConfiguration(config);
 
+				if (nextButton.getText() == "Play!") {
+					config.saveToPreferences(WizardActivity.this, preferences);
+					finish();
+					WizardActivity.this.startActivity(new Intent(
+							WizardActivity.this, SDLActivity.class));
 				} else {
+
 					flipper.setInAnimation(WizardActivity.this,
 							R.animator.wizard_anim_slideinleft);
 					flipper.setOutAnimation(WizardActivity.this,

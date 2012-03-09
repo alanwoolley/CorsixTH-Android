@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 public class Configuration {
@@ -57,9 +58,11 @@ public class Configuration {
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
 		Configuration config = new Configuration();
+		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
 
 		config.originalFilesPath = preferences.getString("originalfiles_pref",
 				"");
+
 		config.cthPath = preferences.getString("gamescripts_pref", ctx
 				.getExternalFilesDir(null).getAbsolutePath());
 
@@ -99,12 +102,12 @@ public class Configuration {
 		case RESOLUTION_CUSTOM:
 			config.displayWidth = Integer.valueOf(preferences.getString(
 					"reswidth_pref", "640"));
-			config.displayWidth = Integer.valueOf(preferences.getString(
+			config.displayHeight = Integer.valueOf(preferences.getString(
 					"resheight_pref", "480"));
 			break;
 
 		}
-
+		Log.d(Configuration.class.getSimpleName(), config.toString());
 		return config;
 	}
 
@@ -260,6 +263,18 @@ public class Configuration {
 
 	public void setDebug(Boolean debug) {
 		this.debug = debug;
+	}
+
+	@Override
+	public String toString() {
+		return "Configuration [origFiles=" + originalFilesPath + ", cthPath="
+				+ cthPath + ", Audio?=" + globalAudio + ", Music?=" + playMusic
+				+ ", Announcements?=" + playAnnouncements + ", SFX?="
+				+ playSoundFx + ", mVol=" + musicVol + ", aVol="
+				+ announcementsVol + ", sfxVol=" + sfxVol + ", language="
+				+ language + ", resMode=" + resolutionMode + ", width="
+				+ displayWidth + ", height=" + displayHeight + ", debug?="
+				+ debug + "]";
 	}
 
 }

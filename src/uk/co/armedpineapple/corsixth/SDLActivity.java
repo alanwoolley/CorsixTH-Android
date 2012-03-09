@@ -26,8 +26,6 @@ public class SDLActivity extends Activity {
 
 	private Properties properties;
 	private Configuration config;
-	private final static int SURFACE_WIDTH = 640;
-	private final static int SURFACE_HEIGHT = 480;
 
 	// Main components
 	private static SDLActivity mSingleton;
@@ -98,11 +96,11 @@ public class SDLActivity extends Activity {
 			Log.i(getClass().getSimpleName(),
 					"Directory: " + extDir.getAbsolutePath());
 
-			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
-
 			final SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
-
+			
+			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+			
 			config = Configuration.loadFromPreferences(this, preferences);
 
 			dataRoot = config.getCthPath();
@@ -223,13 +221,13 @@ public class SDLActivity extends Activity {
 		mSingleton = this;
 
 		// Set up the surface
-		mSurface = new SDLSurface(getApplication(), SURFACE_WIDTH,
-				SURFACE_HEIGHT);
+		mSurface = new SDLSurface(getApplication(), config.getDisplayWidth(),
+				config.getDisplayHeight());
 
 		setContentView(mSurface);
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-		holder.setFixedSize(SURFACE_WIDTH, SURFACE_HEIGHT);
+		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
 
 	}
 
