@@ -168,6 +168,9 @@ public class SDLActivity extends Activity {
 					@Override
 					protected void onPostExecute(Void result) {
 						dialog.hide();
+						Editor edit = preferences.edit();
+						edit.putBoolean("scripts_copied", true);
+						edit.commit();
 						continueLoad();
 					}
 
@@ -197,9 +200,7 @@ public class SDLActivity extends Activity {
 					protected void onPostExecute(ArrayList<String> result) {
 						dialog.hide();
 						copyTask.execute(result);
-						Editor edit = preferences.edit();
-						edit.putBoolean("scripts_copied", true);
-						edit.commit();
+					
 					}
 
 				};
