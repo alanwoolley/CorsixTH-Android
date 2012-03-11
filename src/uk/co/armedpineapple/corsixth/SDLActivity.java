@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import uk.co.armedpineapple.corsixth.wizard.WizardActivity;
+
 import com.bugsense.trace.BugSenseHandler;
 
 import android.app.*;
@@ -39,9 +42,33 @@ public class SDLActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menuitem_settings:
+			// finish();
 			startActivity(new Intent(this, PrefsActivity.class));
 			break;
 		case R.id.menuitem_help:
+			break;
+
+		case R.id.menuitem_wizard:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SharedPreferences preferences = PreferenceManager
+							.getDefaultSharedPreferences(getBaseContext());
+					Editor editor = preferences.edit();
+					editor.putBoolean("wizard_run", false);
+					editor.commit();
+				}
+
+			};
+
+			builder.setMessage(getResources().getString(R.string.setup_wizard))
+					.setCancelable(false).setNeutralButton("OK", alertListener);
+
+			AlertDialog alert = builder.create();
+			alert.show();
+
 			break;
 
 		}
@@ -98,9 +125,9 @@ public class SDLActivity extends Activity {
 
 			final SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
-			
+
 			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
-			
+
 			config = Configuration.loadFromPreferences(this, preferences);
 
 			dataRoot = config.getCthPath();
@@ -182,6 +209,7 @@ public class SDLActivity extends Activity {
 			} else {
 				continueLoad();
 			}
+
 		} else {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
 
@@ -219,8 +247,28 @@ public class SDLActivity extends Activity {
 
 		// So we can call stuff from static callbacks
 		mSingleton = this;
+		/*
+		 * // Set up the surface mSurface = new SDLSurface(getApplication(),
+		 * config.getDisplayWidth(), config.getDisplayHeight());
+		 * 
+		 * setContentView(mSurface); SurfaceHolder holder =
+		 * mSurface.getHolder(); holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+		 * holder.setFixedSize(config.getDisplayWidth(),
+		 * config.getDisplayHeight());
+		 */
+	}
 
-		// Set up the surface
+	// Events
+	protected void onPause() {
+		super.onPause();
+		Log.d(getClass().getSimpleName(), "onPause()");
+
+	}
+
+	protected void onResume() {
+		super.onResume();
+		Log.d(getClass().getSimpleName(), "onResume()");
+
 		mSurface = new SDLSurface(getApplication(), config.getDisplayWidth(),
 				config.getDisplayHeight());
 
@@ -228,16 +276,6 @@ public class SDLActivity extends Activity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
-
-	}
-
-	// Events
-	protected void onPause() {
-		super.onPause();
-	}
-
-	protected void onResume() {
-		super.onResume();
 	}
 
 	private void restartActivity() {

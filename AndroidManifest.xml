@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="preferExternal"
     package="uk.co.armedpineapple.corsixth"
-    android:versionCode="1"
-    android:versionName="0.1" android:installLocation="preferExternal">
+    android:versionCode="2"
+    android:versionName="0.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -17,22 +18,21 @@
         <activity
             android:name="uk.co.armedpineapple.corsixth.SDLActivity"
             android:label="@string/app_name"
-            android:launchMode="standard"
+            android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+         
         </activity>
         <activity
             android:name=".wizard.WizardActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppTheme" >
-           
-        </activity>
+               <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name="PrefsActivity" >
         </activity>
     </application>

@@ -51,6 +51,7 @@ public class Configuration {
 		editor.putString("reswidth_pref", String.valueOf(displayWidth));
 		editor.putString("resheight_pref", String.valueOf(displayHeight));
 		editor.putBoolean("debug_pref", debug);
+		editor.putBoolean("wizard_run", true);
 		editor.commit();
 
 	}

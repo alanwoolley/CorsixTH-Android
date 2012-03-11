@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -56,37 +57,45 @@ public class WizardActivity extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else {
-			setContentView(R.layout.wizard);
-			flipper = (ViewFlipper) findViewById(R.id.flipper);
-			previousButton = (Button) findViewById(R.id.leftbutton);
-			nextButton = (Button) findViewById(R.id.rightbutton);
-
 			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 
 			preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
 
-			config = Configuration.loadFromPreferences(this, preferences);
+			if (preferences.getBoolean("wizard_run", false)) {
+				Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
+				finish();
+				startActivity(new Intent(this, SDLActivity.class));
+			} else {
+				Log.d(getClass().getSimpleName(), "Wizard is going to run.");
+				setContentView(R.layout.wizard);
+				flipper = (ViewFlipper) findViewById(R.id.flipper);
+				previousButton = (Button) findViewById(R.id.leftbutton);
+				nextButton = (Button) findViewById(R.id.rightbutton);
 
-			LayoutInflater inflater = getLayoutInflater();
-			loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
-					R.layout.wizard_welcome, null));
-			loadAndAdd(inflater, flipper,
-					(OriginalFilesWizard) inflater.inflate(
-							R.layout.wizard_originalfiles, null));
-			loadAndAdd(inflater, flipper, (DisplayWizard) inflater.inflate(
-					R.layout.wizard_display, null));
-			loadAndAdd(inflater, flipper,
-					(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
-			loadAndAdd(inflater, flipper, (AdvancedWizard) inflater.inflate(
-					R.layout.wizard_advanced, null));
+				config = Configuration.loadFromPreferences(this, preferences);
 
-			// Setup Buttons
-			previousButton.setVisibility(View.GONE);
-			buttonClickListener = new WizardButtonClickListener();
+				LayoutInflater inflater = getLayoutInflater();
+				loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
+						R.layout.wizard_welcome, null));
+				loadAndAdd(inflater, flipper,
+						(OriginalFilesWizard) inflater.inflate(
+								R.layout.wizard_originalfiles, null));
+				loadAndAdd(inflater, flipper, (DisplayWizard) inflater.inflate(
+						R.layout.wizard_display, null));
+				loadAndAdd(inflater, flipper, (AudioWizard) inflater.inflate(
+						R.layout.wizard_audio, null));
+				loadAndAdd(inflater, flipper,
+						(AdvancedWizard) inflater.inflate(
+								R.layout.wizard_advanced, null));
 
-			previousButton.setOnClickListener(buttonClickListener);
-			nextButton.setOnClickListener(buttonClickListener);
+				// Setup Buttons
+				previousButton.setVisibility(View.GONE);
+				buttonClickListener = new WizardButtonClickListener();
+
+				previousButton.setOnClickListener(buttonClickListener);
+				nextButton.setOnClickListener(buttonClickListener);
+			}
 		}
 	}
 
@@ -114,6 +123,7 @@ public class WizardActivity extends Activity {
 
 				if (nextButton.getText() == "Play!") {
 					config.saveToPreferences(WizardActivity.this, preferences);
+
 					finish();
 					WizardActivity.this.startActivity(new Intent(
 							WizardActivity.this, SDLActivity.class));

@@ -108,8 +108,18 @@ public class DisplayWizard extends WizardView {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				customWidth = Integer.valueOf(widthBox.getText().toString());
-				customHeight = Integer.valueOf(heightBox.getText().toString());
+				if (!widthBox.getText().toString().trim().equals("")) {
+					customWidth = Integer
+							.valueOf(widthBox.getText().toString());
+				} else {
+					customWidth = 640;
+				}
+				if (!heightBox.getText().toString().trim() .equals("")) {
+					customHeight = Integer.valueOf(heightBox.getText()
+							.toString());
+				} else {
+					customHeight = 480;
+				}
 				customResolutionRadio.setText("Custom (" + customWidth + "x"
 						+ customHeight + ")");
 			}

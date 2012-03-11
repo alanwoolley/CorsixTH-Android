@@ -62,14 +62,14 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
-		// Log.v("SDL", "surfaceCreated()");
+		Log.v(getClass().getSimpleName(), "surfaceCreated()");
 
 		enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 	}
 
 	// Called when we lose the surface
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// Log.v("SDL", "surfaceDestroyed()");
+		Log.v(getClass().getSimpleName(), "surfaceDestroyed()");
 
 		// Send a quit message to the application
 		SDLActivity.nativeQuit();
@@ -89,12 +89,13 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		}
 
 		enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+
 	}
 
 	// Called when the surface is resized
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		// Log.v("SDL", "surfaceChanged()");
+		Log.d(getClass().getSimpleName(), "surfaceChanged()");
 
 		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
 		switch (format) {
@@ -190,19 +191,20 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			EGLContext ctx = egl.eglCreateContext(dpy, config,
 					EGL10.EGL_NO_CONTEXT, null);
 			if (ctx == EGL10.EGL_NO_CONTEXT) {
-				Log.e("SDL", "Couldn't create context");
+				Log.e(getClass().getSimpleName(), "Couldn't create context");
 				return false;
 			}
 
 			EGLSurface surface = egl.eglCreateWindowSurface(dpy, config, this,
 					null);
 			if (surface == EGL10.EGL_NO_SURFACE) {
-				Log.e("SDL", "Couldn't create surface");
+				Log.e(getClass().getSimpleName(), "Couldn't create surface");
 				return false;
 			}
 
 			if (!egl.eglMakeCurrent(dpy, surface, surface, ctx)) {
-				Log.e("SDL", "Couldn't make context current");
+				Log.e(getClass().getSimpleName(),
+						"Couldn't make context current");
 				return false;
 			}
 
@@ -211,10 +213,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			mEGLSurface = surface;
 
 		} catch (Exception e) {
-			Log.v("SDL", e + "");
+			Log.v(getClass().getSimpleName(), e + "");
 			BugSenseHandler.log("SDL", e);
 			for (StackTraceElement s : e.getStackTrace()) {
-				Log.v("SDL", s.toString());
+				Log.v(getClass().getSimpleName(), s.toString());
 			}
 		}
 
@@ -235,10 +237,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			egl.eglSwapBuffers(mEGLDisplay, mEGLSurface);
 
 		} catch (Exception e) {
-			Log.v("SDL", "flipEGL(): " + e);
+			Log.v(getClass().getSimpleName(), "flipEGL(): " + e);
 			BugSenseHandler.log("SDL", e);
 			for (StackTraceElement s : e.getStackTrace()) {
-				Log.v("SDL", s.toString());
+				Log.v(getClass().getSimpleName(), s.toString());
 			}
 		}
 	}
@@ -258,11 +260,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			break;
 		}
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			Log.v("SDL", "key down: " + keyCode);
+			// Log.v(getClass().getSimpleName(), "key down: " + keyCode);
 			SDLActivity.onNativeKeyDown(keyCode);
 			return true;
 		} else if (event.getAction() == KeyEvent.ACTION_UP) {
-			Log.v("SDL", "key up: " + keyCode);
+			// Log.v(getClass().getSimpleName(), "key up: " + keyCode);
 			SDLActivity.onNativeKeyUp(keyCode);
 			return true;
 		}
@@ -274,13 +276,10 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public boolean onTouch(View v, MotionEvent event) {
 
 		int action = event.getAction();
-		Log.d(getClass().getSimpleName(), "Surface dimensions: " + this.width
-				+ " x " + this.height);
-		Log.d(getClass().getSimpleName(), "View dimensions: " + v.getWidth()
-				+ " x " + v.getHeight());
+
 		float x = ((float) this.width / v.getWidth()) * event.getX();
 		float y = ((float) this.height / v.getHeight()) * event.getY();
-		Log.d(getClass().getSimpleName(), "Touching at: " + x + " x " + y);
+		// Log.d(getClass().getSimpleName(), "Touching at: " + x + " x " + y);
 		float p = event.getPressure();
 		int pc = event.getPointerCount();
 		// Log.d(getClass().getSimpleName(), "Sending action: " + action +
