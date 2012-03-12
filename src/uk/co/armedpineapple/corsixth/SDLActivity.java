@@ -14,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.os.*;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
@@ -88,6 +89,7 @@ public class SDLActivity extends Activity {
 				final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
 				copyTask = new AsyncTask<ArrayList<String>, Integer, Void>() {
 					ProgressDialog dialog;
+					WakeLock copyLock;
 
 					@Override
 					protected void onPreExecute() {
@@ -97,7 +99,10 @@ public class SDLActivity extends Activity {
 						dialog.setIndeterminate(false);
 						dialog.setCancelable(false);
 						dialog.show();
-
+						PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+						copyLock = pm.newWakeLock(
+								PowerManager.SCREEN_DIM_WAKE_LOCK, "copying");
+						copyLock.acquire();
 					}
 
 					@Override
@@ -119,6 +124,7 @@ public class SDLActivity extends Activity {
 
 					@Override
 					protected void onPostExecute(Void result) {
+						copyLock.release();
 						dialog.hide();
 						Editor edit = preferences.edit();
 						edit.putBoolean("scripts_copied", true);
@@ -202,6 +208,14 @@ public class SDLActivity extends Activity {
 		// So we can call stuff from static callbacks
 		mSingleton = this;
 
+		mSurface = new SDLSurface(getApplication(), config.getDisplayWidth(),
+				config.getDisplayHeight());
+
+		setContentView(mSurface);
+		SurfaceHolder holder = mSurface.getHolder();
+		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
+
 	}
 
 	// Events
@@ -215,13 +229,6 @@ public class SDLActivity extends Activity {
 		super.onResume();
 		Log.d(getClass().getSimpleName(), "onResume()");
 
-		mSurface = new SDLSurface(getApplication(), config.getDisplayWidth(),
-				config.getDisplayHeight());
-
-		setContentView(mSurface);
-		SurfaceHolder holder = mSurface.getHolder();
-		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
 	}
 
 	private void restartActivity() {
@@ -235,6 +242,44 @@ public class SDLActivity extends Activity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.menu, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menuitem_settings:
+			// finish();
+			startActivity(new Intent(this, PrefsActivity.class));
+			break;
+		case R.id.menuitem_help:
+			break;
+
+		case R.id.menuitem_wizard:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SharedPreferences preferences = PreferenceManager
+							.getDefaultSharedPreferences(getBaseContext());
+					Editor editor = preferences.edit();
+					editor.putBoolean("wizard_run", false);
+					editor.commit();
+				}
+
+			};
+
+			builder.setMessage(getResources().getString(R.string.setup_wizard))
+					.setCancelable(false).setNeutralButton("OK", alertListener);
+
+			AlertDialog alert = builder.create();
+			alert.show();
+
+			break;
+
+		}
+		return true;
+
 	}
 
 	// Messages from the SDLMain thread
@@ -313,7 +358,7 @@ public class SDLActivity extends Activity {
 
 	public static void setActivityTitle(String title) {
 		// Called from SDLMain() thread and can't directly affect the view
-		mSingleton.sendCommand(COMMAND_CHANGE_TITLE, title);
+		// mSingleton.sendCommand(COMMAND_CHANGE_TITLE, title);
 	}
 
 	// Audio

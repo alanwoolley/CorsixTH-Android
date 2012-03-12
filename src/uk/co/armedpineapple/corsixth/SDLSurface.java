@@ -206,7 +206,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 				return false;
 			}
 
-			//mEGLContext = ctx;
+			// mEGLContext = ctx;
 			mEGLDisplay = dpy;
 			mEGLSurface = surface;
 
@@ -232,6 +232,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 			egl.eglWaitGL();
 
+			// TODO - ICS seems to fail at this point with invalid argument
+			// (null).
 			egl.eglSwapBuffers(mEGLDisplay, mEGLSurface);
 
 		} catch (Exception e) {
