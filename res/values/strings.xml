@@ -9,7 +9,7 @@
     <string name="previousButton">Previous</string>
     <string name="nextButton">Next</string>
     <string name="advanced_settings_header">Advanced Settings</string>
-    <string name="advanced_settings_text">Advanced users can play around with these, but they&amp;apos;re best kept to defaults.</string>
+    <string name="advanced_settings_text">Advanced users can play around with these, but they\'re best kept to defaults.</string>
     <string name="enable_debug_mode">Enable Debug Mode</string>
     <string name="enable_custom_scripts">Enable Custom Scripts</string>
     <string name="enable_advanced_settings">Enable Advanced Settings</string>
