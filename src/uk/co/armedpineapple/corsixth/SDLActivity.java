@@ -144,6 +144,7 @@ public class SDLActivity extends Activity {
 						dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 						dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
 						dialog.setIndeterminate(false);
+						dialog.setCancelable(false);
 						dialog.show();
 
 					}
@@ -186,6 +187,7 @@ public class SDLActivity extends Activity {
 						dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 						dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
 						dialog.setIndeterminate(true);
+						dialog.setCancelable(false);
 						dialog.show();
 					}
 
@@ -200,7 +202,7 @@ public class SDLActivity extends Activity {
 					protected void onPostExecute(ArrayList<String> result) {
 						dialog.hide();
 						copyTask.execute(result);
-					
+
 					}
 
 				};
