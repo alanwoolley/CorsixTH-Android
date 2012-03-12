@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:text="Advanced Settings"
+        android:text="@string/advanced_settings_header"
         android:textAppearance="@style/WizardHeaderText" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/advancedHeader"
         android:gravity="center_horizontal"
-        android:text="Advanced users can play around with these, but they&apos;re best kept to defaults."
+        android:text="@string/advanced_settings_text"
         android:textAppearance="@style/WizardText" />
 
     <CheckBox
@@ -31,7 +31,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1"
         android:layout_marginLeft="24dp"
-        android:text="Enable Advanced Settings" />
+        android:text="@string/enable_advanced_settings" />
 
     <CheckBox
         android:id="@+id/debugCheck"
@@ -42,7 +42,7 @@
         android:layout_marginLeft="40dp"
         android:layout_toRightOf="@+id/advancedCheck"
         android:enabled="false"
-        android:text="Enable Debug Mode" />
+        android:text="@string/enable_debug_mode" />
 
     <CheckBox
         android:id="@+id/customscriptsCheck"
@@ -51,6 +51,6 @@
         android:layout_alignLeft="@+id/debugCheck"
         android:layout_below="@+id/debugCheck"
         android:enabled="false"
-        android:text="Enable Custom Scripts" />
+        android:text="@string/enable_custom_scripts" />
 
 </uk.co.armedpineapple.corsixth.wizard.AdvancedWizard>

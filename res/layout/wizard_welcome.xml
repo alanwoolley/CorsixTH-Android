@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/header_image_description"
         android:padding="10dp"
         android:src="@drawable/cth" />
 

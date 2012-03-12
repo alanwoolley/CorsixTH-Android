@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:text="Display Resolution"
+        android:text="@string/display_resolution_header"
         android:textAppearance="@style/WizardHeaderText" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_below="@+id/displayHeader"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:text="Native resolution may look better, but the UI could be too small to use if you have a screen with a large DPI. If in doubt, choose default."
+        android:text="@string/display_resolution_text"
         android:textAppearance="@style/WizardText" />
 
     <RadioGroup
@@ -36,19 +36,19 @@
             android:id="@+id/defaultResolutionRadio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Default (640x480)" />
+            android:text="@string/default_resolution" />
 
         <RadioButton
             android:id="@+id/nativeResolutionRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Native" />
+            android:text="@string/native_resolution" />
 
         <RadioButton
             android:id="@+id/customResolutionRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Custom" />
+            android:text="@string/custom_resolution" />
     </RadioGroup>
 
 </uk.co.armedpineapple.corsixth.wizard.DisplayWizard>

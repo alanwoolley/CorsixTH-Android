@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:text="Audio"
+        android:text="@string/audio_header"
         android:textAppearance="@style/WizardHeaderText" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/audioHeader"
         android:gravity="center_horizontal"
-        android:text="The game is much better with audio, but may cause the game to run slower on less powerful devices."
+        android:text="@string/audio_text"
         android:textAppearance="@style/WizardText" />
 
     <CheckBox
@@ -31,7 +31,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/audioText"
         android:layout_marginLeft="24dp"
-        android:text="Enable Audio" />
+        android:text="@string/enable_audio" />
 
     <CheckBox
         android:id="@+id/fxCheck"
@@ -42,7 +42,7 @@
         android:layout_marginLeft="40dp"
         android:layout_toRightOf="@+id/audioCheck"
         android:enabled="false"
-        android:text="Enable Sound FX" />
+        android:text="@string/enable_sound_fx" />
 
     <CheckBox
         android:id="@+id/announcerCheck"
@@ -51,7 +51,7 @@
         android:layout_alignLeft="@+id/fxCheck"
         android:layout_below="@+id/fxCheck"
         android:enabled="false"
-        android:text="Enable Announcer" />
+        android:text="@string/enable_announcer" />
 
     <CheckBox
         android:id="@+id/musicCheck"
@@ -60,6 +60,6 @@
         android:layout_alignLeft="@+id/announcerCheck"
         android:layout_below="@+id/announcerCheck"
         android:enabled="false"
-        android:text="Enable Music" />
+        android:text="@string/enable_music" />
 
 </uk.co.armedpineapple.corsixth.wizard.AudioWizard>

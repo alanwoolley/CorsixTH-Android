@@ -20,7 +20,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:drawableLeft="@drawable/ic_menu_back"
-        android:text="Previous" />
+        android:text="@string/previousButton" />
 
     <Button
         android:id="@+id/rightbutton"
@@ -29,6 +29,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:drawableRight="@drawable/ic_menu_forward"
-        android:text="Next" />
+        android:text="@string/nextButton" />
 
 </RelativeLayout>

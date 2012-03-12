@@ -6,5 +6,29 @@
     <string name="welcome_text">You are almost ready to start playing, but there are a few things that we must setup first.</string>
     <string name="no_external_storage">External storage isn\'t available. Please make sure that your device is disconnected from a computer and that your SD card is inserted (if applicable) and restart the app.</string>
     <string name="setup_wizard">The setup wizard will run again when you next launch the game.</string>
+    <string name="previousButton">Previous</string>
+    <string name="nextButton">Next</string>
+    <string name="advanced_settings_header">Advanced Settings</string>
+    <string name="advanced_settings_text">Advanced users can play around with these, but they&amp;apos;re best kept to defaults.</string>
+    <string name="enable_debug_mode">Enable Debug Mode</string>
+    <string name="enable_custom_scripts">Enable Custom Scripts</string>
+    <string name="enable_advanced_settings">Enable Advanced Settings</string>
+    <string name="audio_header">Audio</string>
+    <string name="audio_text">The game is much better with audio, but may cause the game to run slower on less powerful devices.</string>
+    <string name="enable_audio">Enable Audio</string>
+    <string name="enable_sound_fx">Enable Sound FX</string>
+    <string name="enable_announcer">Enable Announcer</string>
+    <string name="enable_music">Enable Music</string>
+    <string name="display_resolution_header">Display Resolution</string>
+    <string name="display_resolution_text">Native resolution may look better, but the UI could be too small to use if you have a screen with a large DPI. If in doubt, choose default.</string>
+    <string name="default_resolution">Default (640x480)</string>
+    <string name="download_demo">Download Demo</string>
+    <string name="original_files_header">Original Theme Hospital Files</string>
+    <string name="original_files_text">You should place the original Theme Hospital files on your external storage in a directory called \'th\', or choose an alternative below.</string>
+    <string name="native_resolution">Native</string>
+    <string name="custom_resolution">Custom</string>
+    <string name="custom_files">Custom</string>
+    <string name="default_files">Default (/mnt/sdcard/th)</string>
+    <string name="header_image_description">Header</string>
 
 </resources>

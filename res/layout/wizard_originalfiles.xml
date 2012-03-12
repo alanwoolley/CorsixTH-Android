@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:text="Original Theme Hospital Files"
+        android:text="@string/original_files_header"
         android:textAppearance="@style/WizardHeaderText" />
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_below="@+id/originalfilesHeader"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:text="You should place the original Theme Hospital files on your external storage in a directory called 'th', or choose an alternative below."
+        android:text="@string/original_files_text"
         android:textAppearance="@style/WizardText" />
 
     <RadioGroup
@@ -36,20 +36,20 @@
             android:id="@+id/automaticRadio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Default (/mnt/sdcard/th)" />
+            android:text="@string/default_files" />
 
         <RadioButton
             android:id="@+id/manualRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Custom" />
+            android:text="@string/custom_files" />
 
         <RadioButton
             android:id="@+id/downloadDemoRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Download Demo" />
+            android:text="@string/download_demo" />
     </RadioGroup>
 
 </uk.co.armedpineapple.corsixth.wizard.OriginalFilesWizard>
