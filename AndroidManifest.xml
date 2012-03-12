@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="preferExternal"
     package="uk.co.armedpineapple.corsixth"
-    android:versionCode="3"
-    android:versionName="0.1" >
+    android:versionCode="4"
+    android:versionName="0.1.4" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -11,6 +11,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:icon="@drawable/logo"
@@ -21,13 +22,12 @@
             android:launchMode="standard"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-         
         </activity>
         <activity
             android:name=".wizard.WizardActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppTheme" >
-               <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

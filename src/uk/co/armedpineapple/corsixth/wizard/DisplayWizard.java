@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -102,6 +104,10 @@ public class DisplayWizard extends WizardView {
 		linLayout.addView(widthBox);
 		linLayout.addView(heightBox);
 
+		final DisplayMetrics dm = new DisplayMetrics();
+		((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
+				.getDefaultDisplay().getMetrics(dm);
+
 		Builder builder = new Builder(ctx);
 		builder.setMessage("Enter Resolution");
 		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -109,14 +115,26 @@ public class DisplayWizard extends WizardView {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if (!widthBox.getText().toString().trim().equals("")) {
-					customWidth = Integer
-							.valueOf(widthBox.getText().toString());
+					int givenWidth = Integer.valueOf(widthBox.getText()
+							.toString());
+					if (givenWidth > 0) {
+						customWidth = Math.min(dm.widthPixels, givenWidth);
+					} else {
+						customWidth = 640;
+					}
+
 				} else {
 					customWidth = 640;
 				}
-				if (!heightBox.getText().toString().trim() .equals("")) {
-					customHeight = Integer.valueOf(heightBox.getText()
+				if (!heightBox.getText().toString().trim().equals("")) {
+					int givenHeight = Integer.valueOf(heightBox.getText()
 							.toString());
+					if (givenHeight > 0) {
+						customHeight = Math.min(dm.heightPixels, givenHeight);
+					} else {
+						givenHeight = 480;
+					}
+
 				} else {
 					customHeight = 480;
 				}
@@ -138,5 +156,4 @@ public class DisplayWizard extends WizardView {
 		});
 
 	}
-
 }
