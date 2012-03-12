@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import uk.co.armedpineapple.corsixth.wizard.WizardActivity;
-
 import com.bugsense.trace.BugSenseHandler;
 
 import android.app.*;
@@ -20,9 +18,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
 
-/**
- * SDL Activity
- */
 public class SDLActivity extends Activity {
 
 	private String dataRoot = "";
@@ -38,45 +33,7 @@ public class SDLActivity extends Activity {
 	private static Thread mAudioThread;
 	private static AudioTrack mAudioTrack;
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menuitem_settings:
-			// finish();
-			startActivity(new Intent(this, PrefsActivity.class));
-			break;
-		case R.id.menuitem_help:
-			break;
-
-		case R.id.menuitem_wizard:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SharedPreferences preferences = PreferenceManager
-							.getDefaultSharedPreferences(getBaseContext());
-					Editor editor = preferences.edit();
-					editor.putBoolean("wizard_run", false);
-					editor.commit();
-				}
-
-			};
-
-			builder.setMessage(getResources().getString(R.string.setup_wizard))
-					.setCancelable(false).setNeutralButton("OK", alertListener);
-
-			AlertDialog alert = builder.create();
-			alert.show();
-
-			break;
-
-		}
-		return true;
-
-	}
-
-	// Load the .so
+	// Load the libraries
 	static {
 		System.loadLibrary("SDL");
 		System.loadLibrary("SDL_image");
@@ -85,13 +42,6 @@ public class SDLActivity extends Activity {
 		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true;
 	}
 
 	// Setup
@@ -107,14 +57,15 @@ public class SDLActivity extends Activity {
 					.open("application.properties");
 			Log.d(getClass().getSimpleName(), "Loading properties");
 			properties.load(inputStream);
-		} catch (IOException e) {
-			Log.d(getClass().getSimpleName(), "No properties file found");
-		}
 
-		if (properties.containsKey("bugsense.key")) {
-			Log.d(getClass().getSimpleName(), "Setting up bugsense");
-			BugSenseHandler
-					.setup(this, (String) properties.get("bugsense.key"));
+			if (properties.containsKey("bugsense.key")) {
+				Log.d(getClass().getSimpleName(), "Setting up bugsense");
+				BugSenseHandler.setup(this,
+						(String) properties.get("bugsense.key"));
+			}
+
+		} catch (IOException e) {
+			Log.i(getClass().getSimpleName(), "No properties file found");
 		}
 
 		if (Environment.MEDIA_MOUNTED.equals(Environment
@@ -250,15 +201,7 @@ public class SDLActivity extends Activity {
 
 		// So we can call stuff from static callbacks
 		mSingleton = this;
-		/*
-		 * // Set up the surface mSurface = new SDLSurface(getApplication(),
-		 * config.getDisplayWidth(), config.getDisplayHeight());
-		 * 
-		 * setContentView(mSurface); SurfaceHolder holder =
-		 * mSurface.getHolder(); holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-		 * holder.setFixedSize(config.getDisplayWidth(),
-		 * config.getDisplayHeight());
-		 */
+
 	}
 
 	// Events
@@ -285,6 +228,13 @@ public class SDLActivity extends Activity {
 		Intent intent = getIntent();
 		finish();
 		startActivity(intent);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
 	}
 
 	// Messages from the SDLMain thread
@@ -328,7 +278,13 @@ public class SDLActivity extends Activity {
 	public static native void setGamePath(String path);
 
 	// Java functions called from C
-
+	/**
+	 * Shows the virtual keyboard. This will be called from the native LUA when
+	 * a text box is pressed.
+	 * 
+	 * TODO - check whether the phone has a hardware keyboard. I've no idea how
+	 * it behaves in this case.
+	 */
 	public static void showSoftKeyboard() {
 		Log.d(SDLActivity.class.getSimpleName(), "Showing keyboard");
 		InputMethodManager mgr = (InputMethodManager) mSingleton
@@ -337,6 +293,11 @@ public class SDLActivity extends Activity {
 
 	}
 
+	/**
+	 * Hides the virtual keyboard.
+	 * 
+	 * TODO - implement this
+	 */
 	public static void hideSoftKeyboard() {
 		Log.d(SDLActivity.class.getSimpleName(), "Hiding keyboard");
 
@@ -356,7 +317,7 @@ public class SDLActivity extends Activity {
 	}
 
 	// Audio
-	private static Object buf;
+	private static Object audioBuffer;
 
 	public static Object audioInit(int sampleRate, boolean is16Bit,
 			boolean isStereo, int desiredFrames) {
@@ -398,11 +359,11 @@ public class SDLActivity extends Activity {
 						+ "kHz, " + desiredFrames + " frames buffer");
 
 		if (is16Bit) {
-			buf = new short[desiredFrames * (isStereo ? 2 : 1)];
+			audioBuffer = new short[desiredFrames * (isStereo ? 2 : 1)];
 		} else {
-			buf = new byte[desiredFrames * (isStereo ? 2 : 1)];
+			audioBuffer = new byte[desiredFrames * (isStereo ? 2 : 1)];
 		}
-		return buf;
+		return audioBuffer;
 	}
 
 	public static void audioStartThread() {
@@ -467,7 +428,6 @@ public class SDLActivity extends Activity {
 			}
 			mAudioThread = null;
 
-			// Log.v("SDL", "Finished waiting for audio thread");
 		}
 
 		if (mAudioTrack != null) {
@@ -485,6 +445,6 @@ class SDLMain implements Runnable {
 		// Runs SDL_main()
 		SDLActivity.nativeInit();
 
-		// Log.v("SDL", "SDL thread terminated");
+		Log.v(getClass().getSimpleName(), "SDL thread terminated");
 	}
 }

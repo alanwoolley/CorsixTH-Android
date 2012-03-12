@@ -38,7 +38,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public int height;
 
 	// EGL private objects
-	private EGLContext mEGLContext;
+	// private EGLContext mEGLContext;
 	private EGLSurface mEGLSurface;
 	private EGLDisplay mEGLDisplay;
 
@@ -84,8 +84,6 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 						+ e);
 			}
 			mSDLThread = null;
-
-			// Log.v("SDL", "Finished waiting for SDL thread");
 		}
 
 		enableSensor(Sensor.TYPE_ACCELEROMETER, false);
@@ -157,8 +155,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	// EGL functions
 	public boolean initEGL(int majorVersion, int minorVersion) {
-		Log.v("SDL", "Starting up OpenGL ES " + majorVersion + "."
-				+ minorVersion);
+		Log.v(getClass().getSimpleName(), "Starting up OpenGL ES "
+				+ majorVersion + "." + minorVersion);
 
 		try {
 			EGL10 egl = (EGL10) EGLContext.getEGL();
@@ -183,7 +181,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			int[] num_config = new int[1];
 			if (!egl.eglChooseConfig(dpy, configSpec, configs, 1, num_config)
 					|| num_config[0] == 0) {
-				Log.e("SDL", "No EGL config available");
+				Log.e(getClass().getSimpleName(), "No EGL config available");
 				return false;
 			}
 			EGLConfig config = configs[0];
@@ -208,7 +206,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 				return false;
 			}
 
-			mEGLContext = ctx;
+			//mEGLContext = ctx;
 			mEGLDisplay = dpy;
 			mEGLSurface = surface;
 
@@ -260,11 +258,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			break;
 		}
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			// Log.v(getClass().getSimpleName(), "key down: " + keyCode);
 			SDLActivity.onNativeKeyDown(keyCode);
 			return true;
 		} else if (event.getAction() == KeyEvent.ACTION_UP) {
-			// Log.v(getClass().getSimpleName(), "key up: " + keyCode);
 			SDLActivity.onNativeKeyUp(keyCode);
 			return true;
 		}
@@ -272,18 +268,21 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
-	// Touch events
+	/**
+	 * Triggered when the screen is touched. We need to convert the location
+	 * pressed on the display into a location on the surface. As this is not
+	 * always 1:1 (when not using native resolution), we need to do a bit of
+	 * maths.
+	 */
 	public boolean onTouch(View v, MotionEvent event) {
 
 		int action = event.getAction();
 
 		float x = ((float) this.width / v.getWidth()) * event.getX();
 		float y = ((float) this.height / v.getHeight()) * event.getY();
-		// Log.d(getClass().getSimpleName(), "Touching at: " + x + " x " + y);
 		float p = event.getPressure();
 		int pc = event.getPointerCount();
-		// Log.d(getClass().getSimpleName(), "Sending action: " + action +
-		// ", x: " + x + ", y: " + y + ", p: " + p + ", pc: " + pc + " to SDL");
+
 		// TODO: Anything else we need to pass?
 		SDLActivity.onNativeTouch(action, x, y, p, pc);
 
