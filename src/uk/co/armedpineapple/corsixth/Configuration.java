@@ -1,5 +1,6 @@
 package uk.co.armedpineapple.corsixth;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -146,9 +147,13 @@ public class Configuration {
 
 		String configFileName = cthPath + "/scripts/" + "config.txt";
 
+		File file = new File(configFileName);
+		file.getParentFile().mkdirs();
+
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
 		writer.close();
+
 	}
 
 	// Getters
