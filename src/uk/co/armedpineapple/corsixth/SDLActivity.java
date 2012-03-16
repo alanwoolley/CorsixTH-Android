@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.*;
 import android.content.*;
@@ -19,7 +20,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
 
-public class SDLActivity extends Activity {
+public class SDLActivity extends TrackedActivity {
 
 	private String dataRoot = "";
 
@@ -83,7 +84,6 @@ public class SDLActivity extends Activity {
 						edit.commit();
 
 						continueLoad();
-
 					}
 
 				};

@@ -1,5 +1,7 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
+import com.google.android.apps.analytics.easytracking.TrackedActivity;
+
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.R.id;
@@ -25,7 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 
-public class WizardActivity extends Activity {
+public class WizardActivity extends TrackedActivity {
 
 	private ViewFlipper flipper;
 	private Button previousButton;
@@ -36,7 +38,7 @@ public class WizardActivity extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		if (!Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED)) {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
