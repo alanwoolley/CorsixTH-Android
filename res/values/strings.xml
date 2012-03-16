@@ -30,5 +30,6 @@
     <string name="custom_files">Custom</string>
     <string name="default_files">Default (/mnt/sdcard/th)</string>
     <string name="header_image_description">Header</string>
+    <string name="preparing_game_files_dialog">Preparing Game Files. This will only occur once, but may take a while.</string>
 
 </resources>

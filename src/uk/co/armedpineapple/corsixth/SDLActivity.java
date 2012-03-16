@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import com.bugsense.trace.BugSenseHandler;
 
@@ -14,7 +15,6 @@ import android.content.SharedPreferences.Editor;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.os.*;
-import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
@@ -52,23 +52,6 @@ public class SDLActivity extends Activity {
 		// The volume buttons should change the media volume
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		Properties properties = new Properties();
-		try {
-			InputStream inputStream = getAssets()
-					.open("application.properties");
-			Log.d(getClass().getSimpleName(), "Loading properties");
-			properties.load(inputStream);
-
-			if (properties.containsKey("bugsense.key")) {
-				Log.d(getClass().getSimpleName(), "Setting up bugsense");
-				BugSenseHandler.setup(this,
-						(String) properties.get("bugsense.key"));
-			}
-
-		} catch (IOException e) {
-			Log.i(getClass().getSimpleName(), "No properties file found");
-		}
-
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
 			File extDir = getExternalFilesDir(null);
@@ -85,81 +68,34 @@ public class SDLActivity extends Activity {
 			dataRoot = config.getCthPath();
 
 			if (!preferences.getBoolean("scripts_copied", false)) {
+
 				final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
 				final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
-				copyTask = new AsyncTask<ArrayList<String>, Integer, Void>() {
-					ProgressDialog dialog;
-					WakeLock copyLock;
-
-					@Override
-					protected void onPreExecute() {
-						dialog = new ProgressDialog(SDLActivity.this);
-						dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-						dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
-						dialog.setIndeterminate(false);
-						dialog.setCancelable(false);
-						dialog.show();
-						PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-						copyLock = pm.newWakeLock(
-								PowerManager.SCREEN_DIM_WAKE_LOCK, "copying");
-						copyLock.acquire();
-					}
-
-					@Override
-					protected Void doInBackground(ArrayList<String>... params) {
-						int max = params[0].size();
-						for (int i = 0; i < max; i++) {
-							Files.copyAsset(SDLActivity.this, params[0].get(i),
-									dataRoot);
-							publishProgress(i + 1, max);
-						}
-						return null;
-					}
-
-					@Override
-					protected void onProgressUpdate(Integer... values) {
-						dialog.setMax(values[1]);
-						dialog.setProgress(values[0]);
-					}
+				copyTask = new Files.CopyAssetsTask(SDLActivity.this,
+						getString(R.string.preparing_game_files_dialog),
+						dataRoot) {
 
 					@Override
 					protected void onPostExecute(Void result) {
-						copyLock.release();
-						dialog.hide();
+						super.onPostExecute(result);
 						Editor edit = preferences.edit();
 						edit.putBoolean("scripts_copied", true);
 						edit.commit();
+
 						continueLoad();
+
 					}
 
 				};
 
-				discoverTask = new AsyncTask<Void, Void, ArrayList<String>>() {
-					ProgressDialog dialog;
-					ArrayList<String> paths;
-
-					@Override
-					protected void onPreExecute() {
-						dialog = new ProgressDialog(SDLActivity.this);
-						dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-						dialog.setMessage("Preparing Game Files. This will only occur once, but may take a while.");
-						dialog.setIndeterminate(true);
-						dialog.setCancelable(false);
-						dialog.show();
-					}
-
-					@Override
-					protected ArrayList<String> doInBackground(Void... params) {
-						paths = new ArrayList<String>();
-						paths = Files.listAssets(SDLActivity.this, "scripts");
-						return paths;
-					}
+				discoverTask = new Files.DiscoverAssetsTask(SDLActivity.this,
+						getString(R.string.preparing_game_files_dialog),
+						"scripts") {
 
 					@Override
 					protected void onPostExecute(ArrayList<String> result) {
-						dialog.hide();
+						super.onPostExecute(result);
 						copyTask.execute(result);
-
 					}
 
 				};
