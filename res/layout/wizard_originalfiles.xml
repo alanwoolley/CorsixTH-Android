@@ -48,7 +48,7 @@
             android:id="@+id/downloadDemoRadio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
+            android:enabled="true"
             android:text="@string/download_demo" />
     </RadioGroup>
 

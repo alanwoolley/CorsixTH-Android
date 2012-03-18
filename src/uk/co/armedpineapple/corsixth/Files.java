@@ -1,11 +1,23 @@
 package uk.co.armedpineapple.corsixth;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+
+import org.apache.http.util.ByteArrayBuffer;
 
 import com.bugsense.trace.BugSenseHandler;
 
@@ -135,7 +147,7 @@ public class Files {
 		} catch (IOException e) {
 			Log.e(Files.class.getSimpleName(),
 					"I/O Exception whilst listing files", e);
-			BugSenseHandler.log("Files", e);
+			BugSenseHandler.log("File", e);
 		}
 	}
 
@@ -181,4 +193,117 @@ public class Files {
 
 	}
 
+	public static class DownloadFileTask extends
+			AsyncTask<String, Integer, File> {
+		String downloadTo;
+
+		public DownloadFileTask(String downloadTo) {
+			this.downloadTo = downloadTo;
+		}
+
+		@Override
+		protected File doInBackground(String... url) {
+			URL downloadUrl;
+			URLConnection ucon;
+			try {
+				downloadUrl = new URL(url[0]);
+
+				File file = new File(downloadTo + "/" + downloadUrl.getFile());
+				file.getParentFile().mkdirs();
+
+				ucon = downloadUrl.openConnection();
+				ucon.connect();
+				int fileSize = ucon.getContentLength();
+
+				InputStream input = new BufferedInputStream(
+						downloadUrl.openStream());
+				FileOutputStream fos = new FileOutputStream(file);
+
+				byte data[] = new byte[1024];
+				int current = 0, total = 0;
+
+				while ((current = input.read(data)) != -1) {
+					total += current;
+					publishProgress((int) (total * 100 / fileSize));
+
+					fos.write(data, 0, current);
+				}
+
+				fos.flush();
+				fos.close();
+				input.close();
+
+				Log.d(Files.class.getSimpleName(), "Downloaded file to: "
+						+ file.getAbsolutePath());
+				return file;
+
+			} catch (MalformedURLException e) {
+				BugSenseHandler.log("File", e);
+			} catch (IOException e) {
+				BugSenseHandler.log("File", e);
+			}
+			return null;
+		}
+
+	}
+
+	public static class UnzipTask extends AsyncTask<File, Integer, String> {
+		String unzipTo;
+
+		public UnzipTask(String unzipTo) {
+			this.unzipTo = unzipTo;
+		}
+
+		@Override
+		protected String doInBackground(File... files) {
+			try {
+				ZipFile zf = new ZipFile(files[0]);
+				int entryCount = zf.size();
+
+				Enumeration entries = zf.entries();
+				int count = 0;
+
+				while (entries.hasMoreElements()) {
+					ZipEntry ze = (ZipEntry) entries.nextElement();
+					Log.v(Files.class.getSimpleName(),
+							"Unzipping " + ze.getName());
+
+					if (ze.isDirectory()) {
+						File f = new File(unzipTo + ze.getName());
+
+						if (!f.isDirectory()) {
+							f.mkdirs();
+						}
+					} else {
+						InputStream zin = zf.getInputStream(ze);
+
+						FileOutputStream fout = new FileOutputStream(unzipTo
+								+ ze.getName());
+
+						byte[] buffer = new byte[1024];
+						int read;
+
+						while ((read = zin.read(buffer)) != -1) {
+							fout.write(buffer, 0, read);
+						}
+
+						zin.close();
+						fout.close();
+
+					}
+
+					count++;
+					publishProgress(count * 100 / entryCount);
+
+				}
+
+			} catch (IOException e) {
+				BugSenseHandler.log("File", e);
+				return null;
+			}
+
+			return unzipTo;
+
+		}
+	}
 }

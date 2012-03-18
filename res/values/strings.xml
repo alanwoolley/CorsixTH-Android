@@ -31,5 +31,10 @@
     <string name="default_files">Default (/mnt/sdcard/th)</string>
     <string name="header_image_description">Header</string>
     <string name="preparing_game_files_dialog">Preparing Game Files. This will only occur once, but may take a while.</string>
+    <string name="download_demo_dialog">This will download and install the Theme Hospital demo which will give you access to the basic functionality of the game.</string>
+    <string name="download_demo_error">There was a problem downloading the demo files</string>
+    <string name="downloading_demo">Downloading demo files…</string>
+    <string name="extracting_demo">Extracting demo files…</string>
+    <string name="demo_url">http://www.armedpineapple.co.uk/th-demo.zip</string>
 
 </resources>
