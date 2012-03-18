@@ -70,9 +70,14 @@ public class WizardActivity extends TrackedActivity {
 
 				config = Configuration.loadFromPreferences(this, preferences);
 
+				// Add all the wizard views
+				
 				LayoutInflater inflater = getLayoutInflater();
 				loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
 						R.layout.wizard_welcome, null));
+				loadAndAdd(inflater, flipper,
+						(LanguageWizard) inflater.inflate(
+								R.layout.wizard_language, null));
 				loadAndAdd(inflater, flipper,
 						(OriginalFilesWizard) inflater.inflate(
 								R.layout.wizard_originalfiles, null));

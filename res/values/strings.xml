@@ -36,5 +36,7 @@
     <string name="downloading_demo">Downloading demo files…</string>
     <string name="extracting_demo">Extracting demo files…</string>
     <string name="demo_url">http://www.armedpineapple.co.uk/th-demo.zip</string>
+    <string name="language_header">Language</string>
+    <string name="language_text">CorsixTH supports multiple languages. Please choose from the supported languages below.</string>
 
 </resources>

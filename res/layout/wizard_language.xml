@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uk.co.armedpineapple.corsixth.wizard.LanguageWizard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/languageHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="@string/language_header"
+        android:textAppearance="@style/WizardHeaderText" />
+
+    <TextView
+        android:id="@+id/languageText"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/languageHeader"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:text="@string/language_text"
+        android:textAppearance="@style/WizardText" />
+
+    <Spinner
+        android:id="@+id/languageSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/languageText"
+        android:layout_marginLeft="30dp" 
+        android:entries="@array/languages" 
+       />
+    
+</uk.co.armedpineapple.corsixth.wizard.LanguageWizard>
