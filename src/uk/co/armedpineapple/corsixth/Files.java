@@ -2,8 +2,6 @@ package uk.co.armedpineapple.corsixth;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,46 +13,35 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-
-import org.apache.http.util.ByteArrayBuffer;
-
 import com.bugsense.trace.BugSenseHandler;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
+/** Class to help with file manipulation */
 public class Files {
 
+	private Files() {
+	}
+
+	/**
+	 * AsyncTask for discovering all the assets
+	 * */
 	static class DiscoverAssetsTask extends
 			AsyncTask<Void, Void, ArrayList<String>> {
 
-		ProgressDialog dialog;
 		ArrayList<String> paths;
 		Context ctx;
-		String message, path;
+		String path;
 
-		DiscoverAssetsTask(Context ctx, String message, String path) {
+		DiscoverAssetsTask(Context ctx, String path) {
 			this.ctx = ctx;
-			this.message = message;
 			this.path = path;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			dialog = new ProgressDialog(ctx);
-			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			dialog.setMessage(message);
-			dialog.setIndeterminate(true);
-			dialog.setCancelable(false);
-			dialog.show();
 		}
 
 		@Override
@@ -64,33 +51,25 @@ public class Files {
 			return paths;
 		}
 
-		@Override
-		protected void onPostExecute(ArrayList<String> result) {
-			dialog.hide();
-		}
 	}
 
+	/**
+	 * AsyncTask for copying assets
+	 */
 	static class CopyAssetsTask extends
 			AsyncTask<ArrayList<String>, Integer, Void> {
-		ProgressDialog dialog;
 		WakeLock copyLock;
 		Context ctx;
 		String root, message;
 
-		CopyAssetsTask(Context ctx, String message, String root) {
+		CopyAssetsTask(Context ctx, String root) {
 			this.ctx = ctx;
 			this.root = root;
-			this.message = message;
+
 		}
 
 		@Override
 		protected void onPreExecute() {
-			dialog = new ProgressDialog(ctx);
-			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			dialog.setMessage(message);
-			dialog.setIndeterminate(false);
-			dialog.setCancelable(false);
-			dialog.show();
 			PowerManager pm = (PowerManager) ctx
 					.getSystemService(Context.POWER_SERVICE);
 			copyLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
@@ -109,19 +88,12 @@ public class Files {
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... values) {
-			dialog.setMax(values[1]);
-			dialog.setProgress(values[0]);
-		}
-
-		@Override
 		protected void onPostExecute(Void result) {
 			copyLock.release();
-			dialog.hide();
-
 		}
 	}
 
+	/** Lists all the assets in a given path */
 	public static ArrayList<String> listAssets(Context ctx, String path) {
 		ArrayList<String> assets = new ArrayList<String>();
 		listAssetsInternal(ctx, path, assets);
@@ -151,6 +123,7 @@ public class Files {
 		}
 	}
 
+	/** Copies an asset to a given directory */
 	public static void copyAsset(Context ctx, String assetFilename,
 			String destination) {
 		AssetManager assetManager = ctx.getAssets();
@@ -193,6 +166,7 @@ public class Files {
 
 	}
 
+	/** AsyncTask for downloading a file */
 	public static class DownloadFileTask extends
 			AsyncTask<String, Integer, File> {
 		String downloadTo;
@@ -247,6 +221,7 @@ public class Files {
 
 	}
 
+	/** AsyncTask for extracting a .zip file to a directory */
 	public static class UnzipTask extends AsyncTask<File, Integer, String> {
 		String unzipTo;
 

@@ -2,7 +2,6 @@ package uk.co.armedpineapple.corsixth.wizard;
 
 import uk.co.armedpineapple.corsixth.Configuration;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
@@ -14,16 +13,24 @@ public abstract class WizardView extends RelativeLayout {
 
 	public WizardView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
+
 	}
 
 	public WizardView(Context context) {
 		super(context);
-		
+
 	}
 
+	/**
+	 * Stores the wizard settings in a configuration. This is called when the
+	 * wizard page is navigated away from
+	 */
 	abstract void saveConfiguration(Configuration config);
 
+	/**
+	 * Populates the wizard using a configuration. Called when the wizard page
+	 * is attached
+	 */
 	abstract void loadConfiguration(Configuration config);
 
 }

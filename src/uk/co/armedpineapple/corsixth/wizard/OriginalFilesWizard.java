@@ -1,10 +1,6 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
 import java.io.File;
-import java.io.IOException;
-
-import com.bugsense.trace.BugSenseHandler;
-
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
@@ -15,7 +11,6 @@ import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;

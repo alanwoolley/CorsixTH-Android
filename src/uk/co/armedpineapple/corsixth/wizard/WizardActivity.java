@@ -4,26 +4,19 @@ import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.R;
-import uk.co.armedpineapple.corsixth.R.id;
-import uk.co.armedpineapple.corsixth.R.layout;
 import uk.co.armedpineapple.corsixth.SDLActivity;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 

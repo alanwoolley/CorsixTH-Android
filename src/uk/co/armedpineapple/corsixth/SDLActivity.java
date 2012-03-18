@@ -1,12 +1,10 @@
+// $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-
 import com.bugsense.trace.BugSenseHandler;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
@@ -53,11 +51,10 @@ public class SDLActivity extends TrackedActivity {
 		// The volume buttons should change the media volume
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+		// Make sure that external media is mounted.
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
 			File extDir = getExternalFilesDir(null);
-			Log.i(getClass().getSimpleName(),
-					"Directory: " + extDir.getAbsolutePath());
 
 			final SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
@@ -72,9 +69,29 @@ public class SDLActivity extends TrackedActivity {
 
 				final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
 				final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
-				copyTask = new Files.CopyAssetsTask(SDLActivity.this,
-						getString(R.string.preparing_game_files_dialog),
-						dataRoot) {
+
+				final ProgressDialog dialog = new ProgressDialog(this);
+				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				dialog.setMessage(getString(R.string.preparing_game_files_dialog));
+				dialog.setIndeterminate(false);
+				dialog.setCancelable(false);
+
+				copyTask = new Files.CopyAssetsTask(SDLActivity.this, dataRoot) {
+
+					@Override
+					protected void onProgressUpdate(Integer... values) {
+						super.onProgressUpdate(values);
+
+						dialog.setMax(values[1]);
+						dialog.setProgress(values[0]);
+
+					}
+
+					@Override
+					protected void onPreExecute() {
+						super.onPreExecute();
+						dialog.show();
+					}
 
 					@Override
 					protected void onPostExecute(Void result) {
@@ -82,19 +99,29 @@ public class SDLActivity extends TrackedActivity {
 						Editor edit = preferences.edit();
 						edit.putBoolean("scripts_copied", true);
 						edit.commit();
-
+						dialog.hide();
 						continueLoad();
 					}
 
 				};
 
 				discoverTask = new Files.DiscoverAssetsTask(SDLActivity.this,
-						getString(R.string.preparing_game_files_dialog),
 						"scripts") {
+
+					@Override
+					protected void onPreExecute() {
+						super.onPreExecute();
+						dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+						dialog.setMessage(getString(R.string.preparing_game_files_dialog));
+						dialog.setIndeterminate(true);
+						dialog.setCancelable(false);
+						dialog.show();
+					}
 
 					@Override
 					protected void onPostExecute(ArrayList<String> result) {
 						super.onPostExecute(result);
+						dialog.hide();
 						copyTask.execute(result);
 					}
 
@@ -109,19 +136,24 @@ public class SDLActivity extends TrackedActivity {
 		} else {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
 
+			// Create an alert dialog warning that external storage isn't
+			// mounted. The application will have to exit at this point.
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
-
-			};
 
 			builder.setMessage(
 					getResources().getString(R.string.no_external_storage))
-					.setCancelable(false).setNeutralButton("OK", alertListener);
+					.setCancelable(false)
+					.setNeutralButton("OK",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									finish();
+								}
+
+							});
 
 			AlertDialog alert = builder.create();
 			alert.show();
@@ -259,6 +291,7 @@ public class SDLActivity extends TrackedActivity {
 	public static native void setGamePath(String path);
 
 	// Java functions called from C
+	
 	/**
 	 * Shows the virtual keyboard. This will be called from the native LUA when
 	 * a text box is pressed.
@@ -353,7 +386,7 @@ public class SDLActivity extends TrackedActivity {
 				mAudioTrack.play();
 				nativeRunAudioThread();
 			}
-		});
+		}, "Audio Thread");
 
 		// I'd take REALTIME if I could get it!
 		mAudioThread.setPriority(Thread.MAX_PRIORITY);

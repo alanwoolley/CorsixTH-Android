@@ -35,6 +35,7 @@ public class Configuration {
 	private Configuration() {
 	}
 
+	/** Saves the configuration to a SharedPreferences object **/
 	public void saveToPreferences(Context ctx, SharedPreferences preferences) {
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
@@ -57,6 +58,7 @@ public class Configuration {
 
 	}
 
+	/** Load the configuration from a SharedPreferences object */
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
 		Configuration config = new Configuration();
@@ -87,11 +89,23 @@ public class Configuration {
 
 		config.debug = preferences.getBoolean("debug_pref", false);
 
+		/*
+		 * If the resolution is default, set the resolution to 640x480.
+		 * 
+		 * TODO - make this external
+		 */
+
 		switch (config.resolutionMode) {
 		case RESOLUTION_DEFAULT:
 			config.displayWidth = 640;
 			config.displayHeight = 480;
 			break;
+
+		/*
+		 * TODO - the native resolution is easy to get but can sometimes be
+		 * misleading because of the buttons on Android 3.0+. There's probably a
+		 * much better way of doing this
+		 */
 
 		case RESOLUTION_NATIVE:
 			DisplayMetrics dm = new DisplayMetrics();
@@ -113,6 +127,9 @@ public class Configuration {
 		return config;
 	}
 
+	/**
+	 * Writes the configuration to the config.txt file which is read by the game
+	 */
 	public void writeToFile() throws IOException {
 		StringBuilder sbuilder = new StringBuilder();
 		sbuilder.append("theme_hospital_install = [[" + originalFilesPath
@@ -147,6 +164,7 @@ public class Configuration {
 
 		String configFileName = cthPath + "/scripts/" + "config.txt";
 
+		// Create all the directories leading up to the config.txt file
 		File file = new File(configFileName);
 		file.getParentFile().mkdirs();
 

@@ -1,11 +1,8 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
 import uk.co.armedpineapple.corsixth.Configuration;
-import uk.co.armedpineapple.corsixth.R;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 public class WelcomeWizard extends WizardView {
 
