@@ -16,8 +16,7 @@ public class LanguageWizard extends WizardView {
 	Context ctx;
 	String[] langValuesArray;
 	String[] langArray;
-	
-	
+
 	public LanguageWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		ctx = context;
@@ -35,24 +34,30 @@ public class LanguageWizard extends WizardView {
 
 	@Override
 	void saveConfiguration(Configuration config) {
-		String langV = langValuesArray[languageSpinner.getSelectedItemPosition()];
-		Log.d(getClass().getSimpleName(),"Setting language to: " + langV);
+		String langV = langValuesArray[languageSpinner
+				.getSelectedItemPosition()];
+		Log.d(getClass().getSimpleName(), "Setting language to: " + langV);
 		config.setLanguage(langV);
 	}
 
 	@Override
 	void loadConfiguration(Configuration config) {
 		languageSpinner = ((Spinner) findViewById(R.id.languageSpinner));
-		
-		langValuesArray = ctx.getResources().getStringArray(R.array.languages_values);
-		
+
+		langValuesArray = ctx.getResources().getStringArray(
+				R.array.languages_values);
+
 		langArray = ctx.getResources().getStringArray(R.array.languages);
-		
-		int pos = Arrays.binarySearch(langValuesArray, config.getLanguage());
-		Log.d(getClass().getSimpleName(),"Loading language as: " + langArray[pos]);
-		languageSpinner.setSelection(pos);
-		
-		
+
+		languageSpinner.setSelection(0);
+
+		for (int i = 0; i < langValuesArray.length; i++) {
+			if (langValuesArray[i].equals(config.getLanguage())) {
+				languageSpinner.setSelection(i);
+				break;
+			}
+		}
+
 	}
 
 }
