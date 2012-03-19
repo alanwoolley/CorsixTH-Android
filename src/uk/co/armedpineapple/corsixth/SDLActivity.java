@@ -1,7 +1,6 @@
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.corsixth;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -55,7 +54,6 @@ public class SDLActivity extends TrackedActivity {
 		// Make sure that external media is mounted.
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
-			File extDir = getExternalFilesDir(null);
 
 			final SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());

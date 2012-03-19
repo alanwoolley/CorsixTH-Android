@@ -7,8 +7,6 @@ import android.util.AttributeSet;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 public class AudioWizard extends WizardView {
 
