@@ -11,6 +11,7 @@ import com.google.android.apps.analytics.easytracking.TrackedActivity;
 import android.app.*;
 import android.content.*;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.os.*;
@@ -21,7 +22,7 @@ import android.media.*;
 public class SDLActivity extends TrackedActivity {
 
 	private String dataRoot = "";
-
+	int currentVersion;
 	private Properties properties;
 	private Configuration config;
 
@@ -65,7 +66,20 @@ public class SDLActivity extends TrackedActivity {
 
 			dataRoot = config.getCthPath();
 
-			if (!preferences.getBoolean("scripts_copied", false)) {
+			currentVersion = preferences.getInt("last_version", 0) - 1;
+
+			try {
+				currentVersion = (getPackageManager().getPackageInfo(
+						getPackageName(), 0).versionCode);
+
+			} catch (NameNotFoundException e) {
+				BugSenseHandler.log("Scripts", e);
+			}
+
+			if (!preferences.getBoolean("scripts_copied", false)
+					|| preferences.getInt("last_version", 0) < currentVersion) {
+
+				Log.d(getClass().getSimpleName(), "This is a new installation");
 
 				final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
 				final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
@@ -98,6 +112,7 @@ public class SDLActivity extends TrackedActivity {
 						super.onPostExecute(result);
 						Editor edit = preferences.edit();
 						edit.putBoolean("scripts_copied", true);
+						edit.putInt("last_version", currentVersion);
 						edit.commit();
 						dialog.hide();
 						continueLoad();
@@ -291,7 +306,7 @@ public class SDLActivity extends TrackedActivity {
 	public static native void setGamePath(String path);
 
 	// Java functions called from C
-	
+
 	/**
 	 * Shows the virtual keyboard. This will be called from the native LUA when
 	 * a text box is pressed.
