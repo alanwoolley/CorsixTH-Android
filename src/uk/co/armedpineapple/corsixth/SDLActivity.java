@@ -4,6 +4,10 @@ package uk.co.armedpineapple.corsixth;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import uk.co.armedpineapple.corsixth.Files.CopyAssetsTask;
+import uk.co.armedpineapple.corsixth.Files.DiscoverAssetsTask;
+
 import com.bugsense.trace.BugSenseHandler;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
@@ -79,8 +83,8 @@ public class SDLActivity extends TrackedActivity {
 
 				Log.d(getClass().getSimpleName(), "This is a new installation");
 
-				final AsyncTask<Void, Void, ArrayList<String>> discoverTask;
-				final AsyncTask<ArrayList<String>, Integer, Void> copyTask;
+				final DiscoverAssetsTask discoverTask;
+				final CopyAssetsTask copyTask;
 
 				final ProgressDialog dialog = new ProgressDialog(this);
 				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -88,7 +92,7 @@ public class SDLActivity extends TrackedActivity {
 				dialog.setIndeterminate(false);
 				dialog.setCancelable(false);
 
-				copyTask = new Files.CopyAssetsTask(SDLActivity.this, dataRoot) {
+				copyTask = new CopyAssetsTask(SDLActivity.this, dataRoot) {
 
 					@Override
 					protected void onProgressUpdate(Integer... values) {
@@ -106,7 +110,7 @@ public class SDLActivity extends TrackedActivity {
 					}
 
 					@Override
-					protected void onPostExecute(Void result) {
+					protected void onPostExecute(AsyncTaskResult<Void> result) {
 						super.onPostExecute(result);
 						Editor edit = preferences.edit();
 						edit.putBoolean("scripts_copied", true);
@@ -132,10 +136,10 @@ public class SDLActivity extends TrackedActivity {
 					}
 
 					@Override
-					protected void onPostExecute(ArrayList<String> result) {
+					protected void onPostExecute(AsyncTaskResult<ArrayList<String>> result) {
 						super.onPostExecute(result);
 						dialog.hide();
-						copyTask.execute(result);
+						copyTask.execute(result.getResult());
 					}
 
 				};
