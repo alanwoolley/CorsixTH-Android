@@ -33,7 +33,7 @@ public class Files {
 	 * AsyncTask for discovering all the assets
 	 * */
 	static class DiscoverAssetsTask extends
-			AsyncTask<Void, Void, ArrayList<String>> {
+			AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
 
 		ArrayList<String> paths;
 		Context ctx;
@@ -45,10 +45,20 @@ public class Files {
 		}
 
 		@Override
-		protected ArrayList<String> doInBackground(Void... params) {
+		protected AsyncTaskResult<ArrayList<String>> doInBackground(
+				Void... params) {
+
 			paths = new ArrayList<String>();
-			paths = listAssets(ctx, path);
-			return paths;
+			try {
+				paths = listAssets(ctx, path);
+			} catch (IOException e) {
+				Log.e(Files.class.getSimpleName(),
+						"I/O Exception whilst listing files", e);
+				BugSenseHandler.log("File", e);
+				return new AsyncTaskResult<ArrayList<String>>(e);
+
+			}
+			return new AsyncTaskResult<ArrayList<String>>(paths);
 		}
 
 	}
@@ -57,7 +67,7 @@ public class Files {
 	 * AsyncTask for copying assets
 	 */
 	static class CopyAssetsTask extends
-			AsyncTask<ArrayList<String>, Integer, Void> {
+			AsyncTask<ArrayList<String>, Integer, AsyncTaskResult<Void>> {
 		WakeLock copyLock;
 		Context ctx;
 		String root, message;
@@ -78,23 +88,25 @@ public class Files {
 		}
 
 		@Override
-		protected Void doInBackground(ArrayList<String>... params) {
+		protected AsyncTaskResult<Void> doInBackground(
+				ArrayList<String>... params) {
 			int max = params[0].size();
 			for (int i = 0; i < max; i++) {
 				copyAsset(ctx, params[0].get(i), root);
 				publishProgress(i + 1, max);
 			}
-			return null;
+			return new AsyncTaskResult(null);
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(AsyncTaskResult<Void> result) {
 			copyLock.release();
 		}
 	}
 
 	/** Lists all the assets in a given path */
-	public static ArrayList<String> listAssets(Context ctx, String path) {
+	public static ArrayList<String> listAssets(Context ctx, String path)
+			throws IOException {
 		ArrayList<String> assets = new ArrayList<String>();
 		listAssetsInternal(ctx, path, assets);
 		return assets;
@@ -102,25 +114,21 @@ public class Files {
 	}
 
 	private static void listAssetsInternal(Context ctx, String path,
-			ArrayList<String> paths) {
+			ArrayList<String> paths) throws IOException {
 		AssetManager assetManager = ctx.getAssets();
 		String assets[] = null;
-		try {
-			assets = assetManager.list(path);
 
-			if (assets.length == 0) {
-				paths.add(path);
+		assets = assetManager.list(path);
 
-			} else {
-				for (int i = 0; i < assets.length; ++i) {
-					listAssetsInternal(ctx, path + "/" + assets[i], paths);
-				}
+		if (assets.length == 0) {
+			paths.add(path);
+
+		} else {
+			for (int i = 0; i < assets.length; ++i) {
+				listAssetsInternal(ctx, path + "/" + assets[i], paths);
 			}
-		} catch (IOException e) {
-			Log.e(Files.class.getSimpleName(),
-					"I/O Exception whilst listing files", e);
-			BugSenseHandler.log("File", e);
 		}
+
 	}
 
 	/** Copies an asset to a given directory */
@@ -168,7 +176,7 @@ public class Files {
 
 	/** AsyncTask for downloading a file */
 	public static class DownloadFileTask extends
-			AsyncTask<String, Integer, File> {
+			AsyncTask<String, Integer, AsyncTaskResult<File>> {
 		String downloadTo;
 
 		public DownloadFileTask(String downloadTo) {
@@ -176,7 +184,7 @@ public class Files {
 		}
 
 		@Override
-		protected File doInBackground(String... url) {
+		protected AsyncTaskResult<File> doInBackground(String... url) {
 			URL downloadUrl;
 			URLConnection ucon;
 			try {
@@ -209,20 +217,23 @@ public class Files {
 
 				Log.d(Files.class.getSimpleName(), "Downloaded file to: "
 						+ file.getAbsolutePath());
-				return file;
+				return new AsyncTaskResult<File>(file);
 
 			} catch (MalformedURLException e) {
 				BugSenseHandler.log("File", e);
+				return new AsyncTaskResult<File>(e);
 			} catch (IOException e) {
 				BugSenseHandler.log("File", e);
+				return new AsyncTaskResult<File>(e);
 			}
-			return null;
+
 		}
 
 	}
 
 	/** AsyncTask for extracting a .zip file to a directory */
-	public static class UnzipTask extends AsyncTask<File, Integer, String> {
+	public static class UnzipTask extends
+			AsyncTask<File, Integer, AsyncTaskResult<String>> {
 		String unzipTo;
 
 		public UnzipTask(String unzipTo) {
@@ -230,7 +241,7 @@ public class Files {
 		}
 
 		@Override
-		protected String doInBackground(File... files) {
+		protected AsyncTaskResult<String> doInBackground(File... files) {
 			try {
 				ZipFile zf = new ZipFile(files[0]);
 				int entryCount = zf.size();
@@ -274,10 +285,10 @@ public class Files {
 
 			} catch (IOException e) {
 				BugSenseHandler.log("File", e);
-				return null;
+				return new AsyncTaskResult<String>(e);
 			}
 
-			return unzipTo;
+			return new AsyncTaskResult<String>(unzipTo);
 
 		}
 	}

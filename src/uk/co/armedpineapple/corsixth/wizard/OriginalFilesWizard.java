@@ -1,6 +1,8 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
 import java.io.File;
+
+import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
@@ -142,10 +144,10 @@ public class OriginalFilesWizard extends WizardView {
 					+ "/demo/") {
 
 				@Override
-				protected void onPostExecute(String result) {
+				protected void onPostExecute(AsyncTaskResult<String> result) {
 					super.onPostExecute(result);
 					dialog.hide();
-					if (result != null) {
+					if (result.getResult() != null) {
 						customLocation = result + "HOSP";
 						Log.d(getClass().getSimpleName(), "Extracted TH demo: "
 								+ customLocation);
@@ -177,7 +179,7 @@ public class OriginalFilesWizard extends WizardView {
 					extDir.getAbsolutePath()) {
 
 				@Override
-				protected void onPostExecute(File result) {
+				protected void onPostExecute(AsyncTaskResult<File> result) {
 					super.onPostExecute(result);
 
 					Toast errorToast = Toast.makeText(ctx,
@@ -188,7 +190,7 @@ public class OriginalFilesWizard extends WizardView {
 						dialog.hide();
 						errorToast.show();
 					} else {
-						uzt.execute(result);
+						uzt.execute(result.getResult());
 					}
 				}
 

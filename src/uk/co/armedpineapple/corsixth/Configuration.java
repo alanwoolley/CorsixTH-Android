@@ -1,6 +1,7 @@
 package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -16,6 +17,16 @@ public class Configuration {
 	public final static int RESOLUTION_DEFAULT = 1;
 	public final static int RESOLUTION_NATIVE = 2;
 	public final static int RESOLUTION_CUSTOM = 3;
+
+	public final static String HEADER = "---- CorsixTH configuration file ----------------------------------------------\n"
+			+ "-- Lines starting with two dashes (like this one) are ignored.\n"
+			+ "-- Text settings should have their values between double square braces, e.g.\n"
+			+ "--  setting = [[value]]\n"
+			+ "-- Number settings should not have anything around their value, e.g.\n"
+			+ "--  setting = 42\n\n\n"
+			+ "---- If you wish to add any custom settings, please do so below. ---- \n\n";
+
+	public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
 
 	private String originalFilesPath;
 	private String cthPath;
@@ -131,7 +142,39 @@ public class Configuration {
 	 * Writes the configuration to the config.txt file which is read by the game
 	 */
 	public void writeToFile() throws IOException {
+		String configFileName = cthPath + "/scripts/" + "config.txt";
+
+		File file = new File(configFileName);
+		file.getParentFile().mkdirs();
+		String[] split = null;
+		try {
+			FileReader reader = new FileReader(file);
+
+			StringBuilder b = new StringBuilder();
+			char[] buf = new char[1024];
+			int read;
+
+			while ((read = reader.read(buf)) != -1) {
+				b.append(buf);
+			}
+
+			String original = b.toString();
+
+			split = original.split(SEPARATOR);
+
+			reader.close();
+		} catch (IOException e) {
+			Log.d(getClass().getSimpleName(), "Couldn't read config file.");
+		}
+
 		StringBuilder sbuilder = new StringBuilder();
+		if (split.length > 1 && split[0].length() > 0) {
+			sbuilder.append(split[0]);
+		} else {
+			sbuilder.append(HEADER);
+		}
+
+		sbuilder.append(SEPARATOR);
 		sbuilder.append("theme_hospital_install = [[" + originalFilesPath
 				+ "]]\n");
 		sbuilder.append("prevent_edge_scrolling = true\n");
@@ -162,11 +205,7 @@ public class Configuration {
 		sbuilder.append("debug = " + String.valueOf(debug) + "\n");
 		sbuilder.append("track_fps = false\n");
 
-		String configFileName = cthPath + "/scripts/" + "config.txt";
-
 		// Create all the directories leading up to the config.txt file
-		File file = new File(configFileName);
-		file.getParentFile().mkdirs();
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
