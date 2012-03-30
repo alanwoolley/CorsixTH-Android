@@ -92,7 +92,11 @@ public class Files {
 				ArrayList<String>... params) {
 			int max = params[0].size();
 			for (int i = 0; i < max; i++) {
-				copyAsset(ctx, params[0].get(i), root);
+				try {
+					copyAsset(ctx, params[0].get(i), root);
+				} catch (IOException e) {
+					return new AsyncTaskResult(e);
+				}
 				publishProgress(i + 1, max);
 			}
 			return new AsyncTaskResult(null);
@@ -133,44 +137,38 @@ public class Files {
 
 	/** Copies an asset to a given directory */
 	public static void copyAsset(Context ctx, String assetFilename,
-			String destination) {
+			String destination) throws IOException {
 		AssetManager assetManager = ctx.getAssets();
 
 		InputStream in = null;
 		OutputStream out = null;
 
-		try {
-			in = assetManager.open(assetFilename);
+		in = assetManager.open(assetFilename);
 
-			String newFileName = destination + "/" + assetFilename;
+		String newFileName = destination + "/" + assetFilename;
 
-			File dir = new File(newFileName).getParentFile();
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-
-			out = new FileOutputStream(newFileName);
-
-			Log.i(Files.class.getSimpleName(), "Copying file [" + assetFilename
-					+ "] to [" + newFileName + "]");
-
-			byte[] buffer = new byte[1024];
-			int read;
-
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
-
-			in.close();
-
-			out.flush();
-
-			out.close();
-		} catch (IOException e) {
-			Log.e(Files.class.getSimpleName(),
-					"I/O Exception whilst copying file", e);
-			BugSenseHandler.log("File", e);
+		File dir = new File(newFileName).getParentFile();
+		if (!dir.exists()) {
+			dir.mkdirs();
 		}
+
+		out = new FileOutputStream(newFileName);
+
+		Log.i(Files.class.getSimpleName(), "Copying file [" + assetFilename
+				+ "] to [" + newFileName + "]");
+
+		byte[] buffer = new byte[1024];
+		int read;
+
+		while ((read = in.read(buffer)) != -1) {
+			out.write(buffer, 0, read);
+		}
+
+		in.close();
+
+		out.flush();
+
+		out.close();
 
 	}
 
@@ -220,10 +218,8 @@ public class Files {
 				return new AsyncTaskResult<File>(file);
 
 			} catch (MalformedURLException e) {
-				BugSenseHandler.log("File", e);
 				return new AsyncTaskResult<File>(e);
 			} catch (IOException e) {
-				BugSenseHandler.log("File", e);
 				return new AsyncTaskResult<File>(e);
 			}
 

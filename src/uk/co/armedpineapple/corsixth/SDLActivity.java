@@ -112,6 +112,14 @@ public class SDLActivity extends TrackedActivity {
 					@Override
 					protected void onPostExecute(AsyncTaskResult<Void> result) {
 						super.onPostExecute(result);
+
+						Exception error;
+						if ((error = result.getError()) != null) {
+							Log.d(getClass().getSimpleName(),
+									"Error copying files.");
+							BugSenseHandler.log("File", error);
+						}
+
 						Editor edit = preferences.edit();
 						edit.putBoolean("scripts_copied", true);
 						edit.putInt("last_version", currentVersion);
@@ -136,8 +144,16 @@ public class SDLActivity extends TrackedActivity {
 					}
 
 					@Override
-					protected void onPostExecute(AsyncTaskResult<ArrayList<String>> result) {
+					protected void onPostExecute(
+							AsyncTaskResult<ArrayList<String>> result) {
 						super.onPostExecute(result);
+						Exception error;
+						if ((error = result.getError()) != null) {
+							Log.d(getClass().getSimpleName(),
+									"Couldn't discover files");
+							BugSenseHandler.log("File", error);
+						}
+						
 						dialog.hide();
 						copyTask.execute(result.getResult());
 					}
