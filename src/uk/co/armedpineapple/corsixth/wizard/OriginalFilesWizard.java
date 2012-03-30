@@ -2,6 +2,8 @@ package uk.co.armedpineapple.corsixth.wizard;
 
 import java.io.File;
 
+import com.bugsense.trace.BugSenseHandler;
+
 import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.Files;
@@ -147,11 +149,14 @@ public class OriginalFilesWizard extends WizardView {
 				protected void onPostExecute(AsyncTaskResult<String> result) {
 					super.onPostExecute(result);
 					dialog.hide();
+
 					if (result.getResult() != null) {
 						customLocation = result + "HOSP";
 						Log.d(getClass().getSimpleName(), "Extracted TH demo: "
 								+ customLocation);
-					} else {
+					} else if (result.getError() != null) {
+						Exception e = result.getError();
+						BugSenseHandler.log("Extract", e);
 						Toast errorToast = Toast
 								.makeText(ctx, R.string.download_demo_error,
 										Toast.LENGTH_LONG);
@@ -185,7 +190,8 @@ public class OriginalFilesWizard extends WizardView {
 					Toast errorToast = Toast.makeText(ctx,
 							R.string.download_demo_error, Toast.LENGTH_LONG);
 
-					if (result == null) {
+					if (result.getError() != null) {
+						BugSenseHandler.log("Download", result.getError());
 						automaticRadio.setChecked(true);
 						dialog.hide();
 						errorToast.show();
@@ -217,5 +223,4 @@ public class OriginalFilesWizard extends WizardView {
 			automaticRadio.setChecked(true);
 		}
 	}
-
 }
