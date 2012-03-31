@@ -95,7 +95,7 @@ function Graphics:Graphics(app)
     if windir and windir ~= "" then
       font_file = windir .. pathsep .. "Fonts" .. pathsep .. "ARIALUNI.TTF"
     else
-      font_file = "/usr/share/fonts/truetype/arphic/uming.ttc"
+      font_file = "/system/fonts/DroidSansFallback.ttf"
     end
   end
   font_file = font_file and io.open(font_file, "rb")
