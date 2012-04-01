@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <android/log.h>
+
 #include "SDL.h"
 #include "config.h"
 #include "common.h"
@@ -31,6 +33,9 @@
 #include "output.h"
 #include "ctrlmode.h"
 #include "timidity.h"
+
+
+
 
 #include "tables.h"
 
@@ -298,6 +303,7 @@ int Timidity_Init(int rate, int format, int channels, int samples)
   if (!env || read_config_file(env)<0) {
     if (read_config_file(CONFIG_FILE)<0) {
       if (read_config_file(CONFIG_FILE_ETC)<0) {
+       __android_log_print(ANDROID_LOG_INFO, "libSDL", "SDL_Mixer: Timidity: cannot find timidity.cfg, MIDI support disabled");
         return(-1);
       }
     }
