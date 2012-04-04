@@ -1,0 +1,3 @@
+[submodule "jni/src"]
+	path = jni/src
+	url = git://github.com/alanwoolley/corsix-th.git
