@@ -1,0 +1,18 @@
+579,582c579,582
+<         //char *sTitle, *sIcon;
+<         //SDL_WM_GetCaption(&sTitle, &sIcon);
+<         //if(sTitle) sTitle = strdup(sTitle);
+<         //if(sIcon) sIcon = strdup(sIcon);
+---
+>         char *sTitle, *sIcon;
+>         SDL_WM_GetCaption(&sTitle, &sIcon);
+>         if(sTitle) sTitle = strdup(sTitle);
+>         if(sIcon) sIcon = strdup(sIcon);
+585,587c585,587
+<         //SDL_WM_SetCaption(sTitle, sIcon);
+<         //if(sTitle) free(sTitle);
+<         //if(sIcon) free(sIcon);
+---
+>         SDL_WM_SetCaption(sTitle, sIcon);
+>         if(sTitle) free(sTitle);
+>         if(sIcon) free(sIcon);
