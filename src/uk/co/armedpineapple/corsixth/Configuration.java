@@ -28,6 +28,8 @@ public class Configuration {
 
 	public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
 
+	public final static String UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
+	
 	private String originalFilesPath;
 	private String cthPath;
 	private Boolean globalAudio;
@@ -204,6 +206,7 @@ public class Configuration {
 
 		sbuilder.append("debug = " + String.valueOf(debug) + "\n");
 		sbuilder.append("track_fps = false\n");
+		sbuilder.append("unicode_font = [[" + UNICODE_PATH + "]]\n");
 
 		// Create all the directories leading up to the config.txt file
 
