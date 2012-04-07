@@ -227,6 +227,7 @@ public class Files {
 
 	}
 
+	
 	/** AsyncTask for extracting a .zip file to a directory */
 	public static class UnzipTask extends
 			AsyncTask<File, Integer, AsyncTaskResult<String>> {

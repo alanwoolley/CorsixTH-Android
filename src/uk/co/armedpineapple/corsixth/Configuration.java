@@ -29,7 +29,7 @@ public class Configuration {
 	public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
 
 	public final static String UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
-	
+
 	private String originalFilesPath;
 	private String cthPath;
 	private Boolean globalAudio;
@@ -44,6 +44,7 @@ public class Configuration {
 	private Integer displayWidth;
 	private Integer displayHeight;
 	private Boolean debug;
+	private String saveGamesPath = "/mnt/sdcard/CTHsaves";
 
 	private Configuration() {
 	}
@@ -170,7 +171,7 @@ public class Configuration {
 		}
 
 		StringBuilder sbuilder = new StringBuilder();
-		if (split.length > 1 && split[0].length() > 0) {
+		if (split!=null && split.length > 1 && split[0].length() > 0) {
 			sbuilder.append(split[0]);
 		} else {
 			sbuilder.append(HEADER);
@@ -207,6 +208,7 @@ public class Configuration {
 		sbuilder.append("debug = " + String.valueOf(debug) + "\n");
 		sbuilder.append("track_fps = false\n");
 		sbuilder.append("unicode_font = [[" + UNICODE_PATH + "]]\n");
+		sbuilder.append("savegames = [[" + saveGamesPath + "]]");
 
 		// Create all the directories leading up to the config.txt file
 
@@ -341,6 +343,14 @@ public class Configuration {
 				+ language + ", resMode=" + resolutionMode + ", width="
 				+ displayWidth + ", height=" + displayHeight + ", debug?="
 				+ debug + "]";
+	}
+
+	public String getSaveGamesPath() {
+		return saveGamesPath;
+	}
+
+	public void setSaveGamesPath(String saveGamesPath) {
+		this.saveGamesPath = saveGamesPath;
 	}
 
 }

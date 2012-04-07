@@ -1,12 +1,14 @@
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.corsixth;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import uk.co.armedpineapple.corsixth.Files.CopyAssetsTask;
 import uk.co.armedpineapple.corsixth.Files.DiscoverAssetsTask;
+import uk.co.armedpineapple.corsixth.Files.UnzipTask;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
@@ -83,36 +85,28 @@ public class SDLActivity extends TrackedActivity {
 
 				Log.d(getClass().getSimpleName(), "This is a new installation");
 
-				final DiscoverAssetsTask discoverTask;
-				final CopyAssetsTask copyTask;
-
 				final ProgressDialog dialog = new ProgressDialog(this);
-				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				dialog.setMessage(getString(R.string.preparing_game_files_dialog));
-				dialog.setIndeterminate(false);
-				dialog.setCancelable(false);
-
-				copyTask = new CopyAssetsTask(SDLActivity.this, dataRoot) {
-
-					@Override
-					protected void onProgressUpdate(Integer... values) {
-						super.onProgressUpdate(values);
-
-						dialog.setMax(values[1]);
-						dialog.setProgress(values[0]);
-
-					}
+				final UnzipTask unzipTask = new UnzipTask(dataRoot + "/scripts/") {
 
 					@Override
 					protected void onPreExecute() {
 						super.onPreExecute();
+						dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+						dialog.setMessage(getString(R.string.preparing_game_files_dialog));
+						dialog.setIndeterminate(false);
+						dialog.setCancelable(false);
 						dialog.show();
 					}
 
 					@Override
-					protected void onPostExecute(AsyncTaskResult<Void> result) {
-						super.onPostExecute(result);
+					protected void onProgressUpdate(Integer... values) {
+						super.onProgressUpdate(values);
+						dialog.setProgress(values[0]);
+					}
 
+					@Override
+					protected void onPostExecute(AsyncTaskResult<String> result) {
+						super.onPostExecute(result);
 						Exception error;
 						if ((error = result.getError()) != null) {
 							Log.d(getClass().getSimpleName(),
@@ -130,37 +124,37 @@ public class SDLActivity extends TrackedActivity {
 
 				};
 
-				discoverTask = new Files.DiscoverAssetsTask(SDLActivity.this,
-						"scripts") {
+				AsyncTask<String, Void, AsyncTaskResult<File>> copyTask = new AsyncTask<String, Void, AsyncTaskResult<File>>() {
 
 					@Override
-					protected void onPreExecute() {
-						super.onPreExecute();
-						dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-						dialog.setMessage(getString(R.string.preparing_game_files_dialog));
-						dialog.setIndeterminate(true);
-						dialog.setCancelable(false);
-						dialog.show();
-					}
+					protected AsyncTaskResult<File> doInBackground(String... params) {
 
-					@Override
-					protected void onPostExecute(
-							AsyncTaskResult<ArrayList<String>> result) {
-						super.onPostExecute(result);
-						Exception error;
-						if ((error = result.getError()) != null) {
-							Log.d(getClass().getSimpleName(),
-									"Couldn't discover files");
-							BugSenseHandler.log("File", error);
+						try {
+							Files.copyAsset(SDLActivity.this, params[0],
+									params[1]);
+						} catch (IOException e) {
+
+							return new AsyncTaskResult<File>(e);
 						}
-						
-						dialog.hide();
-						copyTask.execute(result.getResult());
+						return new AsyncTaskResult<File>(new File(params[1] + "/"
+								+ params[0]));
 					}
+
+					@Override
+					protected void onPostExecute(AsyncTaskResult<File> result) {
+						super.onPostExecute(result);
+						File f;
+						if ((f = result.getResult()) != null) {
+							unzipTask.execute(result.getResult());
+						} else {
+							BugSenseHandler.log("File", result.getError());
+
+						}
+					};
 
 				};
 
-				discoverTask.execute();
+				copyTask.execute("game.zip", getExternalCacheDir().getAbsolutePath());
 
 			} else {
 				continueLoad();
@@ -205,6 +199,12 @@ public class SDLActivity extends TrackedActivity {
 		}
 
 		setGamePath(dataRoot + "/scripts/");
+
+		File f = new File(config.getSaveGamesPath());
+
+		if (!f.isDirectory()) {
+			f.mkdirs();
+		}
 
 		// So we can call stuff from static callbacks
 		mSingleton = this;
