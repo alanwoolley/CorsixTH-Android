@@ -172,12 +172,12 @@ typedef char int8;
 /* You could specify a complete path, e.g. "/etc/timidity.cfg", and
    then specify the library directory in the configuration file. */
 #define CONFIG_FILE	"timidity.cfg"
-#define CONFIG_FILE_ETC "/etc/timidity.cfg"
+#define CONFIG_FILE_ETC "/sdcard/timidity/timidity.cfg"
 
 #if defined(__WIN32__) || defined(__OS2__)
 #define DEFAULT_PATH	"C:\\TIMIDITY"
 #else
-#define DEFAULT_PATH	"/etc/timidity"
+#define DEFAULT_PATH	"/sdcard/timidity"
 #define DEFAULT_PATH1	"/usr/share/timidity"
 #define DEFAULT_PATH2	"/usr/local/lib/timidity"
 #endif
