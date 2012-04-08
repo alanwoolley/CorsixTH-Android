@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="preferExternal"
     package="uk.co.armedpineapple.corsixth"
+    android:installLocation="preferExternal"
     android:versionCode="9"
     android:versionName="0.2.0" >
 
@@ -15,19 +15,19 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".CorsixTHApplication"
         android:icon="@drawable/logo"
-        android:label="@string/app_name" android:name=".CorsixTHApplication">
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppTheme" >
         <activity
             android:name="uk.co.armedpineapple.corsixth.SDLActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name=".wizard.WizardActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppTheme" >
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
