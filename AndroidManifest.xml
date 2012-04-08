@@ -16,7 +16,7 @@
 
     <application
         android:name=".CorsixTHApplication"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppTheme" >
         <activity
