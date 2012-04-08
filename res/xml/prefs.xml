@@ -63,7 +63,7 @@
                 android:key="music_prefs"
                 android:title="Music" >
                 <CheckBoxPreference
-                    android:defaultValue="true"
+                    android:defaultValue="false"
                     android:key="music_pref"
                     android:persistent="true"
                     android:summary="Music Enabled"

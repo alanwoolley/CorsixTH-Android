@@ -3,11 +3,8 @@ package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Properties;
 
-import uk.co.armedpineapple.corsixth.Files.CopyAssetsTask;
-import uk.co.armedpineapple.corsixth.Files.DiscoverAssetsTask;
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -145,7 +142,7 @@ public class SDLActivity extends TrackedActivity {
 						super.onPostExecute(result);
 						File f;
 						if ((f = result.getResult()) != null) {
-							unzipTask.execute(result.getResult());
+							unzipTask.execute(f);
 						} else {
 							BugSenseHandler.log("File", result.getError());
 

@@ -102,29 +102,43 @@ public class OriginalFilesWizard extends WizardView {
 
 			@Override
 			public void onClick(View v) {
+				if (Environment.MEDIA_MOUNTED.equals(Environment
+						.getExternalStorageState())) {
+					File f = new File(ctx.getExternalFilesDir(null)
+							.getAbsolutePath() + "/demo/HOSP");
+					if (!f.exists()) {
+						
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								ctx);
+						DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-				DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if (which == DialogInterface.BUTTON_POSITIVE) {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if (which == DialogInterface.BUTTON_POSITIVE) {
-							doDemoDownload();
-						}
+									doDemoDownload();
+
+								}
+							}
+
+						};
+
+						builder.setMessage(
+								getResources().getString(
+										R.string.download_demo_dialog))
+								.setCancelable(true)
+								.setNegativeButton("Cancel", alertListener)
+								.setPositiveButton("OK", alertListener);
+
+						AlertDialog alert = builder.create();
+						alert.show();
+					} else {
+						customLocation = ctx.getExternalFilesDir(null)
+								.getAbsolutePath() + "/demo/HOSP";
 					}
-
-				};
-
-				builder.setMessage(
-						getResources().getString(R.string.download_demo_dialog))
-						.setCancelable(true)
-						.setNegativeButton("Cancel", alertListener)
-						.setPositiveButton("OK", alertListener);
-
-				AlertDialog alert = builder.create();
-				alert.show();
+				}
 			}
-
 		});
 	}
 
@@ -151,7 +165,7 @@ public class OriginalFilesWizard extends WizardView {
 					dialog.hide();
 
 					if (result.getResult() != null) {
-						customLocation = result + "HOSP";
+						customLocation = result.getResult() + "HOSP";
 						Log.d(getClass().getSimpleName(), "Extracted TH demo: "
 								+ customLocation);
 					} else if (result.getError() != null) {

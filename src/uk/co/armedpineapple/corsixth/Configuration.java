@@ -85,7 +85,7 @@ public class Configuration {
 				.getExternalFilesDir(null).getAbsolutePath());
 
 		config.globalAudio = preferences.getBoolean("audio_pref", true);
-		config.playMusic = preferences.getBoolean("music_pref", true);
+		config.playMusic = preferences.getBoolean("music_pref", false);
 		config.playAnnouncements = preferences.getBoolean("announcer_pref",
 				true);
 		config.playSoundFx = preferences.getBoolean("fx_pref", true);

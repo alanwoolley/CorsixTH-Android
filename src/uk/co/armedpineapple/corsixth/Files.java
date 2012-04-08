@@ -15,7 +15,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import com.bugsense.trace.BugSenseHandler;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -240,6 +239,10 @@ public class Files {
 		@Override
 		protected AsyncTaskResult<String> doInBackground(File... files) {
 			try {
+				
+				File to = new File(unzipTo);
+				to.mkdirs();
+				
 				ZipFile zf = new ZipFile(files[0]);
 				int entryCount = zf.size();
 
@@ -251,13 +254,18 @@ public class Files {
 					Log.v(Files.class.getSimpleName(),
 							"Unzipping " + ze.getName());
 
+					File f = new File(unzipTo + ze.getName());
+					if (!f.getParentFile().exists()) {
+						f.getParentFile().mkdirs();
+					}
+					
 					if (ze.isDirectory()) {
-						File f = new File(unzipTo + ze.getName());
-
+			
 						if (!f.isDirectory()) {
 							f.mkdirs();
 						}
 					} else {
+						
 						InputStream zin = zf.getInputStream(ze);
 
 						FileOutputStream fout = new FileOutputStream(unzipTo
