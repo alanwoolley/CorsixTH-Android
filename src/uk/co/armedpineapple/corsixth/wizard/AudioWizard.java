@@ -16,7 +16,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Environment;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -83,7 +82,7 @@ public class AudioWizard extends WizardView {
 				if (isChecked) {
 					File timidityConfig = new File(
 							"/sdcard/timidity/timidity.cfg");
-					
+
 					if (!(timidityConfig.isFile() && timidityConfig.canRead())) {
 
 						AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -102,8 +101,7 @@ public class AudioWizard extends WizardView {
 
 						};
 
-						builder.setMessage(
-								"Music requires an additional download. Download file (14.1MB)?")
+						builder.setMessage(ctx.getString(R.string.music_download_dialog))
 								.setCancelable(true)
 								.setNegativeButton("Cancel", alertListener)
 								.setPositiveButton("OK", alertListener);
@@ -126,11 +124,10 @@ public class AudioWizard extends WizardView {
 	}
 
 	public void doTimidityDownload() {
-		
 
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
-			
+
 			final File extDir = ctx.getExternalFilesDir(null);
 			final ProgressDialog dialog = new ProgressDialog(ctx);
 
@@ -139,8 +136,8 @@ public class AudioWizard extends WizardView {
 			dialog.setIndeterminate(false);
 			dialog.setMax(100);
 			dialog.setCancelable(false);
-			
-			final UnzipTask uzt = new Files.UnzipTask("/mnt/sdcard/timidity/") {
+
+			final UnzipTask uzt = new Files.UnzipTask("/sdcard/timidity/") {
 
 				@Override
 				protected void onPostExecute(AsyncTaskResult<String> result) {
@@ -148,13 +145,13 @@ public class AudioWizard extends WizardView {
 					dialog.hide();
 
 					if (result.getResult() != null) {
-					
+
 					} else if (result.getError() != null) {
 						Exception e = result.getError();
 						BugSenseHandler.log("Extract", e);
-						Toast errorToast = Toast
-								.makeText(ctx, R.string.download_timidity_error,
-										Toast.LENGTH_LONG);
+						Toast errorToast = Toast.makeText(ctx,
+								R.string.download_timidity_error,
+								Toast.LENGTH_LONG);
 
 						errorToast.show();
 						musicCheck.setChecked(false);
@@ -164,8 +161,9 @@ public class AudioWizard extends WizardView {
 				@Override
 				protected void onPreExecute() {
 					super.onPreExecute();
-					dialog.setMessage(ctx.getString(R.string.extracting_timidity));
-					
+					dialog.setMessage(ctx
+							.getString(R.string.extracting_timidity));
+
 				}
 
 				@Override
@@ -175,7 +173,7 @@ public class AudioWizard extends WizardView {
 				}
 
 			};
-			
+
 			final DownloadFileTask dft = new Files.DownloadFileTask(
 					extDir.getAbsolutePath()) {
 
@@ -183,8 +181,9 @@ public class AudioWizard extends WizardView {
 				protected void onPostExecute(AsyncTaskResult<File> result) {
 					super.onPostExecute(result);
 
-					Toast errorToast = Toast.makeText(ctx,
-							R.string.download_timidity_error, Toast.LENGTH_LONG);
+					Toast errorToast = Toast
+							.makeText(ctx, R.string.download_timidity_error,
+									Toast.LENGTH_LONG);
 
 					if (result.getError() != null) {
 						BugSenseHandler.log("Download", result.getError());
@@ -211,7 +210,7 @@ public class AudioWizard extends WizardView {
 			};
 
 			dft.execute(ctx.getString(R.string.timidity_url));
-			
+
 		} else {
 			Toast toast = Toast.makeText(ctx, R.string.no_external_storage,
 					Toast.LENGTH_LONG);

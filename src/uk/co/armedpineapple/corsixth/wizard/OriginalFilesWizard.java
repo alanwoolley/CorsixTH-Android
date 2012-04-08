@@ -53,7 +53,7 @@ public class OriginalFilesWizard extends WizardView {
 	@Override
 	void saveConfiguration(Configuration config) {
 		if (automaticRadio.isChecked()) {
-			config.setOriginalFilesPath("/mnt/sdcard/th");
+			config.setOriginalFilesPath("/sdcard/th");
 		} else if (manualRadio.isChecked() || downloadDemoRadio.isChecked()) {
 			config.setOriginalFilesPath(customLocation);
 		}
@@ -68,7 +68,7 @@ public class OriginalFilesWizard extends WizardView {
 		downloadDemoRadio = ((RadioButton) findViewById(R.id.downloadDemoRadio));
 
 		final EditText editTextBox = new EditText(ctx);
-		editTextBox.setText("/mnt/sdcard/th");
+		editTextBox.setText("/sdcard/th");
 		Builder builder = new Builder(ctx);
 		builder.setMessage("Theme Hospital Game Files location");
 		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -92,7 +92,7 @@ public class OriginalFilesWizard extends WizardView {
 			}
 		});
 
-		if (config.getOriginalFilesPath().equals("/mnt/sdcard/th")) {
+		if (config.getOriginalFilesPath().equals("/sdcard/th")) {
 			automaticRadio.setChecked(true);
 		} else {
 			manualRadio.setChecked(true);

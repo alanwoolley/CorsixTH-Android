@@ -44,7 +44,7 @@ public class Configuration {
 	private Integer displayWidth;
 	private Integer displayHeight;
 	private Boolean debug;
-	private String saveGamesPath = "/mnt/sdcard/CTHsaves";
+	private String saveGamesPath = "/sdcard/CTHsaves";
 
 	private Configuration() {
 	}
@@ -171,7 +171,7 @@ public class Configuration {
 		}
 
 		StringBuilder sbuilder = new StringBuilder();
-		if (split!=null && split.length > 1 && split[0].length() > 0) {
+		if (split != null && split.length > 1 && split[0].length() > 0) {
 			sbuilder.append(split[0]);
 		} else {
 			sbuilder.append(HEADER);
