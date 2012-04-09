@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menuitem_settings" android:title="Settings" android:icon="@drawable/ic_menu_manage" android:visible="false"></item>
     <item android:id="@+id/menuitem_help" android:title="Help" android:icon="@drawable/ic_menu_help" android:visible="false"></item>
-    <item android:id="@+id/menuitem_wizard" android:title="Setup Wizard" android:icon="@drawable/ic_menu_manage"></item>
+    <item android:id="@+id/menuitem_wizard" android:title="@string/setup_wizard" android:icon="@drawable/ic_menu_manage"></item>
+    <item android:id="@+id/menuitem_pause" android:title="@string/pause" android:icon="@drawable/ic_pause"></item>
     
 
 </menu>

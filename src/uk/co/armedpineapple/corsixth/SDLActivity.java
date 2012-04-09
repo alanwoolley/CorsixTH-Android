@@ -263,6 +263,10 @@ public class SDLActivity extends TrackedActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menuitem_pause:
+			onNativeKeyDown(KeyEvent.KEYCODE_P);
+			onNativeKeyUp(KeyEvent.KEYCODE_P);
+			break;
 		case R.id.menuitem_settings:
 			// finish();
 			startActivity(new Intent(this, PrefsActivity.class));
@@ -285,7 +289,7 @@ public class SDLActivity extends TrackedActivity {
 
 			};
 
-			builder.setMessage(getResources().getString(R.string.setup_wizard))
+			builder.setMessage(getResources().getString(R.string.setup_wizard_dialog))
 					.setCancelable(false).setNeutralButton("OK", alertListener);
 
 			AlertDialog alert = builder.create();
