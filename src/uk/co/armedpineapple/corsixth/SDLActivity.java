@@ -12,10 +12,15 @@ import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.*;
 import android.content.*;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.widget.Button;
 import android.os.*;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -79,82 +84,21 @@ public class SDLActivity extends TrackedActivity {
 
 			if (!preferences.getBoolean("scripts_copied", false)
 					|| preferences.getInt("last_version", 0) < currentVersion) {
-
 				Log.d(getClass().getSimpleName(), "This is a new installation");
+				Dialog recentChangesDialog = new RecentChangesDialog(this);
+				recentChangesDialog
+						.setOnDismissListener(new OnDismissListener() {
 
-				final ProgressDialog dialog = new ProgressDialog(this);
-				final UnzipTask unzipTask = new UnzipTask(dataRoot + "/scripts/") {
+							@Override
+							public void onDismiss(DialogInterface arg0) {
+								installFiles(preferences);
+							}
 
-					@Override
-					protected void onPreExecute() {
-						super.onPreExecute();
-						dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-						dialog.setMessage(getString(R.string.preparing_game_files_dialog));
-						dialog.setIndeterminate(false);
-						dialog.setCancelable(false);
-						dialog.show();
-					}
-
-					@Override
-					protected void onProgressUpdate(Integer... values) {
-						super.onProgressUpdate(values);
-						dialog.setProgress(values[0]);
-					}
-
-					@Override
-					protected void onPostExecute(AsyncTaskResult<String> result) {
-						super.onPostExecute(result);
-						Exception error;
-						if ((error = result.getError()) != null) {
-							Log.d(getClass().getSimpleName(),
-									"Error copying files.");
-							BugSenseHandler.log("File", error);
-						}
-
-						Editor edit = preferences.edit();
-						edit.putBoolean("scripts_copied", true);
-						edit.putInt("last_version", currentVersion);
-						edit.commit();
-						dialog.hide();
-						continueLoad();
-					}
-
-				};
-
-				AsyncTask<String, Void, AsyncTaskResult<File>> copyTask = new AsyncTask<String, Void, AsyncTaskResult<File>>() {
-
-					@Override
-					protected AsyncTaskResult<File> doInBackground(String... params) {
-
-						try {
-							Files.copyAsset(SDLActivity.this, params[0],
-									params[1]);
-						} catch (IOException e) {
-
-							return new AsyncTaskResult<File>(e);
-						}
-						return new AsyncTaskResult<File>(new File(params[1] + "/"
-								+ params[0]));
-					}
-
-					@Override
-					protected void onPostExecute(AsyncTaskResult<File> result) {
-						super.onPostExecute(result);
-						File f;
-						if ((f = result.getResult()) != null) {
-							unzipTask.execute(f);
-						} else {
-							BugSenseHandler.log("File", result.getError());
-
-						}
-					};
-
-				};
-
-				copyTask.execute("game.zip", getExternalCacheDir().getAbsolutePath());
+						});
+				recentChangesDialog.show();
 
 			} else {
-				continueLoad();
+				loadApplication();
 			}
 
 		} else {
@@ -184,7 +128,79 @@ public class SDLActivity extends TrackedActivity {
 		}
 	}
 
-	void continueLoad() {
+	private void installFiles(final SharedPreferences preferences) {
+		final ProgressDialog dialog = new ProgressDialog(this);
+		final UnzipTask unzipTask = new UnzipTask(dataRoot + "/scripts/") {
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				dialog.setMessage(getString(R.string.preparing_game_files_dialog));
+				dialog.setIndeterminate(false);
+				dialog.setCancelable(false);
+				dialog.show();
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... values) {
+				super.onProgressUpdate(values);
+				dialog.setProgress(values[0]);
+			}
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<String> result) {
+				super.onPostExecute(result);
+				Exception error;
+				if ((error = result.getError()) != null) {
+					Log.d(getClass().getSimpleName(), "Error copying files.");
+					BugSenseHandler.log("File", error);
+				}
+
+				Editor edit = preferences.edit();
+				edit.putBoolean("scripts_copied", true);
+				edit.putInt("last_version", currentVersion);
+				edit.commit();
+				dialog.hide();
+				loadApplication();
+			}
+
+		};
+
+		AsyncTask<String, Void, AsyncTaskResult<File>> copyTask = new AsyncTask<String, Void, AsyncTaskResult<File>>() {
+
+			@Override
+			protected AsyncTaskResult<File> doInBackground(String... params) {
+
+				try {
+					Files.copyAsset(SDLActivity.this, params[0], params[1]);
+				} catch (IOException e) {
+
+					return new AsyncTaskResult<File>(e);
+				}
+				return new AsyncTaskResult<File>(new File(params[1] + "/"
+						+ params[0]));
+			}
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<File> result) {
+				super.onPostExecute(result);
+				File f;
+				if ((f = result.getResult()) != null) {
+					unzipTask.execute(f);
+				} else {
+					BugSenseHandler.log("File", result.getError());
+
+				}
+			};
+
+		};
+
+		copyTask.execute("game.zip", getExternalCacheDir().getAbsolutePath());
+
+	}
+
+	void loadApplication() {
 
 		try {
 			config.writeToFile();
@@ -479,6 +495,36 @@ public class SDLActivity extends TrackedActivity {
 			mAudioTrack = null;
 		}
 	}
+}
+
+class RecentChangesDialog extends Dialog {
+	WebView wv;
+
+	public RecentChangesDialog(Context context) {
+		super(context);
+
+		setContentView(R.layout.changes_dialog);
+		setTitle("Recent Changes");
+
+		Button button = (Button) findViewById(R.id.dismissDialogButton);
+		button.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				RecentChangesDialog.this.dismiss();
+			}
+
+		});
+
+		wv = (WebView) findViewById(R.id.recentChangesWebView);
+	}
+
+	@Override
+	public void show() {
+		super.show();
+		wv.loadUrl(getContext().getString(R.string.changes_url));
+	}
+
 }
 
 /**
