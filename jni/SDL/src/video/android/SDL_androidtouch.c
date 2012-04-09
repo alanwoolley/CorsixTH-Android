@@ -25,6 +25,7 @@
 
 #include "SDL_events.h"
 #include "../../events/SDL_mouse_c.h"
+#include <sys/time.h>
 
 #include "SDL_androidtouch.h"
 
@@ -38,6 +39,16 @@
 #define ACTION_POINTER_2_DOWN 261
 #define ACTION_POINTER_2_UP 262
 
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL", __VA_ARGS__))
+
+struct timeval tv;
+struct timeval now;
+int firstDownX = 0;
+int firstDownY = 0;
+const int margin = 15;
+const int wait = 600000;
+char valid = 0;
+
 void Android_OnTouch(int action, float x, float y, float p, int pc) {
 	if (!Android_Window) {
 		return;
@@ -45,10 +56,18 @@ void Android_OnTouch(int action, float x, float y, float p, int pc) {
 
 	if ((action != ACTION_CANCEL) && (action != ACTION_OUTSIDE)) {
 		SDL_SetMouseFocus(Android_Window);
+
 		SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+
 		switch (action) {
 		case ACTION_DOWN:
 			if (pc == 1) {
+				firstDownX = (int) x;
+				firstDownY = (int) y;
+				valid = 1;
+				gettimeofday(&tv, 0);
+
+				LOGI("Down");
 				SDL_SendMouseButton(Android_Window, SDL_PRESSED,
 						SDL_BUTTON_LEFT);
 			}
@@ -57,6 +76,37 @@ void Android_OnTouch(int action, float x, float y, float p, int pc) {
 			if (pc == 1) {
 				SDL_SendMouseButton(Android_Window, SDL_RELEASED,
 						SDL_BUTTON_LEFT);
+			}
+			break;
+		case ACTION_MOVE:
+			if (pc == 1) {
+				if (valid == 1) {
+					if (((int) x > (firstDownX + margin)) || ((int) x < (firstDownX-margin)) || ((int) y > (firstDownY + margin)) || ((int) y) < (firstDownY-margin)) {
+						valid = 0;
+						LOGI("Went out of bounds. Cancelling wait.");
+					} else {
+						gettimeofday(&now, 0);
+						double thent = (tv.tv_sec*1000000.0) + tv.tv_usec;
+						double nowt = (now.tv_sec*1000000.0) + now.tv_usec;
+						if ((nowt-thent)>wait) {
+							valid = 0;
+							SDL_SetMouseFocus(NULL);
+							SDL_SetMouseFocus(Android_Window);
+							SDL_SendMouseMotion(Android_Window, 0, firstDownX,
+									firstDownY);
+							SDL_SendMouseButton(Android_Window, SDL_PRESSED,
+									SDL_BUTTON_RIGHT);
+							SDL_SendMouseButton(Android_Window, SDL_RELEASED,
+									SDL_BUTTON_RIGHT);
+							LOGI("Pressed right");
+						} else {
+							char buf[255];
+							sprintf(buf, "Not yet. Now: %i, Pressed: %i, Diff: %i",nowt, thent, (nowt-thent));
+							LOGI(buf);
+						}
+					}
+				}
+
 			}
 			break;
 		case ACTION_POINTER_2_DOWN:
@@ -76,7 +126,6 @@ void Android_OnTouch(int action, float x, float y, float p, int pc) {
 		}
 	} else {
 		SDL_SetMouseFocus(NULL);
-
 	}
 }
 
