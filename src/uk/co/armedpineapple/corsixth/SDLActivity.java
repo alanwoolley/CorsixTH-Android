@@ -103,7 +103,8 @@ public class SDLActivity extends TrackedActivity {
 			if (!preferences.getBoolean("scripts_copied", false)
 					|| preferences.getInt("last_version", 0) < currentVersion) {
 				Log.d(getClass().getSimpleName(), "This is a new installation");
-				Dialog recentChangesDialog = new RecentChangesDialog(this);
+				Dialog recentChangesDialog = DialogFactory
+						.createRecentChangesDialog(this);
 				recentChangesDialog
 						.setOnDismissListener(new OnDismissListener() {
 
@@ -476,36 +477,6 @@ public class SDLActivity extends TrackedActivity {
 			mAudioTrack = null;
 		}
 	}
-}
-
-class RecentChangesDialog extends Dialog {
-	WebView wv;
-
-	public RecentChangesDialog(Context context) {
-		super(context);
-
-		setContentView(R.layout.changes_dialog);
-		setTitle("Recent Changes");
-
-		Button button = (Button) findViewById(R.id.dismissDialogButton);
-		button.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				RecentChangesDialog.this.dismiss();
-			}
-
-		});
-
-		wv = (WebView) findViewById(R.id.recentChangesWebView);
-	}
-
-	@Override
-	public void show() {
-		super.show();
-		wv.loadUrl(getContext().getString(R.string.changes_url));
-	}
-
 }
 
 /**
