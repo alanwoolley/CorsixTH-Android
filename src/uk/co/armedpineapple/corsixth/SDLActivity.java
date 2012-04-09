@@ -16,9 +16,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.os.*;
@@ -51,6 +49,26 @@ public class SDLActivity extends TrackedActivity {
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
 	}
+
+	// C functions we call
+	public static native void nativeInit();
+
+	public static native void nativeQuit();
+
+	public static native void onNativeResize(int x, int y, int format);
+
+	public static native void onNativeKeyDown(int keycode);
+
+	public static native void onNativeKeyUp(int keycode);
+
+	public static native void onNativeTouch(int action, float x, float y,
+			float p, int pc);
+
+	public static native void onNativeAccel(float x, float y, float z);
+
+	public static native void nativeRunAudioThread();
+
+	public static native void setGamePath(String path);
 
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,24 +125,7 @@ public class SDLActivity extends TrackedActivity {
 			// Create an alert dialog warning that external storage isn't
 			// mounted. The application will have to exit at this point.
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-			builder.setMessage(
-					getResources().getString(R.string.no_external_storage))
-					.setCancelable(false)
-					.setNeutralButton("OK",
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									finish();
-								}
-
-							});
-
-			AlertDialog alert = builder.create();
-			alert.show();
+			DialogFactory.createExternalStorageDialog(this, true).show();
 		}
 	}
 
@@ -316,26 +317,6 @@ public class SDLActivity extends TrackedActivity {
 		commandHandler.sendMessage(msg);
 	}
 
-	// C functions we call
-	public static native void nativeInit();
-
-	public static native void nativeQuit();
-
-	public static native void onNativeResize(int x, int y, int format);
-
-	public static native void onNativeKeyDown(int keycode);
-
-	public static native void onNativeKeyUp(int keycode);
-
-	public static native void onNativeTouch(int action, float x, float y,
-			float p, int pc);
-
-	public static native void onNativeAccel(float x, float y, float z);
-
-	public static native void nativeRunAudioThread();
-
-	public static native void setGamePath(String path);
-
 	// Java functions called from C
 
 	/**
@@ -471,7 +452,7 @@ public class SDLActivity extends TrackedActivity {
 				}
 			} else {
 				Log.w(SDLActivity.class.getSimpleName(),
-						"SDL audio: error return from write(short)");
+						"SDL audio: error return from write(byte)");
 				return;
 			}
 		}

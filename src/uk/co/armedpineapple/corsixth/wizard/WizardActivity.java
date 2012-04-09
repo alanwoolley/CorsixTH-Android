@@ -3,6 +3,7 @@ package uk.co.armedpineapple.corsixth.wizard;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.DialogFactory;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.AlertDialog;
@@ -31,26 +32,14 @@ public class WizardActivity extends TrackedActivity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		if (!Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED)) {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
+			// Show dialog and end
+			DialogFactory.createExternalStorageDialog(this, true).show();
 
-			};
-
-			builder.setMessage(
-					getResources().getString(R.string.no_external_storage))
-					.setCancelable(false).setNeutralButton("OK", alertListener);
-
-			AlertDialog alert = builder.create();
-			alert.show();
 		} else {
 			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 
@@ -71,7 +60,7 @@ public class WizardActivity extends TrackedActivity {
 				config = Configuration.loadFromPreferences(this, preferences);
 
 				// Add all the wizard views
-				
+
 				LayoutInflater inflater = getLayoutInflater();
 				loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
 						R.layout.wizard_welcome, null));

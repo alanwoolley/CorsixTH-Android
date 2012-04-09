@@ -6,6 +6,7 @@ import com.bugsense.trace.BugSenseHandler;
 
 import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.DialogFactory;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.Files.DownloadFileTask;
@@ -107,7 +108,7 @@ public class OriginalFilesWizard extends WizardView {
 					File f = new File(ctx.getExternalFilesDir(null)
 							.getAbsolutePath() + "/demo/HOSP");
 					if (!f.exists()) {
-						
+
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								ctx);
 						DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
@@ -171,11 +172,9 @@ public class OriginalFilesWizard extends WizardView {
 					} else if (result.getError() != null) {
 						Exception e = result.getError();
 						BugSenseHandler.log("Extract", e);
-						Toast errorToast = Toast
-								.makeText(ctx, R.string.download_demo_error,
-										Toast.LENGTH_LONG);
-
-						errorToast.show();
+						DialogFactory.createFromException(result.getError(),
+								ctx.getString(R.string.download_demo_error),
+								ctx, false).show();
 						automaticRadio.setChecked(true);
 					}
 				}
@@ -201,14 +200,14 @@ public class OriginalFilesWizard extends WizardView {
 				protected void onPostExecute(AsyncTaskResult<File> result) {
 					super.onPostExecute(result);
 
-					Toast errorToast = Toast.makeText(ctx,
-							R.string.download_demo_error, Toast.LENGTH_LONG);
-
 					if (result.getError() != null) {
 						BugSenseHandler.log("Download", result.getError());
 						automaticRadio.setChecked(true);
 						dialog.hide();
-						errorToast.show();
+
+						DialogFactory.createFromException(result.getError(),
+								ctx.getString(R.string.download_demo_error),
+								ctx, false).show();
 					} else {
 						uzt.execute(result.getResult());
 					}
