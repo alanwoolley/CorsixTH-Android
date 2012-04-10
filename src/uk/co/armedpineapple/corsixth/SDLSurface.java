@@ -14,6 +14,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -29,7 +31,8 @@ import com.bugsense.trace.BugSenseHandler;
  * Because of this, that's where we set up the SDL thread
  */
 class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
-		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
+		View.OnKeyListener, View.OnTouchListener, SensorEventListener,
+		OnGestureListener {
 
 	// This is what SDL runs in. It invokes SDL_main(), eventually
 	private Thread mSDLThread;
@@ -45,6 +48,8 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Sensors
 	private static SensorManager mSensorManager;
 
+	private GestureDetector gestureDetector;
+
 	// Startup
 	public SDLSurface(Context context, int width, int height) {
 		super(context);
@@ -56,8 +61,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		requestFocus();
 		setOnKeyListener(this);
 		setOnTouchListener(this);
+		gestureDetector = new GestureDetector(context, this);
+		gestureDetector.setIsLongpressEnabled(true);
 
 		mSensorManager = (SensorManager) context.getSystemService("sensor");
+
 	}
 
 	// Called when we have a valid drawing surface
@@ -277,7 +285,9 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	 * maths.
 	 */
 	public boolean onTouch(View v, MotionEvent event) {
-
+		// Forward event to the gesture detector.
+		gestureDetector.onTouchEvent(event);
+		
 		int action = event.getAction();
 
 		float x = ((float) this.width / v.getWidth()) * event.getX();
@@ -313,6 +323,48 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			SDLActivity.onNativeAccel(event.values[0], event.values[1],
 					event.values[2]);
 		}
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent event) {
+		Log.d(getClass().getSimpleName(), "Detected long press");
+		
+		int action = 905; // Constant for long press
+
+		float x = ((float) this.width / this.getWidth()) * event.getX();
+		float y = ((float) this.height / this.getHeight()) * event.getY();
+		float p = event.getPressure();
+		int pc = event.getPointerCount();
+		
+		SDLActivity.onNativeTouch(action, x, y, p, pc);
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		return false;
 	}
 
 }
