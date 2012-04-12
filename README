@@ -36,5 +36,4 @@ Check the Wiki for help. https://github.com/alanwoolley/CorsixTH-Android/wiki
 --------
 What's broken?
 --------
-*	Music
 *	CorsixTH doesn't support screen resolutions below 640x480 yet, so some of the UI will be obscured or fall off the display.
