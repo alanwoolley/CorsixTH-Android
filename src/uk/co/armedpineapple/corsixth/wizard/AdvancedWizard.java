@@ -10,9 +10,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class AdvancedWizard extends WizardView {
 
-	CheckBox advancedCheck;
 	CheckBox debugCheck;
-	CheckBox customscriptsCheck;
+	CheckBox screenOnCheck;
 
 	public AdvancedWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -29,29 +28,17 @@ public class AdvancedWizard extends WizardView {
 	@Override
 	void saveConfiguration(Configuration config) {
 		config.setDebug(debugCheck.isChecked());
+		config.setKeepScreenOn(screenOnCheck.isChecked());
 	}
 
 	@Override
 	void loadConfiguration(Configuration config) {
 
-		advancedCheck = ((CheckBox) findViewById(R.id.advancedCheck));
 		debugCheck = ((CheckBox) findViewById(R.id.debugCheck));
-		customscriptsCheck = ((CheckBox) findViewById(R.id.customscriptsCheck));
-
-		advancedCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				debugCheck.setEnabled(isChecked);
-
-			}
-
-		});
-
 		debugCheck.setChecked(config.getDebug());
-
-		advancedCheck.setChecked(config.getDebug());
-
+		
+		screenOnCheck = ((CheckBox) findViewById(R.id.screenOnCheck));
+		screenOnCheck.setChecked(config.getKeepScreenOn());
+		
 	}
 }

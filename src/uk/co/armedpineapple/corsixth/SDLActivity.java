@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.os.*;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
@@ -31,6 +32,7 @@ public class SDLActivity extends TrackedActivity {
 	private Properties properties;
 	private Configuration config;
 
+	private WakeLock wake;
 	// Main components
 	private static SDLActivity mSingleton;
 	private static SDLSurface mSurface;
@@ -238,12 +240,23 @@ public class SDLActivity extends TrackedActivity {
 	protected void onPause() {
 		super.onPause();
 		Log.d(getClass().getSimpleName(), "onPause()");
+		if (wake != null && wake.isHeld()) {
+			Log.d(getClass().getSimpleName(), "Releasing wakelock");
+			wake.release();
+		}
 
 	}
 
 	protected void onResume() {
 		super.onResume();
 		Log.d(getClass().getSimpleName(), "onResume()");
+		
+		if (config.getKeepScreenOn()) {
+			Log.d(getClass().getSimpleName(), "Getting wakelock");
+			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Keep Screen On Wakelock");
+			wake.acquire();
+		}
 
 	}
 

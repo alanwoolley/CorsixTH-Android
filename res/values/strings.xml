@@ -47,5 +47,6 @@
     <string name="music_download_dialog">Music requires an additional download. Download file (14.1MB)?</string>
     <string name="pause">Pause</string>
     <string name="setup_wizard">Setup Wizard</string>
+    <string name="keep_screen_on">Keep screen on</string>
 
 </resources>

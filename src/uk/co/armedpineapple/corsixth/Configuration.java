@@ -30,20 +30,12 @@ public class Configuration {
 
 	public final static String UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
 
-	private String originalFilesPath;
-	private String cthPath;
-	private Boolean globalAudio;
-	private Boolean playMusic;
-	private Boolean playAnnouncements;
-	private Boolean playSoundFx;
-	private Integer musicVol;
-	private Integer announcementsVol;
-	private Integer sfxVol;
-	private String language;
-	private Integer resolutionMode;
-	private Integer displayWidth;
-	private Integer displayHeight;
-	private Boolean debug;
+	private String originalFilesPath, cthPath, language;
+	private Boolean globalAudio, playMusic, playAnnouncements, playSoundFx,
+			keepScreenOn, debug;
+
+	private Integer musicVol, announcementsVol, sfxVol, resolutionMode,
+			displayWidth, displayHeight;
 	private String saveGamesPath = "/sdcard/CTHsaves";
 
 	private Configuration() {
@@ -61,13 +53,14 @@ public class Configuration {
 		editor.putString("fxvolume_pref", String.valueOf(sfxVol));
 		editor.putString("announcervolume_pref",
 				String.valueOf(announcementsVol));
-		editor.putString("msuicvolume_pref", String.valueOf(musicVol));
+		editor.putString("musicvolume_pref", String.valueOf(musicVol));
 		editor.putString("language_pref", language);
 		editor.putString("resolution_pref", String.valueOf(resolutionMode));
 		editor.putString("reswidth_pref", String.valueOf(displayWidth));
 		editor.putString("resheight_pref", String.valueOf(displayHeight));
 		editor.putBoolean("debug_pref", debug);
 		editor.putBoolean("wizard_run", true);
+		editor.putBoolean("screenon_pref", keepScreenOn);
 		editor.commit();
 
 	}
@@ -102,6 +95,8 @@ public class Configuration {
 				"resolution_pref", "1"));
 
 		config.debug = preferences.getBoolean("debug_pref", false);
+
+		config.keepScreenOn = preferences.getBoolean("screenon_pref", true);
 
 		/*
 		 * If the resolution is default, set the resolution to 640x480.
@@ -219,6 +214,11 @@ public class Configuration {
 	}
 
 	// Getters
+
+	public Boolean getKeepScreenOn() {
+		return keepScreenOn;
+	}
+
 	public String getOriginalFilesPath() {
 		return originalFilesPath;
 	}
@@ -331,6 +331,10 @@ public class Configuration {
 
 	public void setDebug(Boolean debug) {
 		this.debug = debug;
+	}
+
+	public void setKeepScreenOn(Boolean keepScreenOn) {
+		this.keepScreenOn = keepScreenOn;
 	}
 
 	@Override
