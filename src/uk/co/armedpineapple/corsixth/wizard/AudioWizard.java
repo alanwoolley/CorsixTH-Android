@@ -6,11 +6,14 @@ import com.bugsense.trace.BugSenseHandler;
 
 import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.DialogFactory;
 import uk.co.armedpineapple.corsixth.Files;
+import uk.co.armedpineapple.corsixth.Network;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.Files.DownloadFileTask;
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -101,7 +104,8 @@ public class AudioWizard extends WizardView {
 
 						};
 
-						builder.setMessage(ctx.getString(R.string.music_download_dialog))
+						builder.setMessage(
+								ctx.getString(R.string.music_download_dialog))
 								.setCancelable(true)
 								.setNegativeButton("Cancel", alertListener)
 								.setPositiveButton("OK", alertListener);
@@ -124,94 +128,102 @@ public class AudioWizard extends WizardView {
 	}
 
 	public void doTimidityDownload() {
-
+		// Check for external storage
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
+			// Check for network connection
+			if (Network.HasNetworkConnection(ctx)) {
+				final File extDir = ctx.getExternalFilesDir(null);
+				final ProgressDialog dialog = new ProgressDialog(ctx);
 
-			final File extDir = ctx.getExternalFilesDir(null);
-			final ProgressDialog dialog = new ProgressDialog(ctx);
+				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				dialog.setMessage(ctx.getString(R.string.downloading_timidity));
+				dialog.setIndeterminate(false);
+				dialog.setMax(100);
+				dialog.setCancelable(false);
 
-			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			dialog.setMessage(ctx.getString(R.string.downloading_timidity));
-			dialog.setIndeterminate(false);
-			dialog.setMax(100);
-			dialog.setCancelable(false);
+				final UnzipTask uzt = new Files.UnzipTask("/sdcard/timidity/") {
 
-			final UnzipTask uzt = new Files.UnzipTask("/sdcard/timidity/") {
+					@Override
+					protected void onPostExecute(AsyncTaskResult<String> result) {
+						super.onPostExecute(result);
+						dialog.hide();
 
-				@Override
-				protected void onPostExecute(AsyncTaskResult<String> result) {
-					super.onPostExecute(result);
-					dialog.hide();
+						if (result.getResult() != null) {
 
-					if (result.getResult() != null) {
+						} else if (result.getError() != null) {
+							Exception e = result.getError();
+							BugSenseHandler.log("Extract", e);
+							Toast errorToast = Toast.makeText(ctx,
+									R.string.download_timidity_error,
+									Toast.LENGTH_LONG);
 
-					} else if (result.getError() != null) {
-						Exception e = result.getError();
-						BugSenseHandler.log("Extract", e);
+							errorToast.show();
+							musicCheck.setChecked(false);
+						}
+					}
+
+					@Override
+					protected void onPreExecute() {
+						super.onPreExecute();
+						dialog.setMessage(ctx
+								.getString(R.string.extracting_timidity));
+
+					}
+
+					@Override
+					protected void onProgressUpdate(Integer... values) {
+						super.onProgressUpdate(values);
+						dialog.setProgress(values[0]);
+					}
+
+				};
+
+				final DownloadFileTask dft = new Files.DownloadFileTask(
+						extDir.getAbsolutePath()) {
+
+					@Override
+					protected void onPostExecute(AsyncTaskResult<File> result) {
+						super.onPostExecute(result);
+
 						Toast errorToast = Toast.makeText(ctx,
 								R.string.download_timidity_error,
 								Toast.LENGTH_LONG);
 
-						errorToast.show();
-						musicCheck.setChecked(false);
+						if (result.getError() != null) {
+							BugSenseHandler.log("Download", result.getError());
+							musicCheck.setChecked(false);
+							dialog.hide();
+							errorToast.show();
+						} else {
+							uzt.execute(result.getResult());
+						}
 					}
-				}
 
-				@Override
-				protected void onPreExecute() {
-					super.onPreExecute();
-					dialog.setMessage(ctx
-							.getString(R.string.extracting_timidity));
-
-				}
-
-				@Override
-				protected void onProgressUpdate(Integer... values) {
-					super.onProgressUpdate(values);
-					dialog.setProgress(values[0]);
-				}
-
-			};
-
-			final DownloadFileTask dft = new Files.DownloadFileTask(
-					extDir.getAbsolutePath()) {
-
-				@Override
-				protected void onPostExecute(AsyncTaskResult<File> result) {
-					super.onPostExecute(result);
-
-					Toast errorToast = Toast
-							.makeText(ctx, R.string.download_timidity_error,
-									Toast.LENGTH_LONG);
-
-					if (result.getError() != null) {
-						BugSenseHandler.log("Download", result.getError());
-						musicCheck.setChecked(false);
-						dialog.hide();
-						errorToast.show();
-					} else {
-						uzt.execute(result.getResult());
+					@Override
+					protected void onPreExecute() {
+						super.onPreExecute();
+						dialog.show();
 					}
-				}
 
-				@Override
-				protected void onPreExecute() {
-					super.onPreExecute();
-					dialog.show();
-				}
+					@Override
+					protected void onProgressUpdate(Integer... values) {
+						super.onProgressUpdate(values);
+						dialog.setProgress(values[0]);
+					}
 
-				@Override
-				protected void onProgressUpdate(Integer... values) {
-					super.onProgressUpdate(values);
-					dialog.setProgress(values[0]);
-				}
+				};
 
-			};
-
-			dft.execute(ctx.getString(R.string.timidity_url));
-
+				dft.execute(ctx.getString(R.string.timidity_url));
+			} else {
+				// Connection error
+				Dialog connectionDialog = DialogFactory
+						.createNetworkDialog(ctx);
+				connectionDialog.show();
+				musicCheck.setChecked(false);
+			}
 		} else {
+			// No external storage
 			Toast toast = Toast.makeText(ctx, R.string.no_external_storage,
 					Toast.LENGTH_LONG);
 			toast.show();

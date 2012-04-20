@@ -48,5 +48,6 @@
     <string name="pause">Pause</string>
     <string name="setup_wizard">Setup Wizard</string>
     <string name="keep_screen_on">Keep screen on</string>
+    <string name="no_connection_error">You need an internet connection to download. Please connect to a network and try again.</string>
 
 </resources>

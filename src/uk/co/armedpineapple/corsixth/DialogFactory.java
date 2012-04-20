@@ -41,6 +41,25 @@ public class DialogFactory {
 
 	}
 
+	public static Dialog createNetworkDialog(final Context ctx) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+
+		builder.setMessage(
+				ctx.getResources().getString(R.string.no_connection_error))
+				.setCancelable(false);
+
+		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+
+		});
+
+		return builder.create();
+	}
+
 	public static Dialog createExternalStorageDialog(final Context ctx,
 			boolean finish) {
 
