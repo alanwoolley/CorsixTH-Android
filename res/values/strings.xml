@@ -36,8 +36,8 @@
     <string name="download_demo_error">There was a problem downloading the demo files</string>
     <string name="downloading_demo">Downloading demo files…</string>
     <string name="extracting_demo">Extracting demo files…</string>
-    <string name="demo_url">http://www.armedpineapple.co.uk/cth/th-demo.zip</string>
-    <string name="timidity_url">http://www.armedpineapple.co.uk/cth/timidity.zip</string>
+    <string name="demo_url">http://www.armedpineapple.co.uk/downloads/Theme+Hospital+Demo</string>
+    <string name="timidity_url">http://www.armedpineapple.co.uk/downloads/Timidity</string>
     <string name="changes_url">http://www.armedpineapple.co.uk/cth/changes.html</string>
     <string name="language_header">Language</string>
     <string name="language_text">CorsixTH supports multiple languages. Please choose from the supported languages below.</string>
