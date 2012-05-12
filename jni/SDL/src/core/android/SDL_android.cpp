@@ -124,9 +124,9 @@ extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_onNativeKeyUp(
 // Touch
 extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_onNativeTouch(
                                     JNIEnv* env, jclass jcls,
-                                    jint action, jfloat x, jfloat y, jfloat p, jint pc)
+                                    jint action, jfloat x, jfloat y, jfloat p, jint pc, jint gestureTriggered)
 {
-    Android_OnTouch(action, x, y, p, pc);
+    Android_OnTouch(action, x, y, p, pc, gestureTriggered);
 }
 
 // Accelerometer

@@ -69,7 +69,7 @@ public class SDLActivity extends TrackedActivity {
 	public static native void onNativeKeyUp(int keycode);
 
 	public static native void onNativeTouch(int action, float x, float y,
-			float p, int pc);
+			float p, int pc, int gestureTriggered);
 
 	public static native void onNativeAccel(float x, float y, float z);
 

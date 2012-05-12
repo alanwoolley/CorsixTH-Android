@@ -38,12 +38,42 @@
 #define ACTION_POINTER_UP 6
 #define ACTION_POINTER_2_DOWN 261
 #define ACTION_POINTER_2_UP 262
-#define ACTION_LONGPRESS 905
+
+#define GESTURE_LONGPRESS 1
+#define GESTURE_MOVE 2
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL", __VA_ARGS__))
 
-void Android_OnTouch(int action, float x, float y, float p, int pc) {
+void Android_OnTouch(int action, float x, float y, float p, int pc,
+		int gestureTriggered) {
 	if (!Android_Window) {
+		return;
+	}
+
+	if (gestureTriggered == GESTURE_LONGPRESS) {
+		SDL_SetMouseFocus(NULL);
+		SDL_SetMouseFocus(Android_Window);
+		SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+		SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_RIGHT);
+		SDL_SendMouseButton(Android_Window, SDL_RELEASED, SDL_BUTTON_RIGHT);
+		return;
+	}
+
+	if (gestureTriggered == GESTURE_MOVE) {
+		switch (action) {
+		case ACTION_DOWN:
+			SDL_SetMouseFocus(NULL);
+			SDL_SetMouseFocus(Android_Window);
+			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+			SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_MIDDLE);
+			break;
+		case ACTION_UP:
+
+			SDL_SendMouseButton(Android_Window, SDL_RELEASED,
+					SDL_BUTTON_MIDDLE);
+			SDL_SetMouseFocus(NULL);
+			break;
+		}
 		return;
 	}
 
@@ -53,15 +83,7 @@ void Android_OnTouch(int action, float x, float y, float p, int pc) {
 		SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
 
 		switch (action) {
-		case ACTION_LONGPRESS:
-			SDL_SetMouseFocus(NULL);
-			SDL_SetMouseFocus(Android_Window);
-			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
-			SDL_SendMouseButton(Android_Window, SDL_PRESSED,
-								SDL_BUTTON_RIGHT);
-			SDL_SendMouseButton(Android_Window, SDL_RELEASED,
-								SDL_BUTTON_RIGHT);
-			break;
+
 		case ACTION_DOWN:
 			if (pc == 1) {
 
@@ -75,20 +97,22 @@ void Android_OnTouch(int action, float x, float y, float p, int pc) {
 						SDL_BUTTON_LEFT);
 			}
 			break;
-			case ACTION_POINTER_2_DOWN:
-		case ACTION_POINTER_DOWN:
-			SDL_SetMouseFocus(NULL);
-			SDL_SetMouseFocus(Android_Window);
-			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
-			SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_MIDDLE);
-			break;
-		case ACTION_POINTER_2_UP:
-		case ACTION_POINTER_UP:
+			/*
+			 case ACTION_POINTER_2_DOWN:
+			 case ACTION_POINTER_DOWN:
+			 SDL_SetMouseFocus(NULL);
+			 SDL_SetMouseFocus(Android_Window);
+			 SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+			 SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_MIDDLE);
+			 break;
+			 case ACTION_POINTER_2_UP:
+			 case ACTION_POINTER_UP:
 
-			SDL_SendMouseButton(Android_Window, SDL_RELEASED,
-					SDL_BUTTON_MIDDLE);
-			SDL_SetMouseFocus(NULL);
-			break;
+			 SDL_SendMouseButton(Android_Window, SDL_RELEASED,
+			 SDL_BUTTON_MIDDLE);
+			 SDL_SetMouseFocus(NULL);
+			 break;
+			 */
 		}
 	} else {
 		SDL_SetMouseFocus(NULL);
