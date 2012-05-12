@@ -38,9 +38,10 @@ public class SDLActivity extends TrackedActivity {
 	private Configuration config;
 
 	private WakeLock wake;
+	
 	// Main components
-	private static SDLActivity mSingleton;
-	private static SDLSurface mSurface;
+	public static SDLActivity mSingleton;
+	public static SDLSurface mSurface;
 
 	// Audio
 	private static Thread mAudioThread;
@@ -306,7 +307,6 @@ public class SDLActivity extends TrackedActivity {
 				}
 
 			};
-
 			builder.setMessage(getResources().getString(R.string.setup_wizard_dialog))
 					.setCancelable(false).setNeutralButton("OK", alertListener);
 
