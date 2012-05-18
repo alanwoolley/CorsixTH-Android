@@ -1,3 +1,8 @@
+/*
+ *   Copyright (C) 2012 Alan Woolley
+ *   
+ *   See LICENSE.TXT for full license
+ */
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.corsixth;
 
