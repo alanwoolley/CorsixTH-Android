@@ -77,6 +77,11 @@ public class SDLActivity extends TrackedActivity {
 	public static native void nativeRunAudioThread();
 
 	public static native void setGamePath(String path);
+	
+	public static native void cthRestartGame();
+	public static native void cthSaveGame(String path);
+	public static native void cthLoadGame(String path);
+	
 
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
@@ -282,6 +287,15 @@ public class SDLActivity extends TrackedActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menuitem_restart:
+			cthRestartGame();
+			break;
+		case R.id.menuitem_save:
+			cthSaveGame("bleh");
+			break;
+		case R.id.menuitem_load:
+			cthLoadGame("bleh");
+			break;
 		case R.id.menuitem_pause:
 			onNativeKeyDown(KeyEvent.KEYCODE_P);
 			onNativeKeyUp(KeyEvent.KEYCODE_P);

@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menuitem_settings" android:title="Settings" android:icon="@drawable/ic_menu_manage" android:visible="false"></item>
-    <item android:id="@+id/menuitem_help" android:title="Help" android:icon="@drawable/ic_menu_help" android:visible="false"></item>
-    <item android:id="@+id/menuitem_wizard" android:title="@string/setup_wizard" android:icon="@drawable/ic_menu_manage"></item>
-    <item android:id="@+id/menuitem_pause" android:title="@string/pause" android:icon="@drawable/ic_pause"></item>
-    
+
+    <item
+        android:id="@+id/menuitem_settings"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="Settings"
+        android:visible="false"/>
+    <item
+        android:id="@+id/menuitem_help"
+        android:icon="@drawable/ic_menu_help"
+        android:title="Help"
+        android:visible="false"/>
+    <item
+        android:id="@+id/menuitem_wizard"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="@string/setup_wizard"/>
+    <item
+        android:id="@+id/menuitem_pause"
+        android:icon="@drawable/ic_pause"
+        android:title="@string/pause"/>
+    <item
+        android:id="@+id/menuitem_restart"
+        android:title="Restart game"/>
+    <item
+        android:id="@+id/menuitem_save"
+        android:title="Save game"/>
+    <item
+        android:id="@+id/menuitem_load"
+        android:title="Load game"/>
 
 </menu>
