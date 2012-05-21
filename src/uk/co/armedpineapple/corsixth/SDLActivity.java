@@ -290,6 +290,12 @@ public class SDLActivity extends TrackedActivity {
 		case R.id.menuitem_restart:
 			cthRestartGame();
 			break;
+		case R.id.menuitem_quicksave:
+			cthSaveGame("quicksave");
+			break;
+		case R.id.menuitem_quickload:
+			cthLoadGame("quicksave");
+			break;
 		case R.id.menuitem_save:
 			cthSaveGame("bleh");
 			break;
