@@ -6,6 +6,7 @@
 package uk.co.armedpineapple.corsixth;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +32,26 @@ import android.util.Log;
 public class Files {
 
 	private Files() {
+	}
+
+	public static String readTextFromRaw(Context ctx, int resource)
+			throws IOException {
+
+		InputStream inputStream = ctx.getResources().openRawResource(resource);
+
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+		int i;
+
+		i = inputStream.read();
+		while (i != -1) {
+			byteArrayOutputStream.write(i);
+			i = inputStream.read();
+		}
+		inputStream.close();
+
+		return byteArrayOutputStream.toString();
+
 	}
 
 	/**
@@ -231,7 +252,6 @@ public class Files {
 
 	}
 
-	
 	/** AsyncTask for extracting a .zip file to a directory */
 	public static class UnzipTask extends
 			AsyncTask<File, Integer, AsyncTaskResult<String>> {
@@ -244,10 +264,10 @@ public class Files {
 		@Override
 		protected AsyncTaskResult<String> doInBackground(File... files) {
 			try {
-				
+
 				File to = new File(unzipTo);
 				to.mkdirs();
-				
+
 				ZipFile zf = new ZipFile(files[0]);
 				int entryCount = zf.size();
 
@@ -263,14 +283,14 @@ public class Files {
 					if (!f.getParentFile().exists()) {
 						f.getParentFile().mkdirs();
 					}
-					
+
 					if (ze.isDirectory()) {
-			
+
 						if (!f.isDirectory()) {
 							f.mkdirs();
 						}
 					} else {
-						
+
 						InputStream zin = zf.getInputStream(ze);
 
 						FileOutputStream fout = new FileOutputStream(unzipTo

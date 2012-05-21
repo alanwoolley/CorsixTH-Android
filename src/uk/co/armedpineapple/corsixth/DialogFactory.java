@@ -5,6 +5,8 @@
  */
 package uk.co.armedpineapple.corsixth;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,10 +14,50 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class DialogFactory {
+
+	public static Dialog createAboutDialog(final Context ctx) {
+		final Dialog d = new Dialog(ctx);
+	
+		d.setContentView(R.layout.about);
+		
+		d.getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		
+		d.setTitle("About");
+
+		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
+		button.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				d.dismiss();
+			}
+
+		});
+
+		d.setOnShowListener(new OnShowListener() {
+
+			@Override
+			public void onShow(DialogInterface dialog) {
+				TextView aboutText = (TextView) d
+						.findViewById(R.id.aboutTextView);
+				String text;
+				try {
+					text = Files.readTextFromRaw(ctx, R.raw.about);
+				} catch (IOException e) {
+					text = "";
+				}
+				aboutText.setText(text);
+			}
+
+		});
+		return d;
+	}
 
 	public static Dialog createRecentChangesDialog(final Context ctx) {
 		final Dialog d = new Dialog(ctx);

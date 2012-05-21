@@ -287,6 +287,10 @@ public class SDLActivity extends TrackedActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menuitem_about:
+			Dialog aboutDialog = DialogFactory.createAboutDialog(this);
+			aboutDialog.show();
+			break;
 		case R.id.menuitem_restart:
 			cthRestartGame();
 			break;

@@ -34,5 +34,8 @@
     <item
         android:id="@+id/menuitem_load"
         android:title="Load game"/>
+      <item
+        android:id="@+id/menuitem_about"
+        android:title="About"/>
 
 </menu>
