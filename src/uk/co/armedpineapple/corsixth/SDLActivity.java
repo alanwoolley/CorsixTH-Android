@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
+import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
+import uk.co.armedpineapple.corsixth.dialogs.LoadDialog;
+import uk.co.armedpineapple.corsixth.dialogs.SaveDialog;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
@@ -22,8 +25,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView;
-import android.widget.Button;
 import android.os.*;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
@@ -37,8 +38,11 @@ public class SDLActivity extends TrackedActivity {
 	private Properties properties;
 	private Configuration config;
 
+	private SaveDialog saveDialog;
+	private LoadDialog loadDialog;
+
 	private WakeLock wake;
-	
+
 	// Main components
 	public static SDLActivity mSingleton;
 	public static SDLSurface mSurface;
@@ -77,11 +81,12 @@ public class SDLActivity extends TrackedActivity {
 	public static native void nativeRunAudioThread();
 
 	public static native void setGamePath(String path);
-	
+
 	public static native void cthRestartGame();
+
 	public static native void cthSaveGame(String path);
+
 	public static native void cthLoadGame(String path);
-	
 
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
@@ -261,11 +266,12 @@ public class SDLActivity extends TrackedActivity {
 	protected void onResume() {
 		super.onResume();
 		Log.d(getClass().getSimpleName(), "onResume()");
-		
+
 		if (config.getKeepScreenOn()) {
 			Log.d(getClass().getSimpleName(), "Getting wakelock");
 			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Keep Screen On Wakelock");
+			wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+					"Keep Screen On Wakelock");
 			wake.acquire();
 		}
 
@@ -295,16 +301,24 @@ public class SDLActivity extends TrackedActivity {
 			cthRestartGame();
 			break;
 		case R.id.menuitem_quicksave:
-			cthSaveGame("quicksave");
+			cthSaveGame("quicksave.sav");
 			break;
 		case R.id.menuitem_quickload:
-			cthLoadGame("quicksave");
+			cthLoadGame("quicksave.sav");
 			break;
 		case R.id.menuitem_save:
-			cthSaveGame("bleh");
+			if (saveDialog == null) {
+				saveDialog = new SaveDialog(this, config.getSaveGamesPath());
+			}
+			saveDialog.updateSaves(this);
+			saveDialog.show();
 			break;
 		case R.id.menuitem_load:
-			cthLoadGame("bleh");
+			if (loadDialog == null) {
+				loadDialog = new LoadDialog(this, config.getSaveGamesPath());
+			}
+			loadDialog.updateSaves(this);
+			loadDialog.show();
 			break;
 		case R.id.menuitem_pause:
 			onNativeKeyDown(KeyEvent.KEYCODE_P);
@@ -331,7 +345,8 @@ public class SDLActivity extends TrackedActivity {
 				}
 
 			};
-			builder.setMessage(getResources().getString(R.string.setup_wizard_dialog))
+			builder.setMessage(
+					getResources().getString(R.string.setup_wizard_dialog))
 					.setCancelable(false).setNeutralButton("OK", alertListener);
 
 			AlertDialog alert = builder.create();

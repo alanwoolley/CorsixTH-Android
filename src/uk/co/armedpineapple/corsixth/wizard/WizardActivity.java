@@ -8,9 +8,9 @@ package uk.co.armedpineapple.corsixth.wizard;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import uk.co.armedpineapple.corsixth.Configuration;
-import uk.co.armedpineapple.corsixth.DialogFactory;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
+import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;

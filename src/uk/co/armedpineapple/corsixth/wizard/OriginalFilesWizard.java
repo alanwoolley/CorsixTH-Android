@@ -11,12 +11,12 @@ import com.bugsense.trace.BugSenseHandler;
 
 import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
-import uk.co.armedpineapple.corsixth.DialogFactory;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.Network;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.Files.DownloadFileTask;
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
+import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;

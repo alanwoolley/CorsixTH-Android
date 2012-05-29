@@ -3,10 +3,12 @@
  *   
  *   See LICENSE.TXT for full license
  */
-package uk.co.armedpineapple.corsixth;
+package uk.co.armedpineapple.corsixth.dialogs;
 
 import java.io.IOException;
 
+import uk.co.armedpineapple.corsixth.Files;
+import uk.co.armedpineapple.corsixth.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;

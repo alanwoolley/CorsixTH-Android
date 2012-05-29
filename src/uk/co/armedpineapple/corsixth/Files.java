@@ -9,6 +9,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +35,19 @@ public class Files {
 	private Files() {
 	}
 
+	public static String[] listFilesInDirectory(Context ctx, String directory, FilenameFilter filter) {
+		Log.d(Files.class.getSimpleName(), "Looking for files in: " + directory);
+		File f = new File(directory);
+		String files[] = null;
+		if (f.isDirectory()) {
+			Log.d(Files.class.getSimpleName(), "Saved games directory looks ok");
+			files = f.list(filter);
+			Log.d(Files.class.getSimpleName(), "Found: " + files.length + " saves");
+		}
+		
+		return files;
+	}
+	
 	public static String readTextFromRaw(Context ctx, int resource)
 			throws IOException {
 
