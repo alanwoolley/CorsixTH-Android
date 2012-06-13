@@ -51,5 +51,6 @@
     <string name="no_connection_error">You need an internet connection to download. Please connect to a network and try again.</string>
     <string name="cancel">Cancel</string>
     <string name="new_save">New Save</string>
+    <string name="no_music_dialog">Your game files don\'t appear to have music included, therefore music could not be enabled. Please make sure you copied the music \'Sound\' folder over.</string>
 
 </resources>

@@ -44,52 +44,51 @@ public class WizardActivity extends TrackedActivity {
 
 			// Show dialog and end
 			DialogFactory.createExternalStorageDialog(this, true).show();
+			return;
 
+		}
+		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+
+		preferences = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+
+		if (preferences.getBoolean("wizard_run", false)) {
+			Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
+			finish();
+			startActivity(new Intent(this, SDLActivity.class));
 		} else {
-			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
+			Log.d(getClass().getSimpleName(), "Wizard is going to run.");
+			setContentView(R.layout.wizard);
+			flipper = (ViewFlipper) findViewById(R.id.flipper);
+			previousButton = (Button) findViewById(R.id.leftbutton);
+			nextButton = (Button) findViewById(R.id.rightbutton);
 
-			preferences = PreferenceManager
-					.getDefaultSharedPreferences(getBaseContext());
+			config = Configuration.loadFromPreferences(this, preferences);
 
-			if (preferences.getBoolean("wizard_run", false)) {
-				Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
-				finish();
-				startActivity(new Intent(this, SDLActivity.class));
-			} else {
-				Log.d(getClass().getSimpleName(), "Wizard is going to run.");
-				setContentView(R.layout.wizard);
-				flipper = (ViewFlipper) findViewById(R.id.flipper);
-				previousButton = (Button) findViewById(R.id.leftbutton);
-				nextButton = (Button) findViewById(R.id.rightbutton);
+			// Add all the wizard views
 
-				config = Configuration.loadFromPreferences(this, preferences);
+			LayoutInflater inflater = getLayoutInflater();
+			loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
+					R.layout.wizard_welcome, null));
+			loadAndAdd(inflater, flipper, (LanguageWizard) inflater.inflate(
+					R.layout.wizard_language, null));
+			loadAndAdd(inflater, flipper,
+					(OriginalFilesWizard) inflater.inflate(
+							R.layout.wizard_originalfiles, null));
+			loadAndAdd(inflater, flipper, (DisplayWizard) inflater.inflate(
+					R.layout.wizard_display, null));
+			loadAndAdd(inflater, flipper,
+					(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
+			loadAndAdd(inflater, flipper, (AdvancedWizard) inflater.inflate(
+					R.layout.wizard_advanced, null));
 
-				// Add all the wizard views
+			// Setup Buttons
+			previousButton.setVisibility(View.GONE);
+			buttonClickListener = new WizardButtonClickListener();
 
-				LayoutInflater inflater = getLayoutInflater();
-				loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
-						R.layout.wizard_welcome, null));
-				loadAndAdd(inflater, flipper,
-						(LanguageWizard) inflater.inflate(
-								R.layout.wizard_language, null));
-				loadAndAdd(inflater, flipper,
-						(OriginalFilesWizard) inflater.inflate(
-								R.layout.wizard_originalfiles, null));
-				loadAndAdd(inflater, flipper, (DisplayWizard) inflater.inflate(
-						R.layout.wizard_display, null));
-				loadAndAdd(inflater, flipper, (AudioWizard) inflater.inflate(
-						R.layout.wizard_audio, null));
-				loadAndAdd(inflater, flipper,
-						(AdvancedWizard) inflater.inflate(
-								R.layout.wizard_advanced, null));
+			previousButton.setOnClickListener(buttonClickListener);
+			nextButton.setOnClickListener(buttonClickListener);
 
-				// Setup Buttons
-				previousButton.setVisibility(View.GONE);
-				buttonClickListener = new WizardButtonClickListener();
-
-				previousButton.setOnClickListener(buttonClickListener);
-				nextButton.setOnClickListener(buttonClickListener);
-			}
 		}
 	}
 

@@ -25,11 +25,12 @@ public class DialogFactory {
 
 	public static Dialog createAboutDialog(final Context ctx) {
 		final Dialog d = new Dialog(ctx);
-	
+
 		d.setContentView(R.layout.about);
-		
-		d.getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-		
+
+		d.getWindow().setLayout(LayoutParams.FILL_PARENT,
+				LayoutParams.WRAP_CONTENT);
+
 		d.setTitle("About");
 
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);

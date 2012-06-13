@@ -59,13 +59,17 @@ public class Files {
 
 	private static Boolean doFilesExist(String[] files, String directory) {
 
-		if (new File(directory).isDirectory()) {
+		if (!new File(directory).isDirectory()) {
+			Log.d(Files.class.getSimpleName(), "Directory [" + directory
+					+ "] doesn't exist");
 			return false;
 		}
 
 		for (String file : files) {
 			File f = new File(directory + "/" + file);
 			if (!f.exists()) {
+				Log.d(Files.class.getSimpleName(), "File [" + directory + "/"
+						+ file + "] doesn't exist");
 				return false;
 			}
 		}

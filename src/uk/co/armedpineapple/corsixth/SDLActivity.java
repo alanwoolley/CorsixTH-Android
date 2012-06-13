@@ -38,11 +38,11 @@ public class SDLActivity extends TrackedActivity {
 	int currentVersion;
 	private Properties properties;
 	private Configuration config;
+	private WakeLock wake;
 
+	// Dialogs
 	private SaveDialog saveDialog;
 	private LoadDialog loadDialog;
-
-	private WakeLock wake;
 
 	// Main components
 	public static SDLActivity mSingleton;
@@ -51,6 +51,7 @@ public class SDLActivity extends TrackedActivity {
 	// Audio
 	private static Thread mAudioThread;
 	private static AudioTrack mAudioTrack;
+	private static Object audioBuffer;
 
 	// Load the libraries
 	static {
@@ -440,8 +441,6 @@ public class SDLActivity extends TrackedActivity {
 		// Called from SDLMain() thread and can't directly affect the view
 		// mSingleton.sendCommand(COMMAND_CHANGE_TITLE, title);
 	}
-
-	private static Object audioBuffer;
 
 	public static Object audioInit(int sampleRate, boolean is16Bit,
 			boolean isStereo, int desiredFrames) {

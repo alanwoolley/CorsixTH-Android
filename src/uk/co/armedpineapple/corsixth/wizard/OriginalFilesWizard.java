@@ -151,108 +151,104 @@ public class OriginalFilesWizard extends WizardView {
 
 	void doDemoDownload() {
 		// Check that the external storage is mounted.
-		if (Files.canAccessExternalStorage()) {
-
-			// Check that there is an active network connection
-			if (Network.HasNetworkConnection(ctx)) {
-				final File extDir = ctx.getExternalFilesDir(null);
-				final ProgressDialog dialog = new ProgressDialog(ctx);
-
-				dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				dialog.setMessage(ctx.getString(R.string.downloading_demo));
-				dialog.setIndeterminate(false);
-				dialog.setMax(100);
-				dialog.setCancelable(false);
-
-				final UnzipTask uzt = new Files.UnzipTask(
-						extDir.getAbsolutePath() + "/demo/") {
-
-					@Override
-					protected void onPostExecute(AsyncTaskResult<String> result) {
-						super.onPostExecute(result);
-						dialog.hide();
-
-						if (result.getResult() != null) {
-							customLocation = result.getResult() + "HOSP";
-							Log.d(getClass().getSimpleName(),
-									"Extracted TH demo: " + customLocation);
-						} else if (result.getError() != null) {
-							Exception e = result.getError();
-							BugSenseHandler.log("Extract", e);
-							DialogFactory
-									.createFromException(
-											result.getError(),
-											ctx.getString(R.string.download_demo_error),
-											ctx, false).show();
-							automaticRadio.setChecked(true);
-						}
-					}
-
-					@Override
-					protected void onPreExecute() {
-						super.onPreExecute();
-						dialog.setMessage(ctx
-								.getString(R.string.extracting_demo));
-					}
-
-					@Override
-					protected void onProgressUpdate(Integer... values) {
-						super.onProgressUpdate(values);
-						dialog.setProgress(values[0]);
-					}
-
-				};
-
-				final DownloadFileTask dft = new Files.DownloadFileTask(
-						extDir.getAbsolutePath()) {
-
-					@Override
-					protected void onPostExecute(AsyncTaskResult<File> result) {
-						super.onPostExecute(result);
-
-						if (result.getError() != null) {
-							BugSenseHandler.log("Download", result.getError());
-							automaticRadio.setChecked(true);
-							dialog.hide();
-
-							DialogFactory
-									.createFromException(
-											result.getError(),
-											ctx.getString(R.string.download_demo_error),
-											ctx, false).show();
-						} else {
-							uzt.execute(result.getResult());
-						}
-					}
-
-					@Override
-					protected void onPreExecute() {
-						super.onPreExecute();
-						dialog.show();
-					}
-
-					@Override
-					protected void onProgressUpdate(Integer... values) {
-						super.onProgressUpdate(values);
-						dialog.setProgress(values[0]);
-					}
-
-				};
-
-				dft.execute(ctx.getString(R.string.demo_url));
-			} else {
-				// Connection error
-				Dialog connectionDialog = DialogFactory
-						.createNetworkDialog(ctx);
-				connectionDialog.show();
-				automaticRadio.setChecked(true);
-			}
-		} else {
+		if (!Files.canAccessExternalStorage()) {
 			// External storage error
 			Toast toast = Toast.makeText(ctx, R.string.no_external_storage,
 					Toast.LENGTH_LONG);
 			toast.show();
 			automaticRadio.setChecked(true);
+			return;
 		}
+
+		// Check that there is an active network connection
+		if (!Network.HasNetworkConnection(ctx)) {
+			// Connection error
+			Dialog connectionDialog = DialogFactory.createNetworkDialog(ctx);
+			connectionDialog.show();
+			automaticRadio.setChecked(true);
+			return;
+		}
+
+		final File extDir = ctx.getExternalFilesDir(null);
+		final ProgressDialog dialog = new ProgressDialog(ctx);
+
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		dialog.setMessage(ctx.getString(R.string.downloading_demo));
+		dialog.setIndeterminate(false);
+		dialog.setMax(100);
+		dialog.setCancelable(false);
+
+		final UnzipTask uzt = new Files.UnzipTask(extDir.getAbsolutePath()
+				+ "/demo/") {
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<String> result) {
+				super.onPostExecute(result);
+				dialog.hide();
+
+				if (result.getResult() != null) {
+					customLocation = result.getResult() + "HOSP";
+					Log.d(getClass().getSimpleName(), "Extracted TH demo: "
+							+ customLocation);
+				} else if (result.getError() != null) {
+					Exception e = result.getError();
+					BugSenseHandler.log("Extract", e);
+					DialogFactory.createFromException(result.getError(),
+							ctx.getString(R.string.download_demo_error), ctx,
+							false).show();
+					automaticRadio.setChecked(true);
+				}
+			}
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				dialog.setMessage(ctx.getString(R.string.extracting_demo));
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... values) {
+				super.onProgressUpdate(values);
+				dialog.setProgress(values[0]);
+			}
+
+		};
+
+		final DownloadFileTask dft = new Files.DownloadFileTask(
+				extDir.getAbsolutePath()) {
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<File> result) {
+				super.onPostExecute(result);
+
+				if (result.getError() != null) {
+					BugSenseHandler.log("Download", result.getError());
+					automaticRadio.setChecked(true);
+					dialog.hide();
+
+					DialogFactory.createFromException(result.getError(),
+							ctx.getString(R.string.download_demo_error), ctx,
+							false).show();
+				} else {
+					uzt.execute(result.getResult());
+				}
+			}
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				dialog.show();
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... values) {
+				super.onProgressUpdate(values);
+				dialog.setProgress(values[0]);
+			}
+
+		};
+
+		dft.execute(ctx.getString(R.string.demo_url));
+
 	}
 }
