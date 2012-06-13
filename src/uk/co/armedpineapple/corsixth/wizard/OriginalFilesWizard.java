@@ -110,8 +110,7 @@ public class OriginalFilesWizard extends WizardView {
 
 			@Override
 			public void onClick(View v) {
-				if (Environment.MEDIA_MOUNTED.equals(Environment
-						.getExternalStorageState())) {
+				if (Files.canAccessExternalStorage()) {
 					File f = new File(ctx.getExternalFilesDir(null)
 							.getAbsolutePath() + "/demo/HOSP");
 					if (!f.exists()) {
@@ -152,8 +151,7 @@ public class OriginalFilesWizard extends WizardView {
 
 	void doDemoDownload() {
 		// Check that the external storage is mounted.
-		if (Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState())) {
+		if (Files.canAccessExternalStorage()) {
 
 			// Check that there is an active network connection
 			if (Network.HasNetworkConnection(ctx)) {

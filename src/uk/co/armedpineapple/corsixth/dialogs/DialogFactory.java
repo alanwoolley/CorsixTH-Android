@@ -50,7 +50,7 @@ public class DialogFactory {
 						.findViewById(R.id.aboutTextView);
 				String text;
 				try {
-					text = Files.readTextFromRaw(ctx, R.raw.about);
+					text = Files.readTextFromResource(ctx, R.raw.about);
 				} catch (IOException e) {
 					text = "";
 				}

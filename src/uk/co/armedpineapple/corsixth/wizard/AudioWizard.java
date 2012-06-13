@@ -134,8 +134,7 @@ public class AudioWizard extends WizardView {
 
 	public void doTimidityDownload() {
 		// Check for external storage
-		if (Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState())) {
+		if (Files.canAccessExternalStorage()) {
 			// Check for network connection
 			if (Network.HasNetworkConnection(ctx)) {
 				final File extDir = ctx.getExternalFilesDir(null);

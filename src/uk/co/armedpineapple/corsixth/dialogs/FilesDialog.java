@@ -7,6 +7,7 @@ package uk.co.armedpineapple.corsixth.dialogs;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
@@ -47,8 +48,8 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 	}
 
-	public void updateSaves(Context ctx) {
-		saves = Files.listFilesInDirectory(ctx, savePath, new FilenameFilter() {
+	public void updateSaves(Context ctx) throws IOException {
+		saves = Files.listFilesInDirectory(savePath, new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String filename) {

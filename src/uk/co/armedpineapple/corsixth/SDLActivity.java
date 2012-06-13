@@ -25,6 +25,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 import android.os.*;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
@@ -54,7 +55,7 @@ public class SDLActivity extends TrackedActivity {
 	// Load the libraries
 	static {
 		System.loadLibrary("SDL");
-		System.loadLibrary("SDL_image");
+		// System.loadLibrary("SDL_image");
 		System.loadLibrary("mikmod");
 		System.loadLibrary("LUA");
 		System.loadLibrary("AGG");
@@ -96,8 +97,7 @@ public class SDLActivity extends TrackedActivity {
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		// Make sure that external media is mounted.
-		if (Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState())) {
+		if (Files.canAccessExternalStorage()) {
 
 			final SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
@@ -304,21 +304,43 @@ public class SDLActivity extends TrackedActivity {
 			cthSaveGame("quicksave.sav");
 			break;
 		case R.id.menuitem_quickload:
-			cthLoadGame("quicksave.sav");
+			if (new File(config.getSaveGamesPath() + "/quicksave.sav").exists()) {
+				cthLoadGame("quicksave.sav");
+			} else {
+				Toast t = Toast.makeText(this, "No quicksave to load!",
+						Toast.LENGTH_SHORT);
+				t.show();
+			}
 			break;
 		case R.id.menuitem_save:
 			if (saveDialog == null) {
 				saveDialog = new SaveDialog(this, config.getSaveGamesPath());
 			}
-			saveDialog.updateSaves(this);
-			saveDialog.show();
+			try {
+				saveDialog.updateSaves(this);
+				saveDialog.show();
+			} catch (IOException e) {
+				BugSenseHandler.log("Files", e);
+				Toast t = Toast.makeText(this, "Problem loading save dialog",
+						Toast.LENGTH_SHORT);
+				t.show();
+			}
+
 			break;
 		case R.id.menuitem_load:
 			if (loadDialog == null) {
 				loadDialog = new LoadDialog(this, config.getSaveGamesPath());
 			}
-			loadDialog.updateSaves(this);
-			loadDialog.show();
+			try {
+				loadDialog.updateSaves(this);
+				loadDialog.show();
+			} catch (IOException e) {
+				BugSenseHandler.log("Files", e);
+				Toast t = Toast.makeText(this, "Problem loading load dialog",
+						Toast.LENGTH_SHORT);
+				t.show();
+			}
+
 			break;
 		case R.id.menuitem_pause:
 			onNativeKeyDown(KeyEvent.KEYCODE_P);
@@ -359,15 +381,13 @@ public class SDLActivity extends TrackedActivity {
 
 	}
 
-	// Messages from the SDLMain thread
-	static int COMMAND_CHANGE_TITLE = 1;
-
 	// Handler for the messages
 	Handler commandHandler = new Handler() {
 		public void handleMessage(Message msg) {
-			if (msg.arg1 == COMMAND_CHANGE_TITLE) {
-				setTitle((String) msg.obj);
-			}
+			/*
+			 * if (msg.arg1 == COMMAND_CHANGE_TITLE) { setTitle((String)
+			 * msg.obj); }
+			 */
 		}
 	};
 
@@ -399,10 +419,12 @@ public class SDLActivity extends TrackedActivity {
 	/**
 	 * Hides the virtual keyboard.
 	 * 
-	 * TODO - implement this
 	 */
 	public static void hideSoftKeyboard() {
 		Log.d(SDLActivity.class.getSimpleName(), "Hiding keyboard");
+		InputMethodManager mgr = (InputMethodManager) mSingleton
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.hideSoftInputFromWindow(mSurface.getWindowToken(), 0);
 
 	}
 
@@ -419,7 +441,6 @@ public class SDLActivity extends TrackedActivity {
 		// mSingleton.sendCommand(COMMAND_CHANGE_TITLE, title);
 	}
 
-	// Audio
 	private static Object audioBuffer;
 
 	public static Object audioInit(int sampleRate, boolean is16Bit,
