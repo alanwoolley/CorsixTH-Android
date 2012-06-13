@@ -53,16 +53,8 @@ public class SDLActivity extends TrackedActivity {
 	private static AudioTrack mAudioTrack;
 	private static Object audioBuffer;
 
-	// Load the libraries
-	static {
-		System.loadLibrary("SDL");
-		// System.loadLibrary("SDL_image");
-		System.loadLibrary("mikmod");
-		System.loadLibrary("LUA");
-		System.loadLibrary("AGG");
-		System.loadLibrary("SDL_mixer");
-		System.loadLibrary("appmain");
-	}
+	
+
 
 	// C functions we call
 	public static native void nativeInit();
@@ -222,7 +214,14 @@ public class SDLActivity extends TrackedActivity {
 	}
 
 	void loadApplication() {
-
+		
+		System.loadLibrary("SDL");
+		System.loadLibrary("mikmod");
+		System.loadLibrary("LUA");
+		System.loadLibrary("AGG");
+		System.loadLibrary("SDL_mixer");
+		System.loadLibrary("appmain");
+		
 		try {
 			config.writeToFile();
 		} catch (IOException e) {
@@ -250,6 +249,10 @@ public class SDLActivity extends TrackedActivity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
+		
+		// Load the libraries
+		
+		
 
 	}
 
