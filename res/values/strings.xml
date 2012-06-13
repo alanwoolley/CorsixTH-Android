@@ -52,5 +52,6 @@
     <string name="cancel">Cancel</string>
     <string name="new_save">New Save</string>
     <string name="no_music_dialog">Your game files don\'t appear to have music included, therefore music could not be enabled. Please make sure you copied the music \'Sound\' folder over.</string>
+    <string name="no_data_dialog">Cannot locate game files. Please ensure that you have copied them over to a directory called \'th\' on your external storage, or specified a valid directory.</string>
 
 </resources>

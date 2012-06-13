@@ -8,6 +8,7 @@ package uk.co.armedpineapple.corsixth.wizard;
 import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
@@ -111,23 +112,31 @@ public class WizardActivity extends TrackedActivity {
 						R.animator.wizard_anim_slideoutright);
 				flipper.showPrevious();
 			} else if (v.equals(nextButton)) {
-				((WizardView) flipper.getCurrentView())
-						.saveConfiguration(config);
+				try {
+					((WizardView) flipper.getCurrentView())
+							.saveConfiguration(config);
 
-				if (nextButton.getText() == "Play!") {
-					config.saveToPreferences(WizardActivity.this, preferences);
+					if (nextButton.getText() == "Play!") {
+						config.saveToPreferences(WizardActivity.this,
+								preferences);
 
-					finish();
-					WizardActivity.this.startActivity(new Intent(
-							WizardActivity.this, SDLActivity.class));
-				} else {
+						finish();
+						WizardActivity.this.startActivity(new Intent(
+								WizardActivity.this, SDLActivity.class));
+					} else {
 
-					flipper.setInAnimation(WizardActivity.this,
-							R.animator.wizard_anim_slideinleft);
-					flipper.setOutAnimation(WizardActivity.this,
-							R.animator.wizard_anim_slideoutleft);
-					flipper.showNext();
+						flipper.setInAnimation(WizardActivity.this,
+								R.animator.wizard_anim_slideinleft);
+						flipper.setOutAnimation(WizardActivity.this,
+								R.animator.wizard_anim_slideoutleft);
+						flipper.showNext();
+					}
+
+				} catch (ConfigurationException e) {
+					// Couldn't save the configuration. Don't change the view.
+					return;
 				}
+
 			}
 
 			if (hasNext(flipper)) {

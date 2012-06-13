@@ -6,6 +6,7 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.R;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -34,7 +35,7 @@ public class LanguageWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) {
+	void saveConfiguration(Configuration config) throws ConfigurationException{
 		config.setLanguage(langValuesArray[languageSpinner
 				.getSelectedItemPosition()]);
 	}

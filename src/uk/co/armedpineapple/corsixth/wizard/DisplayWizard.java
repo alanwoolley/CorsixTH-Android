@@ -6,6 +6,7 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.R;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -49,7 +50,7 @@ public class DisplayWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) {
+	void saveConfiguration(Configuration config)  throws ConfigurationException{
 
 		if (defaultResolutionRadio.isChecked()) {
 			config.setResolutionMode(Configuration.RESOLUTION_DEFAULT);

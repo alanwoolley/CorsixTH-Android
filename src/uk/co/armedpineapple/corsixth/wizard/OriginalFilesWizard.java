@@ -11,6 +11,7 @@ import com.bugsense.trace.BugSenseHandler;
 
 import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.Network;
 import uk.co.armedpineapple.corsixth.R;
@@ -23,7 +24,6 @@ import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -59,12 +59,37 @@ public class OriginalFilesWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) {
+	void saveConfiguration(Configuration config) throws ConfigurationException{
 		if (automaticRadio.isChecked()) {
 			config.setOriginalFilesPath("/sdcard/th");
 		} else if (manualRadio.isChecked() || downloadDemoRadio.isChecked()) {
 			config.setOriginalFilesPath(customLocation);
 		}
+		
+		if (!Files.hasDataFiles(config.getOriginalFilesPath())) {
+		
+			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+
+			builder.setMessage(
+					ctx.getString(R.string.no_data_dialog))
+					.setCancelable(true)
+					.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							dialog.dismiss();
+						}
+						
+					});
+				
+
+			AlertDialog alert = builder.create();
+			alert.show();
+			
+			throw new ConfigurationException();
+		}
+		
 	}
 
 	@Override

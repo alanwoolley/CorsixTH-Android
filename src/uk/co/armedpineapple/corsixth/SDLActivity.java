@@ -34,8 +34,7 @@ import android.media.*;
 
 public class SDLActivity extends TrackedActivity {
 
-	private String dataRoot = "";
-	int currentVersion;
+	private int currentVersion;
 	private Properties properties;
 	private Configuration config;
 	private WakeLock wake;
@@ -52,9 +51,6 @@ public class SDLActivity extends TrackedActivity {
 	private static Thread mAudioThread;
 	private static AudioTrack mAudioTrack;
 	private static Object audioBuffer;
-
-	
-
 
 	// C functions we call
 	public static native void nativeInit();
@@ -99,8 +95,6 @@ public class SDLActivity extends TrackedActivity {
 
 			config = Configuration.loadFromPreferences(this, preferences);
 
-			dataRoot = config.getCthPath();
-
 			currentVersion = preferences.getInt("last_version", 0) - 1;
 
 			try {
@@ -143,7 +137,8 @@ public class SDLActivity extends TrackedActivity {
 
 	private void installFiles(final SharedPreferences preferences) {
 		final ProgressDialog dialog = new ProgressDialog(this);
-		final UnzipTask unzipTask = new UnzipTask(dataRoot + "/scripts/") {
+		final UnzipTask unzipTask = new UnzipTask(config.getCthPath()
+				+ "/scripts/") {
 
 			@Override
 			protected void onPreExecute() {
@@ -214,14 +209,15 @@ public class SDLActivity extends TrackedActivity {
 	}
 
 	void loadApplication() {
-		
+
+		// Load the libraries
 		System.loadLibrary("SDL");
 		System.loadLibrary("mikmod");
 		System.loadLibrary("LUA");
 		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
-		
+
 		try {
 			config.writeToFile();
 		} catch (IOException e) {
@@ -231,7 +227,7 @@ public class SDLActivity extends TrackedActivity {
 			BugSenseHandler.log("Config", e);
 		}
 
-		setGamePath(dataRoot + "/scripts/");
+		setGamePath(config.getCthPath() + "/scripts/");
 
 		File f = new File(config.getSaveGamesPath());
 
@@ -249,10 +245,6 @@ public class SDLActivity extends TrackedActivity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
-		
-		// Load the libraries
-		
-		
 
 	}
 

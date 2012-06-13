@@ -11,6 +11,7 @@ import com.bugsense.trace.BugSenseHandler;
 
 import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.Network;
 import uk.co.armedpineapple.corsixth.R;
@@ -53,7 +54,7 @@ public class AudioWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) {
+	void saveConfiguration(Configuration config) throws ConfigurationException {
 
 		config.setPlayAnnouncements(announcerCheck.isChecked());
 		config.setPlayMusic(musicCheck.isChecked());

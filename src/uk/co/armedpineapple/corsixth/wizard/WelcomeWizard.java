@@ -6,6 +6,7 @@
 package uk.co.armedpineapple.corsixth.wizard;
 
 import uk.co.armedpineapple.corsixth.Configuration;
+import uk.co.armedpineapple.corsixth.ConfigurationException;
 import android.content.Context;
 import android.util.AttributeSet;
 
@@ -26,7 +27,7 @@ public class WelcomeWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) {
+	void saveConfiguration(Configuration config)  throws ConfigurationException{
 
 	}
 
