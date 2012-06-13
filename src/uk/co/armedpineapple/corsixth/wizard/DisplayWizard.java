@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.LinearLayout.LayoutParams;
 
 public class DisplayWizard extends WizardView {
 

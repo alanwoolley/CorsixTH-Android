@@ -155,9 +155,8 @@ public class Configuration {
 
 			StringBuilder b = new StringBuilder();
 			char[] buf = new char[1024];
-			int read;
 
-			while ((read = reader.read(buf)) != -1) {
+			while ((reader.read(buf)) != -1) {
 				b.append(buf);
 			}
 
