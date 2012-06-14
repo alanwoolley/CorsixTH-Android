@@ -136,7 +136,9 @@ public class OriginalFilesWizard extends WizardView {
 			}
 		});
 
-		if (config.getOriginalFilesPath().equals("/sdcard/th")) {
+		if (config.getOriginalFilesPath() == null
+				|| config.getOriginalFilesPath().equals("/sdcard/th")
+				|| config.getOriginalFilesPath().equals("")) {
 			automaticRadio.setChecked(true);
 		} else {
 			manualRadio.setChecked(true);
