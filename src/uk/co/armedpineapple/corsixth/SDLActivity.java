@@ -10,6 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.EGLSurface;
+
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
 import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
 import uk.co.armedpineapple.corsixth.dialogs.LoadDialog;
@@ -38,6 +44,16 @@ public class SDLActivity extends TrackedActivity {
 	private Properties properties;
 	private Configuration config;
 	private WakeLock wake;
+
+	// This is what SDL runs in. It invokes SDL_main(), eventually
+	private static Thread mSDLThread;
+
+	// EGL private objects
+	private static EGLContext mEGLContext;
+	private static EGLSurface mEGLSurface;
+	private static EGLDisplay mEGLDisplay;
+	private static EGLConfig mEGLConfig;
+	private static int mGLMajor, mGLMinor;
 
 	// Dialogs
 	private SaveDialog saveDialog;
@@ -243,9 +259,156 @@ public class SDLActivity extends TrackedActivity {
 
 		setContentView(mSurface);
 		SurfaceHolder holder = mSurface.getHolder();
-		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
 
+	}
+
+	public static void startApp() {
+		// Start up the C app thread
+		if (mSDLThread == null) {
+			mSDLThread = new Thread(new SDLMain(), "SDLThread");
+			mSDLThread.start();
+		} else {
+			// SDLActivity.nativeResume();
+		}
+	}
+
+	// EGL functions
+	public static boolean initEGL(int majorVersion, int minorVersion) {
+		if (SDLActivity.mEGLDisplay == null) {
+			// Log.v("SDL", "Starting up OpenGL ES " + majorVersion + "." +
+			// minorVersion);
+
+			try {
+				EGL10 egl = (EGL10) EGLContext.getEGL();
+
+				EGLDisplay dpy = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+
+				int[] version = new int[2];
+				egl.eglInitialize(dpy, version);
+
+				int EGL_OPENGL_ES_BIT = 1;
+				int EGL_OPENGL_ES2_BIT = 4;
+				int renderableType = 0;
+				if (majorVersion == 2) {
+					renderableType = EGL_OPENGL_ES2_BIT;
+				} else if (majorVersion == 1) {
+					renderableType = EGL_OPENGL_ES_BIT;
+				}
+				int[] configSpec = {
+						// EGL10.EGL_DEPTH_SIZE, 16,
+						EGL10.EGL_RENDERABLE_TYPE, renderableType,
+						EGL10.EGL_NONE };
+				EGLConfig[] configs = new EGLConfig[1];
+				int[] num_config = new int[1];
+				if (!egl.eglChooseConfig(dpy, configSpec, configs, 1,
+						num_config) || num_config[0] == 0) {
+					Log.e("SDL", "No EGL config available");
+					return false;
+				}
+				EGLConfig config = configs[0];
+
+				/*
+				 * int EGL_CONTEXT_CLIENT_VERSION=0x3098; int contextAttrs[] =
+				 * new int[] { EGL_CONTEXT_CLIENT_VERSION, majorVersion,
+				 * EGL10.EGL_NONE }; EGLContext ctx = egl.eglCreateContext(dpy,
+				 * config, EGL10.EGL_NO_CONTEXT, contextAttrs);
+				 * 
+				 * if (ctx == EGL10.EGL_NO_CONTEXT) { Log.e("SDL",
+				 * "Couldn't create context"); return false; }
+				 * SDLActivity.mEGLContext = ctx;
+				 */
+				SDLActivity.mEGLDisplay = dpy;
+				SDLActivity.mEGLConfig = config;
+				SDLActivity.mGLMajor = majorVersion;
+				SDLActivity.mGLMinor = minorVersion;
+
+				SDLActivity.createEGLSurface();
+			} catch (Exception e) {
+				Log.v("SDL", e + "");
+				for (StackTraceElement s : e.getStackTrace()) {
+					Log.v("SDL", s.toString());
+				}
+			}
+		} else
+			SDLActivity.createEGLSurface();
+
+		return true;
+	}
+
+	public static boolean createEGLContext() {
+		EGL10 egl = (EGL10) EGLContext.getEGL();
+		int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+		int contextAttrs[] = new int[] { EGL_CONTEXT_CLIENT_VERSION,
+				SDLActivity.mGLMajor, EGL10.EGL_NONE };
+		SDLActivity.mEGLContext = egl.eglCreateContext(SDLActivity.mEGLDisplay,
+				SDLActivity.mEGLConfig, EGL10.EGL_NO_CONTEXT, contextAttrs);
+		if (SDLActivity.mEGLContext == EGL10.EGL_NO_CONTEXT) {
+			Log.e("SDL", "Couldn't create context");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean createEGLSurface() {
+		if (SDLActivity.mEGLDisplay != null && SDLActivity.mEGLConfig != null) {
+			EGL10 egl = (EGL10) EGLContext.getEGL();
+			if (SDLActivity.mEGLContext == null)
+				createEGLContext();
+
+			Log.v("SDL", "Creating new EGL Surface");
+			EGLSurface surface = egl.eglCreateWindowSurface(
+					SDLActivity.mEGLDisplay, SDLActivity.mEGLConfig,
+					SDLActivity.mSurface, null);
+			if (surface == EGL10.EGL_NO_SURFACE) {
+				Log.e("SDL", "Couldn't create surface");
+				return false;
+			}
+
+			if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface,
+					SDLActivity.mEGLContext)) {
+				Log.e("SDL",
+						"Old EGL Context doesnt work, trying with a new one");
+				createEGLContext();
+				if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface,
+						surface, SDLActivity.mEGLContext)) {
+					Log.e("SDL", "Failed making EGL Context current");
+					return false;
+				}
+			}
+			SDLActivity.mEGLSurface = surface;
+			return true;
+		}
+		return false;
+	}
+	
+    public static boolean createGLContext(int majorVersion, int minorVersion) {
+        return initEGL(majorVersion, minorVersion);
+    }
+    
+    public static void flipBuffers() {
+        flipEGL();
+    }
+
+	// EGL buffer flip
+	public static void flipEGL() {
+		try {
+			EGL10 egl = (EGL10) EGLContext.getEGL();
+
+			egl.eglWaitNative(EGL10.EGL_CORE_NATIVE_ENGINE, null);
+
+			// drawing here
+
+			egl.eglWaitGL();
+
+			egl.eglSwapBuffers(SDLActivity.mEGLDisplay, SDLActivity.mEGLSurface);
+
+		} catch (Exception e) {
+			Log.v("SDL", "flipEGL(): " + e);
+			for (StackTraceElement s : e.getStackTrace()) {
+				Log.v("SDL", s.toString());
+			}
+		}
 	}
 
 	// Events
@@ -424,14 +587,6 @@ public class SDLActivity extends TrackedActivity {
 
 	}
 
-	public static boolean createGLContext(int majorVersion, int minorVersion) {
-		return mSurface.initEGL(majorVersion, minorVersion);
-	}
-
-	public static void flipBuffers() {
-		mSurface.flipEGL();
-	}
-
 	public static void setActivityTitle(String title) {
 		// Called from SDLMain() thread and can't directly affect the view
 		// mSingleton.sendCommand(COMMAND_CHANGE_TITLE, title);
@@ -445,9 +600,8 @@ public class SDLActivity extends TrackedActivity {
 				: AudioFormat.ENCODING_PCM_8BIT;
 		int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
-		Log.v(SDLActivity.class.getSimpleName(), "SDL audio: wanted "
-				+ (isStereo ? "stereo" : "mono") + " "
-				+ (is16Bit ? "16-bit" : "8-bit") + " "
+		Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono")
+				+ " " + (is16Bit ? "16-bit" : "8-bit") + " "
 				+ ((float) sampleRate / 1000f) + "kHz, " + desiredFrames
 				+ " frames buffer");
 
@@ -466,7 +620,7 @@ public class SDLActivity extends TrackedActivity {
 
 		audioStartThread();
 
-		Log.v(SDLActivity.class.getSimpleName(),
+		Log.v("SDL",
 				"SDL audio: got "
 						+ ((mAudioTrack.getChannelCount() >= 2) ? "stereo"
 								: "mono")
