@@ -31,15 +31,15 @@ public class TwoFingerMoveGesture implements
 			// we can make the start of the gesture much smoother.
 			if ((Math.abs(originX - prevX) > delta || Math.abs(originY - prevY) > delta)) {
 
-				SDLActivity.onNativeTouch(MotionEvent.ACTION_DOWN, prevX,
-						prevY, 0, 0, 2);
+				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_DOWN, prevX,
+						prevY, 0, 2, 2);
 				first = false;
 			}
 
 		} else {
 
-			SDLActivity.onNativeTouch(MotionEvent.ACTION_MOVE, prevX, prevY, 0,
-					0, 2);
+			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_MOVE, prevX,
+					prevY, 0, 2, 2);
 		}
 
 		return true;
@@ -64,8 +64,8 @@ public class TwoFingerMoveGesture implements
 
 		if (!first) {
 
-			SDLActivity.onNativeTouch(MotionEvent.ACTION_UP, prevX, prevY, 0,
-					0, 2);
+			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, prevX,
+					prevY, 0, 2, 2);
 		}
 	}
 

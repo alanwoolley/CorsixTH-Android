@@ -26,12 +26,20 @@ public class LongPressGesture implements OnGestureListener {
 	}
 
 	@Override
-	public void onLongPress(MotionEvent e) {
+	public void onLongPress(MotionEvent event) {
 		Log.d(getClass().getSimpleName(), "Detected long press");
 
-		float[] coords = SDLActivity.mSurface.translateCoords(e.getX(),
-				e.getY());
-		SDLActivity.onNativeTouch(0, coords[0], coords[1], 0, 0, 1);
+		final int touchDevId = event.getDeviceId();
+		final int pointerCount = event.getPointerCount();
+		int actionPointerIndex = event.getActionIndex();
+		int pointerFingerId = event.getPointerId(actionPointerIndex);
+
+		float[] coords = SDLActivity.mSurface.translateCoords(
+				event.getX(actionPointerIndex), event.getY(actionPointerIndex));
+
+		SDLActivity.onNativeTouch(touchDevId, pointerFingerId, 0, coords[0],
+				coords[1], event.getPressure(actionPointerIndex), pointerCount,
+				1);
 
 	}
 

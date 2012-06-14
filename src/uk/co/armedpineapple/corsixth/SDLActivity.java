@@ -79,7 +79,7 @@ public class SDLActivity extends TrackedActivity {
 
 	public static native void onNativeKeyUp(int keycode);
 
-	public static native void onNativeTouch(int action, float x, float y,
+	public static native void onNativeTouch(int touchDevId, int pointerFingerId, int action, float x, float y,
 			float p, int pc, int gestureTriggered);
 
 	public static native void onNativeAccel(float x, float y, float z);
@@ -381,14 +381,14 @@ public class SDLActivity extends TrackedActivity {
 		}
 		return false;
 	}
-	
-    public static boolean createGLContext(int majorVersion, int minorVersion) {
-        return initEGL(majorVersion, minorVersion);
-    }
-    
-    public static void flipBuffers() {
-        flipEGL();
-    }
+
+	public static boolean createGLContext(int majorVersion, int minorVersion) {
+		return initEGL(majorVersion, minorVersion);
+	}
+
+	public static void flipBuffers() {
+		flipEGL();
+	}
 
 	// EGL buffer flip
 	public static void flipEGL() {

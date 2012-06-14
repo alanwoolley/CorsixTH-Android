@@ -5,12 +5,6 @@
  */
 package uk.co.armedpineapple.corsixth;
 
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.egl.EGLSurface;
-
 import uk.co.armedpineapple.corsixth.gestures.LongPressGesture;
 import uk.co.armedpineapple.corsixth.gestures.TwoFingerMoveGesture;
 
@@ -30,8 +24,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.bugsense.trace.BugSenseHandler;
-
 /**
  * SDLSurface. This is what we draw on, so we need to know when it's created in
  * order to do anything useful.
@@ -41,11 +33,8 @@ import com.bugsense.trace.BugSenseHandler;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-
 	public int width;
 	public int height;
-
-
 
 	// Sensors
 	private static SensorManager mSensorManager;
@@ -56,7 +45,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Startup
 	public SDLSurface(Context context, int width, int height) {
 		super(context);
-		
+
 		getHolder().addCallback(this);
 		this.width = width;
 		this.height = height;
@@ -78,11 +67,10 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.v(getClass().getSimpleName(), "surfaceCreated()");
-		
-        holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-        SDLActivity.createEGLSurface();
-        
-        
+
+		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+		SDLActivity.createEGLSurface();
+
 		enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 	}
 
@@ -91,10 +79,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		Log.v(getClass().getSimpleName(), "surfaceDestroyed()");
 
 		// Send a quit message to the application
-	    // SDLActivity.nativePause();
+		// SDLActivity.nativePause();
 		SDLActivity.nativeQuit();
-
-		
 
 		enableSensor(Sensor.TYPE_ACCELEROMETER, false);
 
@@ -152,7 +138,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		}
 		SDLActivity.onNativeResize(width, height, sdlFormat);
 
-		
 		SDLActivity.startApp();
 	}
 
@@ -160,9 +145,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void onDraw(Canvas canvas) {
 	}
 
-
-
-	
 	// Key events
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		switch (keyCode) {
@@ -199,14 +181,32 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		longPressGestureDetector.onTouchEvent(event);
 		moveGestureDetector.onTouchEvent(event);
 
+		final int touchDevId = event.getDeviceId();
+		final int pointerCount = event.getPointerCount();
+		int actionPointerIndex = event.getActionIndex();
+		int pointerFingerId = event.getPointerId(actionPointerIndex);
+
 		int action = event.getAction();
 
-		float[] coords = translateCoords(event.getX(), event.getY());
-		float p = event.getPressure();
-		int pc = event.getPointerCount();
+		float[] coords = translateCoords(event.getX(actionPointerIndex),
+				event.getY(actionPointerIndex));
+		float p = event.getPressure(actionPointerIndex);
 
-		// TODO: Anything else we need to pass?
-		SDLActivity.onNativeTouch(action, coords[0], coords[1], p, pc, 0);
+		if (action == MotionEvent.ACTION_MOVE && pointerCount > 1) {
+			// TODO send motion to every pointer if its position has
+			// changed since prev event.
+			for (int i = 0; i < pointerCount; i++) {
+				pointerFingerId = event.getPointerId(i);
+				coords = translateCoords(event.getX(actionPointerIndex),
+						event.getY(actionPointerIndex));
+				p = event.getPressure(i);
+				SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
+						coords[0], coords[1], p, pointerCount, 0);
+			}
+		} else {
+			SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
+					coords[0], coords[1], p, pointerCount, 0);
+		}
 
 		return true;
 	}
@@ -234,11 +234,12 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		// TODO
 	}
 
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            SDLActivity.onNativeAccel(event.values[0] / SensorManager.GRAVITY_EARTH,
-                                      event.values[1] / SensorManager.GRAVITY_EARTH,
-                                      event.values[2] / SensorManager.GRAVITY_EARTH);
-        }
-    }
+	public void onSensorChanged(SensorEvent event) {
+		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+			SDLActivity.onNativeAccel(event.values[0]
+					/ SensorManager.GRAVITY_EARTH, event.values[1]
+					/ SensorManager.GRAVITY_EARTH, event.values[2]
+					/ SensorManager.GRAVITY_EARTH);
+		}
+	}
 }

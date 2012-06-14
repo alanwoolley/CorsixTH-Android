@@ -49,8 +49,8 @@ char ignoreNextUp = 0;
 char doubleClick = 0;
 char ignoreNextDown = 0;
 
-void Android_OnTouch(int action, float x, float y, float p, int pc,
-		int gestureTriggered) {
+void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
+		int action, float x, float y, float p, int pc, int gestureTriggered) {
 	if (!Android_Window) {
 		return;
 	}
@@ -117,7 +117,7 @@ void Android_OnTouch(int action, float x, float y, float p, int pc,
 				if (doubleClick == 1) {
 					LOGI("Mouse Up - left SENT");
 					SDL_SendMouseButton(Android_Window, SDL_RELEASED,
-										SDL_BUTTON_LEFT);
+							SDL_BUTTON_LEFT);
 					doubleClick = 0;
 				}
 
