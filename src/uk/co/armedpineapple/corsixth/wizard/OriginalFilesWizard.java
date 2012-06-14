@@ -59,37 +59,48 @@ public class OriginalFilesWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) throws ConfigurationException{
+	void saveConfiguration(Configuration config) throws ConfigurationException {
 		if (automaticRadio.isChecked()) {
 			config.setOriginalFilesPath("/sdcard/th");
 		} else if (manualRadio.isChecked() || downloadDemoRadio.isChecked()) {
 			config.setOriginalFilesPath(customLocation);
 		}
-		
+
 		if (!Files.hasDataFiles(config.getOriginalFilesPath())) {
-		
+
+			// Check to see if there's a HOSP directory instead
+
+			File hosp = new File(config.getOriginalFilesPath() + "/HOSP");
+			if (hosp.exists()
+					&& Files.hasDataFiles(config.getOriginalFilesPath()
+							+ "/HOSP")) {
+				manualRadio.setChecked(true);
+				customLocation = config.getOriginalFilesPath() + "/HOSP";
+				config.setOriginalFilesPath(customLocation);
+				return;
+			}
+
 			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 
-			builder.setMessage(
-					ctx.getString(R.string.no_data_dialog))
+			builder.setMessage(ctx.getString(R.string.no_data_dialog))
 					.setCancelable(true)
-					.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+					.setNeutralButton("OK",
+							new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
-							dialog.dismiss();
-						}
-						
-					});
-				
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+								}
+
+							});
 
 			AlertDialog alert = builder.create();
 			alert.show();
-			
+
 			throw new ConfigurationException();
 		}
-		
+
 	}
 
 	@Override
