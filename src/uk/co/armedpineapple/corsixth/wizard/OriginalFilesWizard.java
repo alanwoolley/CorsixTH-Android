@@ -148,42 +148,44 @@ public class OriginalFilesWizard extends WizardView {
 
 			@Override
 			public void onClick(View v) {
-				if (Files.canAccessExternalStorage()) {
-					File f = new File(ctx.getExternalFilesDir(null)
-							.getAbsolutePath() + "/demo/HOSP");
-					if (!f.exists()) {
+				if (!Files.canAccessExternalStorage()) {
+					// Show an error message or something here.
+					return;
+				}
 
-						AlertDialog.Builder builder = new AlertDialog.Builder(
-								ctx);
-						DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
+				File f = new File(ctx.getExternalFilesDir(null)
+						.getAbsolutePath() + "/demo/HOSP");
+				if (!f.exists()) {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								if (which == DialogInterface.BUTTON_POSITIVE) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+					DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
-									doDemoDownload();
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (which == DialogInterface.BUTTON_POSITIVE) {
 
-								}
+								doDemoDownload();
+
 							}
+						}
 
-						};
+					};
 
-						builder.setMessage(
-								getResources().getString(
-										R.string.download_demo_dialog))
-								.setCancelable(true)
-								.setNegativeButton("Cancel", alertListener)
-								.setPositiveButton("OK", alertListener);
+					builder.setMessage(
+							getResources().getString(
+									R.string.download_demo_dialog))
+							.setCancelable(true)
+							.setNegativeButton("Cancel", alertListener)
+							.setPositiveButton("OK", alertListener);
 
-						AlertDialog alert = builder.create();
-						alert.show();
-					} else {
-						customLocation = ctx.getExternalFilesDir(null)
-								.getAbsolutePath() + "/demo/HOSP";
-					}
+					AlertDialog alert = builder.create();
+					alert.show();
+				} else {
+					customLocation = ctx.getExternalFilesDir(null)
+							.getAbsolutePath() + "/demo/HOSP";
 				}
 			}
+
 		});
 	}
 

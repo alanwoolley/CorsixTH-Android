@@ -328,6 +328,7 @@ public class Files {
 		protected AsyncTaskResult<File> doInBackground(String... url) {
 			URL downloadUrl;
 			URLConnection ucon;
+
 			try {
 				downloadUrl = new URL(url[0]);
 
