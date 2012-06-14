@@ -58,8 +58,8 @@ public class Files {
 	}
 
 	private static Boolean doFilesExist(String[] files, String directory) {
-
-		if (!new File(directory).isDirectory()) {
+		File dir = new File(directory);
+		if (!dir.exists() || !dir.isDirectory()) {
 			Log.d(Files.class.getSimpleName(), "Directory [" + directory
 					+ "] doesn't exist");
 			return false;
