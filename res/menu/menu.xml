@@ -21,19 +21,19 @@
         android:title="@string/pause"/>
     <item
         android:id="@+id/menuitem_restart"
-        android:title="Restart game" android:visible="false"/>
+        android:title="Restart game" android:visible="true"/>
       <item
         android:id="@+id/menuitem_quicksave"
-        android:title="Quick Save" android:visible="false"/>
+        android:title="Quick Save" android:visible="true"/>
     <item
         android:id="@+id/menuitem_quickload"
-        android:title="Quick Load" android:visible="false"/>
+        android:title="Quick Load" android:visible="true"/>
     <item
         android:id="@+id/menuitem_save"
-        android:title="Save game" android:visible="false"/>
+        android:title="Save game" android:visible="true"/>
     <item
         android:id="@+id/menuitem_load"
-        android:title="Load game" android:visible="false"/>
+        android:title="Load game" android:visible="true"/>
       <item
         android:id="@+id/menuitem_about"
         android:title="About"/>
