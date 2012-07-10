@@ -40,6 +40,6 @@ LOCAL_SRC_FILES := \
 	$(wildcard $(LOCAL_PATH)/src/video/*.c) \
 	$(wildcard $(LOCAL_PATH)/src/video/android/*.c))
 
-LOCAL_LDLIBS := -ldl -lGLESv1_CM -lGLESv2 -llog
+LOCAL_LDLIBS := -ldl -lGLESv2 -llog
 
 include $(BUILD_SHARED_LIBRARY)
