@@ -305,13 +305,26 @@ public class OriginalFilesWizard extends WizardView {
 			protected void onCancelled(AsyncTaskResult<String> result) {
 				progressDialog.hide();
 				automaticRadio.setChecked(false);
+				Toast.makeText(ctx, "Search cancelled", Toast.LENGTH_LONG)
+						.show();
 			}
 
 			@Override
 			protected void onPostExecute(AsyncTaskResult<String> result) {
 				super.onPostExecute(result);
+
 				progressDialog.hide();
-				customLocation = result.getResult();
+				if (result.getResult() != null) {
+					customLocation = result.getResult();
+					Toast.makeText(ctx, "Found files in: " + customLocation,
+							Toast.LENGTH_LONG).show();
+				} else {
+					automaticRadio.setChecked(false);
+					Toast.makeText(
+							ctx,
+							"Couldn't find game files. Please set location manually or download the demo",
+							Toast.LENGTH_LONG).show();
+				}
 			}
 
 			@Override

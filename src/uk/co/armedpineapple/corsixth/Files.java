@@ -78,16 +78,12 @@ public class Files {
 		Log.d(Files.class.getSimpleName(), "Checking directory: " + directory);
 		File dir = new File(directory);
 		if (!dir.exists() || !dir.isDirectory()) {
-			Log.d(Files.class.getSimpleName(), "Directory [" + directory
-					+ "] doesn't exist");
 			return false;
 		}
 
 		for (String file : files) {
 			File f = new File(directory + "/" + file);
 			if (!f.exists()) {
-				Log.d(Files.class.getSimpleName(), "File [" + directory + "/"
-						+ file + "] doesn't exist");
 				return false;
 			}
 		}
@@ -359,7 +355,7 @@ public class Files {
 				for (String dir : SearchDirs) {
 					String toSearch = root + File.separator + dir;
 					if ((result = findGameFilesInternal(toSearch)) != null) {
-						
+
 						return result;
 					}
 				}
@@ -371,9 +367,9 @@ public class Files {
 					return null;
 				}
 
-				if ((result = findGameFilesInternal(root)) != null)
-				{
-					Log.d(Files.class.getSimpleName(), "Found game files in: " + result);
+				if ((result = findGameFilesInternal(root)) != null) {
+					Log.d(Files.class.getSimpleName(), "Found game files in: "
+							+ result);
 					return result;
 				}
 			}
@@ -382,8 +378,6 @@ public class Files {
 
 		private String findGameFilesInternal(String root) {
 			if (!isCancelled()) {
-				Log.d(Files.class.getSimpleName(),
-						"Looking for game files in: " + root);
 				String result;
 				File dir = new File(root);
 
@@ -391,14 +385,17 @@ public class Files {
 					return root;
 				}
 
-				if (dir.isDirectory()) {
+				if (dir.exists() && dir.isDirectory()) {
 					File[] sub = dir.listFiles();
-					for (File f : sub) {
-						if (f.isDirectory()) {
-							if ((result = findGameFilesInternal(trimPath(f
-									.getAbsolutePath()))) != null) {
-								Log.d(Files.class.getSimpleName(), "Found game files in: " + result);
-								return result;
+					if (sub != null) {
+						for (File f : sub) {
+							if (f.isDirectory()) {
+								if ((result = findGameFilesInternal(trimPath(f
+										.getAbsolutePath()))) != null) {
+									Log.d(Files.class.getSimpleName(),
+											"Found game files in: " + result);
+									return result;
+								}
 							}
 						}
 					}
