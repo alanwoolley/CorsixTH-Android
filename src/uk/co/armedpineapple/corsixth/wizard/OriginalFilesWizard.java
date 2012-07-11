@@ -13,6 +13,7 @@ import uk.co.armedpineapple.corsixth.AsyncTaskResult;
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.Files;
+import uk.co.armedpineapple.corsixth.Files.FindFilesTask;
 import uk.co.armedpineapple.corsixth.Network;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.Files.DownloadFileTask;
@@ -60,13 +61,7 @@ public class OriginalFilesWizard extends WizardView {
 
 	@Override
 	void saveConfiguration(Configuration config) throws ConfigurationException {
-		if (automaticRadio.isChecked()) {
-			config.setOriginalFilesPath("/sdcard/th");
-		} else if (manualRadio.isChecked() || downloadDemoRadio.isChecked()) {
-			config.setOriginalFilesPath(customLocation);
-		}
-
-		if (!Files.hasDataFiles(config.getOriginalFilesPath())) {
+		if (!Files.hasDataFiles(customLocation)) {
 
 			// Check to see if there's a HOSP directory instead
 
@@ -99,6 +94,8 @@ public class OriginalFilesWizard extends WizardView {
 			alert.show();
 
 			throw new ConfigurationException();
+		} else {
+			config.setOriginalFilesPath(customLocation);
 		}
 
 	}
@@ -128,6 +125,15 @@ public class OriginalFilesWizard extends WizardView {
 
 		final AlertDialog d = builder.create();
 
+		automaticRadio.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				doGameFilesSearch();
+			}
+
+		});
+
 		manualRadio.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -136,12 +142,12 @@ public class OriginalFilesWizard extends WizardView {
 			}
 		});
 
-		if (config.getOriginalFilesPath() == null
-				|| config.getOriginalFilesPath().equals("/sdcard/th")
-				|| config.getOriginalFilesPath().equals("")) {
-			automaticRadio.setChecked(true);
-		} else {
+		automaticRadio.setChecked(false);
+
+		if (config.getOriginalFilesPath() != null) {
 			manualRadio.setChecked(true);
+		} else {
+			manualRadio.setChecked(false);
 		}
 
 		downloadDemoRadio.setOnClickListener(new OnClickListener() {
@@ -196,7 +202,6 @@ public class OriginalFilesWizard extends WizardView {
 			Toast toast = Toast.makeText(ctx, R.string.no_external_storage,
 					Toast.LENGTH_LONG);
 			toast.show();
-			automaticRadio.setChecked(true);
 			return;
 		}
 
@@ -205,7 +210,6 @@ public class OriginalFilesWizard extends WizardView {
 			// Connection error
 			Dialog connectionDialog = DialogFactory.createNetworkDialog(ctx);
 			connectionDialog.show();
-			automaticRadio.setChecked(true);
 			return;
 		}
 
@@ -290,5 +294,41 @@ public class OriginalFilesWizard extends WizardView {
 
 		dft.execute(ctx.getString(R.string.demo_url));
 
+	}
+
+	void doGameFilesSearch() {
+		FindFilesTask fft = new FindFilesTask() {
+
+			ProgressDialog progressDialog;
+
+			@Override
+			protected void onCancelled(AsyncTaskResult<String> result) {
+				progressDialog.hide();
+				automaticRadio.setChecked(false);
+			}
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<String> result) {
+				super.onPostExecute(result);
+				progressDialog.hide();
+				customLocation = result.getResult();
+			}
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+
+				progressDialog = new ProgressDialog(ctx);
+				progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				progressDialog.setIndeterminate(true);
+				progressDialog.setMessage("Searching...");
+				progressDialog.setCancelable(true);
+				progressDialog.show();
+
+			}
+
+		};
+
+		fft.execute();
 	}
 }

@@ -18,11 +18,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import com.bugsense.trace.BugSenseHandler;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -42,15 +45,29 @@ public class Files {
 	private static final String[] RequiredDataFiles = { "Data/VBlk-0.tab",
 			"Levels/Level.L1", "QData/SPointer.dat" };
 
+	// Places to look for files
+	@SuppressLint("SdCardPath")
+	private static final String[] SearchRoot = { "/mnt/sdcard", "/sdcard",
+			"/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc" };
+
+	private static final String[] SearchDirs = { "th", "TH", "themehospital",
+			"ThemeHospital", "Themehospital", "theme_hospital",
+			"Theme_Hospital" };
+
 	private Files() {
 	}
 
+	public static String trimPath(String path) {
+		return path.endsWith(File.separator) ? path.substring(0,
+				path.length() - 1) : path;
+	}
+
 	public static Boolean hasDataFiles(String directory) {
-		return doFilesExist(RequiredMusicFiles, directory);
+		return doFilesExist(RequiredDataFiles, directory);
 	}
 
 	public static Boolean hasMusicFiles(String directory) {
-		return doFilesExist(RequiredDataFiles, directory);
+		return doFilesExist(RequiredMusicFiles, directory);
 	}
 
 	public static Boolean hasSoundFiles(String directory) {
@@ -311,6 +328,85 @@ public class Files {
 				out.flush();
 				out.close();
 			}
+		}
+
+	}
+
+	public static class FindFilesTask extends
+			AsyncTask<Void, Void, AsyncTaskResult<String>> {
+
+		@Override
+		protected AsyncTaskResult<String> doInBackground(Void... arg0) {
+			return new AsyncTaskResult<String>(findGameFiles());
+		}
+
+		private String findGameFiles() {
+			String result;
+			List<String> searchPaths = Arrays.asList(SearchRoot);
+			String sdcard = trimPath(Environment.getExternalStorageDirectory()
+					.getAbsolutePath());
+
+			if (!searchPaths.contains(sdcard)) {
+				searchPaths.add(sdcard);
+			}
+
+			// Search common locations first
+			for (String root : searchPaths) {
+				if (isCancelled()) {
+					Log.d(Files.class.getSimpleName(), "Task cancelled");
+					return null;
+				}
+				for (String dir : SearchDirs) {
+					String toSearch = root + File.separator + dir;
+					if ((result = findGameFilesInternal(toSearch)) != null) {
+						
+						return result;
+					}
+				}
+			}
+
+			for (String root : searchPaths) {
+				if (isCancelled()) {
+					Log.d(Files.class.getSimpleName(), "Task cancelled");
+					return null;
+				}
+
+				if ((result = findGameFilesInternal(root)) != null)
+				{
+					Log.d(Files.class.getSimpleName(), "Found game files in: " + result);
+					return result;
+				}
+			}
+			return null;
+		}
+
+		private String findGameFilesInternal(String root) {
+			if (!isCancelled()) {
+				Log.d(Files.class.getSimpleName(),
+						"Looking for game files in: " + root);
+				String result;
+				File dir = new File(root);
+
+				if (hasDataFiles(root)) {
+					return root;
+				}
+
+				if (dir.isDirectory()) {
+					File[] sub = dir.listFiles();
+					for (File f : sub) {
+						if (f.isDirectory()) {
+							if ((result = findGameFilesInternal(trimPath(f
+									.getAbsolutePath()))) != null) {
+								Log.d(Files.class.getSimpleName(), "Found game files in: " + result);
+								return result;
+							}
+						}
+					}
+				}
+			} else {
+				Log.d(Files.class.getSimpleName(), "Task cancelled");
+			}
+			return null;
 		}
 
 	}

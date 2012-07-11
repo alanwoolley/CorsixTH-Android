@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-
     <string name="app_name">CorsixTH</string>
     <string name="ok">OK</string>
     <string name="welcome_header">Welcome to CorsixTH!</string>
@@ -29,7 +28,7 @@
     <string name="native_resolution">Native</string>
     <string name="custom_resolution">Custom</string>
     <string name="custom_files">Custom</string>
-    <string name="default_files">Default (/sdcard/th)</string>
+    <string name="default_files">Automatically Detect</string>
     <string name="header_image_description">Header</string>
     <string name="preparing_game_files_dialog">Preparing Game Files. This will only occur once, but may take a while.</string>
     <string name="download_demo_dialog">This will download and install the Theme Hospital demo which will give you access to the basic functionality of the game.</string>
@@ -53,5 +52,4 @@
     <string name="new_save">New Save</string>
     <string name="no_music_dialog">Your game files don\'t appear to have music included, therefore music could not be enabled. Please make sure you copied the music \'Sound\' folder over.</string>
     <string name="no_data_dialog">Cannot locate game files. Please ensure that you have copied them over to a directory called \'th\' on your external storage, or specified a valid directory.</string>
-
 </resources>
