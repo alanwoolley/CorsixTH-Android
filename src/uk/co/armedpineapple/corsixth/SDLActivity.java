@@ -229,7 +229,7 @@ public class SDLActivity extends TrackedActivity {
 		// Load the libraries
 		System.loadLibrary("SDL");
 		System.loadLibrary("mikmod");
-	//	System.loadLibrary("LUA");
+		System.loadLibrary("LUA");
 		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
