@@ -143,7 +143,7 @@
             </PreferenceCategory>
 
             <EditTextPreference
-                android:defaultValue="/sdcard/th"
+                android:defaultValue=""
                 android:key="originalfiles_pref"
                 android:persistent="true"
                 android:title="Original TH Location" />

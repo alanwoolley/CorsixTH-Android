@@ -143,12 +143,10 @@ public class OriginalFilesWizard extends WizardView {
 		});
 
 		automaticRadio.setChecked(false);
-
+		downloadDemoRadio.setChecked(false);
 		if (config.getOriginalFilesPath() != null
 				&& config.getOriginalFilesPath().length() > 0) {
 			manualRadio.setChecked(true);
-		} else {
-			manualRadio.setChecked(false);
 		}
 
 		downloadDemoRadio.setOnClickListener(new OnClickListener() {
@@ -173,6 +171,8 @@ public class OriginalFilesWizard extends WizardView {
 
 								doDemoDownload();
 
+							} else {
+								downloadDemoRadio.setChecked(false);
 							}
 						}
 
@@ -241,7 +241,7 @@ public class OriginalFilesWizard extends WizardView {
 					DialogFactory.createFromException(result.getError(),
 							ctx.getString(R.string.download_demo_error), ctx,
 							false).show();
-					automaticRadio.setChecked(true);
+					downloadDemoRadio.setChecked(false);
 				}
 			}
 
