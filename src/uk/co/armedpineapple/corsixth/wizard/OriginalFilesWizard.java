@@ -144,7 +144,8 @@ public class OriginalFilesWizard extends WizardView {
 
 		automaticRadio.setChecked(false);
 
-		if (config.getOriginalFilesPath() != null) {
+		if (config.getOriginalFilesPath() != null
+				&& config.getOriginalFilesPath().length() > 0) {
 			manualRadio.setChecked(true);
 		} else {
 			manualRadio.setChecked(false);
