@@ -79,8 +79,9 @@ public class SDLActivity extends TrackedActivity {
 
 	public static native void onNativeKeyUp(int keycode);
 
-	public static native void onNativeTouch(int touchDevId, int pointerFingerId, int action, float x, float y,
-			float p, int pc, int gestureTriggered);
+	public static native void onNativeTouch(int touchDevId,
+			int pointerFingerId, int action, float x, float y, float p, int pc,
+			int gestureTriggered);
 
 	public static native void onNativeAccel(float x, float y, float z);
 
@@ -229,7 +230,7 @@ public class SDLActivity extends TrackedActivity {
 		// Load the libraries
 		System.loadLibrary("SDL");
 		System.loadLibrary("mikmod");
-	//	System.loadLibrary("LUA");
+		// System.loadLibrary("LUA");
 		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
@@ -506,7 +507,6 @@ public class SDLActivity extends TrackedActivity {
 			onNativeKeyUp(KeyEvent.KEYCODE_P);
 			break;
 		case R.id.menuitem_settings:
-			// finish();
 			startActivity(new Intent(this, PrefsActivity.class));
 			break;
 		case R.id.menuitem_help:

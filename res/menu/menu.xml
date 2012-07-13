@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/menuitem_settings"
-        android:icon="@drawable/ic_menu_manage"
-        android:title="Settings"
-        android:visible="false"/>
-    <item
         android:id="@+id/menuitem_help"
         android:icon="@drawable/ic_menu_help"
         android:title="Help"
@@ -16,25 +11,33 @@
         android:icon="@drawable/ic_menu_manage"
         android:title="@string/setup_wizard"/>
     <item
+        android:id="@+id/menuitem_settings"
+        android:title="Settings"/>
+    <item
         android:id="@+id/menuitem_pause"
         android:icon="@drawable/ic_pause"
         android:title="@string/pause"/>
     <item
         android:id="@+id/menuitem_restart"
-        android:title="Restart game" android:visible="true"/>
-      <item
+        android:title="Restart game"
+        android:visible="true"/>
+    <item
         android:id="@+id/menuitem_quicksave"
-        android:title="Quick Save" android:visible="true"/>
+        android:title="Quick Save"
+        android:visible="true"/>
     <item
         android:id="@+id/menuitem_quickload"
-        android:title="Quick Load" android:visible="true"/>
+        android:title="Quick Load"
+        android:visible="true"/>
     <item
         android:id="@+id/menuitem_save"
-        android:title="Save game" android:visible="true"/>
+        android:title="Save game"
+        android:visible="true"/>
     <item
         android:id="@+id/menuitem_load"
-        android:title="Load game" android:visible="true"/>
-      <item
+        android:title="Load game"
+        android:visible="true"/>
+    <item
         android:id="@+id/menuitem_about"
         android:title="About"/>
 

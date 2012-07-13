@@ -7,6 +7,7 @@ package uk.co.armedpineapple.corsixth;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.view.WindowManager.LayoutParams;
 
 public class PrefsActivity extends PreferenceActivity {
 
@@ -14,7 +15,11 @@ public class PrefsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
 		addPreferencesFromResource(R.xml.prefs);
+		
+		getWindow().setLayout(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT);
 	}
 
 }
