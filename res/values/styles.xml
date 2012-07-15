@@ -6,14 +6,19 @@
     </style>
 
     <color name="background">#FFFFFF</color>
-     <color name="MenuButtonBackground">#BBDDDDDD</color>
+    <color name="MenuButtonBackground">#BBDDDDDD</color>
+    <color name="transparent">#00000000</color>
 
     <style name="WizardHeaderText" parent="@android:style/TextAppearance.Large">
         <item name="android:padding">10dp</item>
     </style>
 
     <style name="WizardText" parent="@android:style/TextAppearance.Medium">
-   	<item name="android:textSize">15sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
-  
+
+    <style name="Theme_Dialog_Translucent" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
 </resources>

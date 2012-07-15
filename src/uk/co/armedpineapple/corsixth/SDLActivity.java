@@ -19,6 +19,7 @@ import javax.microedition.khronos.egl.EGLSurface;
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
 import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
 import uk.co.armedpineapple.corsixth.dialogs.LoadDialog;
+import uk.co.armedpineapple.corsixth.dialogs.MenuDialog;
 import uk.co.armedpineapple.corsixth.dialogs.SaveDialog;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -42,8 +43,14 @@ public class SDLActivity extends TrackedActivity {
 
 	private int currentVersion;
 	private Properties properties;
-	private Configuration config;
+	public Configuration config;
 	private WakeLock wake;
+	private MenuDialog mainMenu;
+
+	// Commands that can be sent from the game
+	public enum Command {
+		SHOW_MENU, SHOW_LOAD_DIALOG, SHOW_SAVE_DIALOG, RESTART_GAME, QUICK_LOAD, QUICK_SAVE, SHOW_KEYBOARD, HIDE_KEYBOARD, SHOW_ABOUT_DIALOG, PAUSE_GAME, SHOW_SETTINGS_DIALOG
+	}
 
 	// This is what SDL runs in. It invokes SDL_main(), eventually
 	private static Thread mSDLThread;
@@ -55,10 +62,6 @@ public class SDLActivity extends TrackedActivity {
 	private static EGLConfig mEGLConfig;
 	private static int mGLMajor, mGLMinor;
 
-	// Dialogs
-	private SaveDialog saveDialog;
-	private LoadDialog loadDialog;
-
 	// Main components
 	public static SDLActivity mSingleton;
 	public static SDLSurface mSurface;
@@ -67,6 +70,9 @@ public class SDLActivity extends TrackedActivity {
 	private static Thread mAudioThread;
 	private static AudioTrack mAudioTrack;
 	private static Object audioBuffer;
+
+	// Handler for the messages
+	Handler commandHandler = new CommandHandler(this);
 
 	// C functions we call
 	public static native void nativeInit();
@@ -304,21 +310,12 @@ public class SDLActivity extends TrackedActivity {
 				int[] num_config = new int[1];
 				if (!egl.eglChooseConfig(dpy, configSpec, configs, 1,
 						num_config) || num_config[0] == 0) {
-					Log.e("SDL", "No EGL config available");
+					Log.e(SDLActivity.class.getSimpleName(),
+							"No EGL config available");
 					return false;
 				}
 				EGLConfig config = configs[0];
 
-				/*
-				 * int EGL_CONTEXT_CLIENT_VERSION=0x3098; int contextAttrs[] =
-				 * new int[] { EGL_CONTEXT_CLIENT_VERSION, majorVersion,
-				 * EGL10.EGL_NONE }; EGLContext ctx = egl.eglCreateContext(dpy,
-				 * config, EGL10.EGL_NO_CONTEXT, contextAttrs);
-				 * 
-				 * if (ctx == EGL10.EGL_NO_CONTEXT) { Log.e("SDL",
-				 * "Couldn't create context"); return false; }
-				 * SDLActivity.mEGLContext = ctx;
-				 */
 				SDLActivity.mEGLDisplay = dpy;
 				SDLActivity.mEGLConfig = config;
 				SDLActivity.mGLMajor = majorVersion;
@@ -445,183 +442,34 @@ public class SDLActivity extends TrackedActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menuitem_about:
-			Dialog aboutDialog = DialogFactory.createAboutDialog(this);
-			aboutDialog.show();
-			break;
-		case R.id.menuitem_restart:
-			cthRestartGame();
-			break;
-		case R.id.menuitem_quicksave:
-			cthSaveGame("quicksave.sav");
-			break;
-		case R.id.menuitem_quickload:
-			doQuickLoad();
-			break;
-		case R.id.menuitem_save:
-			if (saveDialog == null) {
-				saveDialog = new SaveDialog(this, config.getSaveGamesPath());
-			}
-			try {
-				saveDialog.updateSaves(this);
-				saveDialog.show();
-			} catch (IOException e) {
-				BugSenseHandler.log("Files", e);
-				Toast t = Toast.makeText(this, "Problem loading save dialog",
-						Toast.LENGTH_SHORT);
-				t.show();
-			}
-
-			break;
-		case R.id.menuitem_load:
-			showLoadDialog();
-			break;
-		case R.id.menuitem_pause:
-			onNativeKeyDown(KeyEvent.KEYCODE_P);
-			onNativeKeyUp(KeyEvent.KEYCODE_P);
-			break;
-		case R.id.menuitem_settings:
-			startActivity(new Intent(this, PrefsActivity.class));
-			break;
-		case R.id.menuitem_help:
-			break;
-
-		case R.id.menuitem_wizard:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SharedPreferences preferences = PreferenceManager
-							.getDefaultSharedPreferences(getBaseContext());
-					Editor editor = preferences.edit();
-					editor.putBoolean("wizard_run", false);
-					editor.commit();
-				}
-
-			};
-			builder.setMessage(
-					getResources().getString(R.string.setup_wizard_dialog))
-					.setCancelable(false).setNeutralButton("OK", alertListener);
-
-			AlertDialog alert = builder.create();
-			alert.show();
-
-			break;
-
-		}
-		return true;
-
-	}
-
-	public static void doQuickLoad() {
-		if (new File(mSingleton.config.getSaveGamesPath() + "/quicksave.sav")
-				.exists()) {
-			cthLoadGame("quicksave.sav");
-		} else {
-			mSingleton.runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					Toast t = Toast.makeText(mSingleton,
-							"No quicksave to load!", Toast.LENGTH_SHORT);
-					t.show();
-				}
-			});
-		}
-	}
-
-	// Handler for the messages
-	Handler commandHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			/*
-			 * if (msg.arg1 == COMMAND_CHANGE_TITLE) { setTitle((String)
-			 * msg.obj); }
-			 */
-		}
-	};
-
-	// Send a message from the SDLMain thread
-	void sendCommand(int command, Object data) {
-		Message msg = commandHandler.obtainMessage();
-		msg.arg1 = command;
-		msg.obj = data;
-		commandHandler.sendMessage(msg);
+		return false;
 	}
 
 	// Java functions called from C
 
-	/**
-	 * Shows the virtual keyboard. This will be called from the native LUA when
-	 * a text box is pressed.
-	 * 
-	 * TODO - check whether the phone has a hardware keyboard. I've no idea how
-	 * it behaves in this case.
-	 */
-	public static void showSoftKeyboard() {
-		Log.d(SDLActivity.class.getSimpleName(), "Showing keyboard");
-		InputMethodManager mgr = (InputMethodManager) mSingleton
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
-	}
-
-	public static void showLoadDialog() {
-		mSingleton.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (mSingleton.loadDialog == null) {
-					mSingleton.loadDialog = new LoadDialog(mSingleton,
-							mSingleton.config.getSaveGamesPath());
-				}
-				try {
-					mSingleton.loadDialog.updateSaves(mSingleton);
-					mSingleton.loadDialog.show();
-				} catch (IOException e) {
-					BugSenseHandler.log("Files", e);
-
-					Toast t = Toast.makeText(mSingleton,
-							"Problem loading load dialog", Toast.LENGTH_SHORT);
-					t.show();
-
-				}
-			}
-		});
-	}
-
-	public static void showMenu() {
-		mSingleton.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				mSingleton.openOptionsMenu();
-			}
-
-		});
-	}
-
-	/**
-	 * Hides the virtual keyboard.
-	 * 
-	 */
-	public static void hideSoftKeyboard() {
-		Log.d(SDLActivity.class.getSimpleName(), "Hiding keyboard");
-		InputMethodManager mgr = (InputMethodManager) mSingleton
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		mgr.hideSoftInputFromWindow(mSurface.getWindowToken(), 0);
-
-	}
-
 	public static void setActivityTitle(String title) {
-		// Called from SDLMain() thread and can't directly affect the view
-		// mSingleton.sendCommand(COMMAND_CHANGE_TITLE, title);
+	}
+
+	// Send a message from the SDLMain thread
+
+	public static void sendCommand(Command command, Object data) {
+		sendCommand(command.ordinal(), data);
+	}
+
+	public static void sendCommand(int cmd) {
+		sendCommand(cmd, null);
+	}
+
+	public static void sendCommand(int cmd, Object data) {
+		Message msg = mSingleton.commandHandler.obtainMessage();
+		msg.arg1 = cmd;
+		msg.obj = data;
+		mSingleton.commandHandler.sendMessage(msg);
 	}
 
 	public static Object audioInit(int sampleRate, boolean is16Bit,
@@ -739,6 +587,112 @@ public class SDLActivity extends TrackedActivity {
 			mAudioTrack = null;
 		}
 	}
+
+	static class CommandHandler extends Handler {
+
+		// Dialogs
+		private SaveDialog saveDialog;
+		private LoadDialog loadDialog;
+		private Dialog aboutDialog;
+		private MenuDialog mainMenuDialog;
+
+		SDLActivity context;
+
+		public CommandHandler(SDLActivity context) {
+			super();
+			this.context = context;
+
+		}
+
+		public void handleMessage(Message msg) {
+			InputMethodManager mgr;
+			switch (Command.values()[msg.arg1]) {
+			case SHOW_ABOUT_DIALOG:
+				if (aboutDialog == null) {
+					aboutDialog = DialogFactory.createAboutDialog(context);
+				}
+				aboutDialog.show();
+				break;
+
+			case HIDE_KEYBOARD:
+				mgr = (InputMethodManager) context
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				mgr.hideSoftInputFromWindow(mSurface.getWindowToken(), 0);
+				break;
+			case SHOW_KEYBOARD:
+				mgr = (InputMethodManager) context
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
+				break;
+			case QUICK_LOAD:
+				if (Files.doesFileExist(context.config.getSaveGamesPath()
+						+ "/quicksave.sav")) {
+					cthLoadGame("quicksave.sav");
+				} else {
+					Toast.makeText(context, "No quicksave to load!",
+							Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case QUICK_SAVE:
+				cthSaveGame("quicksave.sav");
+				break;
+			case RESTART_GAME:
+				cthRestartGame();
+				break;
+
+			case SHOW_LOAD_DIALOG:
+				if (loadDialog == null) {
+					loadDialog = new LoadDialog(context,
+							context.config.getSaveGamesPath());
+				}
+				try {
+					loadDialog.updateSaves(context);
+					loadDialog.show();
+				} catch (IOException e) {
+					BugSenseHandler.log("Files", e);
+
+					Toast.makeText(context, "Problem loading load dialog",
+							Toast.LENGTH_SHORT).show();
+
+				}
+				break;
+
+			case SHOW_SAVE_DIALOG:
+				if (saveDialog == null) {
+					saveDialog = new SaveDialog(context,
+							context.config.getSaveGamesPath());
+				}
+				try {
+					saveDialog.updateSaves(context);
+					saveDialog.show();
+				} catch (IOException e) {
+					BugSenseHandler.log("Files", e);
+					Toast.makeText(context, "Problem loading save dialog",
+							Toast.LENGTH_SHORT).show();
+				}
+
+				break;
+			case SHOW_MENU:
+				if (mainMenuDialog == null) {
+					mainMenuDialog = new MenuDialog(context);
+				}
+				mainMenuDialog.show();
+				break;
+			case PAUSE_GAME:
+				onNativeKeyDown(KeyEvent.KEYCODE_P);
+				onNativeKeyUp(KeyEvent.KEYCODE_P);
+				break;
+			case SHOW_SETTINGS_DIALOG:
+				context.startActivity(new Intent(context, PrefsActivity.class));
+				break;
+
+			default:
+				break;
+			}
+		}
+
+	}
+
 }
 
 /**

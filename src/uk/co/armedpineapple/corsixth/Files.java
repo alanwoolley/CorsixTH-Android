@@ -57,6 +57,11 @@ public class Files {
 	private Files() {
 	}
 
+	public static Boolean doesFileExist(String filename) {
+		File f = new File(filename);
+		return (f != null) && f.exists();
+	}
+
 	public static String trimPath(String path) {
 		return path.endsWith(File.separator) ? path.substring(0,
 				path.length() - 1) : path;

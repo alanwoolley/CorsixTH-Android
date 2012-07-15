@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/transparent"
+    android:gravity="center" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="@android:color/transparent" >
+
+        <ImageButton
+            android:id="@+id/menu_button_back"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:src="@drawable/ic_back" />
+
+        <Button
+            android:id="@+id/menu_button_quickload"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center_vertical"
+            android:text="Quick Load"
+            android:textSize="14dp" />
+
+        <Button
+            android:id="@+id/menu_button_quicksave"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:text="Quick Save"
+            android:textSize="14dp" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/menu_button_load"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center_vertical"
+            android:text="Load Game"
+            android:textSize="14dp" />
+
+        <Button
+            android:id="@+id/menu_button_save"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:text="Save Game"
+            android:textSize="14dp" />
+
+        <Button
+            android:id="@+id/menu_button_restart"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:text="Restart Level"
+            android:textSize="14dp" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/TableRow02"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/menu_button_settings"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center_vertical"
+            android:text="Setup Wizard"
+            android:textSize="14dp" />
+
+        <Button
+            android:id="@+id/menu_button_about"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center_vertical"
+            android:text="About"
+            android:textSize="14dp" />
+
+        <Button
+            android:id="@+id/menu_button_exit"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center_vertical"
+            android:text="Exit"
+            android:textSize="14dp" />
+    </TableRow>
+
+</TableLayout>
