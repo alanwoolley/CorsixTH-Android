@@ -575,6 +575,17 @@ public class SDLActivity extends TrackedActivity {
 
 	}
 
+	public static void showMenu() {
+		mSingleton.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				mSingleton.openOptionsMenu();
+			}
+			
+		});
+	}
+
 	/**
 	 * Hides the virtual keyboard.
 	 * 
