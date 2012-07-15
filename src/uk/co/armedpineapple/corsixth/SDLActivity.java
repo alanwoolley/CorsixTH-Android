@@ -464,13 +464,7 @@ public class SDLActivity extends TrackedActivity {
 			cthSaveGame("quicksave.sav");
 			break;
 		case R.id.menuitem_quickload:
-			if (new File(config.getSaveGamesPath() + "/quicksave.sav").exists()) {
-				cthLoadGame("quicksave.sav");
-			} else {
-				Toast t = Toast.makeText(this, "No quicksave to load!",
-						Toast.LENGTH_SHORT);
-				t.show();
-			}
+			doQuickLoad();
 			break;
 		case R.id.menuitem_save:
 			if (saveDialog == null) {
@@ -488,19 +482,7 @@ public class SDLActivity extends TrackedActivity {
 
 			break;
 		case R.id.menuitem_load:
-			if (loadDialog == null) {
-				loadDialog = new LoadDialog(this, config.getSaveGamesPath());
-			}
-			try {
-				loadDialog.updateSaves(this);
-				loadDialog.show();
-			} catch (IOException e) {
-				BugSenseHandler.log("Files", e);
-				Toast t = Toast.makeText(this, "Problem loading load dialog",
-						Toast.LENGTH_SHORT);
-				t.show();
-			}
-
+			showLoadDialog();
 			break;
 		case R.id.menuitem_pause:
 			onNativeKeyDown(KeyEvent.KEYCODE_P);
@@ -540,6 +522,23 @@ public class SDLActivity extends TrackedActivity {
 
 	}
 
+	public static void doQuickLoad() {
+		if (new File(mSingleton.config.getSaveGamesPath() + "/quicksave.sav")
+				.exists()) {
+			cthLoadGame("quicksave.sav");
+		} else {
+			mSingleton.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast t = Toast.makeText(mSingleton,
+							"No quicksave to load!", Toast.LENGTH_SHORT);
+					t.show();
+				}
+			});
+		}
+	}
+
 	// Handler for the messages
 	Handler commandHandler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -572,7 +571,29 @@ public class SDLActivity extends TrackedActivity {
 		InputMethodManager mgr = (InputMethodManager) mSingleton
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
+	}
 
+	public static void showLoadDialog() {
+		mSingleton.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (mSingleton.loadDialog == null) {
+					mSingleton.loadDialog = new LoadDialog(mSingleton,
+							mSingleton.config.getSaveGamesPath());
+				}
+				try {
+					mSingleton.loadDialog.updateSaves(mSingleton);
+					mSingleton.loadDialog.show();
+				} catch (IOException e) {
+					BugSenseHandler.log("Files", e);
+
+					Toast t = Toast.makeText(mSingleton,
+							"Problem loading load dialog", Toast.LENGTH_SHORT);
+					t.show();
+
+				}
+			}
+		});
 	}
 
 	public static void showMenu() {
@@ -582,7 +603,7 @@ public class SDLActivity extends TrackedActivity {
 			public void run() {
 				mSingleton.openOptionsMenu();
 			}
-			
+
 		});
 	}
 
