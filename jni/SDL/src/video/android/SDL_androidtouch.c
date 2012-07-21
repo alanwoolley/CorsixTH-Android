@@ -74,6 +74,9 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
 
 	if (gestureTriggered == GESTURE_MOVE) {
 		switch (action) {
+		case ACTION_MOVE:
+			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+			break;
 		case ACTION_DOWN:
 			LOGI("Mouse down - middle");
 			SDL_SetMouseFocus(NULL);

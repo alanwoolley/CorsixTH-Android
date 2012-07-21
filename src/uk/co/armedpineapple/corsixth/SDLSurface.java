@@ -179,35 +179,37 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public boolean onTouch(View v, MotionEvent event) {
 		// Forward event to the gesture detector.
 		longPressGestureDetector.onTouchEvent(event);
+
 		moveGestureDetector.onTouchEvent(event);
-
-		final int touchDevId = event.getDeviceId();
 		final int pointerCount = event.getPointerCount();
-		int actionPointerIndex = event.getActionIndex();
-		int pointerFingerId = event.getPointerId(actionPointerIndex);
 
-		int action = event.getAction();
+		if (!moveGestureDetector.isInProgress() && pointerCount < 2) {
+			final int touchDevId = event.getDeviceId();
+			int actionPointerIndex = event.getActionIndex();
+			int pointerFingerId = event.getPointerId(actionPointerIndex);
 
-		float[] coords = translateCoords(event.getX(actionPointerIndex),
-				event.getY(actionPointerIndex));
-		float p = event.getPressure(actionPointerIndex);
+			int action = event.getAction();
 
-		if (action == MotionEvent.ACTION_MOVE && pointerCount > 1) {
-			// TODO send motion to every pointer if its position has
-			// changed since prev event.
-			for (int i = 0; i < pointerCount; i++) {
-				pointerFingerId = event.getPointerId(i);
-				coords = translateCoords(event.getX(actionPointerIndex),
-						event.getY(actionPointerIndex));
-				p = event.getPressure(i);
+			float[] coords = translateCoords(event.getX(actionPointerIndex),
+					event.getY(actionPointerIndex));
+			float p = event.getPressure(actionPointerIndex);
+
+			if (action == MotionEvent.ACTION_MOVE && pointerCount == 1) {
+				// TODO send motion to every pointer if its position has
+				// changed since prev event.
+				for (int i = 0; i < pointerCount; i++) {
+					pointerFingerId = event.getPointerId(i);
+					coords = translateCoords(event.getX(actionPointerIndex),
+							event.getY(actionPointerIndex));
+					p = event.getPressure(i);
+					SDLActivity.onNativeTouch(touchDevId, pointerFingerId,
+							action, coords[0], coords[1], p, pointerCount, 0);
+				}
+			} else {
 				SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
 						coords[0], coords[1], p, pointerCount, 0);
 			}
-		} else {
-			SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
-					coords[0], coords[1], p, pointerCount, 0);
 		}
-
 		return true;
 	}
 
