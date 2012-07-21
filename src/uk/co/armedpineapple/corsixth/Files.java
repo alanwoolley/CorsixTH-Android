@@ -343,7 +343,7 @@ public class Files {
 
 		private String findGameFiles() {
 			String result;
-			List<String> searchPaths = Arrays.asList(SearchRoot);
+			List<String> searchPaths = new ArrayList<String>(Arrays.asList(SearchRoot));
 			String sdcard = trimPath(Environment.getExternalStorageDirectory()
 					.getAbsolutePath());
 
