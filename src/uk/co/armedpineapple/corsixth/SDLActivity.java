@@ -32,6 +32,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.os.*;
 import android.os.PowerManager.WakeLock;
@@ -46,6 +47,7 @@ public class SDLActivity extends CTHActivity {
 	public Configuration config;
 	private WakeLock wake;
 	private MenuDialog mainMenu;
+	SideMenu sideMenu;
 
 	// Commands that can be sent from the game
 	public enum Command {
@@ -264,7 +266,20 @@ public class SDLActivity extends CTHActivity {
 		mSurface = new SDLSurface(getApplication(), config.getDisplayWidth(),
 				config.getDisplayHeight());
 
-		setContentView(mSurface);
+		FrameLayout mainLayout = (FrameLayout) getLayoutInflater().inflate(
+				R.layout.game, null);
+
+		sideMenu = (SideMenu) getLayoutInflater().inflate(
+				R.layout.side_menu, null);
+
+		((FrameLayout) mainLayout.findViewById(R.id.menu_frame))
+				.addView(sideMenu);
+
+		((FrameLayout) mainLayout.findViewById(R.id.game_frame))
+				.addView(mSurface);
+
+		setContentView(mainLayout);
+
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
 
@@ -442,7 +457,6 @@ public class SDLActivity extends CTHActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		return false;
 	}
 
