@@ -5,7 +5,6 @@
  */
 package uk.co.armedpineapple.corsixth;
 
-import uk.co.armedpineapple.corsixth.SDLActivity.Command;
 import uk.co.armedpineapple.corsixth.gestures.LongPressGesture;
 import uk.co.armedpineapple.corsixth.gestures.TwoFingerMoveGesture;
 
@@ -156,7 +155,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		case KeyEvent.KEYCODE_VOLUME_MUTE:
 			return false;
 		case KeyEvent.KEYCODE_MENU:
-			SDLActivity.sendCommand(Command.SHOW_MENU, null);
 			return false;
 		default:
 			break;
