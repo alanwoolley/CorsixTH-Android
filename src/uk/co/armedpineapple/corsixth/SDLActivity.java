@@ -39,7 +39,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
 
-public class SDLActivity extends TrackedActivity {
+public class SDLActivity extends CTHActivity {
 
 	private int currentVersion;
 	private Properties properties;
@@ -49,7 +49,7 @@ public class SDLActivity extends TrackedActivity {
 
 	// Commands that can be sent from the game
 	public enum Command {
-		SHOW_MENU, SHOW_LOAD_DIALOG, SHOW_SAVE_DIALOG, RESTART_GAME, QUICK_LOAD, QUICK_SAVE, SHOW_KEYBOARD, HIDE_KEYBOARD, SHOW_ABOUT_DIALOG, PAUSE_GAME, SHOW_SETTINGS_DIALOG
+		SHOW_MENU, SHOW_LOAD_DIALOG, SHOW_SAVE_DIALOG, RESTART_GAME, QUICK_LOAD, QUICK_SAVE, SHOW_KEYBOARD, HIDE_KEYBOARD, SHOW_ABOUT_DIALOG, PAUSE_GAME, SHOW_SETTINGS_DIALOG, GAME_SPEED_UPDATED
 	}
 
 	// This is what SDL runs in. It invokes SDL_main(), eventually
@@ -442,6 +442,7 @@ public class SDLActivity extends TrackedActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+
 		return false;
 	}
 
@@ -459,6 +460,10 @@ public class SDLActivity extends TrackedActivity {
 
 	public static void sendCommand(Command command, Object data) {
 		sendCommand(command.ordinal(), data);
+	}
+
+	public static void sendCommand(int cmd, int data) {
+		sendCommand(cmd, Integer.valueOf(data));
 	}
 
 	public static void sendCommand(int cmd) {
@@ -685,7 +690,9 @@ public class SDLActivity extends TrackedActivity {
 			case SHOW_SETTINGS_DIALOG:
 				context.startActivity(new Intent(context, PrefsActivity.class));
 				break;
-
+			case GAME_SPEED_UPDATED:
+				context.config.setGameSpeed((Integer) msg.obj);
+				break;
 			default:
 				break;
 			}

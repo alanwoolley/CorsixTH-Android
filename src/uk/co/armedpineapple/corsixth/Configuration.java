@@ -40,11 +40,13 @@ public class Configuration {
 			keepScreenOn, debug;
 
 	private Integer musicVol, announcementsVol, sfxVol, resolutionMode,
-			displayWidth, displayHeight;
+			displayWidth, displayHeight, gameSpeed;
 	private String saveGamesPath = "/sdcard/CTHsaves";
 
 	private Configuration() {
 	}
+
+
 
 	/** Saves the configuration to a SharedPreferences object **/
 	public void saveToPreferences(Context ctx, SharedPreferences preferences) {
@@ -339,6 +341,14 @@ public class Configuration {
 
 	public void setKeepScreenOn(Boolean keepScreenOn) {
 		this.keepScreenOn = keepScreenOn;
+	}
+	
+	public Integer getGameSpeed() {
+		return gameSpeed;
+	}
+
+	public void setGameSpeed(Integer gameSpeed) {
+		this.gameSpeed = gameSpeed;
 	}
 
 	@Override
