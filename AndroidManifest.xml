@@ -25,7 +25,7 @@
             android:name="uk.co.armedpineapple.corsixth.SDLActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
             android:name=".wizard.WizardActivity"
