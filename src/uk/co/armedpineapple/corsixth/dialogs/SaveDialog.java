@@ -21,7 +21,7 @@ public class SaveDialog extends FilesDialog {
 	private Button newButton;
 	private AlertDialog newSaveDialog;
 
-	public SaveDialog(Context context, String path) {
+	public SaveDialog(SDLActivity context, String path) {
 		super(context, path, R.layout.save_dialog);
 		setTitle("Save Game");
 

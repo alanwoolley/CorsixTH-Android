@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
+import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -27,10 +28,18 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 	private String savePath;
 	private ListView savesList;
 	private Button cancelButton;
+	private SDLActivity ctx;
 
-	public FilesDialog(Context context, String path, int layout) {
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+	}
+
+	public FilesDialog(SDLActivity context, String path, int layout) {
 		super(context);
-
+		this.ctx = context;
+		
 		savePath = path;
 		setContentView(layout);
 		savesList = (ListView) findViewById(R.id.filesList);
@@ -41,6 +50,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 			@Override
 			public void onClick(View v) {
+				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
 				dismiss();
 			}
 

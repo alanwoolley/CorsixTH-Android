@@ -23,7 +23,6 @@ import uk.co.armedpineapple.corsixth.dialogs.MenuDialog;
 import uk.co.armedpineapple.corsixth.dialogs.SaveDialog;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.google.android.apps.analytics.easytracking.TrackedActivity;
 
 import android.app.*;
 import android.content.*;
@@ -47,7 +46,6 @@ public class SDLActivity extends CTHActivity {
 	public Configuration config;
 	private WakeLock wake;
 	private MenuDialog mainMenu;
-	SideMenu sideMenu;
 
 	// Commands that can be sent from the game
 	public enum Command {
@@ -102,6 +100,8 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthSaveGame(String path);
 
 	public static native void cthLoadGame(String path);
+	
+	public static native void cthGameSpeed(int speed);
 
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
@@ -269,12 +269,6 @@ public class SDLActivity extends CTHActivity {
 		FrameLayout mainLayout = (FrameLayout) getLayoutInflater().inflate(
 				R.layout.game, null);
 
-		sideMenu = (SideMenu) getLayoutInflater().inflate(
-				R.layout.side_menu, null);
-
-		((FrameLayout) mainLayout.findViewById(R.id.menu_frame))
-				.addView(sideMenu);
-
 		((FrameLayout) mainLayout.findViewById(R.id.game_frame))
 				.addView(mSurface);
 
@@ -298,8 +292,8 @@ public class SDLActivity extends CTHActivity {
 	// EGL functions
 	public static boolean initEGL(int majorVersion, int minorVersion) {
 		if (SDLActivity.mEGLDisplay == null) {
-			// Log.v("SDL", "Starting up OpenGL ES " + majorVersion + "." +
-			// minorVersion);
+			Log.v(SDLActivity.class.getSimpleName(), "Starting up OpenGL ES "
+					+ majorVersion + "." + minorVersion);
 
 			try {
 				EGL10 egl = (EGL10) EGLContext.getEGL();
@@ -317,6 +311,7 @@ public class SDLActivity extends CTHActivity {
 				} else if (majorVersion == 1) {
 					renderableType = EGL_OPENGL_ES_BIT;
 				}
+
 				int[] configSpec = {
 						// EGL10.EGL_DEPTH_SIZE, 16,
 						EGL10.EGL_RENDERABLE_TYPE, renderableType,
@@ -695,11 +690,14 @@ public class SDLActivity extends CTHActivity {
 				if (mainMenuDialog == null) {
 					mainMenuDialog = new MenuDialog(context);
 				}
+				
+				// Pause the game
+				cthGameSpeed(0);
 				mainMenuDialog.show();
+				
 				break;
 			case PAUSE_GAME:
-				onNativeKeyDown(KeyEvent.KEYCODE_P);
-				onNativeKeyUp(KeyEvent.KEYCODE_P);
+				cthGameSpeed(0);
 				break;
 			case SHOW_SETTINGS_DIALOG:
 				context.startActivity(new Intent(context, PrefsActivity.class));

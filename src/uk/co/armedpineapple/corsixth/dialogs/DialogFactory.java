@@ -9,11 +9,13 @@ import java.io.IOException;
 
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
+import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnShowListener;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 
 public class DialogFactory {
 
-	public static Dialog createAboutDialog(final Context ctx) {
+	public static Dialog createAboutDialog(final SDLActivity ctx) {
 		final Dialog d = new Dialog(ctx);
 
 		d.setContentView(R.layout.about);
@@ -56,6 +58,15 @@ public class DialogFactory {
 					text = "";
 				}
 				aboutText.setText(text);
+			}
+
+		});
+		d.setOnDismissListener(new OnDismissListener() {
+
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+
 			}
 
 		});

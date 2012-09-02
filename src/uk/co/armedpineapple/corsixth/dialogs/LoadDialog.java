@@ -13,7 +13,7 @@ import android.util.Log;
 public class LoadDialog extends FilesDialog {
 
 
-	public LoadDialog(Context context, String path) {
+	public LoadDialog(SDLActivity context, String path) {
 		super(context, path, R.layout.load_dialog);
 		setTitle("Load Game");
 	}
