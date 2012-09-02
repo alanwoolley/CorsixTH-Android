@@ -11,7 +11,7 @@
 
     <FrameLayout
         android:id="@+id/menu_frame"
-        android:layout_width="260dp"
+        android:layout_width="220dp"
         android:layout_height="match_parent">
 
     </FrameLayout>
