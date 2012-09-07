@@ -39,7 +39,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 	public FilesDialog(SDLActivity context, String path, int layout) {
 		super(context);
 		this.ctx = context;
-		
+
 		savePath = path;
 		setContentView(layout);
 		savesList = (ListView) findViewById(R.id.filesList);
@@ -50,7 +50,10 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 			@Override
 			public void onClick(View v) {
-				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				Integer speed;
+				if ((speed = ctx.config.getGameSpeed()) != null) {
+					SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				}
 				dismiss();
 			}
 

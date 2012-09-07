@@ -81,6 +81,10 @@ public class Files {
 
 	private static Boolean doFilesExist(String[] files, String directory) {
 		Log.d(Files.class.getSimpleName(), "Checking directory: " + directory);
+		if (directory == null) {
+			return false;
+		}
+
 		File dir = new File(directory);
 		if (!dir.exists() || !dir.isDirectory()) {
 			return false;
@@ -343,7 +347,8 @@ public class Files {
 
 		private String findGameFiles() {
 			String result;
-			List<String> searchPaths = new ArrayList<String>(Arrays.asList(SearchRoot));
+			List<String> searchPaths = new ArrayList<String>(
+					Arrays.asList(SearchRoot));
 			String sdcard = trimPath(Environment.getExternalStorageDirectory()
 					.getAbsolutePath());
 

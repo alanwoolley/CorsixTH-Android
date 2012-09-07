@@ -139,6 +139,8 @@ public class Configuration {
 			break;
 
 		}
+		
+		config.gameSpeed = 0;
 		Log.d(Configuration.class.getSimpleName(), config.toString());
 		return config;
 	}
