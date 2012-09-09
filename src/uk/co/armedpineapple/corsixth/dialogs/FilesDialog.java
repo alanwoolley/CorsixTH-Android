@@ -28,7 +28,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 	private String savePath;
 	private ListView savesList;
 	private Button cancelButton;
-	private SDLActivity ctx;
+	protected SDLActivity ctx;
 
 	@Override
 	public void onBackPressed() {

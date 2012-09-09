@@ -56,6 +56,7 @@ public class SaveDialog extends FilesDialog {
 	@Override
 	public void onSelectedFile(String file) {
 		Log.d(getClass().getSimpleName(), "Saving: " + file);
+		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
 		SDLActivity.cthSaveGame(file);
 		dismiss();
 
