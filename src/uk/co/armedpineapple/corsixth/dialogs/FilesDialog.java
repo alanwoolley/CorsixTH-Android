@@ -8,8 +8,12 @@ package uk.co.armedpineapple.corsixth.dialogs;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import uk.co.armedpineapple.corsixth.Files;
+import uk.co.armedpineapple.corsixth.Files.FileDetails;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.Dialog;
@@ -23,12 +27,15 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public abstract class FilesDialog extends Dialog implements OnItemClickListener {
 
-	private String[] saves;
-	private ArrayAdapter<String> arrayAdapter;
 	private String savePath;
-	private ListView savesList;
 	private Button cancelButton;
+
+	protected List<FileDetails> saves;
+	protected FilesAdapter arrayAdapter;
+	protected ListView savesList;
 	protected SDLActivity ctx;
+
+	private boolean hasNewButton;
 
 	@Override
 	public void onBackPressed() {
@@ -36,9 +43,12 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
 	}
 
-	public FilesDialog(SDLActivity context, String path, int layout) {
+	public FilesDialog(SDLActivity context, String path, int layout,
+			boolean hasNewButton) {
 		super(context);
+
 		this.ctx = context;
+		this.hasNewButton = hasNewButton;
 
 		savePath = path;
 		setContentView(layout);
@@ -70,7 +80,12 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 			}
 		});
 
-		arrayAdapter = new ArrayAdapter<String>(ctx, R.layout.files_list, saves);
+		
+		// Sort the saves to be most recent first.
+		
+		Collections.sort(saves, Collections.reverseOrder());
+
+		arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);
 		savesList.setAdapter(arrayAdapter);
 
 	}
@@ -78,9 +93,19 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		onSelectedFile(saves[position]);
+
+		if (hasNewButton && position == 0) {
+			onNewClicked();
+		} else {
+			onSelectedFile(saves.get(hasNewButton ? position - 1 : position)
+					.getFileName());
+		}
 	}
 
 	public abstract void onSelectedFile(String file);
+
+	public void onNewClicked() {
+
+	}
 
 }

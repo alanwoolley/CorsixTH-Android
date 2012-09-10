@@ -1,7 +1,5 @@
 package uk.co.armedpineapple.corsixth.dialogs;
 
-import uk.co.armedpineapple.corsixth.MenuAdapter;
-import uk.co.armedpineapple.corsixth.MenuItems;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import static uk.co.armedpineapple.corsixth.SDLActivity.Command.*;

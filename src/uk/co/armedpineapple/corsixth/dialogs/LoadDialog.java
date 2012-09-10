@@ -5,6 +5,8 @@
  */
 package uk.co.armedpineapple.corsixth.dialogs;
 
+import java.io.IOException;
+
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.content.Context;
@@ -14,7 +16,7 @@ public class LoadDialog extends FilesDialog {
 
 
 	public LoadDialog(SDLActivity context, String path) {
-		super(context, path, R.layout.load_dialog);
+		super(context, path, R.layout.files_dialog, false);
 		setTitle("Load Game");
 	}
 
@@ -24,4 +26,6 @@ public class LoadDialog extends FilesDialog {
 		SDLActivity.cthLoadGame(file);
 		dismiss();
 	}
+
+	
 }

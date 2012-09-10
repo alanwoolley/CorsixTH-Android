@@ -1,6 +1,10 @@
-package uk.co.armedpineapple.corsixth;
+package uk.co.armedpineapple.corsixth.dialogs;
 
 import java.util.List;
+
+import uk.co.armedpineapple.corsixth.R;
+import uk.co.armedpineapple.corsixth.R.id;
+import uk.co.armedpineapple.corsixth.R.layout;
 
 
 import android.content.Context;

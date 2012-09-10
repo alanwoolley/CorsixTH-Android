@@ -5,6 +5,8 @@
  */
 package uk.co.armedpineapple.corsixth.dialogs;
 
+import java.io.IOException;
+
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.AlertDialog;
@@ -18,22 +20,11 @@ import android.widget.EditText;
 
 public class SaveDialog extends FilesDialog {
 
-	private Button newButton;
 	private AlertDialog newSaveDialog;
 
 	public SaveDialog(SDLActivity context, String path) {
-		super(context, path, R.layout.save_dialog);
+		super(context, path, R.layout.files_dialog, true);
 		setTitle("Save Game");
-
-		newButton = (Button) findViewById(R.id.newSaveButton);
-		newButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				newSaveDialog.show();
-			}
-
-		});
 
 		final EditText editTextBox = new EditText(context);
 		Builder builder = new Builder(context);
@@ -61,4 +52,11 @@ public class SaveDialog extends FilesDialog {
 		dismiss();
 
 	}
+
+	@Override
+	public void onNewClicked() {
+		newSaveDialog.show();
+
+	}
+
 }

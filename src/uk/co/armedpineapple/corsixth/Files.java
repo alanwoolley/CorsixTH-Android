@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -117,18 +118,28 @@ public class Files {
 	 * @throws IOException
 	 *             if the directory doesn't exist or cannot be accessed
 	 */
-	public static String[] listFilesInDirectory(String directory,
+	public static List<FileDetails> listFilesInDirectory(String directory,
 			FilenameFilter filter) throws IOException {
 		Log.d(Files.class.getSimpleName(), "Looking for files in: " + directory);
 
 		File f = new File(directory);
-		String files[] = null;
+		List<FileDetails> files = new ArrayList<FileDetails>();
 		if (f.isDirectory()) {
 			Log.d(Files.class.getSimpleName(), "Directory " + directory
 					+ " looks ok");
-			files = f.list(filter);
-			Log.d(Files.class.getSimpleName(), "Found: " + files.length
+
+			String[] filesArray = f.list(filter);
+
+			Log.d(Files.class.getSimpleName(), "Found: " + filesArray.length
 					+ " files");
+
+			for (String fileName : filesArray) {
+
+				File file = new File(directory + File.separator + fileName);
+				long lastModified = file.lastModified();
+				files.add(new FileDetails(fileName, new Date(lastModified)));
+			}
+
 			return files;
 		}
 
@@ -541,6 +552,35 @@ public class Files {
 			}
 
 			return new AsyncTaskResult<String>(unzipTo);
+
+		}
+	}
+
+	public static class FileDetails implements Comparable<FileDetails> {
+
+		private Date lastModified;
+		private String fileName;
+
+		public FileDetails(String filename, Date lastModified) {
+			this.fileName = filename;
+			this.lastModified = lastModified;
+		}
+
+		public Date getLastModified() {
+			return lastModified;
+		}
+
+		public String getFileName() {
+			return fileName;
+		}
+
+		@Override
+		public int compareTo(FileDetails another) {
+			if (lastModified.equals(another.getLastModified())) {
+				return 0;
+			}
+
+			return lastModified.after(another.getLastModified()) ? 1 : -1;
 
 		}
 	}
