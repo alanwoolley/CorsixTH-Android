@@ -79,6 +79,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 			return;
 		case QUICK_SAVE:
 			SDLActivity.sendCommand(QUICK_SAVE, null);
+			SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
 			return;
 		case RESTART:
 			SDLActivity.sendCommand(RESTART_GAME, null);
