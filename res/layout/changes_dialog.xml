@@ -3,12 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <WebView
-        android:id="@+id/recentChangesWebView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/dismissDialogButton"
-        android:layout_alignParentLeft="true" />
+    <ScrollView
+    android:id="@+id/changesScroller"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="vertical"
+    android:fillViewport="true" android:layout_above="@+id/dismissDialogButton" android:layout_alignParentLeft="true">
+  
+        <TextView
+            android:id="@+id/changesTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0" />
+
+	</ScrollView>
 
     <Button
         android:id="@+id/dismissDialogButton"

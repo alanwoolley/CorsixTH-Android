@@ -91,9 +91,15 @@ public class DialogFactory {
 
 			@Override
 			public void onShow(DialogInterface dialog) {
-				WebView wv = (WebView) d
-						.findViewById(R.id.recentChangesWebView);
-				wv.loadUrl(ctx.getString(R.string.changes_url));
+				TextView changesText = (TextView) d
+						.findViewById(R.id.changesTextView);
+				String text;
+				try {
+					text = Files.readTextFromResource(ctx, R.raw.changes);
+				} catch (IOException e) {
+					text = "Cannot get changelog";
+				}
+				changesText.setText(text);
 			}
 
 		});
