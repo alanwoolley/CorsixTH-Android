@@ -75,7 +75,7 @@ public class SDLActivity extends CTHActivity {
 	Handler commandHandler = new CommandHandler(this);
 
 	// C functions we call
-	public static native void nativeInit();
+	public static native void nativeInit(String path);
 
 	public static native void nativeQuit();
 
@@ -100,7 +100,7 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthSaveGame(String path);
 
 	public static native void cthLoadGame(String path);
-	
+
 	public static native void cthGameSpeed(int speed);
 
 	// Setup
@@ -282,7 +282,8 @@ public class SDLActivity extends CTHActivity {
 	public static void startApp() {
 		// Start up the C app thread
 		if (mSDLThread == null) {
-			mSDLThread = new Thread(new SDLMain(), "SDLThread");
+			mSDLThread = new Thread(
+					new SDLMain(mSingleton.config.getCthPath()), "SDLThread");
 			mSDLThread.start();
 		} else {
 			// SDLActivity.nativeResume();
@@ -690,11 +691,11 @@ public class SDLActivity extends CTHActivity {
 				if (mainMenuDialog == null) {
 					mainMenuDialog = new MenuDialog(context);
 				}
-				
+
 				// Pause the game
 				cthGameSpeed(0);
 				mainMenuDialog.show();
-				
+
 				break;
 			case PAUSE_GAME:
 				cthGameSpeed(0);
@@ -718,9 +719,16 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
+	private String path;
+
+	public SDLMain(String path) {
+		this.path = path;
+	}
+
 	public void run() {
 		// Runs SDL_main()
-		SDLActivity.nativeInit();
+		Log.d(SDLMain.class.getSimpleName(), "Root: " + path);
+		SDLActivity.nativeInit(path);
 
 		Log.v(getClass().getSimpleName(), "SDL thread terminated");
 	}
