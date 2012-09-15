@@ -76,7 +76,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 			@Override
 			public boolean accept(File dir, String filename) {
-				return filename.toLowerCase().endsWith(".sav");
+				return filename.toLowerCase().endsWith(".sav") && !filename.toLowerCase().equals("quicksave.sav");
 			}
 		});
 
