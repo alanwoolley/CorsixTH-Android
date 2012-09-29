@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.corsixth"
     android:installLocation="preferExternal"
-    android:versionCode="27"
-    android:versionName="0.3.2" >
+    android:versionCode="29"
+    android:versionName="0.3.3-dev" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -17,19 +17,18 @@
 
     <application
         android:name=".CorsixTHApplication"
-        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppTheme" >
+        android:theme="@style/Theme.AppTheme" android:debuggable="true">
         <activity
             android:name="uk.co.armedpineapple.corsixth.SDLActivity"
             android:label="@string/app_name"
-            android:launchMode="standard"
+            android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
             android:name=".wizard.WizardActivity"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="sensorLandscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,8 +37,8 @@
         </activity>
         <activity
             android:name=".PrefsActivity"
-            android:theme="@android:style/Theme.Dialog" 
-            android:excludeFromRecents="true">
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Dialog" >
         </activity>
     </application>
 
