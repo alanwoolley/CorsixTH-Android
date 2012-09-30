@@ -1,3 +1,9 @@
+0.3.3 - 30/09/2012
+==================
+* Update to CorsixTH Version 0.10
+* Improve stability
+* Bug fixes
+
 0.3.2 - 15/09/2012
 ==================
 * Bug fixes with game speed
