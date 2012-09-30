@@ -4,8 +4,10 @@
 //
 package uk.co.armedpineapple.corsixth;
 
-import com.google.android.apps.analytics.easytracking.TrackedActivity;
+import android.app.Activity;
 
-public class CTHActivity extends TrackedActivity {
+
+
+public class CTHActivity extends Activity {
 	
 }

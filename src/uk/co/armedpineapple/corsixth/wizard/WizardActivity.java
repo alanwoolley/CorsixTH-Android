@@ -5,8 +5,7 @@
  */
 package uk.co.armedpineapple.corsixth.wizard;
 
-import com.google.android.apps.analytics.easytracking.TrackedActivity;
-
+import uk.co.armedpineapple.corsixth.CTHActivity;
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.Files;
@@ -25,7 +24,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 
-public class WizardActivity extends TrackedActivity {
+public class WizardActivity extends CTHActivity {
 
 	private ViewFlipper flipper;
 	private Button previousButton;
