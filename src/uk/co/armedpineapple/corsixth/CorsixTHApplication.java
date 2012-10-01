@@ -15,6 +15,8 @@ import com.bugsense.trace.BugSenseHandler;
 
 public class CorsixTHApplication extends android.app.Application {
 
+	private Properties properties = new Properties();;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -26,24 +28,30 @@ public class CorsixTHApplication extends android.app.Application {
 		 * 
 		 * bugsense.key=<your API key>
 		 */
-		
-		Properties properties = new Properties();
+
 		try {
 			InputStream inputStream = getAssets()
 					.open("application.properties");
 			Log.d(getClass().getSimpleName(), "Loading properties");
 			properties.load(inputStream);
-
-			if (properties.containsKey("bugsense.key")) {
-				Log.d(getClass().getSimpleName(), "Setting up bugsense");
-				BugSenseHandler.setup(this,
-						(String) properties.get("bugsense.key"));
-			}
+			setupBugsense();
 
 		} catch (IOException e) {
 			Log.i(getClass().getSimpleName(), "No properties file found");
 		}
 
+	}
+
+	public Properties getProperties() {
+		return properties;
+	}
+
+	private void setupBugsense() {
+		if (properties.containsKey("bugsense.key")) {
+			Log.d(getClass().getSimpleName(), "Setting up bugsense");
+			BugSenseHandler
+					.setup(this, (String) properties.get("bugsense.key"));
+		}
 	}
 
 }
