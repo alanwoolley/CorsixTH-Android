@@ -11,7 +11,7 @@ import com.flurry.android.FlurryAgent;
 import android.app.Activity;
 import android.util.Log;
 
-public class CTHActivity extends Activity {
+public abstract class CTHActivity extends Activity {
 
 	boolean trackingSession = false;
 

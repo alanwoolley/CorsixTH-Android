@@ -16,7 +16,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/menu_item_image"
-        android:text="Large Text"
+        android:text=""
         android:textAppearance="@style/MenuFont" />
 
 </RelativeLayout>

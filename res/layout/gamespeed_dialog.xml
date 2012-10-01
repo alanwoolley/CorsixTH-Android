@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/gamespeed_layout"
-    android:layout_height="wrap_content"
     android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:padding="10dp" >
 
     <SeekBar
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gamespeed_seek"
         android:layout_centerHorizontal="true"
-        android:text="Default"
+        android:text="@string/speed_default"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/gamespeed_text"
-        android:text="Slowest"
+        android:text="@string/speed_slowest"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/gamespeed_seek"
-        android:text="Fastest"
+        android:text="@string/speed_fastest"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Button
@@ -48,7 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gamespeed_text"
         android:layout_centerHorizontal="true"
-      
-        android:text="Set Speed" />
+        android:text="@string/set_speed" />
 
 </RelativeLayout>
