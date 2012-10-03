@@ -24,6 +24,7 @@ import uk.co.armedpineapple.corsixth.dialogs.SaveDialog;
 
 import com.bugsense.trace.BugSenseHandler;
 
+import android.annotation.TargetApi;
 import android.app.*;
 import android.content.*;
 import android.content.DialogInterface.OnDismissListener;
@@ -100,7 +101,7 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthLoadGame(String path);
 
 	public static native void cthGameSpeed(int speed);
-	
+
 	public static String nativeGetGamePath() {
 		return mSingleton.config.getCthPath() + "/scripts/";
 	}
@@ -278,12 +279,24 @@ public class SDLActivity extends CTHActivity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
 
+		// Use low profile mode if supported
+		if (Build.VERSION.SDK_INT >= 11) {
+			hideSystemUi();
+		}
+
+	}
+
+	@TargetApi(11)
+	private void hideSystemUi() {
+		getWindow().getDecorView().setSystemUiVisibility(
+				View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	}
 
 	public static void startApp() {
 		// Start up the C app thread
 		if (mSDLThread == null) {
-			mSDLThread = new Thread(new SDLMain(mSingleton.config.getCthPath()), "SDLThread");
+			mSDLThread = new Thread(
+					new SDLMain(mSingleton.config.getCthPath()), "SDLThread");
 			mSDLThread.start();
 		} else {
 			// SDLActivity.nativeResume();
@@ -450,8 +463,6 @@ public class SDLActivity extends CTHActivity {
 		finish();
 		startActivity(intent);
 	}
-
-
 
 	// Java functions called from C
 
