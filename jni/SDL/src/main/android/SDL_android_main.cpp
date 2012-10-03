@@ -1,42 +1,48 @@
-
 /* Include the SDL main definition header */
 #include "SDL_main.h"
 
 /*******************************************************************************
-                 Functions called by JNI
-*******************************************************************************/
+ Functions called by JNI
+ *******************************************************************************/
 #include <jni.h>
+
+static JavaVM* jvm;
 
 // Called before SDL_main() to initialize JNI bindings in SDL library
 extern "C" void SDL_Android_Init(JNIEnv* env, jclass cls);
 
 // Library init
-extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved)
-{
-    return JNI_VERSION_1_4;
+extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+	jvm = vm;
+	return JNI_VERSION_1_4;
 }
 
 // Start up the SDL app
-extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jstring path)
-{
-	const char *nativeString = env->GetStringUTFChars(path, 0);
+extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_nativeInit(
+		JNIEnv* env, jclass cls, jstring jni_log_path, jstring jni_game_path) {
 
-	char* p = (char*)malloc(sizeof(nativeString));
-	strcpy(p, nativeString);
-	env->ReleaseStringUTFChars(path, nativeString);
+	const char *log_path = env->GetStringUTFChars(jni_log_path, 0);
+	const char *game_path = env->GetStringUTFChars(jni_game_path, 0);
 
-    /* This interface could expand with ABI negotiation, calbacks, etc. */
-    SDL_Android_Init(env, cls);
+	/* This interface could expand with ABI negotiation, calbacks, etc. */
+	SDL_Android_Init(env, cls);
 
-    /* Run the application code! */
-    int status;
-    char *argv[2];
-    argv[0] = strdup("SDL_app");
-    argv[1] = p;
-    status = SDL_main(2, argv, env);
+	/* Run the application code! */
+	int status;
+	char *argv[3];
+	argv[0] = strdup("SDL_app");
+	argv[1] = strdup(log_path);
+	argv[2] = strdup(game_path);
 
-    /* We exit here for consistency with other platforms. */
-    exit(status);
+	env->ReleaseStringUTFChars(jni_log_path, log_path);
+	env->ReleaseStringUTFChars(jni_game_path, game_path);
+
+	status = SDL_main(3, argv, jvm);
+
+
+
+	/* We exit here for consistency with other platforms. */
+	exit(status);
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

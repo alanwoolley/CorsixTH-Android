@@ -75,7 +75,7 @@ public class SDLActivity extends CTHActivity {
 	Handler commandHandler = new CommandHandler(this);
 
 	// C functions we call
-	public static native void nativeInit(String path);
+	public static native void nativeInit(String logPath, String gamePath);
 
 	public static native void nativeQuit();
 
@@ -93,8 +93,6 @@ public class SDLActivity extends CTHActivity {
 
 	public static native void nativeRunAudioThread();
 
-	public static native void setGamePath(String path);
-
 	public static native void cthRestartGame();
 
 	public static native void cthSaveGame(String path);
@@ -102,6 +100,10 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthLoadGame(String path);
 
 	public static native void cthGameSpeed(int speed);
+	
+	public static String nativeGetGamePath() {
+		return mSingleton.config.getCthPath() + "/scripts/";
+	}
 
 	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
@@ -236,9 +238,10 @@ public class SDLActivity extends CTHActivity {
 	void loadApplication() {
 
 		// Load the libraries
+		System.loadLibrary("stlport_shared");
 		System.loadLibrary("SDL");
 		System.loadLibrary("mikmod");
-		// System.loadLibrary("LUA");
+		System.loadLibrary("LUA");
 		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
@@ -251,8 +254,6 @@ public class SDLActivity extends CTHActivity {
 					"Couldn't write to configuration file");
 			BugSenseHandler.log("Config", e);
 		}
-
-		setGamePath(config.getCthPath() + "/scripts/");
 
 		File f = new File(config.getSaveGamesPath());
 
@@ -282,8 +283,8 @@ public class SDLActivity extends CTHActivity {
 	public static void startApp() {
 		// Start up the C app thread
 		if (mSDLThread == null) {
-			mSDLThread = new Thread(
-					new SDLMain(mSingleton.config.getCthPath()), "SDLThread");
+			mSDLThread = new Thread(new SDLMain(mSingleton.config.getCthPath(),
+					mSingleton.config.getCthPath() + "/scripts/"), "SDLThread");
 			mSDLThread.start();
 		} else {
 			// SDLActivity.nativeResume();
@@ -719,16 +720,17 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-	private String path;
+	private String logPath;
+	private String gamePath;
 
-	public SDLMain(String path) {
-		this.path = path;
+	public SDLMain(String logPath, String gamePath) {
+		this.logPath = logPath;
+		this.gamePath = gamePath;
 	}
 
 	public void run() {
 		// Runs SDL_main()
-		Log.d(SDLMain.class.getSimpleName(), "Root: " + path);
-		SDLActivity.nativeInit(path);
+		SDLActivity.nativeInit(logPath, gamePath);
 
 		Log.v(getClass().getSimpleName(), "SDL thread terminated");
 	}

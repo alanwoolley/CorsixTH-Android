@@ -66,7 +66,7 @@
 /**
  *  The prototype for the application's main() function
  */
-extern C_LINKAGE int SDL_main(int argc, char *argv[], JNIEnv *env);
+extern C_LINKAGE int SDL_main(int argc, char *argv[], JavaVM* jvm);
 
 
 #include "begin_code.h"
