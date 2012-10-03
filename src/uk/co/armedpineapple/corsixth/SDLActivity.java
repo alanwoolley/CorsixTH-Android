@@ -451,15 +451,7 @@ public class SDLActivity extends CTHActivity {
 		startActivity(intent);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return false;
-	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return false;
-	}
 
 	// Java functions called from C
 
