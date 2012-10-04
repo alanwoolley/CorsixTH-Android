@@ -1,3 +1,11 @@
+0.4.0 - 04/10/2012
+==================
+* Lots of bug fixes and improved stability
+* Dim the navigation buttons
+* Smooth scrolling - you can now "fling" the map
+* Replace GA with Flurry
+* Update libraries
+
 0.3.3 - 30/09/2012
 ==================
 * Update to CorsixTH Version 0.10
@@ -10,18 +18,3 @@
 * Clean up Load/Save UI
 * Build with new NDK
 
-0.3.1 - 03/09/2012 
-================== 
-* Another menu redesign 
-* Can change game speed from menu 
-* Update to latest CorsixTH version
-
-0.3.0 - 23/08/2012 
-================== 
-* Redesign menu system (for new games only)
-* Greatly increased performance
-* Improve wizard and original files game setup
-* Use latest CorsixTH version
-* Controls change - use long press to rotate objects
-* Improve two finger dragging
-* Bug fixes
