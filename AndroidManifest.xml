@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.corsixth"
-    android:installLocation="preferExternal"
-    android:versionCode="31"
+    android:installLocation="auto"
+    android:versionCode="36"
     android:versionName="dev" >
 
     <uses-sdk

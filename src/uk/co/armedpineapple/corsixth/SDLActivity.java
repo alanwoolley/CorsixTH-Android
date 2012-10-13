@@ -239,7 +239,6 @@ public class SDLActivity extends CTHActivity {
 	void loadApplication() {
 
 		// Load the libraries
-		System.loadLibrary("stlport_shared");
 		System.loadLibrary("SDL");
 		System.loadLibrary("SDL_gfx");
 		System.loadLibrary("mikmod");
