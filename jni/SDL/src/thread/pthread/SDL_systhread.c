@@ -27,6 +27,9 @@
 #include "SDL_thread.h"
 #include "../SDL_thread_c.h"
 #include "../SDL_systhread.h"
+#ifdef __ANDROID__
+#include "../../core/android/SDL_android.h"
+#endif
 
 /* List of signals to mask in the subthreads */
 static const int sig_list[] = {
@@ -37,6 +40,9 @@ static const int sig_list[] = {
 static void *
 RunThread(void *data)
 {
+	#ifdef __ANDROID__
+  	  Android_JNI_SetupThread();
+	#endif
     SDL_RunThread(data);
     pthread_exit((void *) 0);
     return ((void *) 0);        /* Prevent compiler warning */

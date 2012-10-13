@@ -40,6 +40,13 @@ extern void* Android_JNI_GetAudioBuffer();
 extern void Android_JNI_WriteAudioBuffer();
 extern void Android_JNI_CloseAudioDevice();
 
+// Threads
+#include <jni.h>
+static void Android_JNI_ThreadDestroyed(void*);
+JNIEnv *Android_JNI_GetEnv(void);
+int Android_JNI_SetupThread(void);
+
+    
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
 /* *INDENT-OFF* */
