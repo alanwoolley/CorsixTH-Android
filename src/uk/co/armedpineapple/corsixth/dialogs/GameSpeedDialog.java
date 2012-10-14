@@ -8,8 +8,6 @@ package uk.co.armedpineapple.corsixth.dialogs;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;

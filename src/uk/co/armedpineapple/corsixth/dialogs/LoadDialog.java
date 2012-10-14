@@ -5,11 +5,8 @@
  */
 package uk.co.armedpineapple.corsixth.dialogs;
 
-import java.io.IOException;
-
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
-import android.content.Context;
 import android.util.Log;
 
 public class LoadDialog extends FilesDialog {

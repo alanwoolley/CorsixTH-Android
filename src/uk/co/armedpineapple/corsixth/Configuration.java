@@ -41,6 +41,8 @@ public class Configuration {
 
 	private Integer musicVol, announcementsVol, sfxVol, resolutionMode,
 			displayWidth, displayHeight, gameSpeed;
+	
+	//TODO Get this the proper way.
 	private String saveGamesPath = "/sdcard/CTHsaves";
 
 	private Configuration() {
@@ -49,7 +51,7 @@ public class Configuration {
 
 
 	/** Saves the configuration to a SharedPreferences object **/
-	public void saveToPreferences(Context ctx, SharedPreferences preferences) {
+	public void saveToPreferences(SharedPreferences preferences) {
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
 		editor.putString("gamescripts_pref", cthPath);

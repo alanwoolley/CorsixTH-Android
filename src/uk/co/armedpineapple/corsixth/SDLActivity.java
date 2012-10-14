@@ -228,7 +228,7 @@ public class SDLActivity extends CTHActivity {
 					BugSenseHandler.log("File", result.getError());
 
 				}
-			};
+			}
 
 		};
 
@@ -492,15 +492,15 @@ public class SDLActivity extends CTHActivity {
 
 	public static Object audioInit(int sampleRate, boolean is16Bit,
 			boolean isStereo, int desiredFrames) {
-		int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO
-				: AudioFormat.CHANNEL_CONFIGURATION_MONO;
+		int channelConfig = isStereo ? AudioFormat.CHANNEL_OUT_STEREO
+				: AudioFormat.CHANNEL_OUT_MONO;
 		int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT
 				: AudioFormat.ENCODING_PCM_8BIT;
 		int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
 		Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono")
 				+ " " + (is16Bit ? "16-bit" : "8-bit") + " "
-				+ ((float) sampleRate / 1000f) + "kHz, " + desiredFrames
+				+ (sampleRate / 1000f) + "kHz, " + desiredFrames
 				+ " frames buffer");
 
 		// Let the user pick a larger buffer if they really want -- but ye
@@ -525,7 +525,7 @@ public class SDLActivity extends CTHActivity {
 						+ " "
 						+ ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit"
 								: "8-bit") + " "
-						+ ((float) mAudioTrack.getSampleRate() / 1000f)
+						+ (mAudioTrack.getSampleRate() / 1000f)
 						+ "kHz, " + desiredFrames + " frames buffer");
 
 		if (is16Bit) {

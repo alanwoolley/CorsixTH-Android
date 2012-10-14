@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import uk.co.armedpineapple.corsixth.R;
-import uk.co.armedpineapple.corsixth.R.drawable;
 
 public enum MenuItems {
 	GAME_SPEED("Game Speed", null), QUICK_LOAD("Quick Load", null), QUICK_SAVE(

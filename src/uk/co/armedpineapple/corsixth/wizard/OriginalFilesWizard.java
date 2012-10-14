@@ -94,9 +94,8 @@ public class OriginalFilesWizard extends WizardView {
 			alert.show();
 
 			throw new ConfigurationException();
-		} else {
-			config.setOriginalFilesPath(customLocation);
 		}
+		config.setOriginalFilesPath(customLocation);
 
 	}
 

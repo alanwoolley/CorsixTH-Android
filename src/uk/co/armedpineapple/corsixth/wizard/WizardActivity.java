@@ -113,8 +113,7 @@ public class WizardActivity extends CTHActivity {
 							.saveConfiguration(config);
 
 					if (nextButton.getText() == "Play!") {
-						config.saveToPreferences(WizardActivity.this,
-								preferences);
+						config.saveToPreferences(preferences);
 
 						finish();
 						WizardActivity.this.startActivity(new Intent(

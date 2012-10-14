@@ -15,7 +15,7 @@ import com.bugsense.trace.BugSenseHandler;
 
 public class CorsixTHApplication extends android.app.Application {
 
-	private Properties properties = new Properties();;
+	private Properties properties = new Properties();
 
 	@Override
 	public void onCreate() {

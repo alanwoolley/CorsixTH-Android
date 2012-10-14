@@ -8,7 +8,6 @@ package uk.co.armedpineapple.corsixth.dialogs;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +19,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -62,7 +60,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 			public void onClick(View v) {
 				Integer speed;
 				if ((speed = ctx.config.getGameSpeed()) != null) {
-					SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+					SDLActivity.cthGameSpeed(speed);
 				}
 				dismiss();
 			}

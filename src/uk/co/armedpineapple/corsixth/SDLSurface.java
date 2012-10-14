@@ -68,7 +68,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.v(getClass().getSimpleName(), "surfaceCreated()");
 
-		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		SDLActivity.createEGLSurface();
 
 		enableSensor(Sensor.TYPE_ACCELEROMETER, true);
