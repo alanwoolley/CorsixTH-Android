@@ -11,6 +11,11 @@ static JavaVM* jvm;
 // Called before SDL_main() to initialize JNI bindings in SDL library
 extern "C" void SDL_Android_Init(JNIEnv* env, jclass cls);
 
+// Library init
+extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+	jvm = vm;
+	return JNI_VERSION_1_4;
+}
 
 // Start up the SDL app
 extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_nativeInit(
