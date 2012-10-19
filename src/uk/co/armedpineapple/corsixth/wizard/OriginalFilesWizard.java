@@ -236,7 +236,7 @@ public class OriginalFilesWizard extends WizardView {
 							+ customLocation);
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
-					BugSenseHandler.log("Extract", e);
+					BugSenseHandler.sendException(e);
 					DialogFactory.createFromException(result.getError(),
 							ctx.getString(R.string.download_demo_error), ctx,
 							false).show();
@@ -266,7 +266,7 @@ public class OriginalFilesWizard extends WizardView {
 				super.onPostExecute(result);
 
 				if (result.getError() != null) {
-					BugSenseHandler.log("Download", result.getError());
+					BugSenseHandler.sendException(result.getError());
 					automaticRadio.setChecked(true);
 					dialog.hide();
 

@@ -261,7 +261,7 @@ public class Files {
 			} catch (IOException e) {
 				Log.e(Files.class.getSimpleName(),
 						"I/O Exception whilst listing files", e);
-				BugSenseHandler.log("File", e);
+				BugSenseHandler.sendException(e);
 				return new AsyncTaskResult<ArrayList<String>>(e);
 
 			}
@@ -602,7 +602,7 @@ public class Files {
 				}
 
 			} catch (IOException e) {
-				BugSenseHandler.log("File", e);
+				BugSenseHandler.sendException(e);
 				return new AsyncTaskResult<String>(e);
 			}
 

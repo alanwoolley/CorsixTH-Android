@@ -50,7 +50,7 @@ public class CorsixTHApplication extends android.app.Application {
 		if (properties.containsKey("bugsense.key")) {
 			Log.d(getClass().getSimpleName(), "Setting up bugsense");
 			BugSenseHandler
-					.setup(this, (String) properties.get("bugsense.key"));
+					.initAndStartSession(this, (String) properties.get("bugsense.key"));
 		}
 	}
 

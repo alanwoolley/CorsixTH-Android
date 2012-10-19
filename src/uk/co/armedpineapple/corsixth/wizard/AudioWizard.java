@@ -199,7 +199,7 @@ public class AudioWizard extends WizardView {
 
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
-					BugSenseHandler.log("Extract", e);
+					BugSenseHandler.sendException(e);
 					Toast errorToast = Toast
 							.makeText(ctx, R.string.download_timidity_error,
 									Toast.LENGTH_LONG);
@@ -235,7 +235,7 @@ public class AudioWizard extends WizardView {
 						R.string.download_timidity_error, Toast.LENGTH_LONG);
 
 				if (result.getError() != null) {
-					BugSenseHandler.log("Download", result.getError());
+					BugSenseHandler.sendException(result.getError());
 					musicCheck.setChecked(false);
 					dialog.hide();
 					errorToast.show();

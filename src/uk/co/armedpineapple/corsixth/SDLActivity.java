@@ -130,7 +130,7 @@ public class SDLActivity extends CTHActivity {
 						getPackageName(), 0).versionCode);
 
 			} catch (NameNotFoundException e) {
-				BugSenseHandler.log("Scripts", e);
+				BugSenseHandler.sendException(e);
 			}
 
 			if (!preferences.getBoolean("scripts_copied", false)
@@ -190,7 +190,7 @@ public class SDLActivity extends CTHActivity {
 				Exception error;
 				if ((error = result.getError()) != null) {
 					Log.d(getClass().getSimpleName(), "Error copying files.");
-					BugSenseHandler.log("File", error);
+					BugSenseHandler.sendException(error);
 				}
 
 				Editor edit = preferences.edit();
@@ -225,7 +225,7 @@ public class SDLActivity extends CTHActivity {
 				if ((f = result.getResult()) != null) {
 					unzipTask.execute(f);
 				} else {
-					BugSenseHandler.log("File", result.getError());
+					BugSenseHandler.sendException(result.getError());
 
 				}
 			}
@@ -253,7 +253,7 @@ public class SDLActivity extends CTHActivity {
 			e.printStackTrace();
 			Log.e(getClass().getSimpleName(),
 					"Couldn't write to configuration file");
-			BugSenseHandler.log("Config", e);
+			BugSenseHandler.sendException(e);
 		}
 
 		File f = new File(config.getSaveGamesPath());
@@ -594,7 +594,7 @@ public class SDLActivity extends CTHActivity {
 			} catch (Exception e) {
 				Log.v(SDLActivity.class.getSimpleName(),
 						"Problem stopping audio thread: " + e);
-				BugSenseHandler.log("SDL Audio", e);
+				BugSenseHandler.sendException(e);
 			}
 			mAudioThread = null;
 
@@ -667,7 +667,7 @@ public class SDLActivity extends CTHActivity {
 					loadDialog.updateSaves(context);
 					loadDialog.show();
 				} catch (IOException e) {
-					BugSenseHandler.log("Files", e);
+					BugSenseHandler.sendException(e);
 
 					Toast.makeText(context, "Problem loading load dialog",
 							Toast.LENGTH_SHORT).show();
@@ -684,7 +684,7 @@ public class SDLActivity extends CTHActivity {
 					saveDialog.updateSaves(context);
 					saveDialog.show();
 				} catch (IOException e) {
-					BugSenseHandler.log("Files", e);
+					BugSenseHandler.sendException(e);
 					Toast.makeText(context, "Problem loading save dialog",
 							Toast.LENGTH_SHORT).show();
 				}
