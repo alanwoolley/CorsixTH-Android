@@ -114,7 +114,7 @@ public class DialogFactory {
 				ctx.getResources().getString(R.string.no_connection_error))
 				.setCancelable(false);
 
-		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+		builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -136,7 +136,7 @@ public class DialogFactory {
 				.setCancelable(false);
 		if (finish) {
 
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -147,7 +147,7 @@ public class DialogFactory {
 					});
 
 		} else {
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -178,7 +178,7 @@ public class DialogFactory {
 		builder.setMessage(e.getLocalizedMessage());
 
 		if (finish) {
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -188,7 +188,7 @@ public class DialogFactory {
 
 					});
 		} else {
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
