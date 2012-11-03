@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">CorsixTH</string>
     <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="welcome_header">Welcome to CorsixTH!</string>
     <string name="welcome_text">You are almost ready to start playing, but there are a few things that we must setup first.</string>
     <string name="no_external_storage">External storage isn\'t available. Please make sure that your device is disconnected from a computer and that your SD card is inserted (if applicable) and restart the app.</string>

@@ -7,7 +7,10 @@
 package uk.co.armedpineapple.corsixth;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -16,6 +19,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
+import uk.co.armedpineapple.corsixth.Files.FileDetails;
 import uk.co.armedpineapple.corsixth.Files.UnzipTask;
 import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
 import uk.co.armedpineapple.corsixth.dialogs.LoadDialog;
@@ -76,7 +80,7 @@ public class SDLActivity extends CTHActivity {
 	Handler commandHandler = new CommandHandler(this);
 
 	// C functions we call
-	public static native void nativeInit(String logPath);
+	public static native void nativeInit(String logPath, String toLoad);
 
 	public static native void nativeQuit();
 
@@ -101,7 +105,7 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthLoadGame(String path);
 
 	public static native void cthGameSpeed(int speed);
-	
+
 	public static native void cthTryAutoSave(String filename);
 
 	public static String nativeGetGamePath() {
@@ -267,7 +271,7 @@ public class SDLActivity extends CTHActivity {
 		// So we can call stuff from static callbacks
 		mSingleton = this;
 
-		mSurface = new SDLSurface(getApplication(), config.getDisplayWidth(),
+		mSurface = new SDLSurface(this, config.getDisplayWidth(),
 				config.getDisplayHeight());
 
 		FrameLayout mainLayout = (FrameLayout) getLayoutInflater().inflate(
@@ -294,14 +298,66 @@ public class SDLActivity extends CTHActivity {
 				View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	}
 
-	public static void startApp() {
+	public void startApp() {
 		// Start up the C app thread
+
 		if (mSDLThread == null) {
-			mSDLThread = new Thread(
-					new SDLMain(mSingleton.config.getCthPath()), "SDLThread");
-			mSDLThread.start();
-		} else {
-			// SDLActivity.nativeResume();
+
+			List<FileDetails> saves = null;
+			try {
+				saves = Files.listFilesInDirectory(config.getSaveGamesPath(),
+						new FilenameFilter() {
+
+							@Override
+							public boolean accept(File dir, String filename) {
+								return filename.toLowerCase().endsWith(".sav");
+							}
+						});
+			} catch (IOException e) {
+			}
+
+			if (saves != null && saves.size() > 0) {
+				Collections.sort(saves, Collections.reverseOrder());
+				
+				final String loadPath = saves.get(0).getFileName();
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage(R.string.load_last_save);
+				builder.setCancelable(false);
+				builder.setPositiveButton(R.string.yes,
+						new Dialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								mSDLThread = new Thread(new SDLMain(config
+										.getCthPath(), loadPath), "SDLThread");
+								mSDLThread.start();
+							}
+
+						});
+				builder.setNegativeButton(R.string.no,
+						new Dialog.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								mSDLThread = new Thread(new SDLMain(config
+										.getCthPath(), ""), "SDLThread");
+								mSDLThread.start();
+							}
+
+						});
+				builder.create().show();
+
+			} else {
+
+				mSDLThread = new Thread(new SDLMain(config.getCthPath(), ""),
+						"SDLThread");
+				mSDLThread.start();
+			}
+
 		}
 	}
 
@@ -439,11 +495,11 @@ public class SDLActivity extends CTHActivity {
 	protected void onPause() {
 		super.onPause();
 		Log.d(getClass().getSimpleName(), "onPause()");
-		
-		//Attempt to autosave.
-		
+
+		// Attempt to autosave.
+
 		cthTryAutoSave("cthAndroidAutoSave.sav");
-		
+
 		if (wake != null && wake.isHeld()) {
 			Log.d(getClass().getSimpleName(), "Releasing wakelock");
 			wake.release();
@@ -532,8 +588,8 @@ public class SDLActivity extends CTHActivity {
 						+ " "
 						+ ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit"
 								: "8-bit") + " "
-						+ (mAudioTrack.getSampleRate() / 1000f)
-						+ "kHz, " + desiredFrames + " frames buffer");
+						+ (mAudioTrack.getSampleRate() / 1000f) + "kHz, "
+						+ desiredFrames + " frames buffer");
 
 		if (is16Bit) {
 			audioBuffer = new short[desiredFrames * (isStereo ? 2 : 1)];
@@ -729,16 +785,17 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-	private String logPath;
+	private String logPath, toLoad;
 
-	public SDLMain(String logPath) {
+	public SDLMain(String logPath, String toLoad) {
 		this.logPath = logPath;
+		this.toLoad = toLoad;
 
 	}
 
 	public void run() {
 		// Runs SDL_main()
-		SDLActivity.nativeInit(logPath);
+		SDLActivity.nativeInit(logPath, toLoad);
 
 		Log.v(getClass().getSimpleName(), "SDL thread terminated");
 	}
