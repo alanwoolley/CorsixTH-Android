@@ -37,7 +37,6 @@
     <string name="extracting_demo">Extracting demo files…</string>
     <string name="demo_url">http://www.armedpineapple.co.uk/downloads/Theme+Hospital+Demo</string>
     <string name="timidity_url">http://www.armedpineapple.co.uk/downloads/Timidity</string>
-    <string name="changes_url">http://www.armedpineapple.co.uk/cth/changes.html</string>
     <string name="language_header">Language</string>
     <string name="language_text">CorsixTH supports multiple languages. Please choose from the supported languages below.</string>
     <string name="downloading_timidity">Downloading file…</string>
@@ -56,4 +55,7 @@
     <string name="speed_default">Default</string>
     <string name="speed_fastest">Fastest</string>
     <string name="set_speed">Set Speed</string>
+    <string name="load_last_save">Resume last game?</string>
+    <string name="autosave_name">cthandroidautosave.sav</string>
+    <string name="quicksave_name">quicksave.sav</string>
 </resources>

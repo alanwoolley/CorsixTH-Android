@@ -69,18 +69,21 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 	}
 
-	public void updateSaves(Context ctx) throws IOException {
+	public void updateSaves(final Context ctx) throws IOException {
 		saves = Files.listFilesInDirectory(savePath, new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String filename) {
-				return filename.toLowerCase().endsWith(".sav") && !filename.toLowerCase().equals("quicksave.sav");
+				return filename.toLowerCase().endsWith(".sav")
+						&& !filename.toLowerCase().equals(
+								ctx.getString(R.string.quicksave_name))
+						&& !filename.toLowerCase().equals(
+								ctx.getString(R.string.autosave_name));
 			}
 		});
 
-		
 		// Sort the saves to be most recent first.
-		
+
 		Collections.sort(saves, Collections.reverseOrder());
 
 		arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);

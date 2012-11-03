@@ -101,6 +101,8 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthLoadGame(String path);
 
 	public static native void cthGameSpeed(int speed);
+	
+	public static native void cthTryAutoSave(String filename);
 
 	public static String nativeGetGamePath() {
 		return mSingleton.config.getCthPath() + "/scripts/";
@@ -437,6 +439,11 @@ public class SDLActivity extends CTHActivity {
 	protected void onPause() {
 		super.onPause();
 		Log.d(getClass().getSimpleName(), "onPause()");
+		
+		//Attempt to autosave.
+		
+		cthTryAutoSave("cthAndroidAutoSave.sav");
+		
 		if (wake != null && wake.isHeld()) {
 			Log.d(getClass().getSimpleName(), "Releasing wakelock");
 			wake.release();
