@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">CorsixTH</string>
+    <string name="app_name" translatable="false">CorsixTH</string>
     <string name="ok">OK</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -37,8 +37,8 @@
     <string name="download_demo_error">There was a problem downloading the demo files</string>
     <string name="downloading_demo">Downloading demo files…</string>
     <string name="extracting_demo">Extracting demo files…</string>
-    <string name="demo_url">http://www.armedpineapple.co.uk/downloads/Theme+Hospital+Demo</string>
-    <string name="timidity_url">http://www.armedpineapple.co.uk/downloads/Timidity</string>
+    <string name="demo_url" translatable="false">http://www.armedpineapple.co.uk/downloads/Theme+Hospital+Demo</string>
+    <string name="timidity_url" translatable="false">http://www.armedpineapple.co.uk/downloads/Timidity</string>
     <string name="language_header">Language</string>
     <string name="language_text">CorsixTH supports multiple languages. Please choose from the supported languages below.</string>
     <string name="downloading_timidity">Downloading file…</string>
@@ -58,6 +58,6 @@
     <string name="speed_fastest">Fastest</string>
     <string name="set_speed">Set Speed</string>
     <string name="load_last_save">Resume last game?</string>
-    <string name="autosave_name">cthandroidautosave.sav</string>
-    <string name="quicksave_name">quicksave.sav</string>
+    <string name="autosave_name" translatable="false">cthandroidautosave.sav</string>
+    <string name="quicksave_name" translatable="false">quicksave.sav</string>
 </resources>

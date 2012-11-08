@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="volumes">
+    <string-array name="volumes" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -18,14 +18,14 @@
         <item>Native</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="gamespeed">
+    <string-array name="gamespeed" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
     </string-array>
-    <string-array name="languages">
+    <string-array name="languages" translatable="false">
         <item>English</item>
         <item>Finnish (suomi)</item>
         <item>French (français)</item>
@@ -41,7 +41,7 @@
         <item>Danish (Dansk)</item>
         <item>Russian (Русский)</item>
     </string-array>
-    <string-array name="languages_values">
+    <string-array name="languages_values" translatable="false">
         <item>en</item>
         <item>fi</item>
         <item>fr</item>
@@ -57,7 +57,7 @@
         <item>da</item>
         <item>ru</item>
     </string-array>
-    <string-array name="resolutions_values">
+    <string-array name="resolutions_values" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
