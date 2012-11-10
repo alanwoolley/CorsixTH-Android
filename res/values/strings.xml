@@ -5,8 +5,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="welcome_header">Welcome to CorsixTH!</string>
-    <string name="welcome_text">You are almost ready to start playing, but there are a few things that we must setup first.</string>
-    <string name="no_external_storage">External storage isn\'t available. Please make sure that your device is disconnected from a computer and that your SD card is inserted (if applicable) and restart the app.</string>
+    <string name="welcome_text">You are almost ready to start playing, but there are a few things that we must configure first.</string>
+    <string name="no_external_storage">External storage isn\'t available! Please make sure that your device is unplugged from your computer and that your SD card is inserted (if applicable). Then restart the app.</string>
     <string name="setup_wizard_dialog">The setup wizard will run again when you next launch the game.</string>
     <string name="previousButton">Previous</string>
     <string name="nextButton">Next</string>
@@ -26,38 +26,54 @@
     <string name="default_resolution">Default (640x480)</string>
     <string name="download_demo">Download Demo</string>
     <string name="original_files_header">Original Theme Hospital Files</string>
-    <string name="original_files_text">You should place the original Theme Hospital files on your external storage in a directory called \'th\', or choose an alternative below.</string>
+    <string name="original_files_text">You should place the original Theme Hospital files on your device in a directory called \'th\', or choose an alternative below.</string>
     <string name="native_resolution">Native</string>
     <string name="custom_resolution">Custom</string>
     <string name="custom_files">Custom</string>
     <string name="default_files">Automatically Detect</string>
     <string name="header_image_description">Header</string>
-    <string name="preparing_game_files_dialog">Preparing Game Files. This will only occur once, but may take a while.</string>
+    <string name="preparing_game_files_dialog">Preparing Game Files. This only needs to run once, but may take a while.</string>
     <string name="download_demo_dialog">This will download and install the Theme Hospital demo which will give you access to the basic functionality of the game.</string>
-    <string name="download_demo_error">There was a problem downloading the demo files</string>
+    <string name="download_demo_error">There was a problem downloading the demo files!</string>
     <string name="downloading_demo">Downloading demo files…</string>
-    <string name="extracting_demo">Extracting demo files…</string>
+    <string name="extracting_demo">Unpacking demo files…</string>
     <string name="demo_url" translatable="false">http://www.armedpineapple.co.uk/downloads/Theme+Hospital+Demo</string>
     <string name="timidity_url" translatable="false">http://www.armedpineapple.co.uk/downloads/Timidity</string>
     <string name="language_header">Language</string>
     <string name="language_text">CorsixTH supports multiple languages. Please choose from the supported languages below.</string>
     <string name="downloading_timidity">Downloading file…</string>
-    <string name="download_timidity_error">Error downloading file. Music will not be available. Please try again."</string>
-    <string name="extracting_timidity">Extracting files…</string>
+    <string name="download_timidity_error">Error downloading file. Music will not be available. Please try again later."</string>
+    <string name="extracting_timidity">Unpacking files…</string>
     <string name="music_download_dialog">Music requires an additional download. Download file (14.1MB)?</string>
     <string name="pause">Pause</string>
     <string name="setup_wizard">Setup Wizard</string>
     <string name="keep_screen_on">Keep screen on</string>
-    <string name="no_connection_error">You need an internet connection to download. Please connect to a network and try again.</string>
+    <string name="no_connection_error">You need an active internet connection to download. Please connect to a network and try again.</string>
     <string name="cancel">Cancel</string>
     <string name="new_save">New Save</string>
-    <string name="no_music_dialog">Your game files don\'t appear to have music included, therefore music could not be enabled. Please make sure you copied the music \'Sound\' folder over.</string>
-    <string name="no_data_dialog">Cannot locate game files. Please ensure that you have copied them over to a directory called \'th\' on your external storage, or specified a valid directory.</string>
+    <string name="no_music_dialog">Your game files don\'t appear to have music included, therefore music could not be enabled. Please make sure you copied the music \'Sound\' directory over.</string>
+    <string name="no_data_dialog">Cannot locate game files. Please ensure that you have copied them over to a directory called \'th\' on your device, or specified a valid directory.</string>
     <string name="speed_slowest">Slowest</string>
     <string name="speed_default">Default</string>
     <string name="speed_fastest">Fastest</string>
     <string name="set_speed">Set Speed</string>
-    <string name="load_last_save">Resume last game?</string>
+    <string name="load_last_save">Resume previous game?</string>
     <string name="autosave_name" translatable="false">cthandroidautosave.sav</string>
     <string name="quicksave_name" translatable="false">quicksave.sav</string>
+    <string name="save_game_dialog_title">Save Game</string>
+    <string name="save_game_dialog_message">Please enter a save game name</string>
+    <string name="load_game_dialog_title">Load Game</string>
+    <string name="menuitem_change_game_speed">Change Game Speed</string>
+    <string name="menuitem_quickload">Quick Load</string>
+    <string name="menuitem_quicksave">Quick Save</string>
+    <string name="menuitem_load">Load Game</string>
+    <string name="menuitem_save">Save Game</string>
+    <string name="menuitem_restart">Restart Level</string>
+    <string name="menuitem_about">About</string>
+    <string name="menuitem_exit">Exit Game</string>
+    <string name="about_dialog_header">About</string>
+    <string name="gamespeed_dialog_header">Set Game Speed</string>
+    <string name="play_button">Play!</string>
+    <string name="custom_location_message">Theme Hospital Game Files location</string>
+    <string name="game_paused">Game Paused</string>
 </resources>
