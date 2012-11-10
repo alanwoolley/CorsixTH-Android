@@ -100,7 +100,7 @@ public class AudioWizard extends WizardView {
 					builder.setMessage(
 							ctx.getString(R.string.no_music_dialog))
 							.setCancelable(true)
-							.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+							.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
 
 								@Override
 								public void onClick(DialogInterface dialog,
@@ -116,6 +116,7 @@ public class AudioWizard extends WizardView {
 					return;
 				}
 
+				// TODO - this isn't good. Do it properly.
 				File timidityConfig = new File("/sdcard/timidity/timidity.cfg");
 
 				if (!(timidityConfig.isFile() && timidityConfig.canRead())) {
@@ -137,8 +138,8 @@ public class AudioWizard extends WizardView {
 					builder.setMessage(
 							ctx.getString(R.string.music_download_dialog))
 							.setCancelable(true)
-							.setNegativeButton("Cancel", alertListener)
-							.setPositiveButton("OK", alertListener);
+							.setNegativeButton(R.string.cancel, alertListener)
+							.setPositiveButton(R.string.ok, alertListener);
 
 					AlertDialog alert = builder.create();
 					alert.show();
@@ -188,6 +189,7 @@ public class AudioWizard extends WizardView {
 		dialog.setMax(100);
 		dialog.setCancelable(false);
 
+		//TODO - this also isn't good.
 		final UnzipTask uzt = new Files.UnzipTask("/sdcard/timidity/") {
 
 			@Override

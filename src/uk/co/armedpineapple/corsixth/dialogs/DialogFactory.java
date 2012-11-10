@@ -32,7 +32,7 @@ public class DialogFactory {
 		d.getWindow().setLayout(LayoutParams.FILL_PARENT,
 				LayoutParams.WRAP_CONTENT);
 
-		d.setTitle("About");
+		d.setTitle(R.string.about_dialog_header);
 
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
 		button.setOnClickListener(new Button.OnClickListener() {

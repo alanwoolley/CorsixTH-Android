@@ -71,7 +71,7 @@ public class FilesAdapter extends BaseAdapter {
 
 			// TODO - make this string external
 
-			largeText.setText("New Save");
+			largeText.setText(R.string.new_save);
 
 		} else {
 			int actualPosition = newButton ? position - 1 : position;

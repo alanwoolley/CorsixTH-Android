@@ -40,7 +40,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.os.*;
 import android.os.PowerManager.WakeLock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.media.*;
 
@@ -122,12 +121,11 @@ public class SDLActivity extends CTHActivity {
 		// Make sure that external media is mounted.
 		if (Files.canAccessExternalStorage()) {
 
-			final SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(getBaseContext());
+			final SharedPreferences preferences = ((CorsixTHApplication) getApplicationContext())
+					.getPreferences();
 
-			PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
-
-			config = Configuration.loadFromPreferences(this, preferences);
+			config = ((CorsixTHApplication) getApplicationContext())
+					.getConfiguration();
 
 			currentVersion = preferences.getInt("last_version", 0) - 1;
 
@@ -318,7 +316,7 @@ public class SDLActivity extends CTHActivity {
 
 			if (saves != null && saves.size() > 0) {
 				Collections.sort(saves, Collections.reverseOrder());
-				
+
 				final String loadPath = saves.get(0).getFileName();
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);

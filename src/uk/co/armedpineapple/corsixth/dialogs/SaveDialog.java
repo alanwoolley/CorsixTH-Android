@@ -19,11 +19,11 @@ public class SaveDialog extends FilesDialog {
 
 	public SaveDialog(SDLActivity context, String path) {
 		super(context, path, R.layout.files_dialog, true);
-		setTitle("Save Game");
+		setTitle(R.string.save_game_dialog_title);
 
 		final EditText editTextBox = new EditText(context);
 		Builder builder = new Builder(context);
-		builder.setMessage("Please enter a save game name");
+		builder.setMessage(R.string.save_game_dialog_message);
 		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
 
 			@Override

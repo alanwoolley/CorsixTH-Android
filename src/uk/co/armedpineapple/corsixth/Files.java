@@ -36,12 +36,14 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /** Class to help with file manipulation */
+@SuppressWarnings("nls")
 public class Files {
 
 	// Look for these files when trying to work out if the original Theme
 	// Hospital files are present
 
 	private static final String[] RequiredSoundFiles = { "Sound/Data/Sound-0.dat" };
+
 	private static final String[] RequiredMusicFiles = { "Sound/Midi/ATLANTIS.XMI" };
 	private static final String[] RequiredDataFiles = { "Data/VBlk-0.tab",
 			"Levels/Level.L1", "QData/SPointer.dat" };

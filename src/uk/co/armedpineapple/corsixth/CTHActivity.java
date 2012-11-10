@@ -15,6 +15,7 @@ public abstract class CTHActivity extends Activity {
 
 	boolean trackingSession = false;
 
+	@SuppressWarnings("nls")
 	@Override
 	protected void onStart() {
 		super.onStart();

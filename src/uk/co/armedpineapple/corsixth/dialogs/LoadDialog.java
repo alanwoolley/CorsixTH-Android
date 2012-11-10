@@ -14,7 +14,7 @@ public class LoadDialog extends FilesDialog {
 
 	public LoadDialog(SDLActivity context, String path) {
 		super(context, path, R.layout.files_dialog, false);
-		setTitle("Load Game");
+		setTitle(R.string.load_game_dialog_title);
 	}
 
 	@Override
