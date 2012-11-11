@@ -15,7 +15,7 @@ public class CTHBackupAgent extends BackupAgentHelper {
 
 	@Override
 	public void onCreate() {
-
+		addHelper("preferences", new PrefBackupHelper(getApplicationContext()));
 	}
 
 	@Override
