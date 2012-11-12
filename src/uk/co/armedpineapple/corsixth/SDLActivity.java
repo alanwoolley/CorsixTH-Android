@@ -785,7 +785,9 @@ public class SDLActivity extends CTHActivity {
 		super.onLowMemory();
 		Log.w(getClass().getSimpleName(),
 				"Low memory detected. Going to try and tighten our belt!");
-		
+
+		// Attempt to save first
+		cthTryAutoSave("cthAndroidAutoSave.sav");
 
 		// Remove references to some stuff that can just be regenerated later, so
 		// that the GC can get rid of them.
@@ -794,7 +796,6 @@ public class SDLActivity extends CTHActivity {
 
 		// Call LUA GC
 		onNativeLowMemory();
-		
 
 	}
 }
