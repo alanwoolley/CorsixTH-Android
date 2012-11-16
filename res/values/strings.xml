@@ -56,7 +56,6 @@
     <string name="speed_slowest">Slowest</string>
     <string name="speed_default">Default</string>
     <string name="speed_fastest">Fastest</string>
-    <string name="set_speed">Set Speed</string>
     <string name="load_last_save">Resume previous game?</string>
     <string name="autosave_name" translatable="false">cthandroidautosave.sav</string>
     <string name="quicksave_name" translatable="false">quicksave.sav</string>

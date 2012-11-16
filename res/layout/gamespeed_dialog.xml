@@ -48,6 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/gamespeed_text"
         android:layout_centerHorizontal="true"
-        android:text="@string/set_speed" />
+        android:text="@string/ok" />
 
 </RelativeLayout>
