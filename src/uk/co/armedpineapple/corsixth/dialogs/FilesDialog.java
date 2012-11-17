@@ -10,6 +10,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.Files.FileDetails;
@@ -25,15 +26,15 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public abstract class FilesDialog extends Dialog implements OnItemClickListener {
 
-	private String savePath;
-	private Button cancelButton;
+	private String							savePath;
+	private Button							cancelButton;
 
-	protected List<FileDetails> saves;
-	protected FilesAdapter arrayAdapter;
-	protected ListView savesList;
-	protected SDLActivity ctx;
+	protected List<FileDetails>	saves;
+	protected FilesAdapter			arrayAdapter;
+	protected ListView					savesList;
+	protected SDLActivity				ctx;
 
-	private boolean hasNewButton;
+	private boolean							hasNewButton;
 
 	@Override
 	public void onBackPressed() {
@@ -74,10 +75,10 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 			@Override
 			public boolean accept(File dir, String filename) {
-				return filename.toLowerCase().endsWith(".sav")
-						&& !filename.toLowerCase().equals(
+				return filename.toLowerCase(Locale.US).endsWith(".sav")
+						&& !filename.toLowerCase(Locale.US).equals(
 								ctx.getString(R.string.quicksave_name))
-						&& !filename.toLowerCase().equals(
+						&& !filename.toLowerCase(Locale.US).equals(
 								ctx.getString(R.string.autosave_name));
 			}
 		});

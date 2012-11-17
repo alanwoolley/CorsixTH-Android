@@ -2,7 +2,7 @@
 <uk.co.armedpineapple.corsixth.wizard.DisplayWizard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
+
     <TextView
         android:id="@+id/displayHeader"
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:padding="10dp"
         android:text="@string/display_resolution_header"
         android:textAppearance="@style/WizardHeaderText" />
-
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
