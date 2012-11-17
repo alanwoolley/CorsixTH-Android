@@ -17,6 +17,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+@SuppressWarnings("nls")
 public class Configuration {
 
 	public final static int RESOLUTION_DEFAULT = 1;
@@ -33,6 +34,7 @@ public class Configuration {
 
 	public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
 
+	// TODO - do this properly
 	public final static String UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
 
 	private String originalFilesPath, cthPath, language;
@@ -41,15 +43,15 @@ public class Configuration {
 
 	private Integer musicVol, announcementsVol, sfxVol, resolutionMode,
 			displayWidth, displayHeight, gameSpeed;
+
+	// TODO Get this the proper way.
 	private String saveGamesPath = "/sdcard/CTHsaves";
 
 	private Configuration() {
 	}
 
-
-
 	/** Saves the configuration to a SharedPreferences object **/
-	public void saveToPreferences(Context ctx, SharedPreferences preferences) {
+	public void saveToPreferences(SharedPreferences preferences) {
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
 		editor.putString("gamescripts_pref", cthPath);
@@ -139,7 +141,7 @@ public class Configuration {
 			break;
 
 		}
-		
+
 		config.gameSpeed = 0;
 		Log.d(Configuration.class.getSimpleName(), config.toString());
 		return config;
@@ -344,7 +346,7 @@ public class Configuration {
 	public void setKeepScreenOn(Boolean keepScreenOn) {
 		this.keepScreenOn = keepScreenOn;
 	}
-	
+
 	public Integer getGameSpeed() {
 		return gameSpeed;
 	}

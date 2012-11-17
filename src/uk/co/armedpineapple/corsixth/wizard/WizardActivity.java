@@ -8,6 +8,7 @@ package uk.co.armedpineapple.corsixth.wizard;
 import uk.co.armedpineapple.corsixth.CTHActivity;
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.ConfigurationException;
+import uk.co.armedpineapple.corsixth.CorsixTHApplication;
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
@@ -15,7 +16,6 @@ import uk.co.armedpineapple.corsixth.dialogs.DialogFactory;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,10 +44,8 @@ public class WizardActivity extends CTHActivity {
 			return;
 
 		}
-		PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 
-		preferences = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
+		preferences = ((CorsixTHApplication) getApplication()).getPreferences();
 
 		if (preferences.getBoolean("wizard_run", false)) {
 			Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
@@ -60,7 +58,8 @@ public class WizardActivity extends CTHActivity {
 			previousButton = (Button) findViewById(R.id.leftbutton);
 			nextButton = (Button) findViewById(R.id.rightbutton);
 
-			config = Configuration.loadFromPreferences(this, preferences);
+			config = ((CorsixTHApplication) getApplication())
+					.getConfiguration();
 
 			// Add all the wizard views
 
@@ -112,9 +111,8 @@ public class WizardActivity extends CTHActivity {
 					((WizardView) flipper.getCurrentView())
 							.saveConfiguration(config);
 
-					if (nextButton.getText() == "Play!") {
-						config.saveToPreferences(WizardActivity.this,
-								preferences);
+					if (nextButton.getText() == getString(R.string.play_button)) {
+						config.saveToPreferences(preferences);
 
 						finish();
 						WizardActivity.this.startActivity(new Intent(
@@ -136,9 +134,9 @@ public class WizardActivity extends CTHActivity {
 			}
 
 			if (hasNext(flipper)) {
-				nextButton.setText("Next");
+				nextButton.setText(R.string.nextButton);
 			} else {
-				nextButton.setText("Play!");
+				nextButton.setText(R.string.play_button);
 			}
 			if (hasPrevious(flipper)) {
 				previousButton.setVisibility(View.VISIBLE);

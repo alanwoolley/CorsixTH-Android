@@ -19,7 +19,6 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnShowListener;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -33,7 +32,7 @@ public class DialogFactory {
 		d.getWindow().setLayout(LayoutParams.FILL_PARENT,
 				LayoutParams.WRAP_CONTENT);
 
-		d.setTitle("About");
+		d.setTitle(R.string.about_dialog_header);
 
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
 		button.setOnClickListener(new Button.OnClickListener() {
@@ -115,14 +114,15 @@ public class DialogFactory {
 				ctx.getResources().getString(R.string.no_connection_error))
 				.setCancelable(false);
 
-		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+		builder.setNeutralButton(R.string.ok,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
-			}
+					}
 
-		});
+				});
 
 		return builder.create();
 	}
@@ -137,7 +137,7 @@ public class DialogFactory {
 				.setCancelable(false);
 		if (finish) {
 
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -148,7 +148,7 @@ public class DialogFactory {
 					});
 
 		} else {
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -179,7 +179,7 @@ public class DialogFactory {
 		builder.setMessage(e.getLocalizedMessage());
 
 		if (finish) {
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -189,7 +189,7 @@ public class DialogFactory {
 
 					});
 		} else {
-			builder.setNeutralButton("OK",
+			builder.setNeutralButton(R.string.ok,
 					new DialogInterface.OnClickListener() {
 
 						@Override

@@ -36,12 +36,14 @@ import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /** Class to help with file manipulation */
+@SuppressWarnings("nls")
 public class Files {
 
 	// Look for these files when trying to work out if the original Theme
 	// Hospital files are present
 
 	private static final String[] RequiredSoundFiles = { "Sound/Data/Sound-0.dat" };
+
 	private static final String[] RequiredMusicFiles = { "Sound/Midi/ATLANTIS.XMI" };
 	private static final String[] RequiredDataFiles = { "Data/VBlk-0.tab",
 			"Levels/Level.L1", "QData/SPointer.dat" };
@@ -58,30 +60,74 @@ public class Files {
 	private Files() {
 	}
 
+	/**
+	 * Checks if a file exists on the filesystem
+	 * 
+	 * @return true if file exists
+	 */
 	public static Boolean doesFileExist(String filename) {
 		File f = new File(filename);
-		return (f != null) && f.exists();
+		return f.exists();
 	}
 
+	/**
+	 * Removes path separators from the end of path strings
+	 * 
+	 * @param path
+	 *            the path to trim
+	 * @return the trimmed path
+	 */
 	public static String trimPath(String path) {
 		return path.endsWith(File.separator) ? path.substring(0,
 				path.length() - 1) : path;
 	}
 
+	/**
+	 * Checks if Theme Hospital data files exist in a directory
+	 * 
+	 * @param directory
+	 *            the directory to search
+	 * @return true if data files exist
+	 */
 	public static Boolean hasDataFiles(String directory) {
 		return doFilesExist(RequiredDataFiles, directory);
 	}
 
+	/**
+	 * Checks if Theme Hospital music files exist in a directory
+	 * 
+	 * @param directory
+	 *            the directory to search
+	 * @return true if music files exist
+	 */
 	public static Boolean hasMusicFiles(String directory) {
 		return doFilesExist(RequiredMusicFiles, directory);
 	}
 
+	/**
+	 * Checks if Theme Hospital sound files exist in a directory
+	 * 
+	 * @param directory
+	 *            the directory to search
+	 * @return true if sound files exist
+	 */
 	public static Boolean hasSoundFiles(String directory) {
 		return doFilesExist(RequiredSoundFiles, directory);
 	}
 
+	/**
+	 * Checks if all the given files exist in a given directory
+	 * 
+	 * @param files
+	 *            an array of filenames to check for
+	 * @param directory
+	 *            the directory to search
+	 * @return true if all the files are found
+	 */
 	private static Boolean doFilesExist(String[] files, String directory) {
-		Log.d(Files.class.getSimpleName(), "Checking directory: " + directory);
+		// Log.d(Files.class.getSimpleName(), "Checking directory: " +
+		// directory);
+
 		if (directory == null) {
 			return false;
 		}
@@ -91,6 +137,7 @@ public class Files {
 			return false;
 		}
 
+		// As soon as a file is not found in the directory, fail.
 		for (String file : files) {
 			File f = new File(directory + "/" + file);
 			if (!f.exists()) {
@@ -99,16 +146,24 @@ public class Files {
 		}
 
 		return true;
-
 	}
 
+	/**
+	 * Checks if external storage can be accessed. This should be called any
+	 * time external storage is used to make sure that it is accessible. Reasons
+	 * that it may not be accessible include SD card missing, mounted on a
+	 * computer, not formatted etc.
+	 * 
+	 * @return true if external storage can be accessed
+	 */
 	public static boolean canAccessExternalStorage() {
 		return Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState());
 	}
 
 	/**
-	 * Lists all the files in a directory.
+	 * Lists all the files in a directory. It will not list files in
+	 * subdirectories.
 	 * 
 	 * @param directory
 	 *            the directory to search in
@@ -120,18 +175,19 @@ public class Files {
 	 */
 	public static List<FileDetails> listFilesInDirectory(String directory,
 			FilenameFilter filter) throws IOException {
-		Log.d(Files.class.getSimpleName(), "Looking for files in: " + directory);
+		// Log.d(Files.class.getSimpleName(), "Looking for files in: " +
+		// directory);
 
 		File f = new File(directory);
 		List<FileDetails> files = new ArrayList<FileDetails>();
 		if (f.isDirectory()) {
-			Log.d(Files.class.getSimpleName(), "Directory " + directory
-					+ " looks ok");
+			// Log.d(Files.class.getSimpleName(), "Directory " + directory
+			// + " looks ok");
 
 			String[] filesArray = f.list(filter);
 
-			Log.d(Files.class.getSimpleName(), "Found: " + filesArray.length
-					+ " files");
+			// Log.d(Files.class.getSimpleName(), "Found: " + filesArray.length
+			// + " files");
 
 			for (String fileName : filesArray) {
 
@@ -163,7 +219,7 @@ public class Files {
 	 */
 	public static String readTextFromResource(Context ctx, int resource)
 			throws IOException {
-
+		// TODO Probably a much nicer way to do this, with buffers.
 		InputStream inputStream = ctx.getResources().openRawResource(resource);
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -182,7 +238,8 @@ public class Files {
 	}
 
 	/**
-	 * {@link AsyncTask} for discovering all the assets
+	 * {@link AsyncTask} for discovering all the assets included in the
+	 * application
 	 * */
 	static class DiscoverAssetsTask extends
 			AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
@@ -206,7 +263,7 @@ public class Files {
 			} catch (IOException e) {
 				Log.e(Files.class.getSimpleName(),
 						"I/O Exception whilst listing files", e);
-				BugSenseHandler.log("File", e);
+				BugSenseHandler.sendException(e);
 				return new AsyncTaskResult<ArrayList<String>>(e);
 
 			}
@@ -462,7 +519,7 @@ public class Files {
 
 				while ((current = input.read(data)) != -1) {
 					total += current;
-					publishProgress((int) (total * 100 / fileSize));
+					publishProgress(total * 100 / fileSize);
 
 					fos.write(data, 0, current);
 				}
@@ -547,7 +604,7 @@ public class Files {
 				}
 
 			} catch (IOException e) {
-				BugSenseHandler.log("File", e);
+				BugSenseHandler.sendException(e);
 				return new AsyncTaskResult<String>(e);
 			}
 

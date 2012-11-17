@@ -42,10 +42,11 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	private GestureDetector longPressGestureDetector;
 	private ScaleGestureDetector moveGestureDetector;
 
+	private SDLActivity context;
 	// Startup
-	public SDLSurface(Context context, int width, int height) {
+	public SDLSurface(SDLActivity context, int width, int height) {
 		super(context);
-
+		this.context = context;
 		getHolder().addCallback(this);
 		this.width = width;
 		this.height = height;
@@ -68,7 +69,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.v(getClass().getSimpleName(), "surfaceCreated()");
 
-		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 		SDLActivity.createEGLSurface();
 
 		enableSensor(Sensor.TYPE_ACCELEROMETER, true);
@@ -96,19 +96,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		case PixelFormat.A_8:
 			Log.v(SDLActivity.class.getSimpleName(), "pixel format A_8");
 			break;
-		case PixelFormat.LA_88:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format LA_88");
-			break;
 		case PixelFormat.L_8:
 			Log.v(SDLActivity.class.getSimpleName(), "pixel format L_8");
-			break;
-		case PixelFormat.RGBA_4444:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_4444");
-			sdlFormat = 0x85421002; // SDL_PIXELFORMAT_RGBA4444
-			break;
-		case PixelFormat.RGBA_5551:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_5551");
-			sdlFormat = 0x85441002; // SDL_PIXELFORMAT_RGBA5551
 			break;
 		case PixelFormat.RGBA_8888:
 			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_8888");
@@ -117,10 +106,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		case PixelFormat.RGBX_8888:
 			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBX_8888");
 			sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
-			break;
-		case PixelFormat.RGB_332:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_332");
-			sdlFormat = 0x84110801; // SDL_PIXELFORMAT_RGB332
 			break;
 		case PixelFormat.RGB_565:
 			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_565");
@@ -136,9 +121,11 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 					+ format);
 			break;
 		}
-		SDLActivity.onNativeResize(width, height, sdlFormat);
 
-		SDLActivity.startApp();
+		SDLActivity.onNativeResize(width, height, sdlFormat);
+		
+		context.startApp();
+
 	}
 
 	// unused

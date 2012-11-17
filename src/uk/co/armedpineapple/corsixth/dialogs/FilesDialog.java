@@ -8,9 +8,9 @@ package uk.co.armedpineapple.corsixth.dialogs;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import uk.co.armedpineapple.corsixth.Files;
 import uk.co.armedpineapple.corsixth.Files.FileDetails;
@@ -20,22 +20,21 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public abstract class FilesDialog extends Dialog implements OnItemClickListener {
 
-	private String savePath;
-	private Button cancelButton;
+	private String							savePath;
+	private Button							cancelButton;
 
-	protected List<FileDetails> saves;
-	protected FilesAdapter arrayAdapter;
-	protected ListView savesList;
-	protected SDLActivity ctx;
+	protected List<FileDetails>	saves;
+	protected FilesAdapter			arrayAdapter;
+	protected ListView					savesList;
+	protected SDLActivity				ctx;
 
-	private boolean hasNewButton;
+	private boolean							hasNewButton;
 
 	@Override
 	public void onBackPressed() {
@@ -62,7 +61,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 			public void onClick(View v) {
 				Integer speed;
 				if ((speed = ctx.config.getGameSpeed()) != null) {
-					SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+					SDLActivity.cthGameSpeed(speed);
 				}
 				dismiss();
 			}
@@ -71,18 +70,21 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 	}
 
-	public void updateSaves(Context ctx) throws IOException {
+	public void updateSaves(final Context ctx) throws IOException {
 		saves = Files.listFilesInDirectory(savePath, new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String filename) {
-				return filename.toLowerCase().endsWith(".sav") && !filename.toLowerCase().equals("quicksave.sav");
+				return filename.toLowerCase(Locale.US).endsWith(".sav")
+						&& !filename.toLowerCase(Locale.US).equals(
+								ctx.getString(R.string.quicksave_name))
+						&& !filename.toLowerCase(Locale.US).equals(
+								ctx.getString(R.string.autosave_name));
 			}
 		});
 
-		
 		// Sort the saves to be most recent first.
-		
+
 		Collections.sort(saves, Collections.reverseOrder());
 
 		arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);

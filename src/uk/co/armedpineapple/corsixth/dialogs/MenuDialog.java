@@ -1,20 +1,17 @@
 package uk.co.armedpineapple.corsixth.dialogs;
 
+import uk.co.armedpineapple.corsixth.CorsixTHApplication;
 import uk.co.armedpineapple.corsixth.R;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 import static uk.co.armedpineapple.corsixth.SDLActivity.Command.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -36,7 +33,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 	public MenuDialog(SDLActivity context) {
 		super(context);
 		this.ctx = context;
-		setTitle("Game Paused");
+		setTitle(R.string.game_paused);
 		setCancelable(true);
 
 		setContentView(R.layout.main_menu);
@@ -93,19 +90,19 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					SharedPreferences preferences = PreferenceManager
-							.getDefaultSharedPreferences(ctx
-									.getApplicationContext());
+					SharedPreferences preferences = ((CorsixTHApplication) ctx.getApplication()).getPreferences();
+					
 					Editor editor = preferences.edit();
 					editor.putBoolean("wizard_run", false);
 					editor.commit();
+					
 					SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
 				}
 
 			};
 			builder.setMessage(
 					ctx.getResources().getString(R.string.setup_wizard_dialog))
-					.setCancelable(false).setNeutralButton("OK", alertListener);
+					.setCancelable(false).setNeutralButton(R.string.ok, alertListener);
 
 			AlertDialog alert = builder.create();
 			alert.show();

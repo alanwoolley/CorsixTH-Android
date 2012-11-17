@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.corsixth"
-    android:installLocation="preferExternal"
-    android:versionCode="35"
-    android:versionName="0.4.0" >
+    android:installLocation="auto"
+    android:versionCode="38"
+    android:versionName="dev" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="14" />
+        android:targetSdkVersion="16" />
+
+    <!--
+    Permissions 
+    
+	INTERNET - required to download the demo and music files
+	READ_EXTERNAL_STORAGE
+	WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
+	WAKE_LOKE - required to keep the device awake during play
+	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
+    -->
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,9 +27,11 @@
 
     <application
         android:name=".CorsixTHApplication"
+        android:backupAgent="CTHBackupAgent"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppTheme">
+        android:theme="@style/Theme.AppTheme" >
         <activity
             android:name="uk.co.armedpineapple.corsixth.SDLActivity"
             android:label="@string/app_name"
@@ -40,6 +52,10 @@
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
+
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIK7gHgEjLsrbjQPJG59q7eqc8_4n1hkvK1zaoXw" />
     </application>
 
 </manifest>

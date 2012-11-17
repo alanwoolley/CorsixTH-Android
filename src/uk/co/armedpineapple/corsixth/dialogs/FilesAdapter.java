@@ -4,12 +4,8 @@ import java.util.List;
 
 import uk.co.armedpineapple.corsixth.Files.FileDetails;
 import uk.co.armedpineapple.corsixth.R;
-import uk.co.armedpineapple.corsixth.R.id;
-import uk.co.armedpineapple.corsixth.R.layout;
-
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -75,7 +71,7 @@ public class FilesAdapter extends BaseAdapter {
 
 			// TODO - make this string external
 
-			largeText.setText("New Save");
+			largeText.setText(R.string.new_save);
 
 		} else {
 			int actualPosition = newButton ? position - 1 : position;

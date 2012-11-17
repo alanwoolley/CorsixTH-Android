@@ -3,13 +3,8 @@ package uk.co.armedpineapple.corsixth.dialogs;
 import java.util.List;
 
 import uk.co.armedpineapple.corsixth.R;
-import uk.co.armedpineapple.corsixth.R.id;
-import uk.co.armedpineapple.corsixth.R.layout;
-
-
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -55,7 +50,7 @@ public class MenuAdapter extends BaseAdapter {
 			view = inflater.inflate(R.layout.menu_item, parent, false);
 		}
 		TextView tv = (TextView) view.findViewById(R.id.menu_item_text);
-		tv.setText(mi.text);
+		tv.setText(mi.textResource);
 
 		if (mi.imageResource != null) {
 			ImageView iv = (ImageView) view.findViewById(R.id.menu_item_image);

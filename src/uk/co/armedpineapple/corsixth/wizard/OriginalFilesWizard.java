@@ -79,7 +79,7 @@ public class OriginalFilesWizard extends WizardView {
 
 			builder.setMessage(ctx.getString(R.string.no_data_dialog))
 					.setCancelable(true)
-					.setNeutralButton("OK",
+					.setNeutralButton(R.string.ok,
 							new DialogInterface.OnClickListener() {
 
 								@Override
@@ -94,9 +94,8 @@ public class OriginalFilesWizard extends WizardView {
 			alert.show();
 
 			throw new ConfigurationException();
-		} else {
-			config.setOriginalFilesPath(customLocation);
 		}
+		config.setOriginalFilesPath(customLocation);
 
 	}
 
@@ -111,8 +110,8 @@ public class OriginalFilesWizard extends WizardView {
 		final EditText editTextBox = new EditText(ctx);
 		editTextBox.setText("/sdcard/th");
 		Builder builder = new Builder(ctx);
-		builder.setMessage("Theme Hospital Game Files location");
-		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+		builder.setMessage(R.string.custom_location_message);
+		builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -237,7 +236,7 @@ public class OriginalFilesWizard extends WizardView {
 							+ customLocation);
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
-					BugSenseHandler.log("Extract", e);
+					BugSenseHandler.sendException(e);
 					DialogFactory.createFromException(result.getError(),
 							ctx.getString(R.string.download_demo_error), ctx,
 							false).show();
@@ -267,7 +266,7 @@ public class OriginalFilesWizard extends WizardView {
 				super.onPostExecute(result);
 
 				if (result.getError() != null) {
-					BugSenseHandler.log("Download", result.getError());
+					BugSenseHandler.sendException(result.getError());
 					automaticRadio.setChecked(true);
 					dialog.hide();
 
