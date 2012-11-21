@@ -11,6 +11,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -124,7 +125,6 @@ public class SDLActivity extends CTHActivity {
 		return mSingleton.config.getCthPath() + "/scripts/";
 	}
 
-	// Setup
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -134,11 +134,10 @@ public class SDLActivity extends CTHActivity {
 		// Make sure that external media is mounted.
 		if (Files.canAccessExternalStorage()) {
 
-			final SharedPreferences preferences = ((CorsixTHApplication) getApplicationContext())
+			final SharedPreferences preferences = getCthApplication()
 					.getPreferences();
 
-			config = ((CorsixTHApplication) getApplicationContext())
-					.getConfiguration();
+			config = getCthApplication().getConfiguration();
 
 			currentVersion = preferences.getInt("last_version", 0) - 1;
 
@@ -150,9 +149,14 @@ public class SDLActivity extends CTHActivity {
 				BugSenseHandler.sendException(e);
 			}
 
+			// Check to see if the game files have been copied yet, or whether the
+			// application has been updated
 			if (!preferences.getBoolean("scripts_copied", false)
 					|| preferences.getInt("last_version", 0) < currentVersion) {
+
 				Log.d(getClass().getSimpleName(), "This is a new installation");
+
+				// Show the recent changes dialog
 				Dialog recentChangesDialog = DialogFactory
 						.createRecentChangesDialog(this);
 				recentChangesDialog.setOnDismissListener(new OnDismissListener() {
@@ -166,6 +170,8 @@ public class SDLActivity extends CTHActivity {
 				recentChangesDialog.show();
 
 			} else {
+
+				// Continue to load the application otherwise
 				loadApplication();
 			}
 
@@ -318,7 +324,7 @@ public class SDLActivity extends CTHActivity {
 
 							@Override
 							public boolean accept(File dir, String filename) {
-								return filename.toLowerCase().endsWith(".sav");
+								return filename.toLowerCase(Locale.US).endsWith(".sav");
 							}
 						});
 			} catch (IOException e) {}
@@ -499,7 +505,7 @@ public class SDLActivity extends CTHActivity {
 		if (hasGameLoaded) {
 			cthTryAutoSave("cthAndroidAutoSave.sav");
 		}
-		
+
 		if (wake != null && wake.isHeld()) {
 			Log.d(getClass().getSimpleName(), "Releasing wakelock");
 			wake.release();

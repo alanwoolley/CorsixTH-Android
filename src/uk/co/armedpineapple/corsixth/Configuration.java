@@ -20,37 +20,42 @@ import android.view.WindowManager;
 @SuppressWarnings("nls")
 public class Configuration {
 
-	public final static int RESOLUTION_DEFAULT = 1;
-	public final static int RESOLUTION_NATIVE = 2;
-	public final static int RESOLUTION_CUSTOM = 3;
+	public final static int			RESOLUTION_DEFAULT	= 1;
+	public final static int			RESOLUTION_NATIVE		= 2;
+	public final static int			RESOLUTION_CUSTOM		= 3;
 
-	public final static String HEADER = "---- CorsixTH configuration file ----------------------------------------------\n"
-			+ "-- Lines starting with two dashes (like this one) are ignored.\n"
-			+ "-- Text settings should have their values between double square braces, e.g.\n"
-			+ "--  setting = [[value]]\n"
-			+ "-- Number settings should not have anything around their value, e.g.\n"
-			+ "--  setting = 42\n\n\n"
-			+ "---- If you wish to add any custom settings, please do so below. ---- \n\n";
+	public final static String	HEADER							= "---- CorsixTH configuration file ----------------------------------------------\n"
+																											+ "-- Lines starting with two dashes (like this one) are ignored.\n"
+																											+ "-- Text settings should have their values between double square braces, e.g.\n"
+																											+ "--  setting = [[value]]\n"
+																											+ "-- Number settings should not have anything around their value, e.g.\n"
+																											+ "--  setting = 42\n\n\n"
+																											+ "---- If you wish to add any custom settings, please do so below. ---- \n\n";
 
-	public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
+	public final static String	SEPARATOR						= "\n\n---- Do not edit below this line ----\n\n";
 
 	// TODO - do this properly
-	public final static String UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
+	public final static String	UNICODE_PATH				= "/system/fonts/DroidSansFallback.ttf";
 
-	private String originalFilesPath, cthPath, language;
-	private Boolean globalAudio, playMusic, playAnnouncements, playSoundFx,
-			keepScreenOn, debug;
+	private String							originalFilesPath, cthPath, language;
+	private Boolean							globalAudio, playMusic, playAnnouncements,
+			playSoundFx, keepScreenOn, debug;
 
-	private Integer musicVol, announcementsVol, sfxVol, resolutionMode,
-			displayWidth, displayHeight, gameSpeed;
+	private Integer							musicVol, announcementsVol, sfxVol,
+			resolutionMode, displayWidth, displayHeight, gameSpeed;
 
 	// TODO Get this the proper way.
-	private String saveGamesPath = "/sdcard/CTHsaves";
+	private String							saveGamesPath				= "/sdcard/CTHsaves";
 
 	private Configuration() {
 	}
 
-	/** Saves the configuration to a SharedPreferences object **/
+	/**
+	 * Saves the configuration to a SharedPreferences object
+	 * 
+	 * @param preferences
+	 *          the SharedPreferences object to save to
+	 **/
 	public void saveToPreferences(SharedPreferences preferences) {
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
@@ -60,8 +65,7 @@ public class Configuration {
 		editor.putBoolean("announcer_pref", playAnnouncements);
 		editor.putBoolean("fx_pref", playSoundFx);
 		editor.putString("fxvolume_pref", String.valueOf(sfxVol));
-		editor.putString("announcervolume_pref",
-				String.valueOf(announcementsVol));
+		editor.putString("announcervolume_pref", String.valueOf(announcementsVol));
 		editor.putString("musicvolume_pref", String.valueOf(musicVol));
 		editor.putString("language_pref", language);
 		editor.putString("resolution_pref", String.valueOf(resolutionMode));
@@ -74,29 +78,35 @@ public class Configuration {
 
 	}
 
-	/** Load the configuration from a SharedPreferences object */
+	/**
+	 * Constructs a configuration object from a SharedPreferences object
+	 * 
+	 * @param ctx
+	 *          a valid context used to retrieve preferences
+	 * @param preferences
+	 *          the preferences object to retrieve from
+	 * @return a Configuration object containing the preferences
+	 */
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
 		Configuration config = new Configuration();
 		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
 
-		config.originalFilesPath = preferences.getString("originalfiles_pref",
-				"");
+		config.originalFilesPath = preferences.getString("originalfiles_pref", "");
 
 		config.cthPath = preferences.getString("gamescripts_pref", ctx
 				.getExternalFilesDir(null).getAbsolutePath());
 
 		config.globalAudio = preferences.getBoolean("audio_pref", true);
 		config.playMusic = preferences.getBoolean("music_pref", false);
-		config.playAnnouncements = preferences.getBoolean("announcer_pref",
-				true);
+		config.playAnnouncements = preferences.getBoolean("announcer_pref", true);
 		config.playSoundFx = preferences.getBoolean("fx_pref", true);
-		config.sfxVol = Integer.valueOf(preferences.getString("fxvolume_pref",
-				"5"));
+		config.sfxVol = Integer
+				.valueOf(preferences.getString("fxvolume_pref", "5"));
 		config.announcementsVol = Integer.valueOf(preferences.getString(
 				"announcervolume_pref", "5"));
-		config.musicVol = Integer.valueOf(preferences.getString(
-				"musicvolume_pref", "5"));
+		config.musicVol = Integer.valueOf(preferences.getString("musicvolume_pref",
+				"5"));
 
 		config.language = preferences.getString("language_pref", "en");
 
@@ -114,31 +124,31 @@ public class Configuration {
 		 */
 
 		switch (config.resolutionMode) {
-		case RESOLUTION_DEFAULT:
-			config.displayWidth = 640;
-			config.displayHeight = 480;
-			break;
+			case RESOLUTION_DEFAULT:
+				config.displayWidth = 640;
+				config.displayHeight = 480;
+				break;
 
-		/*
-		 * TODO - the native resolution is easy to get but can sometimes be
-		 * misleading because of the buttons on Android 3.0+. There's probably a
-		 * much better way of doing this
-		 */
+			/*
+			 * TODO - the native resolution is easy to get but can sometimes be
+			 * misleading because of the buttons on Android 3.0+. There's probably a
+			 * much better way of doing this
+			 */
 
-		case RESOLUTION_NATIVE:
-			DisplayMetrics dm = new DisplayMetrics();
-			((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
-					.getDefaultDisplay().getMetrics(dm);
-			config.displayWidth = dm.widthPixels;
-			config.displayHeight = dm.heightPixels;
-			break;
+			case RESOLUTION_NATIVE:
+				DisplayMetrics dm = new DisplayMetrics();
+				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
+						.getDefaultDisplay().getMetrics(dm);
+				config.displayWidth = dm.widthPixels;
+				config.displayHeight = dm.heightPixels;
+				break;
 
-		case RESOLUTION_CUSTOM:
-			config.displayWidth = Integer.valueOf(preferences.getString(
-					"reswidth_pref", "640"));
-			config.displayHeight = Integer.valueOf(preferences.getString(
-					"resheight_pref", "480"));
-			break;
+			case RESOLUTION_CUSTOM:
+				config.displayWidth = Integer.valueOf(preferences.getString(
+						"reswidth_pref", "640"));
+				config.displayHeight = Integer.valueOf(preferences.getString(
+						"resheight_pref", "480"));
+				break;
 
 		}
 
@@ -149,6 +159,10 @@ public class Configuration {
 
 	/**
 	 * Writes the configuration to the config.txt file which is read by the game
+	 * engine
+	 * 
+	 * @throws IOException
+	 *           if the configuration file cannot be written to
 	 */
 	public void writeToFile() throws IOException {
 		String configFileName = cthPath + "/scripts/" + "config.txt";
@@ -183,8 +197,7 @@ public class Configuration {
 		}
 
 		sbuilder.append(SEPARATOR);
-		sbuilder.append("theme_hospital_install = [[" + originalFilesPath
-				+ "]]\n");
+		sbuilder.append("theme_hospital_install = [[" + originalFilesPath + "]]\n");
 		sbuilder.append("prevent_edge_scrolling = true\n");
 
 		sbuilder.append("audio = " + String.valueOf(globalAudio) + "\n");
@@ -196,8 +209,8 @@ public class Configuration {
 		sbuilder.append("play_music = " + String.valueOf(playMusic) + "\n");
 		sbuilder.append("music_volume = 0." + String.valueOf(musicVol) + "\n");
 
-		sbuilder.append("play_announcements = "
-				+ String.valueOf(playAnnouncements) + "\n");
+		sbuilder.append("play_announcements = " + String.valueOf(playAnnouncements)
+				+ "\n");
 		sbuilder.append("announcement_volume = 0."
 				+ String.valueOf(announcementsVol) + "\n");
 
@@ -359,11 +372,10 @@ public class Configuration {
 	public String toString() {
 		return "Configuration [origFiles=" + originalFilesPath + ", cthPath="
 				+ cthPath + ", Audio?=" + globalAudio + ", Music?=" + playMusic
-				+ ", Announcements?=" + playAnnouncements + ", SFX?="
-				+ playSoundFx + ", mVol=" + musicVol + ", aVol="
-				+ announcementsVol + ", sfxVol=" + sfxVol + ", language="
-				+ language + ", resMode=" + resolutionMode + ", width="
-				+ displayWidth + ", height=" + displayHeight + ", debug?="
+				+ ", Announcements?=" + playAnnouncements + ", SFX?=" + playSoundFx
+				+ ", mVol=" + musicVol + ", aVol=" + announcementsVol + ", sfxVol="
+				+ sfxVol + ", language=" + language + ", resMode=" + resolutionMode
+				+ ", width=" + displayWidth + ", height=" + displayHeight + ", debug?="
 				+ debug + "]";
 	}
 

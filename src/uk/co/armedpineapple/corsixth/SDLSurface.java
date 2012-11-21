@@ -8,7 +8,6 @@ package uk.co.armedpineapple.corsixth;
 import uk.co.armedpineapple.corsixth.gestures.LongPressGesture;
 import uk.co.armedpineapple.corsixth.gestures.TwoFingerMoveGesture;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -33,16 +32,16 @@ import android.view.View;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-	public int width;
-	public int height;
+	public int										width, height;
 
 	// Sensors
-	private static SensorManager mSensorManager;
+	private static SensorManager	mSensorManager;
 
-	private GestureDetector longPressGestureDetector;
-	private ScaleGestureDetector moveGestureDetector;
+	private GestureDetector				longPressGestureDetector;
+	private ScaleGestureDetector	moveGestureDetector;
 
-	private SDLActivity context;
+	private SDLActivity						context;
+
 	// Startup
 	public SDLSurface(SDLActivity context, int width, int height) {
 		super(context);
@@ -93,37 +92,37 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
 		switch (format) {
-		case PixelFormat.A_8:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format A_8");
-			break;
-		case PixelFormat.L_8:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format L_8");
-			break;
-		case PixelFormat.RGBA_8888:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_8888");
-			sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
-			break;
-		case PixelFormat.RGBX_8888:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBX_8888");
-			sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
-			break;
-		case PixelFormat.RGB_565:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_565");
-			sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
-			break;
-		case PixelFormat.RGB_888:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_888");
-			// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-			sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
-			break;
-		default:
-			Log.v(SDLActivity.class.getSimpleName(), "pixel format unknown "
-					+ format);
-			break;
+			case PixelFormat.A_8:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format A_8");
+				break;
+			case PixelFormat.L_8:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format L_8");
+				break;
+			case PixelFormat.RGBA_8888:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_8888");
+				sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
+				break;
+			case PixelFormat.RGBX_8888:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBX_8888");
+				sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
+				break;
+			case PixelFormat.RGB_565:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_565");
+				sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
+				break;
+			case PixelFormat.RGB_888:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_888");
+				// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
+				sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
+				break;
+			default:
+				Log.v(SDLActivity.class.getSimpleName(), "pixel format unknown "
+						+ format);
+				break;
 		}
 
 		SDLActivity.onNativeResize(width, height, sdlFormat);
-		
+
 		context.startApp();
 
 	}
@@ -135,16 +134,16 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Key events
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		switch (keyCode) {
-		case KeyEvent.KEYCODE_VOLUME_DOWN:
-			return false;
-		case KeyEvent.KEYCODE_VOLUME_UP:
-			return false;
-		case KeyEvent.KEYCODE_VOLUME_MUTE:
-			return false;
-		case KeyEvent.KEYCODE_MENU:
-			return false;
-		default:
-			break;
+			case KeyEvent.KEYCODE_VOLUME_DOWN:
+				return false;
+			case KeyEvent.KEYCODE_VOLUME_UP:
+				return false;
+			case KeyEvent.KEYCODE_VOLUME_MUTE:
+				return false;
+			case KeyEvent.KEYCODE_MENU:
+				return false;
+			default:
+				break;
 		}
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
 			SDLActivity.onNativeKeyDown(keyCode);
@@ -189,8 +188,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 					coords = translateCoords(event.getX(actionPointerIndex),
 							event.getY(actionPointerIndex));
 					p = event.getPressure(i);
-					SDLActivity.onNativeTouch(touchDevId, pointerFingerId,
-							action, coords[0], coords[1], p, pointerCount, 0);
+					SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
+							coords[0], coords[1], p, pointerCount, 0);
 				}
 			} else {
 				SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
@@ -225,10 +224,9 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	public void onSensorChanged(SensorEvent event) {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			SDLActivity.onNativeAccel(event.values[0]
-					/ SensorManager.GRAVITY_EARTH, event.values[1]
-					/ SensorManager.GRAVITY_EARTH, event.values[2]
-					/ SensorManager.GRAVITY_EARTH);
+			SDLActivity.onNativeAccel(event.values[0] / SensorManager.GRAVITY_EARTH,
+					event.values[1] / SensorManager.GRAVITY_EARTH, event.values[2]
+							/ SensorManager.GRAVITY_EARTH);
 		}
 	}
 }

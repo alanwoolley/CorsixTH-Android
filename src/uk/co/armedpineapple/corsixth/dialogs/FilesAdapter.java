@@ -5,6 +5,7 @@ import java.util.List;
 import uk.co.armedpineapple.corsixth.Files.FileDetails;
 import uk.co.armedpineapple.corsixth.R;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import android.widget.TextView;
 
 public class FilesAdapter extends BaseAdapter {
 
-	Context context;
-	List<FileDetails> items;
-	boolean newButton;
+	Context						context;
+	List<FileDetails>	items;
+	boolean						newButton;
 
 	public FilesAdapter(Context context, List<FileDetails> items,
 			boolean newbutton) {
@@ -55,10 +56,8 @@ public class FilesAdapter extends BaseAdapter {
 			view = inflater.inflate(R.layout.files_list, parent, false);
 		}
 
-		TextView largeText = (TextView) view
-				.findViewById(R.id.saveGameLargeText);
-		TextView smallText = (TextView) view
-				.findViewById(R.id.saveGameSmallText);
+		TextView largeText = (TextView) view.findViewById(R.id.saveGameLargeText);
+		TextView smallText = (TextView) view.findViewById(R.id.saveGameSmallText);
 		ImageView image = (ImageView) view.findViewById(R.id.saveGameImage);
 
 		if (position == 0 && newButton) {
@@ -87,7 +86,8 @@ public class FilesAdapter extends BaseAdapter {
 			// Show the file name, minus the extension
 			largeText.setText(fileName.substring(0, fileName.length() - 4));
 
-			smallText.setText(item.getLastModified().toLocaleString());
+			smallText.setText(DateFormat.getDateFormat(context).format(
+					item.getLastModified()));
 
 		}
 		return view;

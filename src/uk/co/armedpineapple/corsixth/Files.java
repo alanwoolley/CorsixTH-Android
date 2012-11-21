@@ -42,20 +42,20 @@ public class Files {
 	// Look for these files when trying to work out if the original Theme
 	// Hospital files are present
 
-	private static final String[] RequiredSoundFiles = { "Sound/Data/Sound-0.dat" };
+	private static final String[]	RequiredSoundFiles	= { "Sound/Data/Sound-0.dat" };
 
-	private static final String[] RequiredMusicFiles = { "Sound/Midi/ATLANTIS.XMI" };
-	private static final String[] RequiredDataFiles = { "Data/VBlk-0.tab",
-			"Levels/Level.L1", "QData/SPointer.dat" };
+	private static final String[]	RequiredMusicFiles	= { "Sound/Midi/ATLANTIS.XMI" };
+	private static final String[]	RequiredDataFiles		= { "Data/VBlk-0.tab",
+			"Levels/Level.L1", "QData/SPointer.dat"			};
 
 	// Places to look for files
 	@SuppressLint("SdCardPath")
-	private static final String[] SearchRoot = { "/mnt/sdcard", "/sdcard",
-			"/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc" };
+	private static final String[]	SearchRoot					= { "/mnt/sdcard",
+			"/sdcard", "/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc" };
 
-	private static final String[] SearchDirs = { "th", "TH", "themehospital",
-			"ThemeHospital", "Themehospital", "theme_hospital",
-			"Theme_Hospital" };
+	private static final String[]	SearchDirs					= { "th", "TH",
+			"themehospital", "ThemeHospital", "Themehospital", "theme_hospital",
+			"Theme_Hospital"															};
 
 	private Files() {
 	}
@@ -63,6 +63,8 @@ public class Files {
 	/**
 	 * Checks if a file exists on the filesystem
 	 * 
+	 * @param filename
+	 *          the file to check
 	 * @return true if file exists
 	 */
 	public static Boolean doesFileExist(String filename) {
@@ -74,19 +76,19 @@ public class Files {
 	 * Removes path separators from the end of path strings
 	 * 
 	 * @param path
-	 *            the path to trim
+	 *          the path to trim
 	 * @return the trimmed path
 	 */
 	public static String trimPath(String path) {
-		return path.endsWith(File.separator) ? path.substring(0,
-				path.length() - 1) : path;
+		return path.endsWith(File.separator) ? path.substring(0, path.length() - 1)
+				: path;
 	}
 
 	/**
 	 * Checks if Theme Hospital data files exist in a directory
 	 * 
 	 * @param directory
-	 *            the directory to search
+	 *          the directory to search
 	 * @return true if data files exist
 	 */
 	public static Boolean hasDataFiles(String directory) {
@@ -97,7 +99,7 @@ public class Files {
 	 * Checks if Theme Hospital music files exist in a directory
 	 * 
 	 * @param directory
-	 *            the directory to search
+	 *          the directory to search
 	 * @return true if music files exist
 	 */
 	public static Boolean hasMusicFiles(String directory) {
@@ -108,7 +110,7 @@ public class Files {
 	 * Checks if Theme Hospital sound files exist in a directory
 	 * 
 	 * @param directory
-	 *            the directory to search
+	 *          the directory to search
 	 * @return true if sound files exist
 	 */
 	public static Boolean hasSoundFiles(String directory) {
@@ -119,9 +121,9 @@ public class Files {
 	 * Checks if all the given files exist in a given directory
 	 * 
 	 * @param files
-	 *            an array of filenames to check for
+	 *          an array of filenames to check for
 	 * @param directory
-	 *            the directory to search
+	 *          the directory to search
 	 * @return true if all the files are found
 	 */
 	private static Boolean doFilesExist(String[] files, String directory) {
@@ -149,10 +151,10 @@ public class Files {
 	}
 
 	/**
-	 * Checks if external storage can be accessed. This should be called any
-	 * time external storage is used to make sure that it is accessible. Reasons
-	 * that it may not be accessible include SD card missing, mounted on a
-	 * computer, not formatted etc.
+	 * Checks if external storage can be accessed. This should be called any time
+	 * external storage is used to make sure that it is accessible. Reasons that
+	 * it may not be accessible include SD card missing, mounted on a computer,
+	 * not formatted etc.
 	 * 
 	 * @return true if external storage can be accessed
 	 */
@@ -166,12 +168,12 @@ public class Files {
 	 * subdirectories.
 	 * 
 	 * @param directory
-	 *            the directory to search in
+	 *          the directory to search in
 	 * @param filter
-	 *            a {@link FilenameFilter} to filter the search by
+	 *          a {@link FilenameFilter} to filter the search by
 	 * @return a String array of filenames
 	 * @throws IOException
-	 *             if the directory doesn't exist or cannot be accessed
+	 *           if the directory doesn't exist or cannot be accessed
 	 */
 	public static List<FileDetails> listFilesInDirectory(String directory,
 			FilenameFilter filter) throws IOException {
@@ -210,12 +212,12 @@ public class Files {
 	 * Returns a string containing the text from a raw resource
 	 * 
 	 * @param ctx
-	 *            a context
+	 *          a context
 	 * @param resource
-	 *            the resource to read
+	 *          the resource to read
 	 * @return a String containing the text contents of the resource
 	 * @throws IOException
-	 *             if the resource cannot be found or read
+	 *           if the resource cannot be found or read
 	 */
 	public static String readTextFromResource(Context ctx, int resource)
 			throws IOException {
@@ -244,9 +246,9 @@ public class Files {
 	static class DiscoverAssetsTask extends
 			AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
 
-		ArrayList<String> paths;
-		Context ctx;
-		String path;
+		ArrayList<String>	paths;
+		Context						ctx;
+		String						path;
 
 		DiscoverAssetsTask(Context ctx, String path) {
 			this.ctx = ctx;
@@ -254,8 +256,7 @@ public class Files {
 		}
 
 		@Override
-		protected AsyncTaskResult<ArrayList<String>> doInBackground(
-				Void... params) {
+		protected AsyncTaskResult<ArrayList<String>> doInBackground(Void... params) {
 
 			paths = new ArrayList<String>();
 			try {
@@ -277,9 +278,9 @@ public class Files {
 	 */
 	static class CopyAssetsTask extends
 			AsyncTask<ArrayList<String>, Integer, AsyncTaskResult<Void>> {
-		WakeLock copyLock;
-		Context ctx;
-		String root, message;
+		WakeLock	copyLock;
+		Context		ctx;
+		String		root, message;
 
 		CopyAssetsTask(Context ctx, String root) {
 			this.ctx = ctx;
@@ -291,24 +292,22 @@ public class Files {
 		protected void onPreExecute() {
 			PowerManager pm = (PowerManager) ctx
 					.getSystemService(Context.POWER_SERVICE);
-			copyLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-					"copying");
+			copyLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "copying");
 			copyLock.acquire();
 		}
 
 		@Override
-		protected AsyncTaskResult<Void> doInBackground(
-				ArrayList<String>... params) {
+		protected AsyncTaskResult<Void> doInBackground(ArrayList<String>... params) {
 			int max = params[0].size();
 			for (int i = 0; i < max; i++) {
 				try {
 					copyAsset(ctx, params[0].get(i), root);
 				} catch (IOException e) {
-					return new AsyncTaskResult(e);
+					return new AsyncTaskResult<Void>(e);
 				}
 				publishProgress(i + 1, max);
 			}
-			return new AsyncTaskResult(null);
+			return new AsyncTaskResult<Void>((Void) null);
 		}
 
 		@Override
@@ -321,12 +320,12 @@ public class Files {
 	 * Produces a list of assets in a directory
 	 * 
 	 * @param ctx
-	 *            a context
+	 *          a context
 	 * @param path
-	 *            path to search in
+	 *          path to search in
 	 * @return a list of files
 	 * @throws IOException
-	 *             if the path doesn't exist, or asset can't be accessed
+	 *           if the path doesn't exist, or asset can't be accessed
 	 */
 	public static ArrayList<String> listAssets(Context ctx, String path)
 			throws IOException {
@@ -357,13 +356,13 @@ public class Files {
 	 * Copies an assets
 	 * 
 	 * @param ctx
-	 *            a context
+	 *          a context
 	 * @param assetFilename
-	 *            the filename of the asset
+	 *          the filename of the asset
 	 * @param destination
-	 *            the destination directory
+	 *          the destination directory
 	 * @throws IOException
-	 *             if the asset cannot be copied
+	 *           if the asset cannot be copied
 	 */
 	public static void copyAsset(Context ctx, String assetFilename,
 			String destination) throws IOException {
@@ -446,8 +445,7 @@ public class Files {
 				}
 
 				if ((result = findGameFilesInternal(root)) != null) {
-					Log.d(Files.class.getSimpleName(), "Found game files in: "
-							+ result);
+					Log.d(Files.class.getSimpleName(), "Found game files in: " + result);
 					return result;
 				}
 			}
@@ -470,8 +468,8 @@ public class Files {
 							if (f.isDirectory()) {
 								if ((result = findGameFilesInternal(trimPath(f
 										.getAbsolutePath()))) != null) {
-									Log.d(Files.class.getSimpleName(),
-											"Found game files in: " + result);
+									Log.d(Files.class.getSimpleName(), "Found game files in: "
+											+ result);
 									return result;
 								}
 							}
@@ -489,7 +487,7 @@ public class Files {
 	/** AsyncTask for downloading a file */
 	public static class DownloadFileTask extends
 			AsyncTask<String, Integer, AsyncTaskResult<File>> {
-		String downloadTo;
+		String	downloadTo;
 
 		public DownloadFileTask(String downloadTo) {
 			this.downloadTo = downloadTo;
@@ -510,8 +508,7 @@ public class Files {
 				ucon.connect();
 				int fileSize = ucon.getContentLength();
 
-				InputStream input = new BufferedInputStream(
-						downloadUrl.openStream());
+				InputStream input = new BufferedInputStream(downloadUrl.openStream());
 				FileOutputStream fos = new FileOutputStream(file);
 
 				byte data[] = new byte[1024];
@@ -528,8 +525,8 @@ public class Files {
 				fos.close();
 				input.close();
 
-				Log.d(Files.class.getSimpleName(), "Downloaded file to: "
-						+ file.getAbsolutePath());
+				Log.d(Files.class.getSimpleName(),
+						"Downloaded file to: " + file.getAbsolutePath());
 				return new AsyncTaskResult<File>(file);
 
 			} catch (MalformedURLException e) {
@@ -545,7 +542,7 @@ public class Files {
 	/** AsyncTask for extracting a .zip file to a directory */
 	public static class UnzipTask extends
 			AsyncTask<File, Integer, AsyncTaskResult<String>> {
-		String unzipTo;
+		String	unzipTo;
 
 		public UnzipTask(String unzipTo) {
 			this.unzipTo = unzipTo;
@@ -561,13 +558,12 @@ public class Files {
 				ZipFile zf = new ZipFile(files[0]);
 				int entryCount = zf.size();
 
-				Enumeration entries = zf.entries();
+				Enumeration<? extends ZipEntry> entries = zf.entries();
 				int count = 0;
 
 				while (entries.hasMoreElements()) {
-					ZipEntry ze = (ZipEntry) entries.nextElement();
-					Log.v(Files.class.getSimpleName(),
-							"Unzipping " + ze.getName());
+					ZipEntry ze = entries.nextElement();
+					Log.v(Files.class.getSimpleName(), "Unzipping " + ze.getName());
 
 					File f = new File(unzipTo + ze.getName());
 					if (!f.getParentFile().exists()) {
@@ -583,8 +579,7 @@ public class Files {
 
 						InputStream zin = zf.getInputStream(ze);
 
-						FileOutputStream fout = new FileOutputStream(unzipTo
-								+ ze.getName());
+						FileOutputStream fout = new FileOutputStream(unzipTo + ze.getName());
 
 						byte[] buffer = new byte[1024];
 						int read;
@@ -615,8 +610,8 @@ public class Files {
 
 	public static class FileDetails implements Comparable<FileDetails> {
 
-		private Date lastModified;
-		private String fileName;
+		private Date		lastModified;
+		private String	fileName;
 
 		public FileDetails(String filename, Date lastModified) {
 			this.fileName = filename;

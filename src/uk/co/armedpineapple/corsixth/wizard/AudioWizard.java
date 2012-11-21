@@ -31,12 +31,12 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class AudioWizard extends WizardView {
 
-	CheckBox audioCheck;
-	CheckBox fxCheck;
-	CheckBox announcerCheck;
-	CheckBox musicCheck;
+	CheckBox	audioCheck;
+	CheckBox	fxCheck;
+	CheckBox	announcerCheck;
+	CheckBox	musicCheck;
 
-	Context ctx;
+	Context		ctx;
 
 	public AudioWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -73,8 +73,7 @@ public class AudioWizard extends WizardView {
 		audioCheck.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				fxCheck.setEnabled(isChecked);
 				announcerCheck.setEnabled(isChecked);
 				musicCheck.setEnabled(isChecked);
@@ -92,24 +91,23 @@ public class AudioWizard extends WizardView {
 					return;
 				}
 				// Check if the original files has music, and show a dialog if not
-				
+
 				if (!Files.hasMusicFiles(config.getOriginalFilesPath())) {
 					musicCheck.setChecked(false);
 					AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 
-					builder.setMessage(
-							ctx.getString(R.string.no_music_dialog))
+					builder
+							.setMessage(ctx.getString(R.string.no_music_dialog))
 							.setCancelable(true)
-							.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+							.setNeutralButton(R.string.ok,
+									new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									dialog.dismiss();
-								}
-								
-							});
-						
+										@Override
+										public void onClick(DialogInterface dialog, int which) {
+											dialog.dismiss();
+										}
+
+									});
 
 					AlertDialog alert = builder.create();
 					alert.show();
@@ -135,8 +133,7 @@ public class AudioWizard extends WizardView {
 
 					};
 
-					builder.setMessage(
-							ctx.getString(R.string.music_download_dialog))
+					builder.setMessage(ctx.getString(R.string.music_download_dialog))
 							.setCancelable(true)
 							.setNegativeButton(R.string.cancel, alertListener)
 							.setPositiveButton(R.string.ok, alertListener);
@@ -189,7 +186,7 @@ public class AudioWizard extends WizardView {
 		dialog.setMax(100);
 		dialog.setCancelable(false);
 
-		//TODO - this also isn't good.
+		// TODO - this also isn't good.
 		final UnzipTask uzt = new Files.UnzipTask("/sdcard/timidity/") {
 
 			@Override
@@ -202,9 +199,8 @@ public class AudioWizard extends WizardView {
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
 					BugSenseHandler.sendException(e);
-					Toast errorToast = Toast
-							.makeText(ctx, R.string.download_timidity_error,
-									Toast.LENGTH_LONG);
+					Toast errorToast = Toast.makeText(ctx,
+							R.string.download_timidity_error, Toast.LENGTH_LONG);
 
 					errorToast.show();
 					musicCheck.setChecked(false);
