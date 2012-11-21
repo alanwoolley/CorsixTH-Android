@@ -108,7 +108,7 @@ public class OriginalFilesWizard extends WizardView {
 		downloadDemoRadio = ((RadioButton) findViewById(R.id.downloadDemoRadio));
 
 		final EditText editTextBox = new EditText(ctx);
-		editTextBox.setText("/sdcard/th");
+		editTextBox.setText(Files.getExtStoragePath() + "th");
 		Builder builder = new Builder(ctx);
 		builder.setMessage(R.string.custom_location_message);
 		builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {

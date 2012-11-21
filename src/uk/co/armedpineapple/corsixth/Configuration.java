@@ -45,7 +45,8 @@ public class Configuration {
 			resolutionMode, displayWidth, displayHeight, gameSpeed;
 
 	// TODO Get this the proper way.
-	private String							saveGamesPath				= "/sdcard/CTHsaves";
+	private String							saveGamesPath				= Files.getExtStoragePath()
+																											+ "CTHsaves";
 
 	private Configuration() {
 	}

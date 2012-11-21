@@ -84,6 +84,11 @@ public class Files {
 				: path;
 	}
 
+	public static String getExtStoragePath() {
+		return trimPath(Environment.getExternalStorageDirectory().getAbsolutePath())
+				+ File.separator;
+	}
+
 	/**
 	 * Checks if Theme Hospital data files exist in a directory
 	 * 

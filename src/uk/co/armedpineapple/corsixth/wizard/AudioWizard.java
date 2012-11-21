@@ -114,8 +114,8 @@ public class AudioWizard extends WizardView {
 					return;
 				}
 
-				// TODO - this isn't good. Do it properly.
-				File timidityConfig = new File("/sdcard/timidity/timidity.cfg");
+				File timidityConfig = new File(Files.getExtStoragePath() + "timidity"
+						+ File.separator + "timidity.cfg");
 
 				if (!(timidityConfig.isFile() && timidityConfig.canRead())) {
 
@@ -186,8 +186,8 @@ public class AudioWizard extends WizardView {
 		dialog.setMax(100);
 		dialog.setCancelable(false);
 
-		// TODO - this also isn't good.
-		final UnzipTask uzt = new Files.UnzipTask("/sdcard/timidity/") {
+		final UnzipTask uzt = new Files.UnzipTask(Files.getExtStoragePath()
+				+ File.separator + "timidity" + File.separator) {
 
 			@Override
 			protected void onPostExecute(AsyncTaskResult<String> result) {
