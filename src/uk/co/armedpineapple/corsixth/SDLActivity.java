@@ -50,6 +50,7 @@ public class SDLActivity extends CTHActivity {
 	public Configuration			config;
 	private WakeLock					wake;
 	private MenuDialog				mainMenu;
+	private boolean						hasGameLoaded		= false;
 
 	// This is what SDL runs in. It invokes SDL_main(), eventually
 	private static Thread			mSDLThread;
@@ -295,6 +296,8 @@ public class SDLActivity extends CTHActivity {
 			hideSystemUi();
 		}
 
+		hasGameLoaded = true;
+
 	}
 
 	@TargetApi(11)
@@ -493,9 +496,10 @@ public class SDLActivity extends CTHActivity {
 		Log.d(getClass().getSimpleName(), "onPause()");
 
 		// Attempt to autosave.
-
-		cthTryAutoSave("cthAndroidAutoSave.sav");
-
+		if (hasGameLoaded) {
+			cthTryAutoSave("cthAndroidAutoSave.sav");
+		}
+		
 		if (wake != null && wake.isHeld()) {
 			Log.d(getClass().getSimpleName(), "Releasing wakelock");
 			wake.release();
