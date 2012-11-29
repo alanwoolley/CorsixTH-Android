@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class FilesAdapter extends BaseAdapter {
 
 	Context						context;
-	List<FileDetails>	items;
+	List<FileDetails>       	items;
 	boolean						newButton;
 
 	public FilesAdapter(Context context, List<FileDetails> items,
@@ -67,8 +67,6 @@ public class FilesAdapter extends BaseAdapter {
 
 			image.setVisibility(View.VISIBLE);
 			smallText.setVisibility(View.GONE);
-
-			// TODO - make this string external
 
 			largeText.setText(R.string.new_save);
 

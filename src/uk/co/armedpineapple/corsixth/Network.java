@@ -10,11 +10,18 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class Network {
-	/* Checks if there is an active network connection */
+    
+	/** Checks if there is an active network connection 
+     *
+     *  @return true if there is an active network connection
+    */
 	public static boolean HasNetworkConnection(Context ctx) {
 		ConnectivityManager cm = (ConnectivityManager) ctx
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
+                
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        
+        // getActiveNetworkInfo() can return null if there is no active connection.
 		if (netInfo != null && netInfo.isConnected()) {
 			return true;
 		}

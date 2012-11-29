@@ -84,6 +84,11 @@ public class Files {
 				: path;
 	}
 
+    /**
+     * Gets the external storage path including a trailing file separator.
+     * 
+     * @return the external storage path
+     */
 	public static String getExtStoragePath() {
 		return trimPath(Environment.getExternalStorageDirectory().getAbsolutePath())
 				+ File.separator;
@@ -616,7 +621,7 @@ public class Files {
 	public static class FileDetails implements Comparable<FileDetails> {
 
 		private Date		lastModified;
-		private String	fileName;
+		private String	    fileName;
 
 		public FileDetails(String filename, Date lastModified) {
 			this.fileName = filename;
