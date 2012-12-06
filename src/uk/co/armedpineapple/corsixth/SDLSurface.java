@@ -71,7 +71,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		SDLActivity.createEGLSurface();
 
-		enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+		//enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 	}
 
 	// Called when we lose the surface
