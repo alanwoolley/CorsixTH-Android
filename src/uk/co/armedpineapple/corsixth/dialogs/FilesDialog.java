@@ -28,21 +28,23 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 	private String							savePath;
 	private Button							cancelButton;
 
-	protected List<FileDetails>	            saves;
-	protected FilesAdapter			        arrayAdapter;
-	protected ListView				    	savesList;
-	protected SDLActivity				    ctx;
+	protected List<FileDetails>	saves;
+	protected FilesAdapter			arrayAdapter;
+	protected ListView					savesList;
+	protected SDLActivity				ctx;
 
 	private boolean							hasNewButton;
 
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-        
-        /* Unpause the game if the back button is pressed. Note that
-        it is possible for getGameSpeed() to return null if the 
-        game is on the main menu screen, for example. */
-        
+
+		/*
+		 * Unpause the game if the back button is pressed. Note that it is possible
+		 * for getGameSpeed() to return null if the game is on the main menu screen,
+		 * for example.
+		 */
+
 		Integer speed;
 		if ((speed = ctx.config.getGameSpeed()) != null) {
 			SDLActivity.cthGameSpeed(speed);
@@ -58,7 +60,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 		savePath = path;
 		setContentView(layout);
-		savesList = (ListView) findpleaseViewById(R.id.filesList);
+		savesList = (ListView) findViewById(R.id.filesList);
 		savesList.setOnItemClickListener(this);
 		cancelButton = (Button) findViewById(R.id.dismissDialogButton);
 
@@ -68,8 +70,10 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 			public void onClick(View v) {
 				Integer speed;
 				if ((speed = ctx.config.getGameSpeed()) != null) {
-                    // Unpause the game if the cancel button is pressed
+
+					// Unpause the game if the cancel button is pressed
 					SDLActivity.cthGameSpeed(speed);
+
 				}
 				dismiss();
 			}
@@ -83,10 +87,12 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 			@Override
 			public boolean accept(File dir, String filename) {
-                
-                /* Filter out any files that don't end with .sav, or are the
-                quicksave or autosave files */
-                
+
+				/*
+				 * Filter out any files that don't end with .sav, or are the quicksave
+				 * or autosave files
+				 */
+
 				return filename.toLowerCase(Locale.US).endsWith(".sav")
 						&& !filename.toLowerCase(Locale.US).equals(
 								ctx.getString(R.string.quicksave_name))
@@ -99,8 +105,8 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 		Collections.sort(saves, Collections.reverseOrder());
 
-        // Update the adapter
-        
+		// Update the adapter
+
 		arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);
 		savesList.setAdapter(arrayAdapter);
 

@@ -16,7 +16,7 @@ public enum MenuItems {
 	ABOUT(R.string.menuitem_about, R.drawable.ic_menu_help),
 	EXIT(R.string.menuitem_exit, R.drawable.ic_menu_exit);
 
-	public Integer imageResource, textResource;
+	public Integer	imageResource, textResource;
 
 	MenuItems(Integer textResource, Integer imageResource) {
 		this.imageResource = imageResource;

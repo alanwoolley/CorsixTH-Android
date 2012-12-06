@@ -1,6 +1,5 @@
 package uk.co.armedpineapple.corsixth;
 
-
 import uk.co.armedpineapple.corsixth.dialogs.MenuAdapter;
 import uk.co.armedpineapple.corsixth.dialogs.MenuItems;
 import android.content.Context;
@@ -13,12 +12,12 @@ import android.widget.RelativeLayout;
 
 public class SideMenu extends RelativeLayout {
 
-	Context ctx;
-	Animation outanim;
-	Animation inanim;
-	boolean showing = false;
-	ListView list;
-	MenuAdapter adapter;
+	Context			ctx;
+	Animation		outanim;
+	Animation		inanim;
+	boolean			showing	= false;
+	ListView		list;
+	MenuAdapter	adapter;
 
 	// Constructors
 

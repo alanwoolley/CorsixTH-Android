@@ -14,8 +14,8 @@ import android.widget.CheckBox;
 
 public class AdvancedWizard extends WizardView {
 
-	CheckBox debugCheck;
-	CheckBox screenOnCheck;
+	CheckBox	debugCheck;
+	CheckBox	screenOnCheck;
 
 	public AdvancedWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -30,7 +30,7 @@ public class AdvancedWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) throws ConfigurationException{
+	void saveConfiguration(Configuration config) throws ConfigurationException {
 		config.setDebug(debugCheck.isChecked());
 		config.setKeepScreenOn(screenOnCheck.isChecked());
 	}
@@ -40,9 +40,9 @@ public class AdvancedWizard extends WizardView {
 
 		debugCheck = ((CheckBox) findViewById(R.id.debugCheck));
 		debugCheck.setChecked(config.getDebug());
-		
+
 		screenOnCheck = ((CheckBox) findViewById(R.id.screenOnCheck));
 		screenOnCheck.setChecked(config.getKeepScreenOn());
-		
+
 	}
 }

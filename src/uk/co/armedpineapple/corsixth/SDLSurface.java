@@ -199,12 +199,12 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		return true;
 	}
 
-    /**
-     * Translates an x,y pair of coordinates according to the scaling factor
-     * of the surface
-     * 
-     * @return an array containing the translated coordinates
-     */
+	/**
+	 * Translates an x,y pair of coordinates according to the scaling factor of
+	 * the surface
+	 * 
+	 * @return an array containing the translated coordinates
+	 */
 	public float[] translateCoords(float x, float y) {
 		float newX = ((float) this.width / getWidth()) * x;
 		float newY = ((float) this.height / getHeight()) * y;

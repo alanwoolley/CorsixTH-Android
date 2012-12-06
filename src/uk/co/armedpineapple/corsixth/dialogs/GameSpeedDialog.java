@@ -18,18 +18,18 @@ import android.widget.TextView;
 public class GameSpeedDialog extends Dialog {
 
 	@SuppressWarnings("nls")
-	private String[] speeds = { "Paused", "Slowest", "Slower", "Normal",
+	private String[]		speeds	= { "Paused", "Slowest", "Slower", "Normal",
 			"Max speed", "And then some more" };
-	private SeekBar seekbar;
-	private TextView gameSpeedText;
-	private Button gameSpeedButton;
-	private SDLActivity ctx;
+	private SeekBar			seekbar;
+	private TextView		gameSpeedText;
+	private Button			gameSpeedButton;
+	private SDLActivity	ctx;
 
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-        
-        // Unpause the game
+
+		// Unpause the game
 		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
 	}
 

@@ -24,14 +24,14 @@ import android.widget.RadioGroup;
 
 public class DisplayWizard extends WizardView {
 
-	RadioGroup displayRadioGroup;
-	RadioButton defaultResolutionRadio;
-	RadioButton nativeResolutionRadio;
-	RadioButton customResolutionRadio;
+	RadioGroup	displayRadioGroup;
+	RadioButton	defaultResolutionRadio;
+	RadioButton	nativeResolutionRadio;
+	RadioButton	customResolutionRadio;
 
-	int customWidth;
-	int customHeight;
-	Context ctx;
+	int					customWidth;
+	int					customHeight;
+	Context			ctx;
 
 	public DisplayWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -49,7 +49,7 @@ public class DisplayWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config)  throws ConfigurationException{
+	void saveConfiguration(Configuration config) throws ConfigurationException {
 
 		if (defaultResolutionRadio.isChecked()) {
 			config.setResolutionMode(Configuration.RESOLUTION_DEFAULT);
@@ -71,18 +71,18 @@ public class DisplayWizard extends WizardView {
 		customResolutionRadio = ((RadioButton) findViewById(R.id.customResolutionRadio));
 
 		switch (config.getResolutionMode()) {
-		case Configuration.RESOLUTION_DEFAULT:
-			defaultResolutionRadio.setChecked(true);
+			case Configuration.RESOLUTION_DEFAULT:
+				defaultResolutionRadio.setChecked(true);
 
-			break;
-		case Configuration.RESOLUTION_NATIVE:
-			nativeResolutionRadio.setChecked(true);
-			break;
-		case Configuration.RESOLUTION_CUSTOM:
-			customResolutionRadio.setChecked(true);
-			customWidth = config.getDisplayWidth();
-			customHeight = config.getDisplayHeight();
-			break;
+				break;
+			case Configuration.RESOLUTION_NATIVE:
+				nativeResolutionRadio.setChecked(true);
+				break;
+			case Configuration.RESOLUTION_CUSTOM:
+				customResolutionRadio.setChecked(true);
+				customWidth = config.getDisplayWidth();
+				customHeight = config.getDisplayHeight();
+				break;
 		}
 
 		final LinearLayout linLayout = new LinearLayout(ctx);
@@ -120,8 +120,7 @@ public class DisplayWizard extends WizardView {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				if (!widthBox.getText().toString().trim().equals("")) {
-					int givenWidth = Integer.valueOf(widthBox.getText()
-							.toString());
+					int givenWidth = Integer.valueOf(widthBox.getText().toString());
 					if (givenWidth > 0) {
 						customWidth = Math.min(dm.widthPixels, givenWidth);
 					} else {
@@ -132,8 +131,7 @@ public class DisplayWizard extends WizardView {
 					customWidth = 640;
 				}
 				if (!heightBox.getText().toString().trim().equals("")) {
-					int givenHeight = Integer.valueOf(heightBox.getText()
-							.toString());
+					int givenHeight = Integer.valueOf(heightBox.getText().toString());
 					if (givenHeight > 0) {
 						customHeight = Math.min(dm.heightPixels, givenHeight);
 					} else {

@@ -6,8 +6,8 @@
 package uk.co.armedpineapple.corsixth;
 
 public class AsyncTaskResult<T> {
-	private T result;
-	private Exception error;
+	private T					result;
+	private Exception	error;
 
 	public T getResult() {
 		return result;

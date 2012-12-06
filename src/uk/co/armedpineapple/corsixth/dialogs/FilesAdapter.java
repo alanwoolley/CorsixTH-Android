@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class FilesAdapter extends BaseAdapter {
 
 	Context						context;
-	List<FileDetails>       	items;
+	List<FileDetails>	items;
 	boolean						newButton;
 
 	public FilesAdapter(Context context, List<FileDetails> items,

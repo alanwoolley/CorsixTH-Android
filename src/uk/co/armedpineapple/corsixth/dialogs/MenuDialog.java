@@ -17,12 +17,12 @@ import android.widget.ListView;
 
 public class MenuDialog extends Dialog implements OnItemClickListener {
 
-	SDLActivity ctx;
-	ImageButton backButton;
+	SDLActivity			ctx;
+	ImageButton			backButton;
 
-	ListView mainList;
-	MenuAdapter adapter;
-	GameSpeedDialog gameSpeedDialog;
+	ListView				mainList;
+	MenuAdapter			adapter;
+	GameSpeedDialog	gameSpeedDialog;
 
 	@Override
 	public void onBackPressed() {
@@ -56,57 +56,59 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 		MenuItems clicked = (MenuItems) parent.getItemAtPosition(position);
 
 		switch (clicked) {
-		case ABOUT:
-			SDLActivity.sendCommand(SHOW_ABOUT_DIALOG, null);
-			return;
-		case EXIT:
-			SDLActivity.nativeQuit();
-			return;
-		case GAME_SPEED:
-			if (gameSpeedDialog == null) {
-				gameSpeedDialog = new GameSpeedDialog(ctx);
-			}
-			gameSpeedDialog.show(ctx.config.getGameSpeed());
-			return;
-		case LOAD:
-			SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
-			return;
-		case QUICK_LOAD:
-			SDLActivity.sendCommand(QUICK_LOAD, null);
-			return;
-		case QUICK_SAVE:
-			SDLActivity.sendCommand(QUICK_SAVE, null);
-			SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
-			return;
-		case RESTART:
-			SDLActivity.sendCommand(RESTART_GAME, null);
-			return;
-		case SAVE:
-			SDLActivity.sendCommand(SHOW_SAVE_DIALOG, null);
-			return;
-		case WIZARD:
-			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					SharedPreferences preferences = ((CorsixTHApplication) ctx.getApplication()).getPreferences();
-					
-					Editor editor = preferences.edit();
-					editor.putBoolean("wizard_run", false);
-					editor.commit();
-					
-					SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+			case ABOUT:
+				SDLActivity.sendCommand(SHOW_ABOUT_DIALOG, null);
+				return;
+			case EXIT:
+				SDLActivity.nativeQuit();
+				return;
+			case GAME_SPEED:
+				if (gameSpeedDialog == null) {
+					gameSpeedDialog = new GameSpeedDialog(ctx);
 				}
+				gameSpeedDialog.show(ctx.config.getGameSpeed());
+				return;
+			case LOAD:
+				SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
+				return;
+			case QUICK_LOAD:
+				SDLActivity.sendCommand(QUICK_LOAD, null);
+				return;
+			case QUICK_SAVE:
+				SDLActivity.sendCommand(QUICK_SAVE, null);
+				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				return;
+			case RESTART:
+				SDLActivity.sendCommand(RESTART_GAME, null);
+				return;
+			case SAVE:
+				SDLActivity.sendCommand(SHOW_SAVE_DIALOG, null);
+				return;
+			case WIZARD:
+				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+				DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
-			};
-			builder.setMessage(
-					ctx.getResources().getString(R.string.setup_wizard_dialog))
-					.setCancelable(false).setNeutralButton(R.string.ok, alertListener);
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						SharedPreferences preferences = ((CorsixTHApplication) ctx
+								.getApplication()).getPreferences();
 
-			AlertDialog alert = builder.create();
-			alert.show();
-			return;
+						Editor editor = preferences.edit();
+						editor.putBoolean("wizard_run", false);
+						editor.commit();
+
+						SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+					}
+
+				};
+				builder
+						.setMessage(
+								ctx.getResources().getString(R.string.setup_wizard_dialog))
+						.setCancelable(false).setNeutralButton(R.string.ok, alertListener);
+
+				AlertDialog alert = builder.create();
+				alert.show();
+				return;
 
 		}
 	}

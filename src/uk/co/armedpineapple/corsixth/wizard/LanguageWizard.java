@@ -14,10 +14,10 @@ import android.widget.Spinner;
 
 public class LanguageWizard extends WizardView {
 
-	Spinner languageSpinner;
-	Context ctx;
-	String[] langValuesArray;
-	String[] langArray;
+	Spinner		languageSpinner;
+	Context		ctx;
+	String[]	langValuesArray;
+	String[]	langArray;
 
 	public LanguageWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -35,7 +35,7 @@ public class LanguageWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config) throws ConfigurationException{
+	void saveConfiguration(Configuration config) throws ConfigurationException {
 		config.setLanguage(langValuesArray[languageSpinner
 				.getSelectedItemPosition()]);
 	}

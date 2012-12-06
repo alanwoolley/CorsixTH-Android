@@ -29,8 +29,8 @@ public class DialogFactory {
 
 		d.setContentView(R.layout.about);
 
-		d.getWindow().setLayout(LayoutParams.FILL_PARENT,
-				LayoutParams.WRAP_CONTENT);
+		d.getWindow()
+				.setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 
 		d.setTitle(R.string.about_dialog_header);
 
@@ -48,8 +48,7 @@ public class DialogFactory {
 
 			@Override
 			public void onShow(DialogInterface dialog) {
-				TextView aboutText = (TextView) d
-						.findViewById(R.id.aboutTextView);
+				TextView aboutText = (TextView) d.findViewById(R.id.aboutTextView);
 				String text;
 				try {
 					text = Files.readTextFromResource(ctx, R.raw.about);
@@ -90,8 +89,7 @@ public class DialogFactory {
 
 			@Override
 			public void onShow(DialogInterface dialog) {
-				TextView changesText = (TextView) d
-						.findViewById(R.id.changesTextView);
+				TextView changesText = (TextView) d.findViewById(R.id.changesTextView);
 				String text;
 				try {
 					text = Files.readTextFromResource(ctx, R.raw.changes);

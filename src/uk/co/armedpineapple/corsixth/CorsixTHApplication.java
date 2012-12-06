@@ -17,31 +17,29 @@ import com.bugsense.trace.BugSenseHandler;
 
 public class CorsixTHApplication extends android.app.Application {
 
-	public static final String PREFERENCES_KEY = "cthprefs";
-	private SharedPreferences preferences;
-	private Configuration configuration;
-	private Properties properties = new Properties();
+	public static final String	PREFERENCES_KEY	= "cthprefs";
+	private SharedPreferences		preferences;
+	private Configuration				configuration;
+	private Properties					properties			= new Properties();
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
-		preferences = getSharedPreferences(PREFERENCES_KEY,
-				Context.MODE_PRIVATE);
+		preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
 
 		configuration = Configuration.loadFromPreferences(this, preferences);
 
 		/*
-		 * BugSense helps to discover bugs by reporting unhandled exceptions. If
-		 * you want to use this, create a file called application.properties in
-		 * the assets folder and insert the line:
+		 * BugSense helps to discover bugs by reporting unhandled exceptions. If you
+		 * want to use this, create a file called application.properties in the
+		 * assets folder and insert the line:
 		 * 
 		 * bugsense.key=<your API key>
 		 */
 
 		try {
-			InputStream inputStream = getAssets()
-					.open("application.properties");
+			InputStream inputStream = getAssets().open("application.properties");
 			Log.d(getClass().getSimpleName(), "Loading properties");
 			properties.load(inputStream);
 			setupBugsense();

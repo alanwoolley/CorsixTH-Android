@@ -27,7 +27,7 @@ public class WelcomeWizard extends WizardView {
 	}
 
 	@Override
-	void saveConfiguration(Configuration config)  throws ConfigurationException{
+	void saveConfiguration(Configuration config) throws ConfigurationException {
 
 	}
 

@@ -11,7 +11,6 @@ import android.util.Log;
 
 public class LoadDialog extends FilesDialog {
 
-
 	public LoadDialog(SDLActivity context, String path) {
 		super(context, path, R.layout.files_dialog, false);
 		setTitle(R.string.load_game_dialog_title);
@@ -24,5 +23,4 @@ public class LoadDialog extends FilesDialog {
 		dismiss();
 	}
 
-	
 }

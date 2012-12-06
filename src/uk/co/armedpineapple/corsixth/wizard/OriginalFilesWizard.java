@@ -35,14 +35,14 @@ import android.widget.Toast;
 
 public class OriginalFilesWizard extends WizardView {
 
-	RadioGroup originalFilesRadioGroup;
-	RadioButton automaticRadio;
-	RadioButton manualRadio;
-	RadioButton downloadDemoRadio;
+	RadioGroup	originalFilesRadioGroup;
+	RadioButton	automaticRadio;
+	RadioButton	manualRadio;
+	RadioButton	downloadDemoRadio;
 
-	String customLocation;
+	String			customLocation;
 
-	Context ctx;
+	Context			ctx;
 
 	public OriginalFilesWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -67,8 +67,7 @@ public class OriginalFilesWizard extends WizardView {
 
 			File hosp = new File(config.getOriginalFilesPath() + "/HOSP");
 			if (hosp.exists()
-					&& Files.hasDataFiles(config.getOriginalFilesPath()
-							+ "/HOSP")) {
+					&& Files.hasDataFiles(config.getOriginalFilesPath() + "/HOSP")) {
 				manualRadio.setChecked(true);
 				customLocation = config.getOriginalFilesPath() + "/HOSP";
 				config.setOriginalFilesPath(customLocation);
@@ -79,16 +78,14 @@ public class OriginalFilesWizard extends WizardView {
 
 			builder.setMessage(ctx.getString(R.string.no_data_dialog))
 					.setCancelable(true)
-					.setNeutralButton(R.string.ok,
-							new DialogInterface.OnClickListener() {
+					.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									dialog.dismiss();
-								}
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
 
-							});
+					});
 
 			AlertDialog alert = builder.create();
 			alert.show();
@@ -111,14 +108,15 @@ public class OriginalFilesWizard extends WizardView {
 		editTextBox.setText(Files.getExtStoragePath() + "th");
 		Builder builder = new Builder(ctx);
 		builder.setMessage(R.string.custom_location_message);
-		builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setNeutralButton(R.string.ok,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				customLocation = editTextBox.getText().toString();
-				manualRadio.setText("Custom (" + customLocation + ")");
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						customLocation = editTextBox.getText().toString();
+						manualRadio.setText("Custom (" + customLocation + ")");
+					}
+				});
 
 		builder.setView(editTextBox);
 
@@ -157,8 +155,8 @@ public class OriginalFilesWizard extends WizardView {
 					return;
 				}
 
-				File f = new File(ctx.getExternalFilesDir(null)
-						.getAbsolutePath() + "/demo/HOSP");
+				File f = new File(ctx.getExternalFilesDir(null).getAbsolutePath()
+						+ "/demo/HOSP");
 				if (!f.exists()) {
 
 					AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
@@ -177,18 +175,17 @@ public class OriginalFilesWizard extends WizardView {
 
 					};
 
-					builder.setMessage(
-							getResources().getString(
-									R.string.download_demo_dialog))
-							.setCancelable(true)
-							.setNegativeButton("Cancel", alertListener)
+					builder
+							.setMessage(
+									getResources().getString(R.string.download_demo_dialog))
+							.setCancelable(true).setNegativeButton("Cancel", alertListener)
 							.setPositiveButton("OK", alertListener);
 
 					AlertDialog alert = builder.create();
 					alert.show();
 				} else {
-					customLocation = ctx.getExternalFilesDir(null)
-							.getAbsolutePath() + "/demo/HOSP";
+					customLocation = ctx.getExternalFilesDir(null).getAbsolutePath()
+							+ "/demo/HOSP";
 				}
 			}
 
@@ -238,8 +235,7 @@ public class OriginalFilesWizard extends WizardView {
 					Exception e = result.getError();
 					BugSenseHandler.sendException(e);
 					DialogFactory.createFromException(result.getError(),
-							ctx.getString(R.string.download_demo_error), ctx,
-							false).show();
+							ctx.getString(R.string.download_demo_error), ctx, false).show();
 					downloadDemoRadio.setChecked(false);
 				}
 			}
@@ -271,8 +267,7 @@ public class OriginalFilesWizard extends WizardView {
 					dialog.hide();
 
 					DialogFactory.createFromException(result.getError(),
-							ctx.getString(R.string.download_demo_error), ctx,
-							false).show();
+							ctx.getString(R.string.download_demo_error), ctx, false).show();
 				} else {
 					uzt.execute(result.getResult());
 				}
@@ -299,14 +294,13 @@ public class OriginalFilesWizard extends WizardView {
 	void doGameFilesSearch() {
 		FindFilesTask fft = new FindFilesTask() {
 
-			ProgressDialog progressDialog;
+			ProgressDialog	progressDialog;
 
 			@Override
 			protected void onCancelled(AsyncTaskResult<String> result) {
 				progressDialog.hide();
 				automaticRadio.setChecked(false);
-				Toast.makeText(ctx, "Search cancelled", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(ctx, "Search cancelled", Toast.LENGTH_LONG).show();
 			}
 
 			@Override
@@ -320,10 +314,11 @@ public class OriginalFilesWizard extends WizardView {
 							Toast.LENGTH_LONG).show();
 				} else {
 					automaticRadio.setChecked(false);
-					Toast.makeText(
-							ctx,
-							"Couldn't find game files. Please set location manually or download the demo",
-							Toast.LENGTH_LONG).show();
+					Toast
+							.makeText(
+									ctx,
+									"Couldn't find game files. Please set location manually or download the demo",
+									Toast.LENGTH_LONG).show();
 				}
 			}
 

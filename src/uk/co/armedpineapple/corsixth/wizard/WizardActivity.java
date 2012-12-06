@@ -26,12 +26,12 @@ import android.widget.ViewFlipper;
 
 public class WizardActivity extends CTHActivity {
 
-	private ViewFlipper flipper;
-	private Button previousButton;
-	private Button nextButton;
-	private WizardButtonClickListener buttonClickListener;
-	private Configuration config;
-	private SharedPreferences preferences;
+	private ViewFlipper								flipper;
+	private Button										previousButton;
+	private Button										nextButton;
+	private WizardButtonClickListener	buttonClickListener;
+	private Configuration							config;
+	private SharedPreferences					preferences;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,25 +58,23 @@ public class WizardActivity extends CTHActivity {
 			previousButton = (Button) findViewById(R.id.leftbutton);
 			nextButton = (Button) findViewById(R.id.rightbutton);
 
-			config = ((CorsixTHApplication) getApplication())
-					.getConfiguration();
+			config = ((CorsixTHApplication) getApplication()).getConfiguration();
 
 			// Add all the wizard views
 
 			LayoutInflater inflater = getLayoutInflater();
-			loadAndAdd(inflater, flipper, (WizardView) inflater.inflate(
-					R.layout.wizard_welcome, null));
-			loadAndAdd(inflater, flipper, (LanguageWizard) inflater.inflate(
-					R.layout.wizard_language, null));
 			loadAndAdd(inflater, flipper,
-					(OriginalFilesWizard) inflater.inflate(
-							R.layout.wizard_originalfiles, null));
-			loadAndAdd(inflater, flipper, (DisplayWizard) inflater.inflate(
-					R.layout.wizard_display, null));
+					(WizardView) inflater.inflate(R.layout.wizard_welcome, null));
+			loadAndAdd(inflater, flipper,
+					(LanguageWizard) inflater.inflate(R.layout.wizard_language, null));
+			loadAndAdd(inflater, flipper, (OriginalFilesWizard) inflater.inflate(
+					R.layout.wizard_originalfiles, null));
+			loadAndAdd(inflater, flipper,
+					(DisplayWizard) inflater.inflate(R.layout.wizard_display, null));
 			loadAndAdd(inflater, flipper,
 					(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
-			loadAndAdd(inflater, flipper, (AdvancedWizard) inflater.inflate(
-					R.layout.wizard_advanced, null));
+			loadAndAdd(inflater, flipper,
+					(AdvancedWizard) inflater.inflate(R.layout.wizard_advanced, null));
 
 			// Setup Buttons
 			previousButton.setVisibility(View.GONE);
@@ -108,15 +106,14 @@ public class WizardActivity extends CTHActivity {
 				flipper.showPrevious();
 			} else if (v.equals(nextButton)) {
 				try {
-					((WizardView) flipper.getCurrentView())
-							.saveConfiguration(config);
+					((WizardView) flipper.getCurrentView()).saveConfiguration(config);
 
 					if (nextButton.getText() == getString(R.string.play_button)) {
 						config.saveToPreferences(preferences);
 
 						finish();
-						WizardActivity.this.startActivity(new Intent(
-								WizardActivity.this, SDLActivity.class));
+						WizardActivity.this.startActivity(new Intent(WizardActivity.this,
+								SDLActivity.class));
 					} else {
 
 						flipper.setInAnimation(WizardActivity.this,

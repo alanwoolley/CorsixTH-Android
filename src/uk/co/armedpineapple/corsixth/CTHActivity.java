@@ -13,7 +13,7 @@ import android.util.Log;
 
 public abstract class CTHActivity extends Activity {
 
-	boolean trackingSession = false;
+	boolean	trackingSession	= false;
 
 	@SuppressWarnings("nls")
 	@Override
@@ -21,9 +21,9 @@ public abstract class CTHActivity extends Activity {
 		super.onStart();
 
 		Properties p = getCthApplication().getProperties();
-		
+
 		// Check if Flurry is enabled
-		
+
 		if (p != null && p.containsKey("flurry.key")) {
 			Log.d(getClass().getSimpleName(), "Starting Flurry Session");
 			FlurryAgent.setCaptureUncaughtExceptions(Boolean.parseBoolean(p
@@ -31,8 +31,8 @@ public abstract class CTHActivity extends Activity {
 			FlurryAgent.onStartSession(this, p.getProperty("flurry.key"));
 
 			// Log Flurry events if app.debug=true
-			FlurryAgent.setLogEnabled(Boolean.parseBoolean(p.getProperty(
-					"app.debug", "false")));
+			FlurryAgent.setLogEnabled(Boolean.parseBoolean(p.getProperty("app.debug",
+					"false")));
 			trackingSession = true;
 		} else {
 			Log.d(getClass().getSimpleName(), "Flurry is not enabled");

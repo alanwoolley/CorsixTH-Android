@@ -31,11 +31,12 @@ public abstract class WizardView extends RelativeLayout {
 	 * Stores the wizard settings in a configuration. This is called when the
 	 * wizard page is navigated away from
 	 */
-	abstract void saveConfiguration(Configuration config) throws ConfigurationException;
+	abstract void saveConfiguration(Configuration config)
+			throws ConfigurationException;
 
 	/**
-	 * Populates the wizard using a configuration. Called when the wizard page
-	 * is attached
+	 * Populates the wizard using a configuration. Called when the wizard page is
+	 * attached
 	 */
 	abstract void loadConfiguration(Configuration config);
 

@@ -38,8 +38,7 @@ public class LongPressGesture implements OnGestureListener {
 				event.getX(actionPointerIndex), event.getY(actionPointerIndex));
 
 		SDLActivity.onNativeTouch(touchDevId, pointerFingerId, 0, coords[0],
-				coords[1], event.getPressure(actionPointerIndex), pointerCount,
-				1);
+				coords[1], event.getPressure(actionPointerIndex), pointerCount, 1);
 
 	}
 

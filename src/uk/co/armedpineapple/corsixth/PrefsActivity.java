@@ -17,9 +17,8 @@ public class PrefsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 
 		addPreferencesFromResource(R.xml.prefs);
-		
-		getWindow().setLayout(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT);
+
+		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 	}
 
 }
