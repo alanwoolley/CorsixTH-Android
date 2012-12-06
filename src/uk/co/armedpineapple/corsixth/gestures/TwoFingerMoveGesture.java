@@ -7,11 +7,10 @@ package uk.co.armedpineapple.corsixth.gestures;
 
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import uk.co.armedpineapple.corsixth.SDLActivity;
 
 public class TwoFingerMoveGesture implements
-		ScaleGestureDetector.OnScaleGestureListener {
+		TwoFingerGestureDetector.OnTwoFingerGestureListener {
 
 	private final float	delta	= 10;
 
@@ -20,7 +19,7 @@ public class TwoFingerMoveGesture implements
 	private boolean			first	= false;
 
 	@Override
-	public boolean onScale(ScaleGestureDetector detector) {
+	public boolean onTwoFingerEvent(TwoFingerGestureDetector detector) {
 
 		float[] coords = SDLActivity.mSurface.translateCoords(detector.getFocusX(),
 				detector.getFocusY());
@@ -46,7 +45,7 @@ public class TwoFingerMoveGesture implements
 	}
 
 	@Override
-	public boolean onScaleBegin(ScaleGestureDetector detector) {
+	public boolean onTwoFingerBegin(TwoFingerGestureDetector detector) {
 		Log.d(getClass().getSimpleName(), "Move gesture - BEGIN");
 		first = true;
 		float[] coords = SDLActivity.mSurface.translateCoords(detector.getFocusX(),
@@ -59,7 +58,7 @@ public class TwoFingerMoveGesture implements
 	}
 
 	@Override
-	public void onScaleEnd(ScaleGestureDetector detector) {
+	public void onTwoFingerEnd(TwoFingerGestureDetector detector) {
 		Log.d(getClass().getSimpleName(), "Move gesture - END");
 
 		if (!first) {

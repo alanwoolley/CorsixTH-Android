@@ -6,6 +6,7 @@
 package uk.co.armedpineapple.corsixth;
 
 import uk.co.armedpineapple.corsixth.gestures.LongPressGesture;
+import uk.co.armedpineapple.corsixth.gestures.TwoFingerGestureDetector;
 import uk.co.armedpineapple.corsixth.gestures.TwoFingerMoveGesture;
 
 import android.graphics.Canvas;
@@ -32,15 +33,15 @@ import android.view.View;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-	public int										width, height;
+	public int												width, height;
 
 	// Sensors
-	private static SensorManager	mSensorManager;
+	private static SensorManager			mSensorManager;
 
-	private GestureDetector				longPressGestureDetector;
-	private ScaleGestureDetector	moveGestureDetector;
+	private GestureDetector						longPressGestureDetector;
+	private TwoFingerGestureDetector	moveGestureDetector;
 
-	private SDLActivity						context;
+	private SDLActivity								context;
 
 	// Startup
 	public SDLSurface(SDLActivity context, int width, int height) {
@@ -54,7 +55,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		requestFocus();
 		setOnKeyListener(this);
 		setOnTouchListener(this);
-		moveGestureDetector = new ScaleGestureDetector(context,
+		moveGestureDetector = new TwoFingerGestureDetector(context,
 				new TwoFingerMoveGesture());
 		longPressGestureDetector = new GestureDetector(context,
 				new LongPressGesture());
