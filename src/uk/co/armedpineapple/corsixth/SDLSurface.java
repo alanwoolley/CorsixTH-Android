@@ -82,7 +82,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		// SDLActivity.nativePause();
 		SDLActivity.nativeQuit();
 
-		enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+		//enableSensor(Sensor.TYPE_ACCELEROMETER, false);
 
 	}
 
