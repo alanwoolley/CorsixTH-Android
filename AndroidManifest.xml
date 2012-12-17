@@ -16,7 +16,7 @@
 	READ_EXTERNAL_STORAGE
 	WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
 	WAKE_LOKE - required to keep the device awake during play
-	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
+	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
     -->
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -31,6 +31,10 @@
         android:requiresSmallestWidthDp="300"
         android:smallScreens="false"
         android:xlargeScreens="true" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:name="uk.co.armedpineapple.cth.CorsixTHApplication"
