@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uk.co.armedpineapple.corsixth"
+    package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
     android:versionCode="43"
     android:versionName="dev" >
@@ -33,20 +33,20 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name=".CorsixTHApplication"
+        android:name="uk.co.armedpineapple.cth.CorsixTHApplication"
         android:allowBackup="false"
         android:backupAgent="CTHBackupAgent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppTheme" >
         <activity
-            android:name="uk.co.armedpineapple.corsixth.SDLActivity"
+            android:name="uk.co.armedpineapple.cth.SDLActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape" >
         </activity>
         <activity
-            android:name=".wizard.WizardActivity"
+            android:name="uk.co.armedpineapple.cth.wizard.WizardActivity"
             android:screenOrientation="sensorLandscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PrefsActivity"
+            android:name="uk.co.armedpineapple.cth.PrefsActivity"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
