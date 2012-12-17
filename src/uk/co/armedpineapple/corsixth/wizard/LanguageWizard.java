@@ -5,11 +5,14 @@
  */
 package uk.co.armedpineapple.corsixth.wizard;
 
+import java.util.Locale;
+
 import uk.co.armedpineapple.corsixth.Configuration;
 import uk.co.armedpineapple.corsixth.ConfigurationException;
 import uk.co.armedpineapple.corsixth.R;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Spinner;
 
 public class LanguageWizard extends WizardView {
@@ -50,11 +53,14 @@ public class LanguageWizard extends WizardView {
 		languageSpinner.setSelection(0);
 
 		// Look for the language in the values array
+		Log.d(getClass().getSimpleName(), "System Language: " + Locale.getDefault().getLanguage());
+		
 		for (int i = 0; i < langValuesArray.length; i++) {
-			if (langValuesArray[i].equals(config.getLanguage())) {
+			if (langValuesArray[i].equals(Locale.getDefault().getLanguage())) {
 				languageSpinner.setSelection(i);
 				break;
 			}
+			
 		}
 
 	}
