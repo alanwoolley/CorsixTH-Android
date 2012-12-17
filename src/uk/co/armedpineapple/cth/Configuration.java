@@ -228,7 +228,12 @@ public class Configuration {
 		sbuilder.append("debug = " + String.valueOf(debug) + "\n");
 		sbuilder.append("track_fps = false\n");
 		sbuilder.append("unicode_font = [[" + UNICODE_PATH + "]]\n");
-		sbuilder.append("savegames = [[" + saveGamesPath + "]]");
+		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
+		
+		sbuilder.append("free_build_mode = false\n");
+		sbuilder.append("adviser_disabled = false\n");
+		sbuilder.append("warmth_colors_display_default = 1\n");
+		
 
 		// Create all the directories leading up to the config.txt file
 
