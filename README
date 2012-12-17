@@ -2,6 +2,27 @@ This is a port of CorsixTH (http://code.google.com/p/corsix-th) to Android.
 
 You will need either a copy of the original Theme Hospital game or a demo of Theme Hospital in order to use this port. The demo can be automatically downloaded from within the app.
 
+HUGE thanks to everyone for their bug reports, feedback and suggestions. 
+
+--------
+Credits
+--------
+Alan Woolley
+
+
+Translators:
+
+Russian: Nekser, band87
+Dutch: Jaco Weijts, Rprrr
+Hungarian: hun_gery
+Finnish: ramiselin
+German: eraser2011
+Danish: Lef1zh
+Spanish: miguelkill
+
+If you can help translate, please visit: http://translate.armedpineapple.co.uk
+
+
 --------
 Download
 --------
@@ -23,17 +44,4 @@ How to install
 4.	Download and install the APK.
 5.	Run
 
---------
-ChangeLog
---------
-https://github.com/alanwoolley/CorsixTH-Android/wiki/Changes
 
---------
-Stuck?
---------
-Check the Wiki for help. https://github.com/alanwoolley/CorsixTH-Android/wiki
-
---------
-What's broken?
---------
-*	CorsixTH doesn't support screen resolutions below 640x480 yet, so some of the UI will be obscured or fall off the display.
