@@ -1,3 +1,21 @@
+0.4.2 - 18/12/2012
+==================
+* Improve Android 4.2 support
+* Improve scrolling reliability
+* Fix fullscreen windows being obscured
+* Improve error handling
+* Update libraries
+* Misc. bug fixes
+
+Translations:
+* Added Russian translations (thanks Nekser, band87)
+* Added Dutch translations (thanks Jaco Weijts, Rprrr)
+* Added Hungarian translations (thanks hun_gery)
+* Added Finnish translations (thanks ramiselin)
+* Added German translations (thanks eraser2011)
+* Added Danish translations (thanks Lef1zh)
+* Added Spanish translations (thanks miguelkill)
+
 0.4.1 - 17/11/2012
 ==================
 * Update to CorsixTH Version 0.11
@@ -14,10 +32,3 @@
 * Smooth scrolling - you can now "fling" the map
 * Replace GA with Flurry
 * Update libraries
-
-0.3.3 - 30/09/2012
-==================
-* Update to CorsixTH Version 0.10
-* Improve stability
-* Bug fixes
-
