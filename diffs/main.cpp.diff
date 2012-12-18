@@ -29,7 +29,7 @@
 > 
 254,266d239
 < 
-< extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_setGamePath(
+< extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_setGamePath(
 < 		JNIEnv* env, jobject obj, jstring javaString) {
 < 
 < 	const char *nativeString = env->GetStringUTFChars(javaString, 0);

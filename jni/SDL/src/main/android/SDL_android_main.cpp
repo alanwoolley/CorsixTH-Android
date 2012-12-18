@@ -18,7 +18,7 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 }
 
 // Start up the SDL app
-extern "C" void Java_uk_co_armedpineapple_corsixth_SDLActivity_nativeInit(
+extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(
 		JNIEnv* env, jclass cls, jstring jni_log_path,
 		jstring jni_loadgame_path) {
 

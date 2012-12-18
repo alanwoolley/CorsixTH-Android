@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uk.co.armedpineapple.corsixth.wizard.WelcomeWizard xmlns:android="http://schemas.android.com/apk/res/android"
+<uk.co.armedpineapple.cth.wizard.WelcomeWizard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -44,4 +44,4 @@
             android:textAppearance="@style/WizardText" />
     </RelativeLayout>
 
-</uk.co.armedpineapple.corsixth.wizard.WelcomeWizard>
+</uk.co.armedpineapple.cth.wizard.WelcomeWizard>

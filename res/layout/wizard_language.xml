@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uk.co.armedpineapple.corsixth.wizard.LanguageWizard xmlns:android="http://schemas.android.com/apk/res/android"
+<uk.co.armedpineapple.cth.wizard.LanguageWizard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -33,4 +33,4 @@
         android:layout_marginLeft="30dp"
         android:entries="@array/languages" />
 
-</uk.co.armedpineapple.corsixth.wizard.LanguageWizard>
+</uk.co.armedpineapple.cth.wizard.LanguageWizard>
