@@ -89,7 +89,8 @@ public class SDLActivity extends CTHActivity {
 		SHOW_ABOUT_DIALOG,
 		PAUSE_GAME,
 		SHOW_SETTINGS_DIALOG,
-		GAME_SPEED_UPDATED
+		GAME_SPEED_UPDATED,
+		GAME_LOAD_ERROR
 	}
 
 	// C functions we call
@@ -699,6 +700,19 @@ public class SDLActivity extends CTHActivity {
 		public void handleMessage(Message msg) {
 			InputMethodManager mgr;
 			switch (Command.values()[msg.arg1]) {
+				case GAME_LOAD_ERROR:
+					SharedPreferences prefs = context.getCthApplication()
+							.getPreferences();
+					Editor editor = prefs.edit();
+					editor.putInt("last_version", 0);
+					editor.putBoolean("wizard_run", false);
+					editor.commit();
+					Dialog errorDialog = DialogFactory.createErrorDialog(context);
+
+					errorDialog.show();
+
+					break;
+
 				case SHOW_ABOUT_DIALOG:
 					if (aboutDialog == null) {
 						aboutDialog = DialogFactory.createAboutDialog(context);
@@ -718,16 +732,15 @@ public class SDLActivity extends CTHActivity {
 					break;
 				case QUICK_LOAD:
 					if (Files.doesFileExist(context.config.getSaveGamesPath()
-							+ "/quicksave.sav")) {
-						cthLoadGame("quicksave.sav");
+							+ File.separator + context.getString(R.string.quicksave_name))) {
+						cthLoadGame(context.getString(R.string.quicksave_name));
 					} else {
-						Toast
-								.makeText(context, "No quicksave to load!", Toast.LENGTH_SHORT)
+						Toast.makeText(context, R.string.no_quicksave, Toast.LENGTH_SHORT)
 								.show();
 					}
 					break;
 				case QUICK_SAVE:
-					cthSaveGame("quicksave.sav");
+					cthSaveGame(context.getString(R.string.quicksave_name));
 					break;
 				case RESTART_GAME:
 					cthRestartGame();
@@ -798,7 +811,7 @@ public class SDLActivity extends CTHActivity {
 				"Low memory detected. Going to try and tighten our belt!");
 
 		// Attempt to save first
-		cthTryAutoSave("cthAndroidAutoSave.sav");
+		cthTryAutoSave(getString(R.string.autosave_name));
 
 		// Remove references to some stuff that can just be regenerated later, so
 		// that the GC can get rid of them.

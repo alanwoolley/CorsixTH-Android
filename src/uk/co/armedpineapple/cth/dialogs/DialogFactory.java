@@ -124,6 +124,21 @@ public class DialogFactory {
 
 		return builder.create();
 	}
+	public static Dialog createErrorDialog(final Context ctx) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setMessage(ctx.getResources().getString(R.string.load_error)).setCancelable(false);
+		builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				SDLActivity.nativeQuit();
+			}
+			
+		});
+		
+		return builder.create();
+		
+	}
 
 	public static Dialog createExternalStorageDialog(final Context ctx,
 			boolean finish) {

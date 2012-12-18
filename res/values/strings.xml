@@ -75,4 +75,6 @@
     <string name="play_button">Play!</string>
     <string name="custom_location_message">Theme Hospital Game Files location</string>
     <string name="game_paused">Game Paused</string>
+    <string name="load_error">CorsixTH could not load. The setup wizard will run again when you next start the app.</string>
+	<string name="no_quicksave">No quicksave to load!</string>
 </resources>
