@@ -47,34 +47,36 @@ import android.media.*;
 
 public class SDLActivity extends CTHActivity {
 
-	private int								currentVersion;
-	private Properties				properties;
-	public Configuration			config;
-	private WakeLock					wake;
-	private MenuDialog				mainMenu;
-	private boolean						hasGameLoaded		= false;
+	private int									currentVersion;
+	private Properties					properties;
+	public Configuration				config;
+	private WakeLock						wake;
+	private MenuDialog					mainMenu;
+	private boolean							hasGameLoaded		= false;
 
 	// This is what SDL runs in. It invokes SDL_main(), eventually
-	private static Thread			mSDLThread;
+	private static Thread				mSDLThread;
 
 	// EGL private objects
-	private static EGLContext	mEGLContext;
-	private static EGLSurface	mEGLSurface;
-	private static EGLDisplay	mEGLDisplay;
-	private static EGLConfig	mEGLConfig;
-	private static int				mGLMajor, mGLMinor;
+	private static EGLContext		mEGLContext;
+	private static EGLSurface		mEGLSurface;
+	private static EGLDisplay		mEGLDisplay;
+	private static EGLConfig		mEGLConfig;
+	private static int					mGLMajor, mGLMinor;
 
 	// Main components
-	public static SDLActivity	mSingleton;
-	public static SDLSurface	mSurface;
+	public static SDLActivity		mSingleton;
+	public static SDLSurface		mSurface;
 
 	// Audio
-	private static Thread			mAudioThread;
-	private static AudioTrack	mAudioTrack;
-	private static Object			audioBuffer;
+	private static Thread				mAudioThread;
+	private static AudioTrack		mAudioTrack;
+	private static Object				audioBuffer;
+
+	private static final String	ENGINE_ZIP_FILE	= "game.zip";
 
 	// Handler for the messages
-	public CommandHandler			commandHandler	= new CommandHandler(this);
+	public CommandHandler				commandHandler	= new CommandHandler(this);
 
 	// Commands that can be sent from the game
 	public enum Command {
@@ -254,8 +256,13 @@ public class SDLActivity extends CTHActivity {
 
 		};
 
-		copyTask.execute("game.zip", getExternalCacheDir().getAbsolutePath());
+		if (Files.canAccessExternalStorage()) {
 
+			copyTask
+					.execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
+		} else {
+			DialogFactory.createExternalStorageDialog(this, true).show();
+		}
 	}
 
 	void loadApplication() {
