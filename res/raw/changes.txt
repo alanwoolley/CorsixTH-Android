@@ -1,3 +1,8 @@
+0.4.3 - 22/12/2012
+==================
+* Fix some force close errors
+* Squash some potential bugs
+
 0.4.2 - 18/12/2012
 ==================
 * Improve Android 4.2 support
