@@ -22,9 +22,8 @@ package uk.co.armedpineapple.cth.gestures;
  */
 
 import android.content.Context;
-import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 
 public class TwoFingerGestureDetector {
 
@@ -39,155 +38,173 @@ public class TwoFingerGestureDetector {
 
 	private static final float								PRESSURE_THRESHOLD	= 0.67f;
 
-	private final Context											mContext;
 	private final OnTwoFingerGestureListener	mListener;
-	private boolean														mGestureInProgress;
 
 	private MotionEvent												mPrevEvent, mCurrEvent;
 
-	private float															mFocusX, mFocusY, mCurrPressure,
-			mPrevPressure;
+	private float															mFocusX, mFocusY;
 
-	private final float												mEdgeSlop;
+	private float															mCurrPressure, mPrevPressure;
 
-	private float															mRightSlopEdge, mBottomSlopEdge;
-	private boolean														mSloppyGesture;
+	private boolean														mInvalidGesture,
+			mGestureInProgress;
+
+	// Pointer IDs currently responsible for the two fingers controlling the
+	// gesture
+
+	private int																mActiveId0, mActiveId1;
+	private boolean														mActive0MostRecent;
 
 	public TwoFingerGestureDetector(Context context,
 			OnTwoFingerGestureListener listener) {
-		ViewConfiguration config = ViewConfiguration.get(context);
-		mContext = context;
+
 		mListener = listener;
-		mEdgeSlop = config.getScaledEdgeSlop();
+
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
-		final int action = event.getAction();
-		boolean handled = true;
 
-		if (!mGestureInProgress) {
-			switch (action & MotionEvent.ACTION_MASK) {
+		final int action = event.getActionMasked();
+
+		if (action == MotionEvent.ACTION_DOWN) {
+			reset(); // Start fresh
+		}
+
+		boolean handled = true;
+		if (mInvalidGesture) {
+			handled = false;
+		} else if (!mGestureInProgress) {
+			switch (action) {
+				case MotionEvent.ACTION_DOWN: {
+					mActiveId0 = event.getPointerId(0);
+					mActive0MostRecent = true;
+				}
+					break;
+
+				case MotionEvent.ACTION_UP:
+					reset();
+					break;
+
 				case MotionEvent.ACTION_POINTER_DOWN: {
 					// We have a new multi-finger gesture
-
-					// as orientation can change, query the metrics in touch down
-					DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-					mRightSlopEdge = metrics.widthPixels - mEdgeSlop;
-					mBottomSlopEdge = metrics.heightPixels - mEdgeSlop;
-
-					// Be paranoid in case we missed an event
-					reset();
-
+					if (mPrevEvent != null)
+						mPrevEvent.recycle();
 					mPrevEvent = MotionEvent.obtain(event);
+
+					int index1 = event.getActionIndex();
+					int index0 = event.findPointerIndex(mActiveId0);
+					mActiveId1 = event.getPointerId(index1);
+					if (index0 < 0 || index0 == index1) {
+						// Probably someone sending us a broken event stream.
+						index0 = findNewActiveIndex(event, mActiveId1, -1);
+						mActiveId0 = event.getPointerId(index0);
+					}
+					mActive0MostRecent = false;
 
 					setContext(event);
 
-					// Check if we have a sloppy gesture. If so, delay
-					// the beginning of the gesture until we're sure that's
-					// what the user wanted. Sloppy gestures can happen if the
-					// edge of the user's hand is touching the screen, for example.
-					final float edgeSlop = mEdgeSlop;
-					final float rightSlop = mRightSlopEdge;
-					final float bottomSlop = mBottomSlopEdge;
-					final float x0 = event.getRawX();
-					final float y0 = event.getRawY();
-					final float x1 = getRawX(event, 1);
-					final float y1 = getRawY(event, 1);
+					mGestureInProgress = mListener.onTwoFingerBegin(this);
+					break;
+				}
+			}
+		} else {
+			// Transform gesture in progress - attempt to handle it
+			switch (action) {
+				case MotionEvent.ACTION_POINTER_DOWN: {
+					// End the old gesture and begin a new one with the most recent two
+					// fingers.
+					mListener.onTwoFingerEnd(this);
+					final int oldActive0 = mActiveId0;
+					final int oldActive1 = mActiveId1;
+					reset();
 
-					boolean p0sloppy = x0 < edgeSlop || y0 < edgeSlop || x0 > rightSlop
-							|| y0 > bottomSlop;
-					boolean p1sloppy = x1 < edgeSlop || y1 < edgeSlop || x1 > rightSlop
-							|| y1 > bottomSlop;
+					mPrevEvent = MotionEvent.obtain(event);
+					mActiveId0 = mActive0MostRecent ? oldActive0 : oldActive1;
+					mActiveId1 = event.getPointerId(event.getActionIndex());
+					mActive0MostRecent = false;
 
-					if (p0sloppy && p1sloppy) {
-						mFocusX = -1;
-						mFocusY = -1;
-						mSloppyGesture = true;
-					} else if (p0sloppy) {
-						mFocusX = event.getX(1);
-						mFocusY = event.getY(1);
-						mSloppyGesture = true;
-					} else if (p1sloppy) {
-						mFocusX = event.getX(0);
-						mFocusY = event.getY(0);
-						mSloppyGesture = true;
+					int index0 = event.findPointerIndex(mActiveId0);
+					if (index0 < 0 || mActiveId0 == mActiveId1) {
+						index0 = findNewActiveIndex(event, mActiveId1, -1);
+						mActiveId0 = event.getPointerId(index0);
+					}
+
+					setContext(event);
+
+					mGestureInProgress = mListener.onTwoFingerBegin(this);
+				}
+					break;
+
+				case MotionEvent.ACTION_POINTER_UP: {
+					final int pointerCount = event.getPointerCount();
+					final int actionIndex = event.getActionIndex();
+					final int actionId = event.getPointerId(actionIndex);
+
+					boolean gestureEnded = false;
+					if (pointerCount > 2) {
+						if (actionId == mActiveId0) {
+							final int newIndex = findNewActiveIndex(event, mActiveId1,
+									actionIndex);
+							if (newIndex >= 0) {
+								mListener.onTwoFingerEnd(this);
+								mActiveId0 = event.getPointerId(newIndex);
+								mActive0MostRecent = true;
+								mPrevEvent = MotionEvent.obtain(event);
+								setContext(event);
+								mGestureInProgress = mListener.onTwoFingerBegin(this);
+							} else {
+								gestureEnded = true;
+							}
+						} else if (actionId == mActiveId1) {
+							final int newIndex = findNewActiveIndex(event, mActiveId0,
+									actionIndex);
+							if (newIndex >= 0) {
+								mListener.onTwoFingerEnd(this);
+								mActiveId1 = event.getPointerId(newIndex);
+								mActive0MostRecent = false;
+								mPrevEvent = MotionEvent.obtain(event);
+								setContext(event);
+								mGestureInProgress = mListener.onTwoFingerBegin(this);
+							} else {
+								gestureEnded = true;
+							}
+						}
+						mPrevEvent.recycle();
+						mPrevEvent = MotionEvent.obtain(event);
+						setContext(event);
 					} else {
-						mGestureInProgress = mListener.onTwoFingerBegin(this);
+						gestureEnded = true;
+					}
+
+					if (gestureEnded) {
+						// Gesture ended
+						setContext(event);
+
+						// Set focus point to the remaining finger
+						final int activeId = actionId == mActiveId0 ? mActiveId1
+								: mActiveId0;
+						final int index = event.findPointerIndex(activeId);
+						mFocusX = event.getX(index);
+						mFocusY = event.getY(index);
+
+						mListener.onTwoFingerEnd(this);
+						reset();
+						mActiveId0 = activeId;
+						mActive0MostRecent = true;
 					}
 				}
 					break;
 
-				case MotionEvent.ACTION_MOVE:
-					if (mSloppyGesture) {
-						// Initiate sloppy gestures if we've moved outside of the slop area.
-						final float edgeSlop = mEdgeSlop;
-						final float rightSlop = mRightSlopEdge;
-						final float bottomSlop = mBottomSlopEdge;
-						final float x0 = event.getRawX();
-						final float y0 = event.getRawY();
-						final float x1 = getRawX(event, 1);
-						final float y1 = getRawY(event, 1);
-
-						boolean p0sloppy = x0 < edgeSlop || y0 < edgeSlop || x0 > rightSlop
-								|| y0 > bottomSlop;
-						boolean p1sloppy = x1 < edgeSlop || y1 < edgeSlop || x1 > rightSlop
-								|| y1 > bottomSlop;
-
-						if (p0sloppy && p1sloppy) {
-							mFocusX = -1;
-							mFocusY = -1;
-						} else if (p0sloppy) {
-							mFocusX = event.getX(1);
-							mFocusY = event.getY(1);
-						} else if (p1sloppy) {
-							mFocusX = event.getX(0);
-							mFocusY = event.getY(0);
-						} else {
-							mSloppyGesture = false;
-							mGestureInProgress = mListener.onTwoFingerBegin(this);
-						}
-					}
-					break;
-
-				case MotionEvent.ACTION_POINTER_UP:
-					if (mSloppyGesture) {
-						// Set focus point to the remaining finger
-						int id = (((action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT) == 0) ? 1
-								: 0;
-						mFocusX = event.getX(id);
-						mFocusY = event.getY(id);
-					}
-					break;
-			}
-		} else {
-			// Transform gesture in progress - attempt to handle it
-			switch (action & MotionEvent.ACTION_MASK) {
-				case MotionEvent.ACTION_POINTER_UP:
-					// Gesture ended
-					setContext(event);
-
-					// Set focus point to the remaining finger
-					int id = (((action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT) == 0) ? 1
-							: 0;
-					mFocusX = event.getX(id);
-					mFocusY = event.getY(id);
-
-					if (!mSloppyGesture) {
-						mListener.onTwoFingerEnd(this);
-					}
-
-					reset();
-					break;
-
 				case MotionEvent.ACTION_CANCEL:
-					if (!mSloppyGesture) {
-						mListener.onTwoFingerEnd(this);
-					}
-
+					mListener.onTwoFingerEnd(this);
 					reset();
 					break;
 
-				case MotionEvent.ACTION_MOVE:
+				case MotionEvent.ACTION_UP:
+					reset();
+					break;
+
+				case MotionEvent.ACTION_MOVE: {
 					setContext(event);
 
 					// Only accept the event if our relative pressure is within
@@ -201,20 +218,28 @@ public class TwoFingerGestureDetector {
 							mPrevEvent = MotionEvent.obtain(event);
 						}
 					}
+				}
 					break;
 			}
 		}
+
 		return handled;
 	}
 
-	private static float getRawX(MotionEvent event, int pointerIndex) {
-		float offset = event.getX() - event.getRawX();
-		return event.getX(pointerIndex) + offset;
-	}
+	private int findNewActiveIndex(MotionEvent ev, int otherActiveId,
+			int removedPointerIndex) {
+		final int pointerCount = ev.getPointerCount();
 
-	private static float getRawY(MotionEvent event, int pointerIndex) {
-		float offset = event.getY() - event.getRawY();
-		return event.getY(pointerIndex) + offset;
+		// It's ok if this isn't found and returns -1, it simply won't match.
+		final int otherActiveIndex = ev.findPointerIndex(otherActiveId);
+
+		// Pick a new id and update tracking state.
+		for (int i = 0; i < pointerCount; i++) {
+			if (i != removedPointerIndex && i != otherActiveIndex) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private void setContext(MotionEvent curr) {
@@ -225,18 +250,34 @@ public class TwoFingerGestureDetector {
 
 		final MotionEvent prev = mPrevEvent;
 
-		final float cx0 = curr.getX(0);
-		final float cy0 = curr.getY(0);
-		final float cx1 = curr.getX(1);
-		final float cy1 = curr.getY(1);
+		final int prevIndex0 = prev.findPointerIndex(mActiveId0);
+		final int prevIndex1 = prev.findPointerIndex(mActiveId1);
+		final int currIndex0 = curr.findPointerIndex(mActiveId0);
+		final int currIndex1 = curr.findPointerIndex(mActiveId1);
+
+		if (prevIndex0 < 0 || prevIndex1 < 0 || currIndex0 < 0 || currIndex1 < 0) {
+			mInvalidGesture = true;
+			Log.e(getClass().getSimpleName(), "Invalid MotionEvent stream detected.",
+					new Throwable());
+			if (mGestureInProgress) {
+				mListener.onTwoFingerEnd(this);
+			}
+			return;
+		}
+
+		final float cx0 = curr.getX(currIndex0);
+		final float cy0 = curr.getY(currIndex0);
+		final float cx1 = curr.getX(currIndex1);
+		final float cy1 = curr.getY(currIndex1);
 
 		final float cvx = cx1 - cx0;
 		final float cvy = cy1 - cy0;
 
 		mFocusX = cx0 + cvx * 0.5f;
 		mFocusY = cy0 + cvy * 0.5f;
-		mCurrPressure = curr.getPressure(0) + curr.getPressure(1);
-		mPrevPressure = prev.getPressure(0) + prev.getPressure(1);
+
+		mCurrPressure = curr.getPressure(currIndex0) + curr.getPressure(currIndex1);
+		mPrevPressure = prev.getPressure(prevIndex0) + prev.getPressure(prevIndex1);
 	}
 
 	private void reset() {
@@ -248,20 +289,55 @@ public class TwoFingerGestureDetector {
 			mCurrEvent.recycle();
 			mCurrEvent = null;
 		}
-		mSloppyGesture = false;
 		mGestureInProgress = false;
+		mActiveId0 = -1;
+		mActiveId1 = -1;
+		mInvalidGesture = false;
 	}
 
+	/**
+	 * Returns {@code true} if a two-finger gesture is in progress.
+	 * 
+	 * @return {@code true} if a two-finger gesture is in progress, {@code false}
+	 *         otherwise.
+	 */
 	public boolean isInProgress() {
 		return mGestureInProgress;
 	}
 
+	/**
+	 * Get the X coordinate of the current gesture's focal point. If a gesture is
+	 * in progress, the focal point is directly between the two pointers forming
+	 * the gesture. If a gesture is ending, the focal point is the location of the
+	 * remaining pointer on the screen. If {@link #isInProgress()} would return
+	 * false, the result of this function is undefined.
+	 * 
+	 * @return X coordinate of the focal point in pixels.
+	 */
 	public float getFocusX() {
 		return mFocusX;
 	}
 
+	/**
+	 * Get the Y coordinate of the current gesture's focal point. If a gesture is
+	 * in progress, the focal point is directly between the two pointers forming
+	 * the gesture. If a gesture is ending, the focal point is the location of the
+	 * remaining pointer on the screen. If {@link #isInProgress()} would return
+	 * false, the result of this function is undefined.
+	 * 
+	 * @return Y coordinate of the focal point in pixels.
+	 */
 	public float getFocusY() {
 		return mFocusY;
+	}
+
+	/**
+	 * Return the event time of the current event being processed.
+	 * 
+	 * @return Current event time in milliseconds.
+	 */
+	public long getEventTime() {
+		return mCurrEvent.getEventTime();
 	}
 
 }

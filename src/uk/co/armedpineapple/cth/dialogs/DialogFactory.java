@@ -74,7 +74,7 @@ public class DialogFactory {
 	public static Dialog createRecentChangesDialog(final Context ctx) {
 		final Dialog d = new Dialog(ctx);
 		d.setContentView(R.layout.changes_dialog);
-		d.setTitle("Recent Changes");
+		d.setTitle(R.string.recent_changes_title);
 
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
 		button.setOnClickListener(new Button.OnClickListener() {
@@ -185,7 +185,7 @@ public class DialogFactory {
 
 		builder.setCancelable(false);
 		if (title == null) {
-			builder.setTitle("Error!");
+			builder.setTitle(R.string.dialog_error_title);
 		} else {
 			builder.setTitle(title);
 		}

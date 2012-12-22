@@ -108,7 +108,7 @@ public class WizardActivity extends CTHActivity {
 				try {
 					((WizardView) flipper.getCurrentView()).saveConfiguration(config);
 
-					if (nextButton.getText() == getString(R.string.play_button)) {
+					if (nextButton.getText().equals(getString(R.string.play_button))) {
 						config.saveToPreferences(preferences);
 
 						finish();
