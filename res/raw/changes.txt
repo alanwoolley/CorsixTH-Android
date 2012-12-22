@@ -1,3 +1,8 @@
+0.4.3 - 22/12/2012
+==================
+* Fix some force close errors
+* Squash some potential bugs
+
 0.4.2 - 18/12/2012
 ==================
 * Improve Android 4.2 support
@@ -15,20 +20,3 @@ Translations:
 * Added German translations (thanks eraser2011)
 * Added Danish translations (thanks Lef1zh)
 * Added Spanish translations (thanks miguelkill)
-
-0.4.1 - 17/11/2012
-==================
-* Update to CorsixTH Version 0.11
-* UI improvements
-* Better handling of low memory situations
-* Will automatically save the game if interrupted
-* Option to resume previous game on load
-* Bug fixes
-
-0.4.0 - 04/10/2012
-==================
-* Lots of bug fixes and improved stability
-* Dim the navigation buttons
-* Smooth scrolling - you can now "fling" the map
-* Replace GA with Flurry
-* Update libraries
