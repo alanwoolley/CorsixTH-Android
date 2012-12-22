@@ -114,7 +114,8 @@ public class OriginalFilesWizard extends WizardView {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						customLocation = editTextBox.getText().toString();
-						manualRadio.setText("Custom (" + customLocation + ")");
+						manualRadio.setText(ctx.getString(R.string.custom_files) + " ("
+								+ customLocation + ")");
 					}
 				});
 
@@ -178,8 +179,9 @@ public class OriginalFilesWizard extends WizardView {
 					builder
 							.setMessage(
 									getResources().getString(R.string.download_demo_dialog))
-							.setCancelable(true).setNegativeButton("Cancel", alertListener)
-							.setPositiveButton("OK", alertListener);
+							.setCancelable(true)
+							.setNegativeButton(R.string.cancel, alertListener)
+							.setPositiveButton(R.string.ok, alertListener);
 
 					AlertDialog alert = builder.create();
 					alert.show();
@@ -300,7 +302,8 @@ public class OriginalFilesWizard extends WizardView {
 			protected void onCancelled(AsyncTaskResult<String> result) {
 				progressDialog.hide();
 				automaticRadio.setChecked(false);
-				Toast.makeText(ctx, "Search cancelled", Toast.LENGTH_LONG).show();
+				Toast.makeText(ctx, R.string.search_cancelled, Toast.LENGTH_LONG)
+						.show();
 			}
 
 			@Override
@@ -310,15 +313,12 @@ public class OriginalFilesWizard extends WizardView {
 				progressDialog.hide();
 				if (result.getResult() != null) {
 					customLocation = result.getResult();
-					Toast.makeText(ctx, "Found files in: " + customLocation,
+					Toast.makeText(ctx, ctx.getString(R.string.found_files) + customLocation,
 							Toast.LENGTH_LONG).show();
 				} else {
 					automaticRadio.setChecked(false);
-					Toast
-							.makeText(
-									ctx,
-									"Couldn't find game files. Please set location manually or download the demo",
-									Toast.LENGTH_LONG).show();
+					Toast.makeText(ctx, R.string.couldnt_find_game_files,
+							Toast.LENGTH_LONG).show();
 				}
 			}
 
@@ -329,7 +329,7 @@ public class OriginalFilesWizard extends WizardView {
 				progressDialog = new ProgressDialog(ctx);
 				progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				progressDialog.setIndeterminate(true);
-				progressDialog.setMessage("Searching...");
+				progressDialog.setMessage(getContext().getString(R.string.searching));
 				progressDialog.setCancelable(true);
 				progressDialog.show();
 

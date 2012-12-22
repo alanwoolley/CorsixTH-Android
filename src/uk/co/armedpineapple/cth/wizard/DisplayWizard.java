@@ -89,8 +89,8 @@ public class DisplayWizard extends WizardView {
 		final EditText heightBox = new EditText(ctx);
 		final EditText widthBox = new EditText(ctx);
 		linLayout.setOrientation(LinearLayout.HORIZONTAL);
-		heightBox.setHint("Height");
-		widthBox.setHint("Width");
+		heightBox.setHint(R.string.height);
+		widthBox.setHint(R.string.width);
 		heightBox.setInputType(InputType.TYPE_CLASS_NUMBER);
 		widthBox.setInputType(InputType.TYPE_CLASS_NUMBER);
 
@@ -114,37 +114,41 @@ public class DisplayWizard extends WizardView {
 				.getDefaultDisplay().getMetrics(dm);
 
 		Builder builder = new Builder(ctx);
-		builder.setMessage("Enter Resolution");
-		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+		builder.setMessage(R.string.enter_resolution);
+		builder.setNeutralButton(R.string.ok,
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if (!widthBox.getText().toString().trim().equals("")) {
-					int givenWidth = Integer.valueOf(widthBox.getText().toString());
-					if (givenWidth > 0) {
-						customWidth = Math.min(dm.widthPixels, givenWidth);
-					} else {
-						customWidth = 640;
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if (!widthBox.getText().toString().trim().equals("")) {
+							int givenWidth = Integer.valueOf(widthBox.getText().toString());
+							if (givenWidth > 0) {
+								customWidth = Math.min(dm.widthPixels, givenWidth);
+							} else {
+								customWidth = 640;
+							}
+
+						} else {
+							customWidth = 640;
+						}
+						if (!heightBox.getText().toString().trim().equals("")) {
+							int givenHeight = Integer.valueOf(heightBox.getText().toString());
+							if (givenHeight > 0) {
+								customHeight = Math.min(dm.heightPixels, givenHeight);
+							} else {
+								givenHeight = 480;
+							}
+
+						} else {
+							customHeight = 480;
+						}
+						customResolutionRadio.setText(ctx
+								.getString(R.string.custom_resolution)
+								+ " ("
+								+ customWidth
+								+ "x" + customHeight + ")");
 					}
-
-				} else {
-					customWidth = 640;
-				}
-				if (!heightBox.getText().toString().trim().equals("")) {
-					int givenHeight = Integer.valueOf(heightBox.getText().toString());
-					if (givenHeight > 0) {
-						customHeight = Math.min(dm.heightPixels, givenHeight);
-					} else {
-						givenHeight = 480;
-					}
-
-				} else {
-					customHeight = 480;
-				}
-				customResolutionRadio.setText("Custom (" + customWidth + "x"
-						+ customHeight + ")");
-			}
-		});
+				});
 
 		builder.setView(linLayout);
 
