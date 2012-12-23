@@ -6,15 +6,11 @@ android.support.v4.app.FragmentManagerState
 android.support.v4.app.FragmentManagerState: android.os.Parcelable$Creator CREATOR
 android.support.v4.app.FragmentState
 android.support.v4.app.FragmentState: android.os.Parcelable$Creator CREATOR
-android.support.v4.app.FragmentTabHost
-android.support.v4.app.FragmentTabHost: FragmentTabHost(android.content.Context,android.util.AttributeSet)
 android.support.v4.app.FragmentTabHost: void setOnTabChangedListener(android.widget.TabHost$OnTabChangeListener)
 android.support.v4.app.FragmentTabHost$SavedState
 android.support.v4.app.FragmentTabHost$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status[] values()
 android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status valueOf(java.lang.String)
-android.support.v4.view.PagerTabStrip
-android.support.v4.view.PagerTabStrip: PagerTabStrip(android.content.Context,android.util.AttributeSet)
 android.support.v4.view.PagerTabStrip: void setTabIndicatorColor(int)
 android.support.v4.view.PagerTabStrip: void setTabIndicatorColorResource(int)
 android.support.v4.view.PagerTabStrip: int getTabIndicatorColor()
@@ -25,17 +21,13 @@ android.support.v4.view.PagerTabStrip: void setBackgroundResource(int)
 android.support.v4.view.PagerTabStrip: void setDrawFullUnderline(boolean)
 android.support.v4.view.PagerTabStrip: boolean getDrawFullUnderline()
 android.support.v4.view.PagerTabStrip: int getMinHeight()
-android.support.v4.view.PagerTitleStrip
 android.support.v4.view.PagerTitleStrip: void setSingleLineAllCaps(android.widget.TextView)
-android.support.v4.view.PagerTitleStrip: PagerTitleStrip(android.content.Context,android.util.AttributeSet)
 android.support.v4.view.PagerTitleStrip: void setTextSpacing(int)
 android.support.v4.view.PagerTitleStrip: int getTextSpacing()
 android.support.v4.view.PagerTitleStrip: void setNonPrimaryAlpha(float)
 android.support.v4.view.PagerTitleStrip: void setTextColor(int)
 android.support.v4.view.PagerTitleStrip: void setGravity(int)
 android.support.v4.view.PagerTitleStrip: int getMinHeight()
-android.support.v4.view.ViewPager
-android.support.v4.view.ViewPager: ViewPager(android.content.Context,android.util.AttributeSet)
 android.support.v4.view.ViewPager: void setScrollState(int)
 android.support.v4.view.ViewPager: void setAdapter(android.support.v4.view.PagerAdapter)
 android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()
@@ -51,8 +43,6 @@ android.support.v4.view.ViewPager: int getPageMargin()
 android.support.v4.view.ViewPager: void setPageMarginDrawable(android.graphics.drawable.Drawable)
 android.support.v4.view.ViewPager: void setPageMarginDrawable(int)
 android.support.v4.view.ViewPager: void setScrollingCacheEnabled(boolean)
-android.support.v4.view.ViewPager$LayoutParams
-android.support.v4.view.ViewPager$LayoutParams: ViewPager$LayoutParams(android.content.Context,android.util.AttributeSet)
 android.support.v4.view.ViewPager$SavedState
 android.support.v4.view.ViewPager$SavedState: android.os.Parcelable$Creator CREATOR
 com.flurry.android.AdCreative
@@ -11556,9 +11546,6 @@ uk.co.armedpineapple.cth.SDLActivity: void cthGameSpeed(int)
 uk.co.armedpineapple.cth.SDLActivity: void cthTryAutoSave(java.lang.String)
 uk.co.armedpineapple.cth.SDLActivity$Command: uk.co.armedpineapple.cth.SDLActivity$Command[] values()
 uk.co.armedpineapple.cth.SDLActivity$Command: uk.co.armedpineapple.cth.SDLActivity$Command valueOf(java.lang.String)
-uk.co.armedpineapple.cth.SideMenu
-uk.co.armedpineapple.cth.SideMenu: SideMenu(android.content.Context,android.util.AttributeSet,int)
-uk.co.armedpineapple.cth.SideMenu: SideMenu(android.content.Context,android.util.AttributeSet)
 uk.co.armedpineapple.cth.dialogs.MenuItems: uk.co.armedpineapple.cth.dialogs.MenuItems[] values()
 uk.co.armedpineapple.cth.dialogs.MenuItems: uk.co.armedpineapple.cth.dialogs.MenuItems valueOf(java.lang.String)
 uk.co.armedpineapple.cth.wizard.AdvancedWizard
@@ -11587,7 +11574,6 @@ uk.co.armedpineapple.cth.wizard.WelcomeWizard: WelcomeWizard(android.content.Con
 uk.co.armedpineapple.cth.wizard.WelcomeWizard: WelcomeWizard(android.content.Context)
 uk.co.armedpineapple.cth.wizard.WizardActivity
 uk.co.armedpineapple.cth.wizard.WizardActivity: WizardActivity()
-uk.co.armedpineapple.cth.wizard.WizardView
 uk.co.armedpineapple.cth.wizard.WizardView: WizardView(android.content.Context,android.util.AttributeSet,int)
 uk.co.armedpineapple.cth.wizard.WizardView: WizardView(android.content.Context,android.util.AttributeSet)
 uk.co.armedpineapple.cth.wizard.WizardView: WizardView(android.content.Context)
