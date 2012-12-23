@@ -18,3 +18,43 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-optimizationpasses 10
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-dontobfuscate
+-verbose
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+
+
+-keepattributes SourceFile,LineNumberTable
+
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+-keepclasseswithmembernames class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
+-keepclasseswithmembernames class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+-keep public class com.bugsense.*
+
+-keep class com.flurry.** { *; }
+-dontwarn com.flurry.**
+
+
+
