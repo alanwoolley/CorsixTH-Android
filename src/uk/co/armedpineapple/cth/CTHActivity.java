@@ -50,8 +50,8 @@ public abstract class CTHActivity extends Activity {
 
 	}
 
-	public CorsixTHApplication getCthApplication() {
-		return (CorsixTHApplication) getApplication();
+	public CTHApplication getCthApplication() {
+		return (CTHApplication) getApplication();
 	}
 
 }

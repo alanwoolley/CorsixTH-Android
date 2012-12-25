@@ -24,7 +24,7 @@ public class CTHBackupAgent extends BackupAgentHelper {
 		super.onRestore(data, appVersionCode, newState);
 
 		SharedPreferences p = getSharedPreferences(
-				CorsixTHApplication.PREFERENCES_KEY, Context.MODE_PRIVATE);
+				CTHApplication.PREFERENCES_KEY, Context.MODE_PRIVATE);
 		Editor editor = p.edit();
 		editor.putBoolean("wizard_run", true);
 		editor.putInt("last_version", 0);
@@ -35,7 +35,7 @@ public class CTHBackupAgent extends BackupAgentHelper {
 	class PrefBackupHelper extends SharedPreferencesBackupHelper {
 
 		public PrefBackupHelper(Context context) {
-			super(context, CorsixTHApplication.PREFERENCES_KEY);
+			super(context, CTHApplication.PREFERENCES_KEY);
 
 		}
 

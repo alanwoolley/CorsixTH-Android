@@ -1,6 +1,6 @@
 package uk.co.armedpineapple.cth.dialogs;
 
-import uk.co.armedpineapple.cth.CorsixTHApplication;
+import uk.co.armedpineapple.cth.CTHApplication;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import static uk.co.armedpineapple.cth.SDLActivity.Command.*;
@@ -90,7 +90,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						SharedPreferences preferences = ((CorsixTHApplication) ctx
+						SharedPreferences preferences = ((CTHApplication) ctx
 								.getApplication()).getPreferences();
 
 						Editor editor = preferences.edit();

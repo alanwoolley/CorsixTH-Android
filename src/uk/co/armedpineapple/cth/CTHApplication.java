@@ -16,7 +16,7 @@ import android.util.Log;
 
 import com.bugsense.trace.BugSenseHandler;
 
-public class CorsixTHApplication extends android.app.Application {
+public class CTHApplication extends android.app.Application {
 
 	public static final String	PREFERENCES_KEY	= "cthprefs";
 	private SharedPreferences		preferences;

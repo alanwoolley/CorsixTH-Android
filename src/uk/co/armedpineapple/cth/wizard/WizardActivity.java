@@ -8,7 +8,7 @@ package uk.co.armedpineapple.cth.wizard;
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Configuration;
 import uk.co.armedpineapple.cth.ConfigurationException;
-import uk.co.armedpineapple.cth.CorsixTHApplication;
+import uk.co.armedpineapple.cth.CTHApplication;
 import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
@@ -45,7 +45,7 @@ public class WizardActivity extends CTHActivity {
 
 		}
 
-		preferences = ((CorsixTHApplication) getApplication()).getPreferences();
+		preferences = ((CTHApplication) getApplication()).getPreferences();
 
 		if (preferences.getBoolean("wizard_run", false)) {
 			Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
@@ -58,7 +58,7 @@ public class WizardActivity extends CTHActivity {
 			previousButton = (Button) findViewById(R.id.leftbutton);
 			nextButton = (Button) findViewById(R.id.rightbutton);
 
-			config = ((CorsixTHApplication) getApplication()).getConfiguration();
+			config = ((CTHApplication) getApplication()).getConfiguration();
 
 			// Add all the wizard views
 
