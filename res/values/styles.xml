@@ -17,11 +17,15 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="Theme_Dialog_Translucent" parent="android:Theme.Dialog">
+    <style name="Theme_Dialog_Translucent" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">22sp</item>
+    </style>
+    
+    <style name="Dialogs" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFullscreen">true</item>
     </style>
 </resources>

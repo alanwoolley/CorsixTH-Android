@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.AppTheme" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
         <item name="android:windowBackground">@color/background</item>
     </style>
 
+    <style name="Dialogs" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    
 </resources>
