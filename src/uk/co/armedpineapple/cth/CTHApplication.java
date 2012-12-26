@@ -22,6 +22,7 @@ public class CTHApplication extends android.app.Application {
 	private SharedPreferences		preferences;
 	private Configuration				configuration;
 	private Properties					properties			= new Properties();
+	public boolean							debugMode				= false;
 
 	@Override
 	public void onCreate() {
@@ -43,6 +44,8 @@ public class CTHApplication extends android.app.Application {
 			InputStream inputStream = getAssets().open("application.properties");
 			Log.d(getClass().getSimpleName(), "Loading properties");
 			properties.load(inputStream);
+			debugMode = Boolean.parseBoolean(properties.getProperty("app.debug",
+					"false"));
 			setupBugsense();
 
 		} catch (IOException e) {
@@ -52,7 +55,7 @@ public class CTHApplication extends android.app.Application {
 	}
 
 	private void setupBugsense() {
-		if (properties.containsKey("bugsense.key")) {
+		if (properties.containsKey("bugsense.key") && !debugMode) {
 			Log.d(getClass().getSimpleName(), "Setting up bugsense");
 			BugSenseHandler.initAndStartSession(this,
 					(String) properties.get("bugsense.key"));
