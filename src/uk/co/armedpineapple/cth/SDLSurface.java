@@ -5,7 +5,6 @@
  */
 package uk.co.armedpineapple.cth;
 
-import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.gestures.LongPressGesture;
 import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
 import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
@@ -20,7 +19,6 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;

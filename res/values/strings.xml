@@ -86,4 +86,5 @@
 	<string name="couldnt_find_game_files">Couldn\'t find game files. Please set location manually or download the demo</string>
 	<string name="found_files">Found files in: </string>
 	<string name="searching">Searching...</string>
+	<string name="menuitem_settings">Settings</string>
 </resources>

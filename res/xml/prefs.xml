@@ -126,21 +126,6 @@
             android:key="interals_prefs"
             android:summary="Do not change these unless you know what you are doing!"
             android:title="Internals" >
-            <PreferenceCategory
-                android:key="gamescripts_prefs"
-                android:title="Game Scripts" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="customgamescripts_pref"
-                    android:persistent="true"
-                    android:title="Use Custom Scripts" />
-
-                <EditTextPreference
-                    android:dependency="customgamescripts_pref"
-                    android:key="gamescripts_pref"
-                    android:persistent="true"
-                    android:title="Game Scripts Location" />
-            </PreferenceCategory>
 
             <EditTextPreference
                 android:defaultValue=""

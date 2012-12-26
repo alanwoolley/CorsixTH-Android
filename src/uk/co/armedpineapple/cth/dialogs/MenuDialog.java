@@ -1,12 +1,14 @@
 package uk.co.armedpineapple.cth.dialogs;
 
 import uk.co.armedpineapple.cth.CTHApplication;
+import uk.co.armedpineapple.cth.PrefsActivity;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import static uk.co.armedpineapple.cth.SDLActivity.Command.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.view.View;
@@ -84,7 +86,10 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 			case SAVE:
 				SDLActivity.sendCommand(SHOW_SAVE_DIALOG, null);
 				return;
-			case WIZARD:
+			case SETTINGS:
+				ctx.startActivity(new Intent(ctx, PrefsActivity.class));
+				return;
+		/*	case WIZARD:
 				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 				DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
@@ -109,7 +114,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				AlertDialog alert = builder.create();
 				alert.show();
 				return;
-
+*/
 		}
 	}
 
