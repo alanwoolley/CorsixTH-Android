@@ -14,26 +14,24 @@
             android:summary="Gameplay preferences"
             android:title="Game" >
             <CheckBoxPreference
-                android:defaultValue="false"
                 android:key="debug_pref"
                 android:persistent="true"
-                android:summary="Debug + Cheats Enabled"
+                android:summary="Debug Mode Enabled"
                 android:title="Debug mode" />
-
-            <ListPreference
-                android:defaultValue="en"
-                android:entries="@array/languages"
-                android:entryValues="@array/languages_values"
-                android:key="language_pref"
-                android:persistent="true"
-                android:title="Language" />
+            <CheckBoxPreference>
+                <ListPreference
+                    android:entries="@array/languages"
+                    android:entryValues="@array/languages_values"
+                    android:key="language_pref"
+                    android:persistent="true"
+                    android:title="Language" />
+            </CheckBoxPreference>
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"
             android:summary="Audio preferences"
             android:title="Audio" >
             <CheckBoxPreference
-                android:defaultValue="true"
                 android:key="audio_pref"
                 android:persistent="true"
                 android:title="Global Audio" />
@@ -43,14 +41,12 @@
                 android:key="announcer_prefs"
                 android:title="Announcer" >
                 <CheckBoxPreference
-                    android:defaultValue="true"
                     android:key="announcer_pref"
                     android:persistent="true"
                     android:summary="Announcer Enabled"
                     android:title="Announcer" />
 
                 <ListPreference
-                    android:defaultValue="5"
                     android:dependency="announcer_pref"
                     android:entries="@array/volumes"
                     android:entryValues="@array/volumes"
@@ -63,14 +59,12 @@
                 android:key="music_prefs"
                 android:title="Music" >
                 <CheckBoxPreference
-                    android:defaultValue="false"
                     android:key="music_pref"
                     android:persistent="true"
                     android:summary="Music Enabled"
                     android:title="Music" />
 
                 <ListPreference
-                    android:defaultValue="5"
                     android:dependency="music_pref"
                     android:entries="@array/volumes"
                     android:entryValues="@array/volumes"
@@ -83,14 +77,12 @@
                 android:key="fx_prefs"
                 android:title="Sound FX" >
                 <CheckBoxPreference
-                    android:defaultValue="true"
                     android:key="fx_pref"
                     android:persistent="true"
                     android:summary="Sound FX Enabled"
                     android:title="Sound FX" />
 
                 <ListPreference
-                    android:defaultValue="5"
                     android:dependency="fx_pref"
                     android:entries="@array/volumes"
                     android:entryValues="@array/volumes"
@@ -104,7 +96,6 @@
             android:summary="Display preferences"
             android:title="Display" >
             <ListPreference
-                android:defaultValue="1"
                 android:entries="@array/resolutions"
                 android:entryValues="@array/resolutions_values"
                 android:key="resolution_pref"
@@ -112,12 +103,10 @@
                 android:title="Resolution" />
 
             <EditTextPreference
-                android:defaultValue="640"
                 android:key="reswidth_pref"
                 android:persistent="true"
                 android:title="Width" />
             <EditTextPreference
-                android:defaultValue="480"
                 android:key="resheight_pref"
                 android:persistent="true"
                 android:title="Height" />
@@ -126,7 +115,6 @@
             android:key="interals_prefs"
             android:summary="Do not change these unless you know what you are doing!"
             android:title="Internals" >
-
             <EditTextPreference
                 android:defaultValue=""
                 android:key="originalfiles_pref"
