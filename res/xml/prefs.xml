@@ -13,19 +13,12 @@
             android:key="game_prefs"
             android:summary="Gameplay preferences"
             android:title="Game" >
-            <CheckBoxPreference
-                android:key="debug_pref"
+            <ListPreference
+                android:entries="@array/languages"
+                android:entryValues="@array/languages_values"
+                android:key="language_pref"
                 android:persistent="true"
-                android:summary="Debug Mode Enabled"
-                android:title="Debug mode" />
-            <CheckBoxPreference>
-                <ListPreference
-                    android:entries="@array/languages"
-                    android:entryValues="@array/languages_values"
-                    android:key="language_pref"
-                    android:persistent="true"
-                    android:title="Language" />
-            </CheckBoxPreference>
+                android:title="Language" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"
@@ -111,15 +104,21 @@
                 android:persistent="true"
                 android:title="Height" />
         </PreferenceScreen>
-        <PreferenceScreen
-            android:key="interals_prefs"
-            android:summary="Do not change these unless you know what you are doing!"
-            android:title="Internals" >
-            <EditTextPreference
-                android:defaultValue=""
-                android:key="originalfiles_pref"
+
+        <PreferenceScreen android:key="advanced_prefs"
+            android:summary="Advanced preferences"
+            android:title="Advanced"  >
+            <CheckBoxPreference
+                android:key="debug_pref"
                 android:persistent="true"
-                android:title="Original TH Location" />
+                android:summary="Debug Mode Enabled"
+                android:title="Debug mode" />
+            <CheckBoxPreference
+                android:dependency="debug_pref"
+                android:key="trackfps_pref"
+                android:persistent="true"
+                android:summary="Tracking FPS"
+                android:title="Track FPS" />
         </PreferenceScreen>
     </PreferenceCategory>
 
