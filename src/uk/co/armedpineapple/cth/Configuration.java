@@ -40,7 +40,7 @@ public class Configuration {
 
 	private String							originalFilesPath, cthPath, language;
 	private Boolean							globalAudio, playMusic, playAnnouncements,
-			playSoundFx, keepScreenOn, debug, edgeScroll;
+			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
 
 	private Integer							musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed;
@@ -77,6 +77,7 @@ public class Configuration {
 		editor.putBoolean("wizard_run", true);
 		editor.putBoolean("screenon_pref", keepScreenOn);
 		editor.putBoolean("edgescroll_pref", edgeScroll);
+		editor.putBoolean("adviser_pref", adviser);
 		editor.commit();
 
 	}
@@ -120,6 +121,7 @@ public class Configuration {
 
 		config.keepScreenOn = preferences.getBoolean("screenon_pref", true);
 		config.edgeScroll = preferences.getBoolean("edgescroll_pref", false);
+		config.adviser = preferences.getBoolean("adviser_pref", true);
 
 		/*
 		 * If the resolution is default, set the resolution to 640x480.
@@ -235,7 +237,7 @@ public class Configuration {
 		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
 
 		sbuilder.append("free_build_mode = false\n");
-		sbuilder.append("adviser_disabled = false\n");
+		sbuilder.append("adviser_disabled = " + String.valueOf(adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
 
 		// Create all the directories leading up to the config.txt file

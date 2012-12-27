@@ -25,6 +25,12 @@
                 android:summaryOff="Edge scrolling is off"
                 android:summaryOn="Edge scrolling is on"
                 android:title="Edge Scrolling" />
+            <CheckBoxPreference
+                android:key="adviser_pref"
+                android:persistent="true"
+                android:summaryOff="Adviser Disabled"
+                android:summaryOn="Adviser Enabled"
+                android:title="Adviser" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"
