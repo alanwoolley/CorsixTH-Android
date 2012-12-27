@@ -19,6 +19,12 @@
                 android:key="language_pref"
                 android:persistent="true"
                 android:title="Language" />
+            <CheckBoxPreference
+                android:key="edgescroll_pref"
+                android:persistent="true"
+                android:summaryOff="Edge scrolling is off"
+                android:summaryOn="Edge scrolling is on"
+                android:title="Edge Scrolling" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"
@@ -27,16 +33,19 @@
             <CheckBoxPreference
                 android:key="audio_pref"
                 android:persistent="true"
+                android:summaryOff="Audio is off"
+                android:summaryOn="Audio is on"
                 android:title="Global Audio" />
 
             <PreferenceCategory
-                android:dependency="audio_pref"
                 android:key="announcer_prefs"
                 android:title="Announcer" >
                 <CheckBoxPreference
+                    android:dependency="audio_pref"
                     android:key="announcer_pref"
                     android:persistent="true"
-                    android:summary="Announcer Enabled"
+                    android:summaryOff="Announcer Disabled"
+                    android:summaryOn="Announcer Enabled"
                     android:title="Announcer" />
 
                 <ListPreference
@@ -48,13 +57,14 @@
                     android:title="Announcer Volume" />
             </PreferenceCategory>
             <PreferenceCategory
-                android:dependency="audio_pref"
                 android:key="music_prefs"
                 android:title="Music" >
                 <CheckBoxPreference
+                    android:dependency="audio_pref"
                     android:key="music_pref"
                     android:persistent="true"
-                    android:summary="Music Enabled"
+                    android:summaryOff="Music Disabled"
+                    android:summaryOn="Music Enabled"
                     android:title="Music" />
 
                 <ListPreference
@@ -66,13 +76,14 @@
                     android:title="Music Volume" />
             </PreferenceCategory>
             <PreferenceCategory
-                android:dependency="audio_pref"
                 android:key="fx_prefs"
                 android:title="Sound FX" >
                 <CheckBoxPreference
+                    android:dependency="audio_pref"
                     android:key="fx_pref"
                     android:persistent="true"
-                    android:summary="Sound FX Enabled"
+                    android:summaryOff="Sound FX Disabled"
+                    android:summaryOn="Sound FX Enabled"
                     android:title="Sound FX" />
 
                 <ListPreference
@@ -104,21 +115,34 @@
                 android:persistent="true"
                 android:title="Height" />
         </PreferenceScreen>
-
-        <PreferenceScreen android:key="advanced_prefs"
+        <PreferenceScreen
+            android:key="advanced_prefs"
             android:summary="Advanced preferences"
-            android:title="Advanced"  >
+            android:title="Advanced" >
             <CheckBoxPreference
                 android:key="debug_pref"
                 android:persistent="true"
-                android:summary="Debug Mode Enabled"
+                android:summaryOff="Debug Mode Disabled"
+                android:summaryOn="Debug Mode Enabled"
                 android:title="Debug mode" />
             <CheckBoxPreference
                 android:dependency="debug_pref"
                 android:key="trackfps_pref"
                 android:persistent="true"
-                android:summary="Tracking FPS"
+                android:summaryOff="Not Tracking FPS"
+                android:summaryOn="Tracking FPS"
                 android:title="Track FPS" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="experimental_prefs"
+            android:summary="Experimental Features"
+            android:title="Experimental" >
+            <ListPreference
+                android:entries="@array/fps_limit_values"
+                android:entryValues="@array/fps_limit_values"
+                android:key="fpslimit_pref"
+                android:persistent="true"
+                android:title="FPS Limiter" />
         </PreferenceScreen>
     </PreferenceCategory>
 

@@ -40,7 +40,7 @@ public class Configuration {
 
 	private String							originalFilesPath, cthPath, language;
 	private Boolean							globalAudio, playMusic, playAnnouncements,
-			playSoundFx, keepScreenOn, debug;
+			playSoundFx, keepScreenOn, debug, edgeScroll;
 
 	private Integer							musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed;
@@ -76,6 +76,7 @@ public class Configuration {
 		editor.putBoolean("debug_pref", debug);
 		editor.putBoolean("wizard_run", true);
 		editor.putBoolean("screenon_pref", keepScreenOn);
+		editor.putBoolean("edgescroll_pref", edgeScroll);
 		editor.commit();
 
 	}
@@ -118,6 +119,7 @@ public class Configuration {
 		config.debug = preferences.getBoolean("debug_pref", false);
 
 		config.keepScreenOn = preferences.getBoolean("screenon_pref", true);
+		config.edgeScroll = preferences.getBoolean("edgescroll_pref", false);
 
 		/*
 		 * If the resolution is default, set the resolution to 640x480.
@@ -200,7 +202,9 @@ public class Configuration {
 
 		sbuilder.append(SEPARATOR);
 		sbuilder.append("theme_hospital_install = [[" + originalFilesPath + "]]\n");
-		sbuilder.append("prevent_edge_scrolling = true\n");
+
+		sbuilder.append("prevent_edge_scrolling = " + String.valueOf(!edgeScroll)
+				+ "\n");
 
 		sbuilder.append("audio = " + String.valueOf(globalAudio) + "\n");
 
@@ -229,11 +233,10 @@ public class Configuration {
 		sbuilder.append("track_fps = false\n");
 		sbuilder.append("unicode_font = [[" + UNICODE_PATH + "]]\n");
 		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
-		
+
 		sbuilder.append("free_build_mode = false\n");
 		sbuilder.append("adviser_disabled = false\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
-		
 
 		// Create all the directories leading up to the config.txt file
 
