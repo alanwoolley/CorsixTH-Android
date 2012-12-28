@@ -4,8 +4,13 @@
     <style name="Theme.AppTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <item name="android:windowBackground">@color/background</item>
     </style>
+    
+    <style name="Theme.WizardTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/altbackground</item>
+    </style>
 
     <color name="background">#000000</color>
+    <color name="altbackground">#FFFFFF</color>
     <color name="MenuButtonBackground">#BBDDDDDD</color>
     <color name="transparent">#00000000</color>
 

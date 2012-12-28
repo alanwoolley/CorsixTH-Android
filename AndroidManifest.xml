@@ -60,7 +60,7 @@
         </activity>
         <activity
             android:name="uk.co.armedpineapple.cth.wizard.WizardActivity"
-            android:screenOrientation="sensorLandscape" >
+            android:screenOrientation="sensorLandscape" android:theme="@style/Theme.WizardTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
