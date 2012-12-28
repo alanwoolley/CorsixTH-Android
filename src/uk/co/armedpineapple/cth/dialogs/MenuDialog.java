@@ -89,32 +89,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 			case SETTINGS:
 				ctx.startActivity(new Intent(ctx, PrefsActivity.class));
 				return;
-		/*	case WIZARD:
-				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-				DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						SharedPreferences preferences = ((CTHApplication) ctx
-								.getApplication()).getPreferences();
-
-						Editor editor = preferences.edit();
-						editor.putBoolean("wizard_run", false);
-						editor.commit();
-
-						SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
-					}
-
-				};
-				builder
-						.setMessage(
-								ctx.getResources().getString(R.string.setup_wizard_dialog))
-						.setCancelable(false).setNeutralButton(R.string.ok, alertListener);
-
-				AlertDialog alert = builder.create();
-				alert.show();
-				return;
-*/
 		}
 	}
 
