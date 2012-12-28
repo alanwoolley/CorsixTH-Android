@@ -73,8 +73,8 @@ public class WizardActivity extends CTHActivity {
 					(DisplayWizard) inflater.inflate(R.layout.wizard_display, null));
 			loadAndAdd(inflater, flipper,
 					(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
-			loadAndAdd(inflater, flipper,
-					(AdvancedWizard) inflater.inflate(R.layout.wizard_advanced, null));
+		//	loadAndAdd(inflater, flipper,
+		//			(AdvancedWizard) inflater.inflate(R.layout.wizard_advanced, null));
 
 			// Setup Buttons
 			previousButton.setVisibility(View.GONE);
