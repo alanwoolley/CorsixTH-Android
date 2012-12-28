@@ -19,7 +19,8 @@
                 android:key="language_pref"
                 android:persistent="true"
                 android:title="Language" />
-            <CheckBoxPreference
+
+            <CheckBoxPreference
                 android:key="edgescroll_pref"
                 android:persistent="true"
                 android:summaryOff="Edge scrolling is off"
@@ -138,6 +139,12 @@
                 android:summaryOff="Not Tracking FPS"
                 android:summaryOn="Tracking FPS"
                 android:title="Track FPS" />
+            <CheckBoxPreference
+                android:key="screenon_pref"
+                android:persistent="true"
+                android:summaryOff="Will not keep screen on during play"
+                android:summaryOn="Will keep screen on during play"
+                android:title="Keep Screen On" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="experimental_prefs"
@@ -148,7 +155,8 @@
                 android:entryValues="@array/fps_limit_values"
                 android:key="fpslimit_pref"
                 android:persistent="true"
-                android:title="FPS Limiter" />
+                android:title="FPS Limiter" 
+                android:summary="Reduce CPU usage and improve battery life"/>
         </PreferenceScreen>
     </PreferenceCategory>
 

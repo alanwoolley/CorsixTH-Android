@@ -43,7 +43,7 @@ public class Configuration {
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
 
 	private Integer							musicVol, announcementsVol, sfxVol,
-			resolutionMode, displayWidth, displayHeight, gameSpeed;
+			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
@@ -78,6 +78,7 @@ public class Configuration {
 		editor.putBoolean("screenon_pref", keepScreenOn);
 		editor.putBoolean("edgescroll_pref", edgeScroll);
 		editor.putBoolean("adviser_pref", adviser);
+		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
 		editor.commit();
 
 	}
@@ -122,6 +123,14 @@ public class Configuration {
 		config.keepScreenOn = preferences.getBoolean("screenon_pref", true);
 		config.edgeScroll = preferences.getBoolean("edgescroll_pref", false);
 		config.adviser = preferences.getBoolean("adviser_pref", true);
+
+		if (preferences.getString("fpslimit_pref", "20").equals(
+				ctx.getString(R.string.off))) {
+			config.fpsLimit = 0;
+		} else {
+			config.fpsLimit = Integer.valueOf(preferences.getString("fpslimit_pref",
+					"20"));
+		}
 
 		/*
 		 * If the resolution is default, set the resolution to 640x480.
