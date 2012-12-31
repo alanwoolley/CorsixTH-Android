@@ -2,8 +2,13 @@ thumbs.db
 /obj
 /bin
 /gen
-/libs/armeabi
-/libs/armeabi-v7a
+/libs/*/libAGG.so
+/libs/*/libappmain.so
+/libs/*/libLUA.so
+/libs/*/libmikmod.so
+/libs/*/libSDL.so
+/libs/*/libSDL_gfx.so
+/libs/*/libSDL_mixer.so
 /local.properties
 /assets/application.properties
 /res/values/GoogleAnalytics.xml
