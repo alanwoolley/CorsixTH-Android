@@ -276,6 +276,7 @@ public class SDLActivity extends CTHActivity {
 		System.loadLibrary("SDL");
 		System.loadLibrary("LUA");
 		System.loadLibrary("SDL_mixer");
+		System.loadLibrary("ffmpeg");
 		System.loadLibrary("appmain");
 
 		try {
