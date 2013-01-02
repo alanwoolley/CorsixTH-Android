@@ -31,25 +31,28 @@ function build_one
     --extra-cflags=" -O3 -fpic -DANDROID -DHAVE_SYS_UIO_H=1 -Dipv6mr_interface=ipv6mr_ifindex -fasm -Wno-psabi -fno-short-enums -fno-strict-aliasing -finline-limit=300 $OPTIMIZE_CFLAGS " \
     --disable-shared \
     --enable-static \
-	--disable-yasm
+	--disable-yasm \
     --extra-ldflags="-Wl,-rpath-link=$PLATFORM/usr/lib -L$PLATFORM/usr/lib -nostdlib -lc -lm -ldl -llog" \
-    --enable-demuxer=mov \
-    --enable-demuxer=h264 \
+	--disable-everything \
     --disable-ffplay \
 	--enable-version3 \
     --enable-avformat \
 	--enable-avresample \
-    --enable-avcodec \
-    --enable-decoder=rawvideo \
-    --enable-decoder=mjpeg \
-    --enable-decoder=h263 \
-    --enable-decoder=mpeg4 \
-    --enable-decoder=h264 \
+	--enable-protocol=file \
+	--enable-protocol=pipe \
+	--enable-protocol=cache \
 	--enable-decoder=bink \
-    --enable-parser=h264 \
+	--enable-demuxer=bink \
+	--enable-demuxer=smacker \
+	--enable-decoder=binkaudio_dct \
+	--enable-decoder=binkaudio_rdft \
+	--enable-decoder=smacker \
+	--enable-decoder=smackaud \
     --disable-network \
     --enable-zlib \
     --disable-avdevice \
+	--disable-postproc \
+	--disable-avfilter
     $ADDITIONAL_CONFIGURE_FLAG
 
 make clean

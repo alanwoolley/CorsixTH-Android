@@ -2,8 +2,8 @@ thumbs.db
 /obj
 /bin
 /gen
-/libs/armeabi
-/libs/armeabi-v7a
+/libs/armeabi/*
+/libs/armeabi-v7a/*
 /local.properties
 /assets/application.properties
 /res/values/GoogleAnalytics.xml
