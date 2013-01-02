@@ -272,10 +272,12 @@ public class Configuration {
 		sbuilder.append("adviser_disabled = " + String.valueOf(!adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
 
-		sbuilder.append("movies = false\n");
-		sbuilder.append("play_intro = false\n");
+		sbuilder.append("movies = true\n");
+		sbuilder.append("play_intro = true\n");
+		
 		sbuilder.append("allow_user_actions_while_paused = false\n");
 		sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
+				+ "\n");
 				+ "\n");
 		sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
 
