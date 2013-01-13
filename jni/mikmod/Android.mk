@@ -62,4 +62,5 @@ LOCAL_SRC_FILES := \
 	posix/strdup.c \
 	posix/strstr.c
 
+LOCAL_CFLAGS := -O3
 include $(BUILD_SHARED_LIBRARY)

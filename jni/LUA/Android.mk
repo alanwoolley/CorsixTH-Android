@@ -33,5 +33,6 @@ LOCAL_SRC_FILES := lapi.c \
 	lundump.c \
 	lvm.c \
 	lzio.c 
-	
+
+LOCAL_CFLAGS := -O3
 include $(BUILD_SHARED_LIBRARY)

@@ -21,7 +21,7 @@ common_SRC_FILES := \
 	pngwtran.c \
 	pngwutil.c
 
-common_CFLAGS := ## -fomit-frame-pointer
+common_CFLAGS := -O3 ## -fomit-frame-pointer
 
 common_C_INCLUDES += \
 

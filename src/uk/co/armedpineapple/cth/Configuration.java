@@ -248,6 +248,11 @@ public class Configuration {
 		sbuilder.append("free_build_mode = false\n");
 		sbuilder.append("adviser_disabled = " + String.valueOf(adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
+		
+		sbuilder.append("movies = false\n");
+		sbuilder.append("play_intro = false\n");
+		sbuilder.append("allow_user_actions_while_paused = false\n");
+		
 
 		// Create all the directories leading up to the config.txt file
 
