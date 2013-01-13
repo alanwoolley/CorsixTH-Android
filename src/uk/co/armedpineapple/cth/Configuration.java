@@ -234,6 +234,9 @@ public class Configuration {
 		sbuilder.append("adviser_disabled = false\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
 		
+		sbuilder.append("movies = false\n");
+		sbuilder.append("play_intro = false\n");
+		
 
 		// Create all the directories leading up to the config.txt file
 

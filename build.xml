@@ -51,9 +51,7 @@
         <pathelement path="${sdk.dir}/tools/lib/androidprefs.jar" />
     </path>
 
-    <taskdef name="setup"
-        classname="com.android.ant.SetupTask"
-        classpathref="android.antlibs" />
+
     
     <!-- quick check on sdk.dir -->
     <fail
