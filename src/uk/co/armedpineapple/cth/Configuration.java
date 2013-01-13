@@ -236,6 +236,7 @@ public class Configuration {
 		
 		sbuilder.append("movies = false\n");
 		sbuilder.append("play_intro = false\n");
+		sbuilder.append("allow_user_actions_while_paused = false\n");
 		
 
 		// Create all the directories leading up to the config.txt file
