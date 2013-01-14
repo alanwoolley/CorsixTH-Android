@@ -20,12 +20,26 @@
                 android:persistent="true"
                 android:title="@string/preferences_language" />
 
-            <CheckBoxPreference
-                android:key="edgescroll_pref"
-                android:persistent="true"
-                android:summaryOff="@string/preferences_edge_scrolling_off"
-                android:summaryOn="@string/preferences_edge_scrolling_on"
-                android:title="@string/preferences_edge_scrolling" />
+            <PreferenceCategory
+                android:key="edge_prefs"
+                android:title="@string/preferences_edge_scrolling" >
+                <CheckBoxPreference
+                    android:key="edgescroll_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_edge_scrolling_off"
+                    android:summaryOn="@string/preferences_edge_scrolling_on"
+                    android:title="@string/preferences_edge_scrolling" />
+
+                <ListPreference
+                    android:dependency="edgescroll_pref"
+                    android:entries="@array/edgeborders"
+                    android:entryValues="@array/edgeborders_values"
+                    android:key="edgebordersize_pref"
+                    android:persistent="true"
+                    android:summary="The amount of space at the screen edges for scrolling"
+                    android:title="Edge Border Size" />
+            </PreferenceCategory>
+
             <CheckBoxPreference
                 android:key="adviser_pref"
                 android:persistent="true"
@@ -155,8 +169,27 @@
                 android:entryValues="@array/fps_limit_values"
                 android:key="fpslimit_pref"
                 android:persistent="true"
-                android:title="@string/preferences_fps_limiter" 
-                android:summary="@string/preferences_reduce_cpu"/>
+                android:summary="@string/preferences_reduce_cpu"
+                android:title="@string/preferences_fps_limiter" />
+
+            <PreferenceCategory
+                android:enabled="false"
+                android:key="movies_prefs"
+                android:title="Movies" >
+                <CheckBoxPreference
+                    android:key="movies_pref"
+                    android:persistent="true"
+                    android:summaryOff="Movies Disabled"
+                    android:summaryOn="Movies Enabled"
+                    android:title="Play Movies" />
+                <CheckBoxPreference
+                    android:dependency="movies_pref"
+                    android:key="intromovie_pref"
+                    android:persistent="true"
+                    android:summaryOff="Intro Movie Disabled"
+                    android:summaryOn="Intro Movie Enabled"
+                    android:title="Play Intro Movie" />
+            </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
 
