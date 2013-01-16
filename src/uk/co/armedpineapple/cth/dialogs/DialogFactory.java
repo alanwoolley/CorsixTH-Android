@@ -63,7 +63,7 @@ public class DialogFactory {
 
 			@Override
 			public void onDismiss(DialogInterface dialog) {
-				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 
 			}
 

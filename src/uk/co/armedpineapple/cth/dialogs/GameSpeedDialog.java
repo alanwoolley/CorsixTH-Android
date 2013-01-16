@@ -30,7 +30,7 @@ public class GameSpeedDialog extends Dialog {
 		super.onBackPressed();
 
 		// Unpause the game
-		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 	}
 
 	public GameSpeedDialog(SDLActivity context) {

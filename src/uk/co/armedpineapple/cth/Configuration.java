@@ -96,6 +96,7 @@ public class Configuration {
 
 		config.originalFilesPath = preferences.getString("originalfiles_pref", "");
 
+		// TODO - No check for external storage availability
 		config.cthPath = preferences.getString("gamescripts_pref", ctx
 				.getExternalFilesDir(null).getAbsolutePath());
 

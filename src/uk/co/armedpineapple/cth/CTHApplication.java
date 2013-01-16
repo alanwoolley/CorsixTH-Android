@@ -13,6 +13,7 @@ import uk.co.armedpineapple.cth.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 
@@ -20,7 +21,7 @@ public class CTHApplication extends android.app.Application {
 
 	public static final String	PREFERENCES_KEY	= "cthprefs";
 	private SharedPreferences		preferences;
-	private Configuration				configuration;
+	public Configuration				configuration;
 	private Properties					properties			= new Properties();
 	public boolean							debugMode				= false;
 
@@ -29,8 +30,6 @@ public class CTHApplication extends android.app.Application {
 		super.onCreate();
 
 		preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
-
-		configuration = Configuration.loadFromPreferences(this, preferences);
 
 		/*
 		 * BugSense helps to discover bugs by reporting unhandled exceptions. If you
@@ -65,10 +64,6 @@ public class CTHApplication extends android.app.Application {
 	public SharedPreferences getPreferences() {
 		return preferences;
 
-	}
-
-	public Configuration getConfiguration() {
-		return configuration;
 	}
 
 	public Properties getProperties() {

@@ -27,7 +27,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 	}
 
 	public MenuDialog(SDLActivity context) {
@@ -66,7 +66,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				if (gameSpeedDialog == null) {
 					gameSpeedDialog = new GameSpeedDialog(ctx);
 				}
-				gameSpeedDialog.show(ctx.config.getGameSpeed());
+				gameSpeedDialog.show(ctx.app.configuration.getGameSpeed());
 				return;
 			case LOAD:
 				SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
@@ -76,7 +76,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				return;
 			case QUICK_SAVE:
 				SDLActivity.sendCommand(QUICK_SAVE, null);
-				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				return;
 			case RESTART:
 				SDLActivity.sendCommand(RESTART_GAME, null);
@@ -97,7 +97,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 						editor.putBoolean("wizard_run", false);
 						editor.commit();
 
-						SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+						SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 					}
 
 				};

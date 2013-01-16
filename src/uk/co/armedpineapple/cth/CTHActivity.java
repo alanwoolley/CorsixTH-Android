@@ -10,18 +10,27 @@ import uk.co.armedpineapple.cth.R;
 import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.util.Log;
 
 public abstract class CTHActivity extends Activity {
 
-	boolean	trackingSession	= false;
+	public CTHApplication	app;
+	boolean								trackingSession	= false;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		app = (CTHApplication) getApplication();
+
+	}
 
 	@SuppressWarnings("nls")
 	@Override
 	protected void onStart() {
 		super.onStart();
 
-		Properties p = getCthApplication().getProperties();
+		Properties p = app.getProperties();
 
 		// Check if Flurry is enabled
 
@@ -32,7 +41,7 @@ public abstract class CTHActivity extends Activity {
 			FlurryAgent.onStartSession(this, p.getProperty("flurry.key"));
 
 			// Log Flurry events if app.debug=true
-			FlurryAgent.setLogEnabled(getCthApplication().debugMode);
+			FlurryAgent.setLogEnabled(app.debugMode);
 			trackingSession = true;
 		} else {
 			Log.d(getClass().getSimpleName(), "Flurry is not enabled");
@@ -47,10 +56,6 @@ public abstract class CTHActivity extends Activity {
 			FlurryAgent.onEndSession(this);
 		}
 
-	}
-
-	public CTHApplication getCthApplication() {
-		return (CTHApplication) getApplication();
 	}
 
 }
