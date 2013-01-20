@@ -95,7 +95,7 @@ public class SDLActivity extends CTHActivity {
 	}
 
 	// C functions we call
-	public static native void nativeInit(String logPath, String toLoad);
+	public static native void nativeInit(Configuration config, String toLoad);
 
 	public static native void nativeQuit();
 
@@ -123,6 +123,8 @@ public class SDLActivity extends CTHActivity {
 	public static native void cthGameSpeed(int speed);
 
 	public static native void cthTryAutoSave(String filename);
+
+	public static native void cthUpdateConfiguration(Configuration config);
 
 	public static String nativeGetGamePath() {
 		return mSingleton.app.configuration.getCthPath() + "/scripts/";
@@ -354,8 +356,8 @@ public class SDLActivity extends CTHActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						mSDLThread = new Thread(new SDLMain(app.configuration.getCthPath(),
-								loadPath), "SDLThread");
+						mSDLThread = new Thread(new SDLMain(app.configuration, loadPath),
+								"SDLThread");
 						mSDLThread.start();
 					}
 
@@ -364,8 +366,8 @@ public class SDLActivity extends CTHActivity {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						mSDLThread = new Thread(new SDLMain(app.configuration.getCthPath(),
-								""), "SDLThread");
+						mSDLThread = new Thread(new SDLMain(app.configuration, ""),
+								"SDLThread");
 						mSDLThread.start();
 					}
 
@@ -374,8 +376,7 @@ public class SDLActivity extends CTHActivity {
 
 			} else {
 
-				mSDLThread = new Thread(
-						new SDLMain(app.configuration.getCthPath(), ""), "SDLThread");
+				mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
 				mSDLThread.start();
 			}
 
@@ -837,17 +838,18 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-	private String	logPath, toLoad;
+	private Configuration	config;
+	private String				toLoad;
 
-	public SDLMain(String logPath, String toLoad) {
-		this.logPath = logPath;
+	public SDLMain(Configuration config, String toLoad) {
+		this.config = config;
 		this.toLoad = toLoad;
 
 	}
 
 	public void run() {
 		// Runs SDL_main()
-		SDLActivity.nativeInit(logPath, toLoad);
+		SDLActivity.nativeInit(config, toLoad);
 
 		Log.v(getClass().getSimpleName(), "SDL thread terminated");
 	}

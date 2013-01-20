@@ -19,10 +19,9 @@ extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 
 // Start up the SDL app
 extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(
-		JNIEnv* env, jclass cls, jstring jni_log_path,
+		JNIEnv* env, jclass cls, jobject configuration,
 		jstring jni_loadgame_path) {
 
-	const char *log_path = env->GetStringUTFChars(jni_log_path, 0);
 	const char* loadgame_path = env->GetStringUTFChars(jni_loadgame_path, 0);
 
 	/* This interface could expand with ABI negotiation, callbacks, etc. */
@@ -34,16 +33,15 @@ extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(
 	int argc = 1;
 	argv[0] = strdup("SDL_app");
 	if (strlen(loadgame_path) > 1) {
-		char* loadstr = (char*) malloc((8 + strlen(loadgame_path)) * sizeof(char));
+		char* loadstr = (char*) malloc(
+				(8 + strlen(loadgame_path)) * sizeof(char));
 		strcpy(loadstr, "--load=");
 		loadstr = strcat(loadstr, loadgame_path);
 		argv[1] = loadstr;
 		argc = 2;
 	}
 
-
-
-	status = SDL_main(argc, argv, jvm, log_path);
+	status = SDL_main(argc, argv, jvm, configuration);
 
 	/* We exit here for consistency with other platforms. */
 	exit(status);

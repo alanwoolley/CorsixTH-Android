@@ -43,7 +43,7 @@ public class Configuration {
 			playSoundFx, keepScreenOn, debug;
 
 	private Integer							musicVol, announcementsVol, sfxVol,
-			resolutionMode, displayWidth, displayHeight, gameSpeed;
+			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
@@ -230,15 +230,14 @@ public class Configuration {
 		sbuilder.append("track_fps = false\n");
 		sbuilder.append("unicode_font = [[" + UNICODE_PATH + "]]\n");
 		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
-		
+
 		sbuilder.append("free_build_mode = false\n");
 		sbuilder.append("adviser_disabled = false\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
-		
+
 		sbuilder.append("movies = false\n");
 		sbuilder.append("play_intro = false\n");
 		sbuilder.append("allow_user_actions_while_paused = false\n");
-		
 
 		// Create all the directories leading up to the config.txt file
 
@@ -380,6 +379,22 @@ public class Configuration {
 		this.gameSpeed = gameSpeed;
 	}
 
+	public Integer getFpsLimit() {
+		return fpsLimit;
+	}
+
+	public void setFpsLimit(Integer fpsLimit) {
+		this.fpsLimit = fpsLimit;
+	}
+
+	public String getSaveGamesPath() {
+		return saveGamesPath;
+	}
+
+	public void setSaveGamesPath(String saveGamesPath) {
+		this.saveGamesPath = saveGamesPath;
+	}
+
 	@Override
 	public String toString() {
 		return "Configuration [origFiles=" + originalFilesPath + ", cthPath="
@@ -389,14 +404,6 @@ public class Configuration {
 				+ sfxVol + ", language=" + language + ", resMode=" + resolutionMode
 				+ ", width=" + displayWidth + ", height=" + displayHeight + ", debug?="
 				+ debug + "]";
-	}
-
-	public String getSaveGamesPath() {
-		return saveGamesPath;
-	}
-
-	public void setSaveGamesPath(String saveGamesPath) {
-		this.saveGamesPath = saveGamesPath;
 	}
 
 }
