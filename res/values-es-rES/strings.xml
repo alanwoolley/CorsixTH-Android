@@ -58,6 +58,8 @@
   <string name="speed_default">Por defecto</string>
   <string name="speed_fastest">Más rápido</string>
   <string name="load_last_save">¿Reanudar el juego anterior?</string>
+  <string name="autosave_name" translatable="false">cthandroidautosave.SAV</string>
+  <string name="quicksave_name" translatable="false">quicksave.sav</string>
   <string name="save_game_dialog_title">Guardar la partida</string>
   <string name="save_game_dialog_message">Por favor ingrese un nombre para la partida guardada.</string>
   <string name="load_game_dialog_title">Cargar partida</string>
@@ -74,4 +76,19 @@
   <string name="play_button">Jugar!</string>
   <string name="custom_location_message">Ubicación de los archivos del juego de Theme Hospital</string>
   <string name="game_paused">Juego en pausa</string>
+  <string name="load_error">No se pudo cargar CorsixTH. El Asistente de instalación se ejecutará nuevamente al iniciar nuevamente la aplicacion.</string>
+  <string name="no_quicksave">No hay partidas rapidas guardadas.</string>
+  <string name="dialog_error_title">¡Error!</string>
+  <string name="recent_changes_title">Cambios recientes</string>
+  <string name="height">Alto</string>
+  <string name="width">Ancho</string>
+  <string name="enter_resolution">Introduzca resolución</string>
+  <string name="search_cancelled">Búsqueda cancelada</string>
+  <string name="couldnt_find_game_files">No se pudo encontrar los archivos de juego. Por favor, defina la ubicación manualmente o descargue la demo</string>
+  <string name="searching">Buscando...</string>
+  <string name="preferences_language">Idioma</string>
+  <string name="preferences_audio">Audio</string>
+  <string name="preferences_setup_wizard">Asistente de configuración</string>
+  <string name="preferences_width">Ancho</string>
+  <string name="preferences_height">Alto</string>
 </resources>
