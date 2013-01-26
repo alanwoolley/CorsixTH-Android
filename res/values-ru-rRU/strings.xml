@@ -71,4 +71,19 @@
   <string name="play_button">Играть!</string>
   <string name="custom_location_message">Местоположение файлов Theme Hospital</string>
   <string name="game_paused">Игра приостановлена</string>
+  <string name="load_error">Не удалось загрузить CorsixTH. Мастер установки будет запущен снова при следующем запуске приложения.</string>
+  <string name="no_quicksave">Нет быстрого сохранения для загрузки!</string>
+  <string name="dialog_error_title">Ошибка!</string>
+  <string name="recent_changes_title">Недавние изменения</string>
+  <string name="height">Высота</string>
+  <string name="width">Ширина</string>
+  <string name="enter_resolution">Установите разрешение</string>
+  <string name="search_cancelled">Поиск отменен</string>
+  <string name="couldnt_find_game_files">Не удалось найти файлы. Укажите путь в ручную или скачайте демо</string>
+  <string name="searching">Поиск...</string>
+  <string name="preferences_language">Язык</string>
+  <string name="preferences_audio">Аудио</string>
+  <string name="preferences_setup_wizard">Мастер настройки</string>
+  <string name="preferences_width">Ширина</string>
+  <string name="preferences_height">Высота</string>
 </resources>
