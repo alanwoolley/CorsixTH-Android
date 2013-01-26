@@ -72,4 +72,7 @@
   <string name="play_button">Spil!</string>
   <string name="custom_location_message">Theme Hospital spilfilers placering</string>
   <string name="game_paused">Spil stoppet midlertidigt</string>
+  <string name="preferences_language">Sprog</string>
+  <string name="preferences_audio">Lyd</string>
+  <string name="preferences_setup_wizard">Opsætningsguide</string>
 </resources>
