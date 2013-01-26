@@ -39,10 +39,10 @@ public class Configuration {
 	public final static String	UNICODE_PATH				= "/system/fonts/DroidSansFallback.ttf";
 
 	private String							originalFilesPath, cthPath, language;
-	private Boolean							globalAudio, playMusic, playAnnouncements,
+	private boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug;
 
-	private Integer							musicVol, announcementsVol, sfxVol,
+	private int							musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit;
 
 	// TODO Get this the proper way.
@@ -249,7 +249,7 @@ public class Configuration {
 
 	// Getters
 
-	public Boolean getKeepScreenOn() {
+	public boolean getKeepScreenOn() {
 		return keepScreenOn;
 	}
 
@@ -261,31 +261,31 @@ public class Configuration {
 		return cthPath;
 	}
 
-	public Boolean getGlobalAudio() {
+	public boolean getGlobalAudio() {
 		return globalAudio;
 	}
 
-	public Boolean getPlayMusic() {
+	public boolean getPlayMusic() {
 		return playMusic;
 	}
 
-	public Boolean getPlayAnnouncements() {
+	public boolean getPlayAnnouncements() {
 		return playAnnouncements;
 	}
 
-	public Boolean getPlaySoundFx() {
+	public boolean getPlaySoundFx() {
 		return playSoundFx;
 	}
 
-	public Integer getMusicVol() {
+	public int getMusicVol() {
 		return musicVol;
 	}
 
-	public Integer getAnnouncementsVol() {
+	public int getAnnouncementsVol() {
 		return announcementsVol;
 	}
 
-	public Integer getSfxVol() {
+	public int getSfxVol() {
 		return sfxVol;
 	}
 
@@ -293,19 +293,19 @@ public class Configuration {
 		return language;
 	}
 
-	public Integer getResolutionMode() {
+	public int getResolutionMode() {
 		return resolutionMode;
 	}
 
-	public Integer getDisplayWidth() {
+	public int getDisplayWidth() {
 		return displayWidth;
 	}
 
-	public Integer getDisplayHeight() {
+	public int getDisplayHeight() {
 		return displayHeight;
 	}
 
-	public Boolean getDebug() {
+	public boolean getDebug() {
 		return debug;
 	}
 
@@ -319,31 +319,31 @@ public class Configuration {
 		this.cthPath = cthPath;
 	}
 
-	public void setGlobalAudio(Boolean globalAudio) {
+	public void setGlobalAudio(boolean globalAudio) {
 		this.globalAudio = globalAudio;
 	}
 
-	public void setPlayMusic(Boolean playMusic) {
+	public void setPlayMusic(boolean playMusic) {
 		this.playMusic = playMusic;
 	}
 
-	public void setPlayAnnouncements(Boolean playAnnouncements) {
+	public void setPlayAnnouncements(boolean playAnnouncements) {
 		this.playAnnouncements = playAnnouncements;
 	}
 
-	public void setPlaySoundFx(Boolean playSoundFx) {
+	public void setPlaySoundFx(boolean playSoundFx) {
 		this.playSoundFx = playSoundFx;
 	}
 
-	public void setMusicVol(Integer musicVol) {
+	public void setMusicVol(int musicVol) {
 		this.musicVol = musicVol;
 	}
 
-	public void setAnnouncementsVol(Integer announcementsVol) {
+	public void setAnnouncementsVol(int announcementsVol) {
 		this.announcementsVol = announcementsVol;
 	}
 
-	public void setSfxVol(Integer sfxVol) {
+	public void setSfxVol(int sfxVol) {
 		this.sfxVol = sfxVol;
 	}
 
@@ -351,39 +351,39 @@ public class Configuration {
 		this.language = language;
 	}
 
-	public void setResolutionMode(Integer resolutionMode) {
+	public void setResolutionMode(int resolutionMode) {
 		this.resolutionMode = resolutionMode;
 	}
 
-	public void setDisplayWidth(Integer displayWidth) {
+	public void setDisplayWidth(int displayWidth) {
 		this.displayWidth = displayWidth;
 	}
 
-	public void setDisplayHeight(Integer displayHeight) {
+	public void setDisplayHeight(int displayHeight) {
 		this.displayHeight = displayHeight;
 	}
 
-	public void setDebug(Boolean debug) {
+	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
 
-	public void setKeepScreenOn(Boolean keepScreenOn) {
+	public void setKeepScreenOn(boolean keepScreenOn) {
 		this.keepScreenOn = keepScreenOn;
 	}
 
-	public Integer getGameSpeed() {
+	public int getGameSpeed() {
 		return gameSpeed;
 	}
 
-	public void setGameSpeed(Integer gameSpeed) {
+	public void setGameSpeed(int gameSpeed) {
 		this.gameSpeed = gameSpeed;
 	}
 
-	public Integer getFpsLimit() {
+	public int getFpsLimit() {
 		return fpsLimit;
 	}
 
-	public void setFpsLimit(Integer fpsLimit) {
+	public void setFpsLimit(int fpsLimit) {
 		this.fpsLimit = fpsLimit;
 	}
 
