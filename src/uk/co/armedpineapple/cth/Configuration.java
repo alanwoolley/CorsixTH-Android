@@ -43,7 +43,7 @@ public class Configuration {
 			playSoundFx, keepScreenOn, debug;
 
 	private int							musicVol, announcementsVol, sfxVol,
-			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit;
+			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit = 18;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
