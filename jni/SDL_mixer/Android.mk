@@ -17,8 +17,8 @@ LOCAL_CFLAGS := -DMID_MUSIC -DWAV_MUSIC -DOGG_MUSIC -DOGG_USE_TREMOR -DMOD_MUSIC
 LOCAL_SRC_FILES := $(notdir $(filter-out %/playmus.c %/playwave.c, $(wildcard $(LOCAL_PATH)/*.c))) \
 			$(addprefix timidity/, $(notdir $(wildcard $(LOCAL_PATH)/timidity/*.c)))
 			
-LOCAL_SHARED_LIBRARIES := SDL mikmod
-LOCAL_STATIC_LIBRARIES := tremor
+LOCAL_SHARED_LIBRARIES := SDL 
+LOCAL_STATIC_LIBRARIES := tremor mikmod
 LOCAL_LDLIBS := -llog
 
 include $(BUILD_SHARED_LIBRARY)

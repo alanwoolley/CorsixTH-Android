@@ -45,4 +45,4 @@ $(AGG_SRC)/ctrl/agg_bezier_ctrl.cpp
 LOCAL_CFLAGS := -O3
 
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
