@@ -11,13 +11,13 @@
     <item>80</item>
   </string-array>
   <string-array name="edgeborders">
-    <item>Tiny</item>
-    <item>Smaller</item>
-    <item>Small</item>
-    <item>Regular</item>
-    <item>Large</item>
-    <item>Larger</item>
-    <item>Huge</item>
+    <item>Cieniutkie</item>
+    <item>Jeszcze Węższe</item>
+    <item>Wąskie</item>
+    <item>Średnie</item>
+    <item>Duże</item>
+    <item>Większe</item>
+    <item>Ogromne</item>
   </string-array>
   <string-array name="volumes" translatable="false">
     <item>1</item>
@@ -32,9 +32,9 @@
     <item>10</item>
   </string-array>
   <string-array name="resolutions">
-    <item>Domyślny</item>
-    <item>Natywny</item>
-    <item>Własny</item>
+    <item>Domyślna</item>
+    <item>Natywna</item>
+    <item>Własna</item>
   </string-array>
   <string-array name="gamespeed" translatable="false">
     <item>1</item>
