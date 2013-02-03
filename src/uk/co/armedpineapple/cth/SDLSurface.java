@@ -148,6 +148,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			default:
 				break;
 		}
+		
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
 			SDLActivity.onNativeKeyDown(keyCode);
 			return true;
