@@ -1,3 +1,23 @@
+0.4.4 - 06/02/2013
+=================
+* Updated to latest CorsixTH version
+* Fixed black screen on some devices
+* Improved load speed
+* Fixed force close errors if external storage is not available
+* Updated libraries
+* Bug fixes + optimisations
+
+New Translations:
+* French (euripide, Alexis Mellone, Michel)
+* Polish (lordzik, abaranski12)
+
+Updated Translations:
+* Russian (Nekser)
+* Dutch (Omni)
+* Finnish (ramiselin, PatrikSelin)
+* Hungarian (hun_gery)
+* Spanish (miguelkill)
+
 0.4.3 - 22/12/2012
 ==================
 * Fix some force close errors
