@@ -1,6 +1,6 @@
 package uk.co.armedpineapple.cth.dialogs;
 
-import uk.co.armedpineapple.cth.CorsixTHApplication;
+import uk.co.armedpineapple.cth.CTHApplication;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import static uk.co.armedpineapple.cth.SDLActivity.Command.*;
@@ -27,7 +27,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 	}
 
 	public MenuDialog(SDLActivity context) {
@@ -66,7 +66,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				if (gameSpeedDialog == null) {
 					gameSpeedDialog = new GameSpeedDialog(ctx);
 				}
-				gameSpeedDialog.show(ctx.config.getGameSpeed());
+				gameSpeedDialog.show(ctx.app.configuration.getGameSpeed());
 				return;
 			case LOAD:
 				SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
@@ -76,7 +76,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				return;
 			case QUICK_SAVE:
 				SDLActivity.sendCommand(QUICK_SAVE, null);
-				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				return;
 			case RESTART:
 				SDLActivity.sendCommand(RESTART_GAME, null);
@@ -90,14 +90,14 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						SharedPreferences preferences = ((CorsixTHApplication) ctx
+						SharedPreferences preferences = ((CTHApplication) ctx
 								.getApplication()).getPreferences();
 
 						Editor editor = preferences.edit();
 						editor.putBoolean("wizard_run", false);
 						editor.commit();
 
-						SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+						SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 					}
 
 				};

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
@@ -32,7 +33,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 	protected List<FileDetails>	saves;
 	protected FilesAdapter			arrayAdapter;
 	protected ListView					savesList;
-	protected SDLActivity				ctx;
+	protected CTHActivity				ctx;
 
 	private boolean							hasNewButton;
 
@@ -47,7 +48,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 		 */
 
 		Integer speed;
-		if ((speed = ctx.config.getGameSpeed()) != null) {
+		if ((speed = ctx.app.configuration.getGameSpeed()) != null) {
 			SDLActivity.cthGameSpeed(speed);
 		}
 	}
@@ -70,7 +71,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 			@Override
 			public void onClick(View v) {
 				Integer speed;
-				if ((speed = ctx.config.getGameSpeed()) != null) {
+				if ((speed = ctx.app.configuration.getGameSpeed()) != null) {
 
 					// Unpause the game if the cancel button is pressed
 					SDLActivity.cthGameSpeed(speed);

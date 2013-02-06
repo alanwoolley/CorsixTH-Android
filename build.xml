@@ -42,6 +42,17 @@
          application and should be checked into Version Control Systems. -->
     <loadproperties srcFile="project.properties" />
 
+        <!-- Custom Android task to deal with the project target, and import the
+         proper rules.
+         This requires ant 1.6.0 or above. -->
+    <path id="android.antlibs">
+        <pathelement path="${sdk.dir}/tools/lib/anttasks.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/sdklib.jar" />
+        <pathelement path="${sdk.dir}/tools/lib/androidprefs.jar" />
+    </path>
+
+
+    
     <!-- quick check on sdk.dir -->
     <fail
             message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through an env var"
@@ -86,7 +97,7 @@
     
     
     <target name="createAssetsZip" description="Create the zip of the game scripts and copy to the assets folder">
-        <zip destfile="${assets.dir}/game.zip">
+        <zip destfile="${assets.dir}/game.zip" level="9">
             <fileset dir="${cthsrc.dir}" includes="Levels/**"/>
             <fileset dir="${cthsrc.dir}" includes="Lua/**"/>
             <fileset dir="${cthsrc.dir}" includes="CorsixTH.lua"/>

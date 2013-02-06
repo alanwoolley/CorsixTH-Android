@@ -49,7 +49,6 @@ public class SDLActivity extends CTHActivity {
 
 	private int									currentVersion;
 	private Properties					properties;
-	public Configuration				config;
 	private WakeLock						wake;
 	private MenuDialog					mainMenu;
 	private boolean							hasGameLoaded		= false;
@@ -96,7 +95,7 @@ public class SDLActivity extends CTHActivity {
 	}
 
 	// C functions we call
-	public static native void nativeInit(String logPath, String toLoad);
+	public static native void nativeInit(Configuration config, String toLoad);
 
 	public static native void nativeQuit();
 
@@ -125,8 +124,10 @@ public class SDLActivity extends CTHActivity {
 
 	public static native void cthTryAutoSave(String filename);
 
+	public static native void cthUpdateConfiguration(Configuration config);
+
 	public static String nativeGetGamePath() {
-		return mSingleton.config.getCthPath() + "/scripts/";
+		return mSingleton.app.configuration.getCthPath() + "/scripts/";
 	}
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,10 +139,12 @@ public class SDLActivity extends CTHActivity {
 		// Make sure that external media is mounted.
 		if (Files.canAccessExternalStorage()) {
 
-			final SharedPreferences preferences = getCthApplication()
-					.getPreferences();
+			final SharedPreferences preferences = app.getPreferences();
 
-			config = getCthApplication().getConfiguration();
+			if (app.configuration == null) {
+				app.configuration = Configuration
+						.loadFromPreferences(this, preferences);
+			}
 
 			currentVersion = preferences.getInt("last_version", 0) - 1;
 
@@ -191,7 +194,8 @@ public class SDLActivity extends CTHActivity {
 
 	private void installFiles(final SharedPreferences preferences) {
 		final ProgressDialog dialog = new ProgressDialog(this);
-		final UnzipTask unzipTask = new UnzipTask(config.getCthPath() + "/scripts/") {
+		final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
+				+ "/scripts/") {
 
 			@Override
 			protected void onPreExecute() {
@@ -269,22 +273,19 @@ public class SDLActivity extends CTHActivity {
 
 		// Load the libraries
 		System.loadLibrary("SDL");
-		System.loadLibrary("SDL_gfx");
-		System.loadLibrary("mikmod");
 		System.loadLibrary("LUA");
-		System.loadLibrary("AGG");
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("appmain");
 
 		try {
-			config.writeToFile();
+			app.configuration.writeToFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.e(getClass().getSimpleName(), "Couldn't write to configuration file");
 			BugSenseHandler.sendException(e);
 		}
 
-		File f = new File(config.getSaveGamesPath());
+		File f = new File(app.configuration.getSaveGamesPath());
 
 		if (!f.isDirectory()) {
 			f.mkdirs();
@@ -293,8 +294,8 @@ public class SDLActivity extends CTHActivity {
 		// So we can call stuff from static callbacks
 		mSingleton = this;
 
-		mSurface = new SDLSurface(this, config.getDisplayWidth(),
-				config.getDisplayHeight());
+		mSurface = new SDLSurface(this, app.configuration.getDisplayWidth(),
+				app.configuration.getDisplayHeight());
 
 		FrameLayout mainLayout = (FrameLayout) getLayoutInflater().inflate(
 				R.layout.game, null);
@@ -304,7 +305,8 @@ public class SDLActivity extends CTHActivity {
 		setContentView(mainLayout);
 
 		SurfaceHolder holder = mSurface.getHolder();
-		holder.setFixedSize(config.getDisplayWidth(), config.getDisplayHeight());
+		holder.setFixedSize(app.configuration.getDisplayWidth(),
+				app.configuration.getDisplayHeight());
 
 		// Use low profile mode if supported
 		if (Build.VERSION.SDK_INT >= 11) {
@@ -328,8 +330,8 @@ public class SDLActivity extends CTHActivity {
 
 			List<FileDetails> saves = null;
 			try {
-				saves = Files.listFilesInDirectory(config.getSaveGamesPath(),
-						new FilenameFilter() {
+				saves = Files.listFilesInDirectory(
+						app.configuration.getSaveGamesPath(), new FilenameFilter() {
 
 							@Override
 							public boolean accept(File dir, String filename) {
@@ -351,7 +353,7 @@ public class SDLActivity extends CTHActivity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						mSDLThread = new Thread(new SDLMain(config.getCthPath(), loadPath),
+						mSDLThread = new Thread(new SDLMain(app.configuration, loadPath),
 								"SDLThread");
 						mSDLThread.start();
 					}
@@ -361,7 +363,7 @@ public class SDLActivity extends CTHActivity {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						mSDLThread = new Thread(new SDLMain(config.getCthPath(), ""),
+						mSDLThread = new Thread(new SDLMain(app.configuration, ""),
 								"SDLThread");
 						mSDLThread.start();
 					}
@@ -371,8 +373,7 @@ public class SDLActivity extends CTHActivity {
 
 			} else {
 
-				mSDLThread = new Thread(new SDLMain(config.getCthPath(), ""),
-						"SDLThread");
+				mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
 				mSDLThread.start();
 			}
 
@@ -526,7 +527,7 @@ public class SDLActivity extends CTHActivity {
 		super.onResume();
 		Log.d(getClass().getSimpleName(), "onResume()");
 
-		if (config.getKeepScreenOn()) {
+		if (app.configuration.getKeepScreenOn()) {
 			Log.d(getClass().getSimpleName(), "Getting wakelock");
 			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
@@ -708,8 +709,7 @@ public class SDLActivity extends CTHActivity {
 			InputMethodManager mgr;
 			switch (Command.values()[msg.arg1]) {
 				case GAME_LOAD_ERROR:
-					SharedPreferences prefs = context.getCthApplication()
-							.getPreferences();
+					SharedPreferences prefs = context.app.getPreferences();
 					Editor editor = prefs.edit();
 					editor.putInt("last_version", 0);
 					editor.putBoolean("wizard_run", false);
@@ -738,7 +738,7 @@ public class SDLActivity extends CTHActivity {
 					mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
 					break;
 				case QUICK_LOAD:
-					if (Files.doesFileExist(context.config.getSaveGamesPath()
+					if (Files.doesFileExist(context.app.configuration.getSaveGamesPath()
 							+ File.separator + context.getString(R.string.quicksave_name))) {
 						cthLoadGame(context.getString(R.string.quicksave_name));
 					} else {
@@ -756,7 +756,7 @@ public class SDLActivity extends CTHActivity {
 				case SHOW_LOAD_DIALOG:
 					if (loadDialog == null) {
 						loadDialog = new LoadDialog(context,
-								context.config.getSaveGamesPath());
+								context.app.configuration.getSaveGamesPath());
 					}
 					try {
 						loadDialog.updateSaves(context);
@@ -773,7 +773,7 @@ public class SDLActivity extends CTHActivity {
 				case SHOW_SAVE_DIALOG:
 					if (saveDialog == null) {
 						saveDialog = new SaveDialog(context,
-								context.config.getSaveGamesPath());
+								context.app.configuration.getSaveGamesPath());
 					}
 					try {
 						saveDialog.updateSaves(context);
@@ -802,7 +802,7 @@ public class SDLActivity extends CTHActivity {
 					context.startActivity(new Intent(context, PrefsActivity.class));
 					break;
 				case GAME_SPEED_UPDATED:
-					context.config.setGameSpeed((Integer) msg.obj);
+					context.app.configuration.setGameSpeed((Integer) msg.obj);
 					break;
 				default:
 					break;
@@ -835,17 +835,18 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-	private String	logPath, toLoad;
+	private Configuration	config;
+	private String				toLoad;
 
-	public SDLMain(String logPath, String toLoad) {
-		this.logPath = logPath;
+	public SDLMain(Configuration config, String toLoad) {
+		this.config = config;
 		this.toLoad = toLoad;
 
 	}
 
 	public void run() {
 		// Runs SDL_main()
-		SDLActivity.nativeInit(logPath, toLoad);
+		SDLActivity.nativeInit(config, toLoad);
 
 		Log.v(getClass().getSimpleName(), "SDL thread terminated");
 	}

@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
-    android:versionCode="54"
-    android:versionName="0.4.3" >
+    android:versionCode="61"
+    android:versionName="0.4.4" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="15" />
 
     <!--
     Permissions 
@@ -46,7 +46,7 @@
         android:required="false" />
 
     <application
-        android:name="uk.co.armedpineapple.cth.CorsixTHApplication"
+        android:name="uk.co.armedpineapple.cth.CTHApplication"
         android:allowBackup="false"
         android:backupAgent="CTHBackupAgent"
         android:icon="@drawable/ic_launcher"

@@ -18,3 +18,14 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+
+-keepattributes SourceFile,LineNumberTable
+
+-keep public class com.bugsense.*
+
+-keep class com.flurry.** { *; }
+-dontwarn com.flurry.**
+
+
+

@@ -76,4 +76,19 @@
   <string name="play_button">Gyerünk!</string>
   <string name="custom_location_message">Theme Hospital játékfájlok helye</string>
   <string name="game_paused">Játék szüneteltetve</string>
+  <string name="load_error">A CorsixTH nem tölthető be. A telepítő varázsló újra fog futni az alkalmazás következő indításakor.</string>
+  <string name="no_quicksave">Nincs betölthető gyorsmentés!</string>
+  <string name="dialog_error_title">Hiba!</string>
+  <string name="recent_changes_title">Legutóbbi változások</string>
+  <string name="height">Magasság</string>
+  <string name="width">Szélesség</string>
+  <string name="enter_resolution">Adja meg a felbontást</string>
+  <string name="search_cancelled">Keresés leállítva</string>
+  <string name="couldnt_find_game_files">Nem találom a játék fájlokat. Kérjem, állítsa be kézzel, vagy töltse le a demo-t</string>
+  <string name="searching">Keresés...</string>
+  <string name="preferences_language">Nyelv</string>
+  <string name="preferences_audio">Audió</string>
+  <string name="preferences_setup_wizard">Telepítő varázsló</string>
+  <string name="preferences_width">Szélesség</string>
+  <string name="preferences_height">Magasság</string>
 </resources>

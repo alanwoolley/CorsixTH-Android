@@ -44,7 +44,7 @@ public class SaveDialog extends FilesDialog {
 		Log.d(getClass().getSimpleName(), "Saving: " + file);
 
 		// Reset the game speed - we don't want to save when the game is paused!
-		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 
 		// Save the game
 		SDLActivity.cthSaveGame(file);
