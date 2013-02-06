@@ -19,8 +19,17 @@
 #   public *;
 #}
 
+-dontshrink
 
 -keepattributes SourceFile,LineNumberTable
+
+-keep public class uk.co.armedpineapple.cth.Configuration
+
+-keep class uk.co.armedpineapple.cth.Configuration { *; }
+
+-keepclasseswithmembers class * {
+    native <methods>;
+}
 
 -keep public class com.bugsense.*
 

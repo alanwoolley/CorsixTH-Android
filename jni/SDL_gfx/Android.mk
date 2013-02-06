@@ -5,7 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libSDL_gfx
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH) -I$(LOCAL_PATH)/.. \
-                -I$(LOCAL_PATH)/../SDL/include -O3
+                -I$(LOCAL_PATH)/../SDL/include -Os
 
 LOCAL_CPP_EXTENSION := .cpp
 
