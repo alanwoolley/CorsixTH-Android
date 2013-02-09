@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
@@ -37,6 +38,9 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 		setCancelable(true);
 
 		setContentView(R.layout.main_menu);
+		
+		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		
 		mainList = (ListView) findViewById(R.id.MenuDialogListView);
 
 		adapter = new MenuAdapter(context, MenuItems.getItems());
