@@ -5,4 +5,7 @@
         <item name="android:windowBackground">@color/background</item>
     </style>
 
+    <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
 </resources>
