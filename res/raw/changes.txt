@@ -1,3 +1,9 @@
+0.4.6 - 09/02/2013
+=================
+* Fixed black menu on Android 2.x
+* Disable the blue filter for now
+* Small visual fixes
+
 0.4.4 - 06/02/2013
 =================
 * Updated to latest CorsixTH version
