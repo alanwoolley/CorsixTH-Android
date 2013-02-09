@@ -28,14 +28,15 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text=""
-            android:textSize="22sp" />
+            android:textSize="22sp" 
+            android:textAppearance="@style/FilesFontBig"/>
 
         <TextView
             android:id="@+id/saveGameSmallText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="@style/FilesFontSmall" />
     </LinearLayout>
 
 </LinearLayout>

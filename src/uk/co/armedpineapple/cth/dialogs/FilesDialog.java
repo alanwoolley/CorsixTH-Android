@@ -20,6 +20,7 @@ import uk.co.armedpineapple.cth.Files.FileDetails;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -81,6 +82,9 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 			}
 
 		});
+		
+		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		
 
 	}
 
