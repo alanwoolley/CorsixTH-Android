@@ -205,6 +205,8 @@ public class OriginalFilesWizard extends WizardView {
 		}
 
 		// Check that there is an active network connection
+        // TODO - warn if connecting over mobile internet
+        
 		if (!Network.HasNetworkConnection(ctx)) {
 			// Connection error
 			Dialog connectionDialog = DialogFactory.createNetworkDialog(ctx);
@@ -252,6 +254,7 @@ public class OriginalFilesWizard extends WizardView {
 			protected void onProgressUpdate(Integer... values) {
 				super.onProgressUpdate(values);
 				dialog.setProgress(values[0]);
+                dialog.setMax(values[1]);
 			}
 
 		};
@@ -278,13 +281,15 @@ public class OriginalFilesWizard extends WizardView {
 			@Override
 			protected void onPreExecute() {
 				super.onPreExecute();
+                dilaog.setProgressNumberFormat(ctx.getString(R.string.download_progress_dialog_text));
 				dialog.show();
 			}
 
 			@Override
 			protected void onProgressUpdate(Integer... values) {
 				super.onProgressUpdate(values);
-				dialog.setProgress(values[0]);
+				dialog.setProgress(values[0] / 1000000);
+                
 			}
 
 		};

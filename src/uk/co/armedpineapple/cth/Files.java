@@ -517,17 +517,21 @@ public class Files {
 
 				ucon = downloadUrl.openConnection();
 				ucon.connect();
+                
 				int fileSize = ucon.getContentLength();
 
 				InputStream input = new BufferedInputStream(downloadUrl.openStream());
 				FileOutputStream fos = new FileOutputStream(file);
 
+                // Is 1KB the best value for this?
+                
 				byte data[] = new byte[1024];
 				int current = 0, total = 0;
 
 				while ((current = input.read(data)) != -1) {
 					total += current;
-					publishProgress(total * 100 / fileSize);
+					publishProgress(total, fileSize);
+                
 
 					fos.write(data, 0, current);
 				}
@@ -538,6 +542,7 @@ public class Files {
 
 				Log.d(Files.class.getSimpleName(),
 						"Downloaded file to: " + file.getAbsolutePath());
+                        
 				return new AsyncTaskResult<File>(file);
 
 			} catch (MalformedURLException e) {
@@ -605,7 +610,7 @@ public class Files {
 					}
 
 					count++;
-					publishProgress(count * 100 / entryCount);
+					publishProgress(count, entryCount);
 
 				}
 
