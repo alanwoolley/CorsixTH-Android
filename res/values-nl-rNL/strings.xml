@@ -81,6 +81,8 @@
   <string name="search_cancelled">Zoeken geannuleerd</string>
   <string name="couldnt_find_game_files">Spelbestanden niet gevonden. Voer zelf de locatie in, of download de demo</string>
   <string name="searching">Zoeken...</string>
+  <string name="menuitem_settings">Instellingen</string>
+  <string name="preferences_settings">Instellingen</string>
   <string name="preferences_language">Taal</string>
   <string name="preferences_audio">Geluiden</string>
   <string name="preferences_setup_wizard">Setup wizard</string>
