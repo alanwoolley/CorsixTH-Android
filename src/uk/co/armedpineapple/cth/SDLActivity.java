@@ -211,6 +211,7 @@ public class SDLActivity extends CTHActivity {
 			protected void onProgressUpdate(Integer... values) {
 				super.onProgressUpdate(values);
 				dialog.setProgress(values[0]);
+				dialog.setMax(values[1]);
 			}
 
 			@Override
