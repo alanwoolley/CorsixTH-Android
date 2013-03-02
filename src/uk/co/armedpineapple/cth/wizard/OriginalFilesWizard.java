@@ -19,12 +19,14 @@ import uk.co.armedpineapple.cth.Files.DownloadFileTask;
 import uk.co.armedpineapple.cth.Files.FindFilesTask;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -205,6 +207,8 @@ public class OriginalFilesWizard extends WizardView {
 		}
 
 		// Check that there is an active network connection
+		// TODO - warn if connecting over mobile internet
+
 		if (!Network.HasNetworkConnection(ctx)) {
 			// Connection error
 			Dialog connectionDialog = DialogFactory.createNetworkDialog(ctx);
@@ -218,7 +222,6 @@ public class OriginalFilesWizard extends WizardView {
 		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		dialog.setMessage(ctx.getString(R.string.downloading_demo));
 		dialog.setIndeterminate(false);
-		dialog.setMax(100);
 		dialog.setCancelable(false);
 
 		final UnzipTask uzt = new Files.UnzipTask(extDir.getAbsolutePath()
@@ -242,16 +245,21 @@ public class OriginalFilesWizard extends WizardView {
 				}
 			}
 
+			@SuppressLint("NewApi")
 			@Override
 			protected void onPreExecute() {
 				super.onPreExecute();
 				dialog.setMessage(ctx.getString(R.string.extracting_demo));
+				if (Build.VERSION.SDK_INT >= 11) {
+					dialog.setProgressNumberFormat(null);
+				}
 			}
 
 			@Override
 			protected void onProgressUpdate(Integer... values) {
 				super.onProgressUpdate(values);
 				dialog.setProgress(values[0]);
+				dialog.setMax(values[1]);
 			}
 
 		};
@@ -275,16 +283,23 @@ public class OriginalFilesWizard extends WizardView {
 				}
 			}
 
+			@SuppressLint("NewApi")
 			@Override
 			protected void onPreExecute() {
 				super.onPreExecute();
+				if (Build.VERSION.SDK_INT >= 11) {
+					dialog.setProgressNumberFormat(ctx
+							.getString(R.string.download_progress_dialog_text));
+				}
 				dialog.show();
 			}
 
 			@Override
 			protected void onProgressUpdate(Integer... values) {
 				super.onProgressUpdate(values);
-				dialog.setProgress(values[0]);
+				dialog.setProgress(values[0] / 1000000);
+				dialog.setMax(values[1] / 1000000);
+
 			}
 
 		};
@@ -313,7 +328,8 @@ public class OriginalFilesWizard extends WizardView {
 				progressDialog.hide();
 				if (result.getResult() != null) {
 					customLocation = result.getResult();
-					Toast.makeText(ctx, ctx.getString(R.string.found_files) + customLocation,
+					Toast.makeText(ctx,
+							ctx.getString(R.string.found_files) + customLocation,
 							Toast.LENGTH_LONG).show();
 				} else {
 					automaticRadio.setChecked(false);
