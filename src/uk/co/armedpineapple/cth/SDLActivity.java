@@ -750,8 +750,8 @@ public class SDLActivity extends CTHActivity {
 				case QUICK_SAVE:
 					cthSaveGame(context.getString(R.string.quicksave_name));
 					break;
-				case RESTART_GAME:
-					cthRestartGame();
+				case RESTART_GAME:	
+					cthRestartGame();				
 					break;
 
 				case SHOW_LOAD_DIALOG:
