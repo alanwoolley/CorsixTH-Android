@@ -35,7 +35,7 @@ public class PrefsActivity extends PreferenceActivity implements
 		final CTHApplication application = (CTHApplication) getApplication();
 		final SharedPreferences preferences = application.getPreferences();
 
-		application.getConfiguration().saveToPreferences(preferences);
+		application.configuration.saveToPreferences(preferences);
 
 		addPreferencesFromResource(R.xml.prefs);
 
