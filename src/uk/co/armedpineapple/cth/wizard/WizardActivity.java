@@ -30,7 +30,6 @@ public class WizardActivity extends CTHActivity {
 	private Button										previousButton;
 	private Button										nextButton;
 	private WizardButtonClickListener	buttonClickListener;
-	private Configuration							config;
 	private SharedPreferences					preferences;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class WizardActivity extends CTHActivity {
 
 		}
 
-		preferences = ((CTHApplication) getApplication()).getPreferences();
+		preferences = app.getPreferences();
 
 		if (preferences.getBoolean("wizard_run", false)) {
 			Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
@@ -58,7 +57,10 @@ public class WizardActivity extends CTHActivity {
 			previousButton = (Button) findViewById(R.id.leftbutton);
 			nextButton = (Button) findViewById(R.id.rightbutton);
 
-			config = ((CTHApplication) getApplication()).getConfiguration();
+			if (app.configuration == null) {
+				app.configuration = Configuration
+						.loadFromPreferences(this, preferences);
+			}
 
 			// Add all the wizard views
 
@@ -90,7 +92,7 @@ public class WizardActivity extends CTHActivity {
 			WizardView wv) {
 
 		flipper.addView(wv);
-		wv.loadConfiguration(config);
+		wv.loadConfiguration(app.configuration);
 		return wv;
 	}
 
@@ -106,10 +108,11 @@ public class WizardActivity extends CTHActivity {
 				flipper.showPrevious();
 			} else if (v.equals(nextButton)) {
 				try {
-					((WizardView) flipper.getCurrentView()).saveConfiguration(config);
+					((WizardView) flipper.getCurrentView())
+							.saveConfiguration(app.configuration);
 
 					if (nextButton.getText().equals(getString(R.string.play_button))) {
-						config.saveToPreferences(preferences);
+						app.configuration.saveToPreferences(preferences);
 
 						finish();
 						WizardActivity.this.startActivity(new Intent(WizardActivity.this,

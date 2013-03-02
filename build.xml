@@ -97,7 +97,7 @@
     
     
     <target name="createAssetsZip" description="Create the zip of the game scripts and copy to the assets folder">
-        <zip destfile="${assets.dir}/game.zip">
+        <zip destfile="${assets.dir}/game.zip" level="9">
             <fileset dir="${cthsrc.dir}" includes="Levels/**"/>
             <fileset dir="${cthsrc.dir}" includes="Lua/**"/>
             <fileset dir="${cthsrc.dir}" includes="CorsixTH.lua"/>

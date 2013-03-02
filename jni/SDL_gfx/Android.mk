@@ -5,7 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := libSDL_gfx
 
 LOCAL_CFLAGS := -I$(LOCAL_PATH) -I$(LOCAL_PATH)/.. \
-                -I$(LOCAL_PATH)/../SDL/include -O3
+                -I$(LOCAL_PATH)/../SDL/include -Os
 
 LOCAL_CPP_EXTENSION := .cpp
 
@@ -14,4 +14,4 @@ LOCAL_SRC_FILES := $(notdir $(wildcard $(LOCAL_PATH)/*.c))
 
 LOCAL_SHARED_LIBRARIES := SDL
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)

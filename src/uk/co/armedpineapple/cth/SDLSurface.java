@@ -9,6 +9,7 @@ import uk.co.armedpineapple.cth.gestures.LongPressGesture;
 import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
 import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -60,7 +61,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 				new LongPressGesture());
 		longPressGestureDetector.setIsLongpressEnabled(true);
 
-		mSensorManager = (SensorManager) context.getSystemService("sensor");
+		
 
 	}
 
@@ -145,6 +146,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			default:
 				break;
 		}
+		
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
 			SDLActivity.onNativeKeyDown(keyCode);
 			return true;
@@ -214,13 +216,20 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Sensor events
 	public void enableSensor(int sensortype, boolean enabled) {
 		// TODO: This uses getDefaultSensor - what if we have >1 accels?
+		
 		if (enabled) {
+			if (mSensorManager == null) {
+				mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+			}
+			
 			mSensorManager.registerListener(this,
 					mSensorManager.getDefaultSensor(sensortype),
 					SensorManager.SENSOR_DELAY_GAME, null);
 		} else {
+			if (mSensorManager != null) {
 			mSensorManager.unregisterListener(this,
 					mSensorManager.getDefaultSensor(sensortype));
+			}
 		}
 	}
 

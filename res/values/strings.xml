@@ -76,6 +76,7 @@
     <string name="custom_location_message">Theme Hospital Game Files location</string>
     <string name="game_paused">Game Paused</string>
     <string name="load_error">CorsixTH could not load. The setup wizard will run again when you next start the app.</string>
+<<<<<<< HEAD
     <string name="no_quicksave">No quicksave to load!</string>
     <string name="dialog_error_title">Error!</string>
     <string name="recent_changes_title">Recent Changes</string>
@@ -152,4 +153,15 @@
     <string name="preferences_intro_movie_disabled">Intro Movie Disabled</string>
     <string name="preferences_intro_movie_enabled">Intro Movie Enabled</string>
     <string name="preferences_play_intro_movie">Play Intro Movie</string>
+	<string name="no_quicksave">No quicksave to load!</string>
+	<string name="dialog_error_title">Error!</string>
+	<string name="recent_changes_title">Recent Changes</string>
+	<string name="height">Height</string>
+	<string name="width">Width</string>
+	<string name="enter_resolution">Enter Resolution</string>
+	<string name="search_cancelled">Search cancelled</string>
+	<string name="couldnt_find_game_files">Couldn\'t find game files. Please set location manually or download the demo</string>
+	<string name="found_files">Found files in: </string>
+	<string name="searching">Searching...</string>
+    <string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
 </resources>

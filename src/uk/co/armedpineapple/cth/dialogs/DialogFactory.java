@@ -63,7 +63,7 @@ public class DialogFactory {
 
 			@Override
 			public void onDismiss(DialogInterface dialog) {
-				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 
 			}
 
@@ -75,7 +75,10 @@ public class DialogFactory {
 		final Dialog d = new Dialog(ctx);
 		d.setContentView(R.layout.changes_dialog);
 		d.setTitle(R.string.recent_changes_title);
-
+		
+		d.getWindow()
+		.setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
 		button.setOnClickListener(new Button.OnClickListener() {
 

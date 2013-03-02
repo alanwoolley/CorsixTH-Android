@@ -12,4 +12,16 @@
         <item name="android:windowFullscreen">true</item>
     </style>
     
+    <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="FilesFontBig" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
 </resources>

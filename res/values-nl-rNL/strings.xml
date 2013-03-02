@@ -71,4 +71,21 @@
   <string name="play_button">Spelen!</string>
   <string name="custom_location_message">Locatie van Theme Hospital bestanden</string>
   <string name="game_paused">Pauze</string>
+  <string name="load_error">CorsixTH kan niet worden geladen. De setup wizard wordt nogmaals uitgevoerd als je de app opnieuw start.</string>
+  <string name="no_quicksave">Geen quicksave beschikbaar!</string>
+  <string name="dialog_error_title">Fout!</string>
+  <string name="recent_changes_title">Recente wijzigingen</string>
+  <string name="height">Hoogte</string>
+  <string name="width">Breedte</string>
+  <string name="enter_resolution">Resolutie invoeren</string>
+  <string name="search_cancelled">Zoeken geannuleerd</string>
+  <string name="couldnt_find_game_files">Spelbestanden niet gevonden. Voer zelf de locatie in, of download de demo</string>
+  <string name="searching">Zoeken...</string>
+  <string name="menuitem_settings">Instellingen</string>
+  <string name="preferences_settings">Instellingen</string>
+  <string name="preferences_language">Taal</string>
+  <string name="preferences_audio">Geluiden</string>
+  <string name="preferences_setup_wizard">Setup wizard</string>
+  <string name="preferences_width">Breedte</string>
+  <string name="preferences_height">Hoogte</string>
 </resources>

@@ -24,6 +24,8 @@ public class Configuration {
 	public final static int			RESOLUTION_DEFAULT	= 1;
 	public final static int			RESOLUTION_NATIVE		= 2;
 	public final static int			RESOLUTION_CUSTOM		= 3;
+	public final static int			DEFAULT_WIDTH				= 640;
+	public final static int			DEFAULT_HEIGHT			= 480;
 
 	public final static String	HEADER							= "---- CorsixTH configuration file ----------------------------------------------\n"
 																											+ "-- Lines starting with two dashes (like this one) are ignored.\n"
@@ -42,14 +44,19 @@ public class Configuration {
 	private Boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
 
-	private Integer							musicVol, announcementsVol, sfxVol,
-			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit;
+
+	private int									musicVol, announcementsVol, sfxVol,
+			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit = 18;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
 																											+ "CTHsaves";
 
-	private Configuration() {
+	private Context							ctx;
+
+	private Configuration(Context ctx) {
+		this.ctx = ctx;
+
 	}
 
 	/**
@@ -59,6 +66,8 @@ public class Configuration {
 	 *          the SharedPreferences object to save to
 	 **/
 	public void saveToPreferences(SharedPreferences preferences) {
+		Log.d(getClass().getSimpleName(), "Saving Configuration");
+		Log.d(getClass().getSimpleName(), this.toString());
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
 		editor.putString("gamescripts_pref", cthPath);
@@ -94,11 +103,12 @@ public class Configuration {
 	 */
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
-		Configuration config = new Configuration();
+		Configuration config = new Configuration(ctx);
 		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
 
 		config.originalFilesPath = preferences.getString("originalfiles_pref", "");
 
+		// TODO - No check for external storage availability
 		config.cthPath = preferences.getString("gamescripts_pref", ctx
 				.getExternalFilesDir(null).getAbsolutePath());
 
@@ -140,8 +150,8 @@ public class Configuration {
 
 		switch (config.resolutionMode) {
 			case RESOLUTION_DEFAULT:
-				config.displayWidth = 640;
-				config.displayHeight = 480;
+				config.displayWidth = DEFAULT_WIDTH;
+				config.displayHeight = DEFAULT_HEIGHT;
 				break;
 
 			/*
@@ -160,9 +170,9 @@ public class Configuration {
 
 			case RESOLUTION_CUSTOM:
 				config.displayWidth = Integer.valueOf(preferences.getString(
-						"reswidth_pref", "640"));
+						"reswidth_pref", String.valueOf(DEFAULT_WIDTH)));
 				config.displayHeight = Integer.valueOf(preferences.getString(
-						"resheight_pref", "480"));
+						"resheight_pref", String.valueOf(DEFAULT_HEIGHT)));
 				break;
 
 		}
@@ -248,11 +258,10 @@ public class Configuration {
 		sbuilder.append("free_build_mode = false\n");
 		sbuilder.append("adviser_disabled = " + String.valueOf(adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
-		
+
 		sbuilder.append("movies = false\n");
 		sbuilder.append("play_intro = false\n");
 		sbuilder.append("allow_user_actions_while_paused = false\n");
-		
 
 		// Create all the directories leading up to the config.txt file
 
@@ -264,7 +273,7 @@ public class Configuration {
 
 	// Getters
 
-	public Boolean getKeepScreenOn() {
+	public boolean getKeepScreenOn() {
 		return keepScreenOn;
 	}
 
@@ -276,31 +285,31 @@ public class Configuration {
 		return cthPath;
 	}
 
-	public Boolean getGlobalAudio() {
+	public boolean getGlobalAudio() {
 		return globalAudio;
 	}
 
-	public Boolean getPlayMusic() {
+	public boolean getPlayMusic() {
 		return playMusic;
 	}
 
-	public Boolean getPlayAnnouncements() {
+	public boolean getPlayAnnouncements() {
 		return playAnnouncements;
 	}
 
-	public Boolean getPlaySoundFx() {
+	public boolean getPlaySoundFx() {
 		return playSoundFx;
 	}
 
-	public Integer getMusicVol() {
+	public int getMusicVol() {
 		return musicVol;
 	}
 
-	public Integer getAnnouncementsVol() {
+	public int getAnnouncementsVol() {
 		return announcementsVol;
 	}
 
-	public Integer getSfxVol() {
+	public int getSfxVol() {
 		return sfxVol;
 	}
 
@@ -308,19 +317,19 @@ public class Configuration {
 		return language;
 	}
 
-	public Integer getResolutionMode() {
+	public int getResolutionMode() {
 		return resolutionMode;
 	}
 
-	public Integer getDisplayWidth() {
+	public int getDisplayWidth() {
 		return displayWidth;
 	}
 
-	public Integer getDisplayHeight() {
+	public int getDisplayHeight() {
 		return displayHeight;
 	}
 
-	public Boolean getDebug() {
+	public boolean getDebug() {
 		return debug;
 	}
 
@@ -334,31 +343,31 @@ public class Configuration {
 		this.cthPath = cthPath;
 	}
 
-	public void setGlobalAudio(Boolean globalAudio) {
+	public void setGlobalAudio(boolean globalAudio) {
 		this.globalAudio = globalAudio;
 	}
 
-	public void setPlayMusic(Boolean playMusic) {
+	public void setPlayMusic(boolean playMusic) {
 		this.playMusic = playMusic;
 	}
 
-	public void setPlayAnnouncements(Boolean playAnnouncements) {
+	public void setPlayAnnouncements(boolean playAnnouncements) {
 		this.playAnnouncements = playAnnouncements;
 	}
 
-	public void setPlaySoundFx(Boolean playSoundFx) {
+	public void setPlaySoundFx(boolean playSoundFx) {
 		this.playSoundFx = playSoundFx;
 	}
 
-	public void setMusicVol(Integer musicVol) {
+	public void setMusicVol(int musicVol) {
 		this.musicVol = musicVol;
 	}
 
-	public void setAnnouncementsVol(Integer announcementsVol) {
+	public void setAnnouncementsVol(int announcementsVol) {
 		this.announcementsVol = announcementsVol;
 	}
 
-	public void setSfxVol(Integer sfxVol) {
+	public void setSfxVol(int sfxVol) {
 		this.sfxVol = sfxVol;
 	}
 
@@ -366,32 +375,63 @@ public class Configuration {
 		this.language = language;
 	}
 
-	public void setResolutionMode(Integer resolutionMode) {
+	public void setResolutionMode(int resolutionMode) {
+
+		switch (resolutionMode) {
+			case RESOLUTION_NATIVE:
+				DisplayMetrics dm = new DisplayMetrics();
+				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
+						.getDefaultDisplay().getMetrics(dm);
+				this.displayWidth = dm.widthPixels;
+				this.displayHeight = dm.heightPixels;
+				break;
+			case RESOLUTION_DEFAULT:
+				this.displayWidth = DEFAULT_WIDTH;
+				this.displayHeight = DEFAULT_HEIGHT;
+		}
+
 		this.resolutionMode = resolutionMode;
+
 	}
 
-	public void setDisplayWidth(Integer displayWidth) {
+	public void setDisplayWidth(int displayWidth) {
 		this.displayWidth = displayWidth;
 	}
 
-	public void setDisplayHeight(Integer displayHeight) {
+	public void setDisplayHeight(int displayHeight) {
 		this.displayHeight = displayHeight;
 	}
 
-	public void setDebug(Boolean debug) {
+	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
 
-	public void setKeepScreenOn(Boolean keepScreenOn) {
+	public void setKeepScreenOn(boolean keepScreenOn) {
 		this.keepScreenOn = keepScreenOn;
 	}
 
-	public Integer getGameSpeed() {
+	public int getGameSpeed() {
 		return gameSpeed;
 	}
 
-	public void setGameSpeed(Integer gameSpeed) {
+	public void setGameSpeed(int gameSpeed) {
 		this.gameSpeed = gameSpeed;
+	}
+
+	public int getFpsLimit() {
+		return fpsLimit;
+	}
+
+	public void setFpsLimit(int fpsLimit) {
+		this.fpsLimit = fpsLimit;
+	}
+
+	public String getSaveGamesPath() {
+		return saveGamesPath;
+	}
+
+	public void setSaveGamesPath(String saveGamesPath) {
+		this.saveGamesPath = saveGamesPath;
 	}
 
 	@Override
@@ -403,14 +443,6 @@ public class Configuration {
 				+ sfxVol + ", language=" + language + ", resMode=" + resolutionMode
 				+ ", width=" + displayWidth + ", height=" + displayHeight + ", debug?="
 				+ debug + "]";
-	}
-
-	public String getSaveGamesPath() {
-		return saveGamesPath;
-	}
-
-	public void setSaveGamesPath(String saveGamesPath) {
-		this.saveGamesPath = saveGamesPath;
 	}
 
 }

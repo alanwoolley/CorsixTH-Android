@@ -30,7 +30,7 @@ public class GameSpeedDialog extends Dialog {
 		super.onBackPressed();
 
 		// Unpause the game
-		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 	}
 
 	public GameSpeedDialog(SDLActivity context) {
@@ -38,7 +38,7 @@ public class GameSpeedDialog extends Dialog {
 		this.ctx = context;
 		setTitle(R.string.gamespeed_dialog_header);
 		setContentView(R.layout.gamespeed_dialog);
-		getWindow().setLayout(600, LayoutParams.WRAP_CONTENT);
+		getWindow().setLayout(800, LayoutParams.WRAP_CONTENT);
 		seekbar = (SeekBar) findViewById(R.id.gamespeed_seek);
 		gameSpeedText = (TextView) findViewById(R.id.gamespeed_text);
 		gameSpeedButton = (Button) findViewById(R.id.gamespeed_ok);

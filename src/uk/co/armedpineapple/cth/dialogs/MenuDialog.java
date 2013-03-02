@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
@@ -29,7 +30,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 	}
 
 	public MenuDialog(SDLActivity context) {
@@ -39,6 +40,9 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 		setCancelable(true);
 
 		setContentView(R.layout.main_menu);
+
+		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+
 		mainList = (ListView) findViewById(R.id.MenuDialogListView);
 
 		adapter = new MenuAdapter(context, MenuItems.getItems());
@@ -68,19 +72,21 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				if (gameSpeedDialog == null) {
 					gameSpeedDialog = new GameSpeedDialog(ctx);
 				}
-				gameSpeedDialog.show(ctx.config.getGameSpeed());
+				gameSpeedDialog.show(ctx.app.configuration.getGameSpeed());
 				return;
 			case LOAD:
 				SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
 				return;
 			case QUICK_LOAD:
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				SDLActivity.sendCommand(QUICK_LOAD, null);
 				return;
 			case QUICK_SAVE:
 				SDLActivity.sendCommand(QUICK_SAVE, null);
-				SDLActivity.cthGameSpeed(ctx.config.getGameSpeed());
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				return;
 			case RESTART:
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				SDLActivity.sendCommand(RESTART_GAME, null);
 				return;
 			case SAVE:
