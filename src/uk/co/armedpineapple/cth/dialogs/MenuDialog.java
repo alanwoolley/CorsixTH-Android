@@ -38,9 +38,9 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 		setCancelable(true);
 
 		setContentView(R.layout.main_menu);
-		
+
 		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-		
+
 		mainList = (ListView) findViewById(R.id.MenuDialogListView);
 
 		adapter = new MenuAdapter(context, MenuItems.getItems());
@@ -76,6 +76,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
 				return;
 			case QUICK_LOAD:
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				SDLActivity.sendCommand(QUICK_LOAD, null);
 				return;
 			case QUICK_SAVE:
@@ -83,6 +84,7 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				return;
 			case RESTART:
+				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
 				SDLActivity.sendCommand(RESTART_GAME, null);
 				return;
 			case SAVE:

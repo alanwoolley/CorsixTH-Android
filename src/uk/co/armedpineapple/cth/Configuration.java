@@ -24,6 +24,8 @@ public class Configuration {
 	public final static int			RESOLUTION_DEFAULT	= 1;
 	public final static int			RESOLUTION_NATIVE		= 2;
 	public final static int			RESOLUTION_CUSTOM		= 3;
+	public final static int			DEFAULT_WIDTH				= 640;
+	public final static int			DEFAULT_HEIGHT			= 480;
 
 	public final static String	HEADER							= "---- CorsixTH configuration file ----------------------------------------------\n"
 																											+ "-- Lines starting with two dashes (like this one) are ignored.\n"
@@ -42,14 +44,18 @@ public class Configuration {
 	private boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug;
 
-	private int							musicVol, announcementsVol, sfxVol,
+	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit = 18;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
 																											+ "CTHsaves";
 
-	private Configuration() {
+	private Context							ctx;
+
+	private Configuration(Context ctx) {
+		this.ctx = ctx;
+
 	}
 
 	/**
@@ -59,6 +65,8 @@ public class Configuration {
 	 *          the SharedPreferences object to save to
 	 **/
 	public void saveToPreferences(SharedPreferences preferences) {
+		Log.d(getClass().getSimpleName(), "Saving Configuration");
+		Log.d(getClass().getSimpleName(), this.toString());
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
 		editor.putString("gamescripts_pref", cthPath);
@@ -91,7 +99,7 @@ public class Configuration {
 	 */
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
-		Configuration config = new Configuration();
+		Configuration config = new Configuration(ctx);
 		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
 
 		config.originalFilesPath = preferences.getString("originalfiles_pref", "");
@@ -128,8 +136,8 @@ public class Configuration {
 
 		switch (config.resolutionMode) {
 			case RESOLUTION_DEFAULT:
-				config.displayWidth = 640;
-				config.displayHeight = 480;
+				config.displayWidth = DEFAULT_WIDTH;
+				config.displayHeight = DEFAULT_HEIGHT;
 				break;
 
 			/*
@@ -148,9 +156,9 @@ public class Configuration {
 
 			case RESOLUTION_CUSTOM:
 				config.displayWidth = Integer.valueOf(preferences.getString(
-						"reswidth_pref", "640"));
+						"reswidth_pref", String.valueOf(DEFAULT_WIDTH)));
 				config.displayHeight = Integer.valueOf(preferences.getString(
-						"resheight_pref", "480"));
+						"resheight_pref", String.valueOf(DEFAULT_HEIGHT)));
 				break;
 
 		}
@@ -352,7 +360,22 @@ public class Configuration {
 	}
 
 	public void setResolutionMode(int resolutionMode) {
+
+		switch (resolutionMode) {
+			case RESOLUTION_NATIVE:
+				DisplayMetrics dm = new DisplayMetrics();
+				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
+						.getDefaultDisplay().getMetrics(dm);
+				this.displayWidth = dm.widthPixels;
+				this.displayHeight = dm.heightPixels;
+				break;
+			case RESOLUTION_DEFAULT:
+				this.displayWidth = DEFAULT_WIDTH;
+				this.displayHeight = DEFAULT_HEIGHT;
+		}
+
 		this.resolutionMode = resolutionMode;
+
 	}
 
 	public void setDisplayWidth(int displayWidth) {
