@@ -1,3 +1,9 @@
+0.4.7 - 02/03/2013
+==================
+* Updated game files
+* Improved download and extract dialogs
+* Bug fixes
+
 0.4.6 - 09/02/2013
 =================
 * Fixed black menu on Android 2.x
@@ -24,25 +30,3 @@ Updated Translations:
 * Hungarian (hun_gery)
 * Spanish (miguelkill)
 
-0.4.3 - 22/12/2012
-==================
-* Fix some force close errors
-* Squash some potential bugs
-
-0.4.2 - 18/12/2012
-==================
-* Improve Android 4.2 support
-* Improve scrolling reliability
-* Fix fullscreen windows being obscured
-* Improve error handling
-* Update libraries
-* Misc. bug fixes
-
-Translations:
-* Added Russian translations (thanks Nekser, band87)
-* Added Dutch translations (thanks Jaco Weijts, Rprrr)
-* Added Hungarian translations (thanks hun_gery)
-* Added Finnish translations (thanks ramiselin)
-* Added German translations (thanks eraser2011)
-* Added Danish translations (thanks Lef1zh)
-* Added Spanish translations (thanks miguelkill)
