@@ -44,7 +44,6 @@ public class Configuration {
 	private Boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
 
-
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit = 18;
 
@@ -53,10 +52,11 @@ public class Configuration {
 																											+ "CTHsaves";
 
 	private Context							ctx;
+	private SharedPreferences		preferences;
 
-	private Configuration(Context ctx) {
+	private Configuration(Context ctx, SharedPreferences prefs) {
 		this.ctx = ctx;
-
+		this.preferences = prefs;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class Configuration {
 	 * @param preferences
 	 *          the SharedPreferences object to save to
 	 **/
-	public void saveToPreferences(SharedPreferences preferences) {
+	public void saveToPreferences() {
 		Log.d(getClass().getSimpleName(), "Saving Configuration");
 		Log.d(getClass().getSimpleName(), this.toString());
 		Editor editor = preferences.edit();
@@ -93,53 +93,42 @@ public class Configuration {
 	}
 
 	/**
-	 * Constructs a configuration object from a SharedPreferences object
-	 * 
-	 * @param ctx
-	 *          a valid context used to retrieve preferences
-	 * @param preferences
-	 *          the preferences object to retrieve from
-	 * @return a Configuration object containing the preferences
-	 */
-	public static Configuration loadFromPreferences(Context ctx,
-			SharedPreferences preferences) {
-		Configuration config = new Configuration(ctx);
-		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
-
-		config.originalFilesPath = preferences.getString("originalfiles_pref", "");
+	 * Refresh the configuration with values from the preferences it was
+	 * initialised from. Does not reset any configuration options that are not
+	 * present in the preferences
+	 **/
+	public void refresh() {
+		originalFilesPath = preferences.getString("originalfiles_pref", "");
 
 		// TODO - No check for external storage availability
-		config.cthPath = preferences.getString("gamescripts_pref", ctx
+		cthPath = preferences.getString("gamescripts_pref", ctx
 				.getExternalFilesDir(null).getAbsolutePath());
 
-		config.globalAudio = preferences.getBoolean("audio_pref", true);
-		config.playMusic = preferences.getBoolean("music_pref", false);
-		config.playAnnouncements = preferences.getBoolean("announcer_pref", true);
-		config.playSoundFx = preferences.getBoolean("fx_pref", true);
-		config.sfxVol = Integer
-				.valueOf(preferences.getString("fxvolume_pref", "5"));
-		config.announcementsVol = Integer.valueOf(preferences.getString(
+		globalAudio = preferences.getBoolean("audio_pref", true);
+		playMusic = preferences.getBoolean("music_pref", false);
+		playAnnouncements = preferences.getBoolean("announcer_pref", true);
+		playSoundFx = preferences.getBoolean("fx_pref", true);
+		sfxVol = Integer.valueOf(preferences.getString("fxvolume_pref", "5"));
+		announcementsVol = Integer.valueOf(preferences.getString(
 				"announcervolume_pref", "5"));
-		config.musicVol = Integer.valueOf(preferences.getString("musicvolume_pref",
-				"5"));
+		musicVol = Integer.valueOf(preferences.getString("musicvolume_pref", "5"));
 
-		config.language = preferences.getString("language_pref", "en");
+		language = preferences.getString("language_pref", "en");
 
-		config.resolutionMode = Integer.valueOf(preferences.getString(
-				"resolution_pref", "1"));
+		resolutionMode = Integer.valueOf(preferences.getString("resolution_pref",
+				"1"));
 
-		config.debug = preferences.getBoolean("debug_pref", false);
+		debug = preferences.getBoolean("debug_pref", false);
 
-		config.keepScreenOn = preferences.getBoolean("screenon_pref", true);
-		config.edgeScroll = preferences.getBoolean("edgescroll_pref", false);
-		config.adviser = preferences.getBoolean("adviser_pref", true);
+		keepScreenOn = preferences.getBoolean("screenon_pref", true);
+		edgeScroll = preferences.getBoolean("edgescroll_pref", false);
+		adviser = preferences.getBoolean("adviser_pref", true);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
 				ctx.getString(R.string.off))) {
-			config.fpsLimit = 0;
+			fpsLimit = 0;
 		} else {
-			config.fpsLimit = Integer.valueOf(preferences.getString("fpslimit_pref",
-					"20"));
+			fpsLimit = Integer.valueOf(preferences.getString("fpslimit_pref", "20"));
 		}
 
 		/*
@@ -148,10 +137,10 @@ public class Configuration {
 		 * TODO - make this external
 		 */
 
-		switch (config.resolutionMode) {
+		switch (resolutionMode) {
 			case RESOLUTION_DEFAULT:
-				config.displayWidth = DEFAULT_WIDTH;
-				config.displayHeight = DEFAULT_HEIGHT;
+				displayWidth = DEFAULT_WIDTH;
+				displayHeight = DEFAULT_HEIGHT;
 				break;
 
 			/*
@@ -164,19 +153,35 @@ public class Configuration {
 				DisplayMetrics dm = new DisplayMetrics();
 				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
 						.getDefaultDisplay().getMetrics(dm);
-				config.displayWidth = dm.widthPixels;
-				config.displayHeight = dm.heightPixels;
+				displayWidth = dm.widthPixels;
+				displayHeight = dm.heightPixels;
 				break;
 
 			case RESOLUTION_CUSTOM:
-				config.displayWidth = Integer.valueOf(preferences.getString(
-						"reswidth_pref", String.valueOf(DEFAULT_WIDTH)));
-				config.displayHeight = Integer.valueOf(preferences.getString(
-						"resheight_pref", String.valueOf(DEFAULT_HEIGHT)));
+				displayWidth = Integer.valueOf(preferences.getString("reswidth_pref",
+						String.valueOf(DEFAULT_WIDTH)));
+				displayHeight = Integer.valueOf(preferences.getString("resheight_pref",
+						String.valueOf(DEFAULT_HEIGHT)));
 				break;
 
 		}
+	}
 
+	/**
+	 * Constructs a configuration object from a SharedPreferences object
+	 * 
+	 * @param ctx
+	 *          a valid context used to retrieve preferences
+	 * @param preferences
+	 *          the preferences object to retrieve from
+	 * @return a Configuration object containing the preferences
+	 */
+	public static Configuration loadFromPreferences(Context ctx,
+			SharedPreferences preferences) {
+		Configuration config = new Configuration(ctx, preferences);
+		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
+
+		config.refresh();
 		config.gameSpeed = 0;
 		Log.d(Configuration.class.getSimpleName(), config.toString());
 		return config;

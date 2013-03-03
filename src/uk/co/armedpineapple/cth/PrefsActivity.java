@@ -14,10 +14,14 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import uk.co.armedpineapple.cth.R;
 
 public class PrefsActivity extends PreferenceActivity implements
 		SharedPreferences.OnSharedPreferenceChangeListener {
+
+	private CTHApplication		application;
+	private SharedPreferences	preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +30,17 @@ public class PrefsActivity extends PreferenceActivity implements
 
 		// Make sure we're using the correct preferences
 		PreferenceManager prefMgr = getPreferenceManager();
+
 		prefMgr.setSharedPreferencesName(CTHApplication.PREFERENCES_KEY);
 		prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
 
 		// Save the configuration to the preferences to make sure that everything is
 		// up-to-date
 
-		final CTHApplication application = (CTHApplication) getApplication();
-		final SharedPreferences preferences = application.getPreferences();
+		application = (CTHApplication) getApplication();
+		preferences = application.getPreferences();
 
-		application.configuration.saveToPreferences(preferences);
+		application.configuration.saveToPreferences();
 
 		addPreferencesFromResource(R.xml.prefs);
 
@@ -52,7 +57,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								
+
 								Editor editor = preferences.edit();
 								editor.putBoolean("wizard_run", false);
 								editor.commit();
@@ -81,11 +86,18 @@ public class PrefsActivity extends PreferenceActivity implements
 		getPreferenceManager().getSharedPreferences()
 				.unregisterOnSharedPreferenceChangeListener(this);
 
+		Log.d(getClass().getSimpleName(), "Refreshing configuration");
+
+		application.configuration.refresh();
+
+		SDLActivity.cthUpdateConfiguration(application.configuration);
+		SDLActivity.cthGameSpeed(application.configuration.getGameSpeed());
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(getClass().getSimpleName(), "onResume()");
 		getPreferenceManager().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);
 	}
