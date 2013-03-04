@@ -58,27 +58,18 @@
             android:summary="@string/preferences_audio_preferences"
             android:title="@string/preferences_audio" >
             <CheckBoxPreference
-                android:key="audio_pref"
-                android:persistent="true"
-                android:summaryOff="@string/preferences_audio_off"
-                android:summaryOn="@string/preferences_audio_on"
-                android:title="@string/preferences_global_audio" />
-            <CheckBoxPreference
-                android:dependency="audio_pref"
                 android:key="announcer_pref"
                 android:persistent="true"
                 android:summaryOff="@string/preferences_announcer_disabled"
                 android:summaryOn="@string/preferences_announcer_enabled"
                 android:title="@string/preferences_announcer" />
             <CheckBoxPreference
-                android:dependency="audio_pref"
                 android:key="music_pref"
                 android:persistent="true"
                 android:summaryOff="@string/preferences_music_disabled"
                 android:summaryOn="@string/preferences_music_enabled"
                 android:title="@string/preferences_music" />
             <CheckBoxPreference
-                android:dependency="audio_pref"
                 android:key="fx_pref"
                 android:persistent="true"
                 android:summaryOff="@string/preferences_sound_fx_disabled"
