@@ -95,13 +95,16 @@
     <import file="${sdk.dir}/tools/ant/build.xml" />
     
     
-    
+    <!--  Update this from RequiredResources.txt -->
     <target name="createAssetsZip" description="Create the zip of the game scripts and copy to the assets folder">
         <zip destfile="${assets.dir}/game.zip" level="9">
             <fileset dir="${cthsrc.dir}" includes="Levels/**"/>
             <fileset dir="${cthsrc.dir}" includes="Lua/**"/>
             <fileset dir="${cthsrc.dir}" includes="CorsixTH.lua"/>
-            <fileset dir="${cthsrc.dir}" includes="Bitmap/**"/>
+            <fileset dir="${cthsrc.dir}" includes="Bitmap/aux_ui.*"/>
+            <fileset dir="${cthsrc.dir}" includes="Bitmap/tree_ctrl.*"/>
+            <fileset dir="${cthsrc.dir}" includes="Bitmap/mainmenu1080.dat"/>
+            <fileset dir="${cthsrc.dir}" includes="Bitmap/mainmenu1080.pal"/>
         </zip>
     </target>
 
