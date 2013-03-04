@@ -146,7 +146,7 @@
                 android:key="performance_prefs"
                 android:title="@string/preferences_performance" >
                 <ListPreference
-                    android:entries="@array/fps_limit_values"
+                    android:entries="@array/fps_limit_entries"
                     android:entryValues="@array/fps_limit_values"
                     android:key="fpslimit_pref"
                     android:persistent="true"
