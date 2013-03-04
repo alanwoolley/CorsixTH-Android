@@ -63,64 +63,27 @@
                 android:summaryOff="@string/preferences_audio_off"
                 android:summaryOn="@string/preferences_audio_on"
                 android:title="@string/preferences_global_audio" />
-
-            <PreferenceCategory
-                android:key="announcer_prefs"
-                android:title="@string/preferences_announcer" >
-                <CheckBoxPreference
-                    android:dependency="audio_pref"
-                    android:key="announcer_pref"
-                    android:persistent="true"
-                    android:summaryOff="@string/preferences_announcer_disabled"
-                    android:summaryOn="@string/preferences_announcer_enabled"
-                    android:title="@string/preferences_announcer" />
-
-                <ListPreference
-                    android:dependency="announcer_pref"
-                    android:entries="@array/volumes"
-                    android:entryValues="@array/volumes"
-                    android:key="announcervolume_pref"
-                    android:persistent="true"
-                    android:title="@string/preferences_announcer_volume" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="music_prefs"
-                android:title="@string/preferences_music" >
-                <CheckBoxPreference
-                    android:dependency="audio_pref"
-                    android:key="music_pref"
-                    android:persistent="true"
-                    android:summaryOff="@string/preferences_music_disabled"
-                    android:summaryOn="@string/preferences_music_enabled"
-                    android:title="@string/preferences_music" />
-
-                <ListPreference
-                    android:dependency="music_pref"
-                    android:entries="@array/volumes"
-                    android:entryValues="@array/volumes"
-                    android:key="musicvolume_pref"
-                    android:persistent="true"
-                    android:title="@string/preferences_music_volume" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:key="fx_prefs"
-                android:title="@string/preferences_sound_fx" >
-                <CheckBoxPreference
-                    android:dependency="audio_pref"
-                    android:key="fx_pref"
-                    android:persistent="true"
-                    android:summaryOff="@string/preferences_sound_fx_disabled"
-                    android:summaryOn="@string/preferences_sound_fx_enabled"
-                    android:title="@string/preferences_sound_fx" />
-
-                <ListPreference
-                    android:dependency="fx_pref"
-                    android:entries="@array/volumes"
-                    android:entryValues="@array/volumes"
-                    android:key="fxvolume_pref"
-                    android:persistent="true"
-                    android:title="@string/preferences_sound_fx_volume" />
-            </PreferenceCategory>
+            <CheckBoxPreference
+                android:dependency="audio_pref"
+                android:key="announcer_pref"
+                android:persistent="true"
+                android:summaryOff="@string/preferences_announcer_disabled"
+                android:summaryOn="@string/preferences_announcer_enabled"
+                android:title="@string/preferences_announcer" />
+            <CheckBoxPreference
+                android:dependency="audio_pref"
+                android:key="music_pref"
+                android:persistent="true"
+                android:summaryOff="@string/preferences_music_disabled"
+                android:summaryOn="@string/preferences_music_enabled"
+                android:title="@string/preferences_music" />
+            <CheckBoxPreference
+                android:dependency="audio_pref"
+                android:key="fx_pref"
+                android:persistent="true"
+                android:summaryOff="@string/preferences_sound_fx_disabled"
+                android:summaryOn="@string/preferences_sound_fx_enabled"
+                android:title="@string/preferences_sound_fx" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="display_prefs"
