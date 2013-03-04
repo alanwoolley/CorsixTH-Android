@@ -202,4 +202,5 @@
 	<string name="found_files">Found files in: </string>
 	<string name="searching">Searching...</string>
 	<string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
+	<string name="require_restart_dialog">Some of the changes you have made require the game to be restarted</string>
 </resources>

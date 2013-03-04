@@ -6,15 +6,18 @@
 package uk.co.armedpineapple.cth;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 import uk.co.armedpineapple.cth.R;
 
 public class PrefsActivity extends PreferenceActivity implements
@@ -22,6 +25,13 @@ public class PrefsActivity extends PreferenceActivity implements
 
 	private CTHApplication		application;
 	private SharedPreferences	preferences;
+
+	/** Preferences that require the game to be restarted before they take effect **/
+	private String[]					requireRestart	= new String[] { "language_pref",
+			"debug_pref", "movies_pref", "intromovie_pref", "resolution_pref",
+			"reswidth_pref", "resheight_pref"		};
+
+	private boolean						displayRestartMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +88,26 @@ public class PrefsActivity extends PreferenceActivity implements
 
 				});
 
+		for (String s : requireRestart) {
+			findPreference(s).setOnPreferenceChangeListener(
+					new OnPreferenceChangeListener() {
+
+						@Override
+						public boolean onPreferenceChange(Preference preference,
+								Object newValue) {
+							displayRestartMessage = true;
+							return true;
+						}
+
+					});
+		}
+
+	}
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+
 	}
 
 	@Override
@@ -88,6 +118,12 @@ public class PrefsActivity extends PreferenceActivity implements
 
 		Log.d(getClass().getSimpleName(), "Refreshing configuration");
 
+		if (displayRestartMessage) {
+			Log.d(getClass().getSimpleName(), "app requires restarting");
+			Toast.makeText(this, R.string.require_restart_dialog, Toast.LENGTH_LONG)
+					.show();
+		}
+
 		application.configuration.refresh();
 
 		SDLActivity.cthUpdateConfiguration(application.configuration);
@@ -97,6 +133,7 @@ public class PrefsActivity extends PreferenceActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		displayRestartMessage = false;
 		Log.d(getClass().getSimpleName(), "onResume()");
 		getPreferenceManager().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);
