@@ -33,6 +33,16 @@ public class PrefsActivity extends PreferenceActivity implements
 
 	private boolean						displayRestartMessage;
 
+	private void updateResolutionPrefsDisplay(String newValue) {
+		if (newValue.equals("3")) {
+			findPreference("reswidth_pref").setEnabled(true);
+			findPreference("resheight_pref").setEnabled(true);
+		} else {
+			findPreference("reswidth_pref").setEnabled(false);
+			findPreference("resheight_pref").setEnabled(false);
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,6 +65,30 @@ public class PrefsActivity extends PreferenceActivity implements
 		addPreferencesFromResource(R.xml.prefs);
 
 		// Custom Preference Listeners
+
+		updateResolutionPrefsDisplay(preferences.getString("resolution_pref", "1"));
+		findPreference("resolution_pref").setOnPreferenceClickListener(
+				new OnPreferenceClickListener() {
+
+					@Override
+					public boolean onPreferenceClick(Preference preference) {
+						Log.d(getClass().getSimpleName(), "Clicked");
+						return true;
+					}
+
+				});
+
+		findPreference("resolution_pref").setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						Log.d(getClass().getSimpleName(), "Res mode: " + newValue);
+						updateResolutionPrefsDisplay((String) newValue);
+						return true;
+					}
+				});
 
 		findPreference("setupwizard_pref").setOnPreferenceClickListener(
 				new OnPreferenceClickListener() {
@@ -89,12 +123,11 @@ public class PrefsActivity extends PreferenceActivity implements
 				});
 
 		for (String s : requireRestart) {
-			findPreference(s).setOnPreferenceChangeListener(
-					new OnPreferenceChangeListener() {
+			findPreference(s).setOnPreferenceClickListener(
+					new OnPreferenceClickListener() {
 
 						@Override
-						public boolean onPreferenceChange(Preference preference,
-								Object newValue) {
+						public boolean onPreferenceClick(Preference preference) {
 							displayRestartMessage = true;
 							return true;
 						}
