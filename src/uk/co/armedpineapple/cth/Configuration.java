@@ -46,7 +46,7 @@ public class Configuration {
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
-			edgeBordersSize;
+			edgeBordersSize, edgeScrollSpeed;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
@@ -88,6 +88,7 @@ public class Configuration {
 		editor.putBoolean("screenon_pref", keepScreenOn);
 		editor.putBoolean("edgescroll_pref", edgeScroll);
 		editor.putString("edgebordersize_pref", String.valueOf(edgeBordersSize));
+		editor.putString("edgescrollspeed_pref", String.valueOf(edgeScrollSpeed));
 		editor.putBoolean("adviser_pref", adviser);
 		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
 
@@ -127,6 +128,8 @@ public class Configuration {
 		edgeScroll = preferences.getBoolean("edgescroll_pref", false);
 		edgeBordersSize = Integer.valueOf(preferences.getString(
 				"edgebordersize_pref", "20"));
+		edgeScrollSpeed = Integer.valueOf(preferences.getString(
+				"edgescrollspeed_pref", "15"));
 		adviser = preferences.getBoolean("adviser_pref", true);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
@@ -274,8 +277,7 @@ public class Configuration {
 		sbuilder.append("allow_user_actions_while_paused = false\n");
 		sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
 				+ "\n");
-
-		// Create all the directories leading up to the config.txt file
+		sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
@@ -468,6 +470,14 @@ public class Configuration {
 
 	public void setSaveGamesPath(String saveGamesPath) {
 		this.saveGamesPath = saveGamesPath;
+	}
+
+	public int getEdgeScrollSpeed() {
+		return edgeScrollSpeed;
+	}
+
+	public void setEdgeScrollSpeed(int edgeScrollSpeed) {
+		this.edgeScrollSpeed = edgeScrollSpeed;
 	}
 
 	@Override

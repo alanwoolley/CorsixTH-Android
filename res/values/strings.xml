@@ -189,6 +189,8 @@
 	<string name="preferences_intro_movie_disabled">Intro Movie Disabled</string>
 	<string name="preferences_intro_movie_enabled">Intro Movie Enabled</string>
 	<string name="preferences_play_intro_movie">Play Intro Movie</string>
+	<string name="preferences_edge_scroll_speed">Edge Scroll Speed</string>
+	<string name="preferences_edgescrollspeedsummary">How quickly the game world scrolls</string>
 	<string name="no_quicksave">No quicksave to load!</string>
 	<string name="dialog_error_title">Error!</string>
 	<string name="recent_changes_title">Recent Changes</string>
@@ -202,5 +204,7 @@
 	<string name="found_files">Found files in: </string>
 	<string name="searching">Searching...</string>
 	<string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
-	<string name="require_restart_dialog">Some of the changes you have made require the game to be restarted</string>
+	<string name="require_restart_dialog">Some of the changes you have made require the game
+		to be restarted
+	</string>
 </resources>

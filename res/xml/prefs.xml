@@ -33,25 +33,6 @@
                     android:summaryOn="@string/preferences_adviser_enabled"
                     android:title="@string/preferences_adviser" />
             </PreferenceCategory>
-            <PreferenceCategory
-                android:key="edge_prefs"
-                android:title="@string/preferences_edge_scrolling" >
-                <CheckBoxPreference
-                    android:key="edgescroll_pref"
-                    android:persistent="true"
-                    android:summaryOff="@string/preferences_edge_scrolling_off"
-                    android:summaryOn="@string/preferences_edge_scrolling_on"
-                    android:title="@string/preferences_edge_scrolling" />
-
-                <ListPreference
-                    android:dependency="edgescroll_pref"
-                    android:entries="@array/edgeborders"
-                    android:entryValues="@array/edgeborders_values"
-                    android:key="edgebordersize_pref"
-                    android:persistent="true"
-                    android:summary="@string/preferences_edgescrollsummary"
-                    android:title="@string/preferences_edge_border_size" />
-            </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"
@@ -143,6 +124,33 @@
                     android:persistent="true"
                     android:summary="@string/preferences_reduce_cpu"
                     android:title="@string/preferences_fps_limiter" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="edge_prefs"
+                android:title="@string/preferences_edge_scrolling" >
+                <CheckBoxPreference
+                    android:key="edgescroll_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_edge_scrolling_off"
+                    android:summaryOn="@string/preferences_edge_scrolling_on"
+                    android:title="@string/preferences_edge_scrolling" />
+
+                <ListPreference
+                    android:dependency="edgescroll_pref"
+                    android:entries="@array/edgeborders"
+                    android:entryValues="@array/edgeborders_values"
+                    android:key="edgebordersize_pref"
+                    android:persistent="true"
+                    android:summary="@string/preferences_edgescrollsummary"
+                    android:title="@string/preferences_edge_border_size" />
+                <ListPreference
+                    android:dependency="edgescroll_pref"
+                    android:entries="@array/edgespeed"
+                    android:entryValues="@array/edgespeed_values"
+                    android:key="edgescrollspeed_pref"
+                    android:persistent="true"
+                    android:summary="@string/preferences_edgescrollspeedsummary"
+                    android:title="@string/preferences_edge_scroll_speed" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:enabled="false"
