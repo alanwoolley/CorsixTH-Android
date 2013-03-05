@@ -88,6 +88,7 @@ public class Configuration {
 		editor.putBoolean("edgescroll_pref", edgeScroll);
 		editor.putBoolean("adviser_pref", adviser);
 		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
+
 		editor.commit();
 
 	}
@@ -261,7 +262,7 @@ public class Configuration {
 		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
 
 		sbuilder.append("free_build_mode = false\n");
-		sbuilder.append("adviser_disabled = " + String.valueOf(adviser) + "\n");
+		sbuilder.append("adviser_disabled = " + String.valueOf(!adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
 
 		sbuilder.append("movies = false\n");
@@ -378,6 +379,14 @@ public class Configuration {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public boolean getAdviser() {
+		return adviser;
+	}
+
+	public void setAdviser(boolean adviser) {
+		this.adviser = adviser;
 	}
 
 	public void setResolutionMode(int resolutionMode) {
