@@ -45,7 +45,8 @@ public class Configuration {
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
 
 	private int									musicVol, announcementsVol, sfxVol,
-			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit = 18;
+			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
+			edgeBordersSize;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
@@ -86,6 +87,7 @@ public class Configuration {
 		editor.putBoolean("wizard_run", true);
 		editor.putBoolean("screenon_pref", keepScreenOn);
 		editor.putBoolean("edgescroll_pref", edgeScroll);
+		editor.putString("edgebordersize_pref", String.valueOf(edgeBordersSize));
 		editor.putBoolean("adviser_pref", adviser);
 		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
 
@@ -123,6 +125,8 @@ public class Configuration {
 
 		keepScreenOn = preferences.getBoolean("screenon_pref", true);
 		edgeScroll = preferences.getBoolean("edgescroll_pref", false);
+		edgeBordersSize = Integer.valueOf(preferences.getString(
+				"edgebordersize_pref", "20"));
 		adviser = preferences.getBoolean("adviser_pref", true);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
@@ -268,6 +272,8 @@ public class Configuration {
 		sbuilder.append("movies = false\n");
 		sbuilder.append("play_intro = false\n");
 		sbuilder.append("allow_user_actions_while_paused = false\n");
+		sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
+				+ "\n");
 
 		// Create all the directories leading up to the config.txt file
 
@@ -387,6 +393,22 @@ public class Configuration {
 
 	public void setAdviser(boolean adviser) {
 		this.adviser = adviser;
+	}
+
+	public boolean getEdgeScroll() {
+		return edgeScroll;
+	}
+
+	public void setEdgeScroll(boolean edgeScroll) {
+		this.edgeScroll = edgeScroll;
+	}
+
+	public int getEdgeBordersSize() {
+		return edgeBordersSize;
+	}
+
+	public void setEdgeBordersSize(int edgeBordersSize) {
+		this.edgeBordersSize = edgeBordersSize;
 	}
 
 	public void setResolutionMode(int resolutionMode) {
