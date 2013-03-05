@@ -5,12 +5,20 @@
  */
 package uk.co.armedpineapple.cth;
 
+import java.io.File;
+
+import com.bugsense.trace.BugSenseHandler;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -19,6 +27,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Files.DownloadFileTask;
+import uk.co.armedpineapple.cth.Files.UnzipTask;
+import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 public class PrefsActivity extends PreferenceActivity implements
 		SharedPreferences.OnSharedPreferenceChangeListener {
@@ -29,7 +40,7 @@ public class PrefsActivity extends PreferenceActivity implements
 	/** Preferences that require the game to be restarted before they take effect **/
 	private String[]					requireRestart	= new String[] { "language_pref",
 			"debug_pref", "movies_pref", "intromovie_pref", "resolution_pref",
-			"reswidth_pref", "resheight_pref"		};
+			"reswidth_pref", "resheight_pref", "music_pref" };
 
 	private boolean						displayRestartMessage;
 
@@ -41,6 +52,182 @@ public class PrefsActivity extends PreferenceActivity implements
 			findPreference("reswidth_pref").setEnabled(false);
 			findPreference("resheight_pref").setEnabled(false);
 		}
+	}
+
+	boolean onMusicEnabled() {
+
+		// Check if the original files has music, and show a dialog if not
+
+		if (!Files.hasMusicFiles(application.configuration.getOriginalFilesPath())) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+			builder.setMessage(getString(R.string.no_music_dialog))
+					.setCancelable(true)
+					.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+
+					});
+
+			AlertDialog alert = builder.create();
+			alert.show();
+			return false;
+		}
+
+		File timidityConfig = new File(Files.getExtStoragePath() + "timidity"
+				+ File.separator + "timidity.cfg");
+
+		if (!(timidityConfig.isFile() && timidityConfig.canRead())) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					if (which == DialogInterface.BUTTON_POSITIVE) {
+						doTimidityDownload();
+					}
+				}
+
+			};
+
+			builder.setMessage(getString(R.string.music_download_dialog))
+					.setCancelable(true)
+					.setNegativeButton(R.string.cancel, alertListener)
+					.setPositiveButton(R.string.ok, alertListener);
+
+			AlertDialog alert = builder.create();
+			alert.show();
+
+		} else {
+			// Music files are installed and ready
+			return true;
+		}
+
+		return false;
+
+	}
+
+	void doTimidityDownload() {
+		// Check for external storage
+		if (!Files.canAccessExternalStorage()) {
+			// No external storage
+			Toast toast = Toast.makeText(this, R.string.no_external_storage,
+					Toast.LENGTH_LONG);
+			toast.show();
+			return;
+		}
+
+		// Check for network connection
+		if (!Network.HasNetworkConnection(this)) {
+			// Connection error
+			Dialog connectionDialog = DialogFactory.createNetworkDialog(this);
+			connectionDialog.show();
+			return;
+
+		}
+
+		final File extDir = getExternalFilesDir(null);
+		final ProgressDialog dialog = new ProgressDialog(this);
+
+		dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		dialog.setMessage(getString(R.string.downloading_timidity));
+		dialog.setIndeterminate(false);
+		dialog.setCancelable(false);
+
+		final UnzipTask uzt = new Files.UnzipTask(Files.getExtStoragePath()
+				+ File.separator + "timidity" + File.separator) {
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<String> result) {
+				super.onPostExecute(result);
+				dialog.hide();
+
+				if (result.getResult() != null) {
+					Log.d(getClass().getSimpleName(),
+							"Downloaded and extracted Timidity successfully");
+
+					Editor editor = preferences.edit();
+					editor.putBoolean("music_pref", true);
+					editor.commit();
+
+					((CheckBoxPreference) findPreference("music_pref")).setChecked(true);
+
+				} else if (result.getError() != null) {
+					Exception e = result.getError();
+					BugSenseHandler.sendException(e);
+					Toast errorToast = Toast.makeText(PrefsActivity.this,
+							R.string.download_timidity_error, Toast.LENGTH_LONG);
+
+					errorToast.show();
+				}
+			}
+
+			@SuppressLint("NewApi")
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				dialog.setMessage(getString(R.string.extracting_timidity));
+				if (Build.VERSION.SDK_INT >= 11) {
+					dialog.setProgressNumberFormat(null);
+				}
+
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... values) {
+				super.onProgressUpdate(values);
+				dialog.setProgress(values[0]);
+				dialog.setMax(values[1]);
+			}
+
+		};
+
+		final DownloadFileTask dft = new Files.DownloadFileTask(
+				extDir.getAbsolutePath()) {
+
+			@Override
+			protected void onPostExecute(AsyncTaskResult<File> result) {
+				super.onPostExecute(result);
+
+				Toast errorToast = Toast.makeText(PrefsActivity.this,
+						R.string.download_timidity_error, Toast.LENGTH_LONG);
+
+				if (result.getError() != null) {
+					BugSenseHandler.sendException(result.getError());
+					dialog.hide();
+					errorToast.show();
+				} else {
+					uzt.execute(result.getResult());
+				}
+			}
+
+			@SuppressLint("NewApi")
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				dialog.show();
+				if (Build.VERSION.SDK_INT >= 11) {
+					dialog
+							.setProgressNumberFormat(getString(R.string.download_progress_dialog_text));
+				}
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... values) {
+				super.onProgressUpdate(values);
+				dialog.setProgress(values[0] / 1000000);
+				dialog.setMax(values[1] / 1000000);
+			}
+
+		};
+
+		dft.execute(getString(R.string.timidity_url));
+
 	}
 
 	@Override
@@ -67,17 +254,21 @@ public class PrefsActivity extends PreferenceActivity implements
 		// Custom Preference Listeners
 
 		updateResolutionPrefsDisplay(preferences.getString("resolution_pref", "1"));
-		findPreference("resolution_pref").setOnPreferenceClickListener(
-				new OnPreferenceClickListener() {
+
+		findPreference("music_pref").setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
 
 					@Override
-					public boolean onPreferenceClick(Preference preference) {
-						Log.d(getClass().getSimpleName(), "Clicked");
-						return true;
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						if (!(Boolean) newValue) {
+							return true;
+						}
+
+						return onMusicEnabled();
 					}
 
 				});
-
 		findPreference("resolution_pref").setOnPreferenceChangeListener(
 				new OnPreferenceChangeListener() {
 
@@ -153,7 +344,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
 		if (displayRestartMessage) {
 			Log.d(getClass().getSimpleName(), "app requires restarting");
-			Toast.makeText(this, R.string.require_restart_dialog, Toast.LENGTH_LONG)
+			Toast.makeText(this, R.string.dialog_require_restart, Toast.LENGTH_LONG)
 					.show();
 		}
 
