@@ -121,7 +121,7 @@
 	</string>
 
 	<string name="menuitem_settings">Settings</string>
-	<string name="dialog_require_restart">You must restart the game for some of these changes
+	<string name="dialog_require_restart">You may have to restart the game for some of these changes
 		take effect
 	</string>
 	<string name="off">Off</string>
