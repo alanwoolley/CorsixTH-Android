@@ -41,21 +41,23 @@ public class Configuration {
 	public final static String	UNICODE_PATH				= "/system/fonts/DroidSansFallback.ttf";
 
 	private String							originalFilesPath, cthPath, language;
-	private boolean							globalAudio, playMusic, playAnnouncements,
-			playSoundFx, keepScreenOn, debug;
+	private Boolean							globalAudio, playMusic, playAnnouncements,
+			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
 
 	private int									musicVol, announcementsVol, sfxVol,
-			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit = 18;
+			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
+			edgeBordersSize, edgeScrollSpeed;
 
 	// TODO Get this the proper way.
 	private String							saveGamesPath				= Files.getExtStoragePath()
 																											+ "CTHsaves";
 
 	private Context							ctx;
+	private SharedPreferences		preferences;
 
-	private Configuration(Context ctx) {
+	private Configuration(Context ctx, SharedPreferences prefs) {
 		this.ctx = ctx;
-
+		this.preferences = prefs;
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class Configuration {
 	 * @param preferences
 	 *          the SharedPreferences object to save to
 	 **/
-	public void saveToPreferences(SharedPreferences preferences) {
+	public void saveToPreferences() {
 		Log.d(getClass().getSimpleName(), "Saving Configuration");
 		Log.d(getClass().getSimpleName(), this.toString());
 		Editor editor = preferences.edit();
@@ -84,8 +86,93 @@ public class Configuration {
 		editor.putBoolean("debug_pref", debug);
 		editor.putBoolean("wizard_run", true);
 		editor.putBoolean("screenon_pref", keepScreenOn);
+		editor.putBoolean("edgescroll_pref", edgeScroll);
+		editor.putString("edgebordersize_pref", String.valueOf(edgeBordersSize));
+		editor.putString("edgescrollspeed_pref", String.valueOf(edgeScrollSpeed));
+		editor.putBoolean("adviser_pref", adviser);
+		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
+
 		editor.commit();
 
+	}
+
+	/**
+	 * Refresh the configuration with values from the preferences it was
+	 * initialised from. Does not reset any configuration options that are not
+	 * present in the preferences
+	 **/
+	public void refresh() {
+		originalFilesPath = preferences.getString("originalfiles_pref", "");
+
+		// TODO - No check for external storage availability
+		cthPath = preferences.getString("gamescripts_pref", ctx
+				.getExternalFilesDir(null).getAbsolutePath());
+
+		globalAudio = preferences.getBoolean("audio_pref", true);
+		playMusic = preferences.getBoolean("music_pref", false);
+		playAnnouncements = preferences.getBoolean("announcer_pref", true);
+		playSoundFx = preferences.getBoolean("fx_pref", true);
+		sfxVol = Integer.valueOf(preferences.getString("fxvolume_pref", "5"));
+		announcementsVol = Integer.valueOf(preferences.getString(
+				"announcervolume_pref", "5"));
+		musicVol = Integer.valueOf(preferences.getString("musicvolume_pref", "5"));
+
+		language = preferences.getString("language_pref", "en");
+
+		resolutionMode = Integer.valueOf(preferences.getString("resolution_pref",
+				"1"));
+
+		debug = preferences.getBoolean("debug_pref", false);
+
+		keepScreenOn = preferences.getBoolean("screenon_pref", true);
+		edgeScroll = preferences.getBoolean("edgescroll_pref", false);
+		edgeBordersSize = Integer.valueOf(preferences.getString(
+				"edgebordersize_pref", "20"));
+		edgeScrollSpeed = Integer.valueOf(preferences.getString(
+				"edgescrollspeed_pref", "15"));
+		adviser = preferences.getBoolean("adviser_pref", true);
+
+		if (preferences.getString("fpslimit_pref", "20").equals(
+				ctx.getString(R.string.off))) {
+			fpsLimit = 0;
+		} else {
+			fpsLimit = Integer.valueOf(preferences.getString("fpslimit_pref", "20"));
+		}
+
+		/*
+		 * If the resolution is default, set the resolution to 640x480.
+		 * 
+		 * TODO - make this external
+		 */
+
+		switch (resolutionMode) {
+			case RESOLUTION_DEFAULT:
+				displayWidth = DEFAULT_WIDTH;
+				displayHeight = DEFAULT_HEIGHT;
+				break;
+
+			/*
+			 * TODO - the native resolution is easy to get but can sometimes be
+			 * misleading because of the buttons on Android 3.0+. There's probably a
+			 * much better way of doing this
+			 */
+
+			case RESOLUTION_NATIVE:
+				DisplayMetrics dm = new DisplayMetrics();
+				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
+						.getDefaultDisplay().getMetrics(dm);
+				displayWidth = dm.widthPixels;
+				displayHeight = dm.heightPixels;
+				break;
+
+			case RESOLUTION_CUSTOM:
+				displayWidth = Integer.valueOf(preferences.getString("reswidth_pref",
+						String.valueOf(DEFAULT_WIDTH)));
+				displayHeight = Integer.valueOf(preferences.getString("resheight_pref",
+						String.valueOf(DEFAULT_HEIGHT)));
+				break;
+
+		}
 	}
 
 	/**
@@ -99,70 +186,10 @@ public class Configuration {
 	 */
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
-		Configuration config = new Configuration(ctx);
+		Configuration config = new Configuration(ctx, preferences);
 		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
 
-		config.originalFilesPath = preferences.getString("originalfiles_pref", "");
-
-		// TODO - No check for external storage availability
-		config.cthPath = preferences.getString("gamescripts_pref", ctx
-				.getExternalFilesDir(null).getAbsolutePath());
-
-		config.globalAudio = preferences.getBoolean("audio_pref", true);
-		config.playMusic = preferences.getBoolean("music_pref", false);
-		config.playAnnouncements = preferences.getBoolean("announcer_pref", true);
-		config.playSoundFx = preferences.getBoolean("fx_pref", true);
-		config.sfxVol = Integer
-				.valueOf(preferences.getString("fxvolume_pref", "5"));
-		config.announcementsVol = Integer.valueOf(preferences.getString(
-				"announcervolume_pref", "5"));
-		config.musicVol = Integer.valueOf(preferences.getString("musicvolume_pref",
-				"5"));
-
-		config.language = preferences.getString("language_pref", "en");
-
-		config.resolutionMode = Integer.valueOf(preferences.getString(
-				"resolution_pref", "1"));
-
-		config.debug = preferences.getBoolean("debug_pref", false);
-
-		config.keepScreenOn = preferences.getBoolean("screenon_pref", true);
-
-		/*
-		 * If the resolution is default, set the resolution to 640x480.
-		 * 
-		 * TODO - make this external
-		 */
-
-		switch (config.resolutionMode) {
-			case RESOLUTION_DEFAULT:
-				config.displayWidth = DEFAULT_WIDTH;
-				config.displayHeight = DEFAULT_HEIGHT;
-				break;
-
-			/*
-			 * TODO - the native resolution is easy to get but can sometimes be
-			 * misleading because of the buttons on Android 3.0+. There's probably a
-			 * much better way of doing this
-			 */
-
-			case RESOLUTION_NATIVE:
-				DisplayMetrics dm = new DisplayMetrics();
-				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
-						.getDefaultDisplay().getMetrics(dm);
-				config.displayWidth = dm.widthPixels;
-				config.displayHeight = dm.heightPixels;
-				break;
-
-			case RESOLUTION_CUSTOM:
-				config.displayWidth = Integer.valueOf(preferences.getString(
-						"reswidth_pref", String.valueOf(DEFAULT_WIDTH)));
-				config.displayHeight = Integer.valueOf(preferences.getString(
-						"resheight_pref", String.valueOf(DEFAULT_HEIGHT)));
-				break;
-
-		}
-
+		config.refresh();
 		config.gameSpeed = 0;
 		Log.d(Configuration.class.getSimpleName(), config.toString());
 		return config;
@@ -209,7 +236,9 @@ public class Configuration {
 
 		sbuilder.append(SEPARATOR);
 		sbuilder.append("theme_hospital_install = [[" + originalFilesPath + "]]\n");
-		sbuilder.append("prevent_edge_scrolling = true\n");
+
+		sbuilder.append("prevent_edge_scrolling = " + String.valueOf(!edgeScroll)
+				+ "\n");
 
 		sbuilder.append("audio = " + String.valueOf(globalAudio) + "\n");
 
@@ -240,14 +269,15 @@ public class Configuration {
 		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
 
 		sbuilder.append("free_build_mode = false\n");
-		sbuilder.append("adviser_disabled = false\n");
+		sbuilder.append("adviser_disabled = " + String.valueOf(!adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
 
 		sbuilder.append("movies = false\n");
 		sbuilder.append("play_intro = false\n");
 		sbuilder.append("allow_user_actions_while_paused = false\n");
-
-		// Create all the directories leading up to the config.txt file
+		sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
+				+ "\n");
+		sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
@@ -359,6 +389,30 @@ public class Configuration {
 		this.language = language;
 	}
 
+	public boolean getAdviser() {
+		return adviser;
+	}
+
+	public void setAdviser(boolean adviser) {
+		this.adviser = adviser;
+	}
+
+	public boolean getEdgeScroll() {
+		return edgeScroll;
+	}
+
+	public void setEdgeScroll(boolean edgeScroll) {
+		this.edgeScroll = edgeScroll;
+	}
+
+	public int getEdgeBordersSize() {
+		return edgeBordersSize;
+	}
+
+	public void setEdgeBordersSize(int edgeBordersSize) {
+		this.edgeBordersSize = edgeBordersSize;
+	}
+
 	public void setResolutionMode(int resolutionMode) {
 
 		switch (resolutionMode) {
@@ -416,6 +470,14 @@ public class Configuration {
 
 	public void setSaveGamesPath(String saveGamesPath) {
 		this.saveGamesPath = saveGamesPath;
+	}
+
+	public int getEdgeScrollSpeed() {
+		return edgeScrollSpeed;
+	}
+
+	public void setEdgeScrollSpeed(int edgeScrollSpeed) {
+		this.edgeScrollSpeed = edgeScrollSpeed;
 	}
 
 	@Override

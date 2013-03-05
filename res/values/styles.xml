@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.AppTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+    <style name="Theme.AppTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <color name="background">#FFFFFF</color>
+    <style name="Theme.WizardTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@color/altbackground</item>
+    </style>
 
+    <color name="background">#000000</color>
+    <color name="altbackground">#FFFFFF</color>
+    <color name="MenuButtonBackground">#BBDDDDDD</color>
+    <color name="transparent">#00000000</color>
 
     <style name="WizardHeaderText" parent="@android:style/TextAppearance.Large">
         <item name="android:padding">10dp</item>
@@ -16,17 +22,26 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="Theme_Dialog_Translucent" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
     <style name="FilesFontBig" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
-    
+
     <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small">
         <item name="android:textColor">#FFFFFF</item>
     </style>
-    
+
     <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
+
+    <style name="Dialogs" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
 </resources>

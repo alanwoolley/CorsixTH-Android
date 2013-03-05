@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string-array name="edgeborders_values" translatable="false">
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>35</item>
+        <item>50</item>
+        <item>80</item>
+    </string-array>
+    <string-array name="edgeborders">
+        <item>Tiny</item>
+        <item>Smaller</item>
+        <item>Small</item>
+        <item>Regular</item>
+        <item>Large</item>
+        <item>Larger</item>
+        <item>Huge</item>
+    </string-array>
+    <string-array name="edgespeed">
+        <item>Slowest</item>
+        <item>Slower</item>
+        <item>Slow</item>
+        <item>Normal</item>
+        <item>Fast</item>
+        <item>Faster</item>
+        <item>Fastest</item>
+    </string-array>
+    <string-array name="edgespeed_values">
+        <item>3</item>
+        <item>7</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+    </string-array>
     <string-array name="volumes" translatable="false">
         <item>1</item>
         <item>2</item>
@@ -13,9 +50,9 @@
         <item>10</item>
     </string-array>
     <string-array name="resolutions">
-        <item>Default</item>
-        <item>Native</item>
-        <item>Custom</item>
+        <item>@string/default_resolution</item>
+        <item>@string/native_resolution</item>
+        <item>@string/custom_resolution</item>
     </string-array>
     <string-array name="gamespeed" translatable="false">
         <item>1</item>
@@ -61,4 +98,25 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string-array name="fps_limit_entries" translatable="false">
+        <item>5 FPS</item>
+        <item>10 FPS</item>
+        <item>15 FPS</item>
+        <item>20 FPS (Default)</item>
+        <item>30 FPS</item>
+        <item>40 FPS</item>
+        <item>60 FPS</item>
+        <item>@string/off</item>
+    </string-array>
+    <string-array name="fps_limit_values" translatable="false">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>60</item>
+        <item>0</item>
+    </string-array>
+
 </resources>

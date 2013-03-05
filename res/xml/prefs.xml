@@ -3,150 +3,173 @@
     android:key="first_prefs"
     android:persistent="true" >
 
-    <PreferenceCategory android:title="Wizard" >
+    <PreferenceCategory android:title="@string/preferences_setup_wizard" >
         <Preference
             android:key="setupwizard_pref"
-            android:title="Run Setup Wizard" />
+            android:title="@string/preferences_run_setup_wizard" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Settings" >
+    <PreferenceCategory android:title="@string/preferences_settings" >
         <PreferenceScreen
             android:key="game_prefs"
-            android:summary="Gameplay preferences"
-            android:title="Game" >
-            <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="debug_pref"
-                android:persistent="true"
-                android:summary="Debug + Cheats Enabled"
-                android:title="Debug mode" />
-
-            <ListPreference
-                android:defaultValue="en"
-                android:entries="@array/languages"
-                android:entryValues="@array/languages_values"
-                android:key="language_pref"
-                android:persistent="true"
-                android:title="Language" />
+            android:summary="@string/preferences_gameplay_preferences"
+            android:title="@string/preferences_game" >
+            <PreferenceCategory
+                android:key="local_prefs"
+                android:title="@string/preferences_localisation" >
+                <ListPreference
+                    android:entries="@array/languages"
+                    android:entryValues="@array/languages_values"
+                    android:key="language_pref"
+                    android:persistent="true"
+                    android:title="@string/preferences_language" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="adviser_prefs"
+                android:title="@string/preferences_adviser" >
+                <CheckBoxPreference
+                    android:key="adviser_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_adviser_disabled"
+                    android:summaryOn="@string/preferences_adviser_enabled"
+                    android:title="@string/preferences_adviser" />
+            </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"
-            android:summary="Audio preferences"
-            android:title="Audio" >
+            android:summary="@string/preferences_audio_preferences"
+            android:title="@string/preferences_audio" >
             <CheckBoxPreference
-                android:defaultValue="true"
-                android:key="audio_pref"
+                android:key="announcer_pref"
                 android:persistent="true"
-                android:title="Global Audio" />
-
-            <PreferenceCategory
-                android:dependency="audio_pref"
-                android:key="announcer_prefs"
-                android:title="Announcer" >
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="announcer_pref"
-                    android:persistent="true"
-                    android:summary="Announcer Enabled"
-                    android:title="Announcer" />
-
-                <ListPreference
-                    android:defaultValue="5"
-                    android:dependency="announcer_pref"
-                    android:entries="@array/volumes"
-                    android:entryValues="@array/volumes"
-                    android:key="announcervolume_pref"
-                    android:persistent="true"
-                    android:title="Announcer Volume" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:dependency="audio_pref"
-                android:key="music_prefs"
-                android:title="Music" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="music_pref"
-                    android:persistent="true"
-                    android:summary="Music Enabled"
-                    android:title="Music" />
-
-                <ListPreference
-                    android:defaultValue="5"
-                    android:dependency="music_pref"
-                    android:entries="@array/volumes"
-                    android:entryValues="@array/volumes"
-                    android:key="musicvolume_pref"
-                    android:persistent="true"
-                    android:title="Music Volume" />
-            </PreferenceCategory>
-            <PreferenceCategory
-                android:dependency="audio_pref"
-                android:key="fx_prefs"
-                android:title="Sound FX" >
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="fx_pref"
-                    android:persistent="true"
-                    android:summary="Sound FX Enabled"
-                    android:title="Sound FX" />
-
-                <ListPreference
-                    android:defaultValue="5"
-                    android:dependency="fx_pref"
-                    android:entries="@array/volumes"
-                    android:entryValues="@array/volumes"
-                    android:key="fxvolume_pref"
-                    android:persistent="true"
-                    android:title="Sound FX Volume" />
-            </PreferenceCategory>
+                android:summaryOff="@string/preferences_announcer_disabled"
+                android:summaryOn="@string/preferences_announcer_enabled"
+                android:title="@string/preferences_announcer" />
+            <CheckBoxPreference
+                android:key="music_pref"
+                android:persistent="true"
+                android:summaryOff="@string/preferences_music_disabled"
+                android:summaryOn="@string/preferences_music_enabled"
+                android:title="@string/preferences_music" />
+            <CheckBoxPreference
+                android:key="fx_pref"
+                android:persistent="true"
+                android:summaryOff="@string/preferences_sound_fx_disabled"
+                android:summaryOn="@string/preferences_sound_fx_enabled"
+                android:title="@string/preferences_sound_fx" />
         </PreferenceScreen>
         <PreferenceScreen
             android:key="display_prefs"
-            android:summary="Display preferences"
-            android:title="Display" >
+            android:summary="@string/preferences_display_preferences"
+            android:title="@string/preferences_display" >
             <ListPreference
-                android:defaultValue="1"
                 android:entries="@array/resolutions"
                 android:entryValues="@array/resolutions_values"
                 android:key="resolution_pref"
                 android:persistent="true"
-                android:title="Resolution" />
+                android:title="@string/preferences_resolution" />
 
-            <EditTextPreference
-                android:defaultValue="640"
-                android:key="reswidth_pref"
-                android:persistent="true"
-                android:title="Width" />
-            <EditTextPreference
-                android:defaultValue="480"
-                android:key="resheight_pref"
-                android:persistent="true"
-                android:title="Height" />
+            <PreferenceCategory
+                android:key="customres_prefs"
+                android:title="@string/preferences_custom_resolution" >
+                <EditTextPreference
+                    android:key="reswidth_pref"
+                    android:persistent="true"
+                    android:title="@string/preferences_width" />
+                <EditTextPreference
+                    android:key="resheight_pref"
+                    android:persistent="true"
+                    android:title="@string/preferences_height" />
+            </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
-            android:key="interals_prefs"
-            android:summary="Do not change these unless you know what you are doing!"
-            android:title="Internals" >
-            <PreferenceCategory
-                android:key="gamescripts_prefs"
-                android:title="Game Scripts" >
-                <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="customgamescripts_pref"
-                    android:persistent="true"
-                    android:title="Use Custom Scripts" />
-
-                <EditTextPreference
-                    android:dependency="customgamescripts_pref"
-                    android:key="gamescripts_pref"
-                    android:persistent="true"
-                    android:title="Game Scripts Location" />
-            </PreferenceCategory>
-
-            <EditTextPreference
-                android:defaultValue=""
-                android:key="originalfiles_pref"
+            android:key="advanced_prefs"
+            android:summary="@string/preferences_advanced_preferences"
+            android:title="@string/preferences_advanced" >
+            <CheckBoxPreference
+                android:key="screenon_pref"
                 android:persistent="true"
-                android:title="Original TH Location" />
+                android:summaryOff="@string/preferences_keep_screen_on_off"
+                android:summaryOn="@string/preferences_keep_screen_on_on"
+                android:title="@string/preferences_keep_screen_on" />
+
+            <PreferenceCategory
+                android:key="debug_prefs"
+                android:title="@string/preferences_debug" >
+                <CheckBoxPreference
+                    android:key="debug_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_debug_mode_disabled"
+                    android:summaryOn="@string/preferences_debug_mode_enabled"
+                    android:title="@string/preferences_debug_mode" />
+                <CheckBoxPreference
+                    android:dependency="debug_pref"
+                    android:key="trackfps_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_not_tracking_fps"
+                    android:summaryOn="@string/preferences_tracking_fps"
+                    android:title="@string/preferences_track_fps" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="experimental_prefs"
+            android:summary="@string/preferences_experimental_features"
+            android:title="@string/preferences_experimental" >
+            <PreferenceCategory
+                android:key="performance_prefs"
+                android:title="@string/preferences_performance" >
+                <ListPreference
+                    android:entries="@array/fps_limit_entries"
+                    android:entryValues="@array/fps_limit_values"
+                    android:key="fpslimit_pref"
+                    android:persistent="true"
+                    android:summary="@string/preferences_reduce_cpu"
+                    android:title="@string/preferences_fps_limiter" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:key="edge_prefs"
+                android:title="@string/preferences_edge_scrolling" >
+                <CheckBoxPreference
+                    android:key="edgescroll_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_edge_scrolling_off"
+                    android:summaryOn="@string/preferences_edge_scrolling_on"
+                    android:title="@string/preferences_edge_scrolling" />
+
+                <ListPreference
+                    android:dependency="edgescroll_pref"
+                    android:entries="@array/edgeborders"
+                    android:entryValues="@array/edgeborders_values"
+                    android:key="edgebordersize_pref"
+                    android:persistent="true"
+                    android:summary="@string/preferences_edgescrollsummary"
+                    android:title="@string/preferences_edge_border_size" />
+                <ListPreference
+                    android:dependency="edgescroll_pref"
+                    android:entries="@array/edgespeed"
+                    android:entryValues="@array/edgespeed_values"
+                    android:key="edgescrollspeed_pref"
+                    android:persistent="true"
+                    android:summary="@string/preferences_edgescrollspeedsummary"
+                    android:title="@string/preferences_edge_scroll_speed" />
+            </PreferenceCategory>
+            <PreferenceCategory
+                android:enabled="false"
+                android:key="movies_prefs"
+                android:title="@string/preferences_movies" >
+                <CheckBoxPreference
+                    android:key="movies_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_movies_disabled"
+                    android:summaryOn="@string/preferences_movies_enabled"
+                    android:title="@string/preferences_play_movies" />
+                <CheckBoxPreference
+                    android:dependency="movies_pref"
+                    android:key="intromovie_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_intro_movie_disabled"
+                    android:summaryOn="@string/preferences_intro_movie_enabled"
+                    android:title="@string/preferences_play_intro_movie" />
+            </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
 

@@ -71,12 +71,6 @@ public class WizardActivity extends CTHActivity {
 					(LanguageWizard) inflater.inflate(R.layout.wizard_language, null));
 			loadAndAdd(inflater, flipper, (OriginalFilesWizard) inflater.inflate(
 					R.layout.wizard_originalfiles, null));
-			loadAndAdd(inflater, flipper,
-					(DisplayWizard) inflater.inflate(R.layout.wizard_display, null));
-			loadAndAdd(inflater, flipper,
-					(AudioWizard) inflater.inflate(R.layout.wizard_audio, null));
-			loadAndAdd(inflater, flipper,
-					(AdvancedWizard) inflater.inflate(R.layout.wizard_advanced, null));
 
 			// Setup Buttons
 			previousButton.setVisibility(View.GONE);
@@ -112,7 +106,7 @@ public class WizardActivity extends CTHActivity {
 							.saveConfiguration(app.configuration);
 
 					if (nextButton.getText().equals(getString(R.string.play_button))) {
-						app.configuration.saveToPreferences(preferences);
+						app.configuration.saveToPreferences();
 
 						finish();
 						WizardActivity.this.startActivity(new Intent(WizardActivity.this,

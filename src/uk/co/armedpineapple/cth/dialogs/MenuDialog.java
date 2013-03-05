@@ -1,12 +1,14 @@
 package uk.co.armedpineapple.cth.dialogs;
 
 import uk.co.armedpineapple.cth.CTHApplication;
+import uk.co.armedpineapple.cth.PrefsActivity;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import static uk.co.armedpineapple.cth.SDLActivity.Command.*;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.view.View;
@@ -90,30 +92,8 @@ public class MenuDialog extends Dialog implements OnItemClickListener {
 			case SAVE:
 				SDLActivity.sendCommand(SHOW_SAVE_DIALOG, null);
 				return;
-			case WIZARD:
-				AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-				DialogInterface.OnClickListener alertListener = new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						SharedPreferences preferences = ((CTHApplication) ctx
-								.getApplication()).getPreferences();
-
-						Editor editor = preferences.edit();
-						editor.putBoolean("wizard_run", false);
-						editor.commit();
-
-						SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
-					}
-
-				};
-				builder
-						.setMessage(
-								ctx.getResources().getString(R.string.setup_wizard_dialog))
-						.setCancelable(false).setNeutralButton(R.string.ok, alertListener);
-
-				AlertDialog alert = builder.create();
-				alert.show();
+			case SETTINGS:
+				ctx.startActivity(new Intent(ctx, PrefsActivity.class));
 				return;
 
 		}
