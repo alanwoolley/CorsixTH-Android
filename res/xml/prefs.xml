@@ -169,6 +169,17 @@
                     android:summaryOn="@string/preferences_intro_movie_enabled"
                     android:title="@string/preferences_play_intro_movie" />
             </PreferenceCategory>
+            <PreferenceCategory
+                android:key="controls_prefs"
+                android:title="@string/preferences_controls" >
+                <CheckBoxPreference
+                    android:enabled="false"
+                    android:key="spen_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_spen_disabled"
+                    android:summaryOn="@string/preferences_spen_enabled"
+                    android:title="@string/preferences_spen" />
+            </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
 

@@ -43,7 +43,7 @@ public class Configuration {
 	private String							originalFilesPath, cthPath, language;
 	private Boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser, playMovies,
-			playIntroMovie;
+			playIntroMovie, spen;
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
@@ -94,6 +94,7 @@ public class Configuration {
 		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
 		editor.putBoolean("movies_pref", playMovies);
 		editor.putBoolean("intromovie_pref", playIntroMovie);
+		editor.putBoolean("spen_pref", spen);
 
 		editor.commit();
 
@@ -131,15 +132,18 @@ public class Configuration {
 		keepScreenOn = preferences.getBoolean("screenon_pref", true);
 
 		// Edge Scrolling
-
 		edgeScroll = preferences.getBoolean("edgescroll_pref", false);
 		edgeBordersSize = Integer.valueOf(preferences.getString(
 				"edgebordersize_pref", "20"));
 		edgeScrollSpeed = Integer.valueOf(preferences.getString(
 				"edgescrollspeed_pref", "15"));
 
+		// Movies
 		playMovies = preferences.getBoolean("movies_pref", false);
 		playIntroMovie = preferences.getBoolean("intromovie_pref", true);
+
+		// Controls
+		spen = preferences.getBoolean("spen_pref", false);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
 				ctx.getString(R.string.off))) {
@@ -489,6 +493,14 @@ public class Configuration {
 
 	public void setEdgeScrollSpeed(int edgeScrollSpeed) {
 		this.edgeScrollSpeed = edgeScrollSpeed;
+	}
+
+	public Boolean getSpen() {
+		return spen;
+	}
+
+	public void setSpen(Boolean spen) {
+		this.spen = spen;
 	}
 
 	@Override
