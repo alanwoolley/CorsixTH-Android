@@ -153,7 +153,6 @@
                     android:title="@string/preferences_edge_scroll_speed" />
             </PreferenceCategory>
             <PreferenceCategory
-                android:enabled="false"
                 android:key="movies_prefs"
                 android:title="@string/preferences_movies" >
                 <CheckBoxPreference

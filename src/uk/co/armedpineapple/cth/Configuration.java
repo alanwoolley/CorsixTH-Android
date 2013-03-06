@@ -42,7 +42,8 @@ public class Configuration {
 
 	private String							originalFilesPath, cthPath, language;
 	private Boolean							globalAudio, playMusic, playAnnouncements,
-			playSoundFx, keepScreenOn, debug, edgeScroll, adviser;
+			playSoundFx, keepScreenOn, debug, edgeScroll, adviser, playMovies,
+			playIntroMovie;
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
@@ -91,6 +92,8 @@ public class Configuration {
 		editor.putString("edgescrollspeed_pref", String.valueOf(edgeScrollSpeed));
 		editor.putBoolean("adviser_pref", adviser);
 		editor.putString("fpslimit_pref", String.valueOf(fpsLimit));
+		editor.putBoolean("movies_pref", playMovies);
+		editor.putBoolean("intromovie_pref", playIntroMovie);
 
 		editor.commit();
 
@@ -123,14 +126,20 @@ public class Configuration {
 				"1"));
 
 		debug = preferences.getBoolean("debug_pref", false);
+		adviser = preferences.getBoolean("adviser_pref", true);
 
 		keepScreenOn = preferences.getBoolean("screenon_pref", true);
+
+		// Edge Scrolling
+
 		edgeScroll = preferences.getBoolean("edgescroll_pref", false);
 		edgeBordersSize = Integer.valueOf(preferences.getString(
 				"edgebordersize_pref", "20"));
 		edgeScrollSpeed = Integer.valueOf(preferences.getString(
 				"edgescrollspeed_pref", "15"));
-		adviser = preferences.getBoolean("adviser_pref", true);
+
+		playMovies = preferences.getBoolean("movies_pref", false);
+		playIntroMovie = preferences.getBoolean("intromovie_pref", true);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
 				ctx.getString(R.string.off))) {
@@ -272,8 +281,8 @@ public class Configuration {
 		sbuilder.append("adviser_disabled = " + String.valueOf(!adviser) + "\n");
 		sbuilder.append("warmth_colors_display_default = 1\n");
 
-		sbuilder.append("movies = true\n");
-		sbuilder.append("play_intro = true\n");
+		sbuilder.append("movies = " + String.valueOf(playMovies) + "\n");
+		sbuilder.append("play_intro = " + String.valueOf(playIntroMovie) + "\n");
 
 		sbuilder.append("allow_user_actions_while_paused = false\n");
 		sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
