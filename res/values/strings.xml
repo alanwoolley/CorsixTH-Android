@@ -17,26 +17,7 @@
 	</string>
 	<string name="previousButton">Previous</string>
 	<string name="nextButton">Next</string>
-	<string name="advanced_settings_header">Advanced Settings</string>
-	<string name="advanced_settings_text">Advanced users can play around with these, but
-		they\'re best kept to defaults.
-	</string>
-	<string name="enable_debug_mode">Enable Debug Mode</string>
-	<string name="enable_custom_scripts">Enable Custom Scripts</string>
-	<string name="enable_advanced_settings">Enable Advanced Settings</string>
-	<string name="audio_header">Audio</string>
-	<string name="audio_text">The game is much better with audio, but may cause
-		the game to run slower on less powerful devices.
-	</string>
-	<string name="enable_audio">Enable Audio</string>
-	<string name="enable_sound_fx">Enable Sound FX</string>
-	<string name="enable_announcer">Enable Announcer</string>
-	<string name="enable_music">Enable Music</string>
-	<string name="display_resolution_header">Display Resolution</string>
-	<string name="display_resolution_text">Native resolution may look better, but the UI could
-		be too small to use if you have a screen with a large DPI. If in
-		doubt, choose default.
-	</string>
+
 	<string name="default_resolution">Default (640x480)</string>
 	<string name="download_demo">Download Demo</string>
 	<string name="original_files_header">Original Theme Hospital Files</string>
@@ -76,9 +57,6 @@
 	<string name="music_download_dialog">Music requires an additional download. Download
 		file (14.1MB)?
 	</string>
-	<string name="pause">Pause</string>
-	<string name="setup_wizard">Setup Wizard</string>
-	<string name="keep_screen_on">Keep screen on</string>
 	<string name="no_connection_error">You need an active internet connection to download.
 		Please connect to a network and try again.
 	</string>
@@ -134,27 +112,25 @@
 	<string name="preferences_adviser">Adviser</string>
 	<string name="preferences_audio_preferences">Audio preferences</string>
 	<string name="preferences_audio">Audio</string>
-	<string name="preferences_global_audio">Global Audio</string>
+
 	<string name="preferences_announcer">Announcer</string>
 	<string name="preferences_announcer_disabled">Announcer Disabled</string>
 	<string name="preferences_announcer_enabled">Announcer Enabled</string>
-	<string name="preferences_audio_on">Audio is on</string>
-	<string name="preferences_audio_off">Audio is off</string>
+
 	<string name="preferences_adviser_disabled">Adviser Disabled</string>
 	<string name="preferences_adviser_enabled">Adviser Enabled</string>
 	<string name="preferences_game">Game</string>
 	<string name="preferences_setup_wizard">Setup Wizard</string>
 	<string name="preferences_edge_scrolling_off">Edge scrolling is off</string>
 	<string name="preferences_edge_scrolling_on">Edge scrolling is on</string>
-	<string name="preferences_announcer_volume">Announcer Volume</string>
 	<string name="preferences_music">Music</string>
 	<string name="preferences_music_disabled">Music Disabled</string>
 	<string name="preferences_music_enabled">Music Enabled</string>
-	<string name="preferences_music_volume">Music Volume</string>
+
 	<string name="preferences_sound_fx">Sound FX</string>
 	<string name="preferences_sound_fx_disabled">Sound FX Disabled</string>
 	<string name="preferences_sound_fx_enabled">Sound FX Enabled</string>
-	<string name="preferences_sound_fx_volume">Sound FX Volume</string>
+
 	<string name="preferences_display_preferences">Display preferences</string>
 	<string name="preferences_display">Display</string>
 	<string name="preferences_resolution">Resolution Mode	</string>
@@ -192,7 +168,6 @@
 	<string name="preferences_play_intro_movie">Play Intro Movie</string>
 	<string name="preferences_edge_scroll_speed">Edge Scroll Speed</string>
 	<string name="preferences_edgescrollspeedsummary">How quickly the game world scrolls</string>
-	<string name="preferenes_controls">Controls</string>
 	<string name="preferences_spen">Samsung S Pen Support</string>
 	<string name="preferences_spen_disabled">S Pen support disabled</string>
 	<string name="preferences_spen_enabled">S Pen support enabled</string>
@@ -200,9 +175,6 @@
 	<string name="no_quicksave">No quicksave to load!</string>
 	<string name="dialog_error_title">Error!</string>
 	<string name="recent_changes_title">Recent Changes</string>
-	<string name="height">Height</string>
-	<string name="width">Width</string>
-	<string name="enter_resolution">Enter Resolution</string>
 	<string name="search_cancelled">Search cancelled</string>
 	<string name="couldnt_find_game_files">Couldn\'t find game files. Please set location
 		manually or download the demo
