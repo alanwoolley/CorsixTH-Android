@@ -51,7 +51,7 @@
 	</string>
 	<string name="downloading_timidity">Downloading file…</string>
 	<string name="download_timidity_error">Error downloading file. Music will not be
-		available. Please try again later."
+		available. Please try again later.
 	</string>
 	<string name="extracting_timidity">Unpacking files…</string>
 	<string name="music_download_dialog">Music requires an additional download. Download

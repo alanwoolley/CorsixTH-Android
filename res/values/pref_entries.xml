@@ -28,7 +28,7 @@
         <item>Faster</item>
         <item>Fastest</item>
     </string-array>
-    <string-array name="edgespeed_values">
+    <string-array name="edgespeed_values" translatable="false">
         <item>3</item>
         <item>7</item>
         <item>10</item>
@@ -37,7 +37,7 @@
         <item>25</item>
         <item>30</item>
     </string-array>
-    <string-array name="resolutions">
+    <string-array name="resolutions" translatable="false">
         <item>@string/default_resolution</item>
         <item>@string/native_resolution</item>
         <item>@string/custom_resolution</item>
@@ -65,6 +65,24 @@
         <item>Danish (Dansk)</item>
         <item>Russian (Русский)</item>
     </string-array>
+
+    <array name="languages_flags" translatable="false">
+        <item>@drawable/flag_gb</item>
+        <item>@drawable/flag_fi</item>
+        <item>@drawable/flag_fr</item>
+        <item>@drawable/flag_de</item>
+        <item>@drawable/flag_it</item>
+        <item>@drawable/flag_no</item>
+        <item>@drawable/flag_nl</item>
+        <item>@drawable/flag_es</item>
+        <item>@drawable/flag_se</item>
+        <item>@drawable/flag_pt</item>
+        <item>@drawable/flag_cn</item>
+        <item>@drawable/flag_cn</item>
+        <item>@drawable/flag_de</item>
+        <item>@drawable/flag_ru</item>
+    </array>
+
     <string-array name="languages_values" translatable="false">
         <item>en</item>
         <item>fi</item>
