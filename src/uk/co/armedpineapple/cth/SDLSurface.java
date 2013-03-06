@@ -5,9 +5,11 @@
  */
 package uk.co.armedpineapple.cth;
 
+import com.samsung.spen.lib.input.SPenEventLibrary;
 import uk.co.armedpineapple.cth.gestures.LongPressGesture;
 import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
 import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
+import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,6 +35,10 @@ import android.view.View;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
+	private static final int					GESTURE_MOVE			= 2;
+
+	private boolean										scrolling					= false;
+	private boolean										inMiddleOfScroll	= false;
 	public int												width, height;
 
 	// Sensors
@@ -42,10 +48,13 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	private TwoFingerGestureDetector	moveGestureDetector;
 
 	private SDLActivity								context;
+	// Samsung S Pen library usable with Galaxy Note family devices
+	private SPenEventLibrary					sPenEventLibrary;
 
 	// Startup
 	public SDLSurface(SDLActivity context, int width, int height) {
 		super(context);
+		sPenEventLibrary = new SPenEventLibrary();
 		this.context = context;
 		getHolder().addCallback(this);
 		this.width = width;
@@ -61,8 +70,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 				new LongPressGesture());
 		longPressGestureDetector.setIsLongpressEnabled(true);
 
-		
-
 	}
 
 	// Called when we have a valid drawing surface
@@ -71,7 +78,11 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		SDLActivity.createEGLSurface();
 
-		//enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+		if (context.app.configuration.getSpen()) {
+			Log.d(getClass().getSimpleName(), "S Pen support enabled");
+			SamsungSPenUtils.registerListeners();
+		}
 	}
 
 	// Called when we lose the surface
@@ -82,7 +93,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		// SDLActivity.nativePause();
 		SDLActivity.nativeQuit();
 
-		//enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+		// enableSensor(Sensor.TYPE_ACCELEROMETER, false);
 
 	}
 
@@ -146,7 +157,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 			default:
 				break;
 		}
-		
+
 		if (event.getAction() == KeyEvent.ACTION_DOWN) {
 			SDLActivity.onNativeKeyDown(keyCode);
 			return true;
@@ -164,7 +175,30 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	 * always 1:1 (when not using native resolution), we need to do a bit of
 	 * maths.
 	 */
+	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		int actionPointerIndex = event.getActionIndex();
+		float[] coords = translateCoords(event.getX(actionPointerIndex),
+				event.getY(actionPointerIndex));
+		int action = event.getAction();
+
+		// S Pen Stuff
+		if (scrolling) {
+			if (action == MotionEvent.ACTION_DOWN) {
+				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_DOWN, coords[0],
+						coords[1], 0, 2, GESTURE_MOVE);
+				inMiddleOfScroll = true;
+			} else if (action == MotionEvent.ACTION_MOVE) {
+				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_MOVE, coords[0],
+						coords[1], 0, 2, GESTURE_MOVE);
+			} else if (action == MotionEvent.ACTION_UP) {
+				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, coords[0],
+						coords[1], 0, 2, GESTURE_MOVE);
+				inMiddleOfScroll = false;
+			}
+			return true;
+		}
+
 		// Forward event to the gesture detector.
 		longPressGestureDetector.onTouchEvent(event);
 
@@ -173,13 +207,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 		if (!moveGestureDetector.isInProgress() && pointerCount < 2) {
 			final int touchDevId = event.getDeviceId();
-			int actionPointerIndex = event.getActionIndex();
 			int pointerFingerId = event.getPointerId(actionPointerIndex);
-
-			int action = event.getAction();
-
-			float[] coords = translateCoords(event.getX(actionPointerIndex),
-					event.getY(actionPointerIndex));
 			float p = event.getPressure(actionPointerIndex);
 
 			if (action == MotionEvent.ACTION_MOVE && pointerCount == 1) {
@@ -216,19 +244,20 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Sensor events
 	public void enableSensor(int sensortype, boolean enabled) {
 		// TODO: This uses getDefaultSensor - what if we have >1 accels?
-		
+
 		if (enabled) {
 			if (mSensorManager == null) {
-				mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+				mSensorManager = (SensorManager) context
+						.getSystemService(Context.SENSOR_SERVICE);
 			}
-			
+
 			mSensorManager.registerListener(this,
 					mSensorManager.getDefaultSensor(sensortype),
 					SensorManager.SENSOR_DELAY_GAME, null);
 		} else {
 			if (mSensorManager != null) {
-			mSensorManager.unregisterListener(this,
-					mSensorManager.getDefaultSensor(sensortype));
+				mSensorManager.unregisterListener(this,
+						mSensorManager.getDefaultSensor(sensortype));
 			}
 		}
 	}
@@ -244,4 +273,13 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 							/ SensorManager.GRAVITY_EARTH);
 		}
 	}
+
+	public void setScrolling(boolean scrolling) {
+		if (!scrolling && inMiddleOfScroll) {
+			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, -1, -1, 0, 2, 2);
+			inMiddleOfScroll = false;
+		}
+		this.scrolling = scrolling;
+	}
+
 }

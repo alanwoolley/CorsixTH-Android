@@ -29,6 +29,7 @@ import uk.co.armedpineapple.cth.dialogs.MenuDialog;
 import uk.co.armedpineapple.cth.dialogs.SaveDialog;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.samsung.spen.lib.input.SPenEventLibrary;
 
 import android.annotation.TargetApi;
 import android.app.*;
@@ -109,6 +110,10 @@ public class SDLActivity extends CTHActivity {
 			int action, float x, float y, float p, int pc, int gestureTriggered);
 
 	public static native void onNativeAccel(float x, float y, float z);
+
+	public static native void onNativeHover(float x, float y);
+
+	public static native void onNativeMouseRightClickEmulation();
 
 	public static native void onNativeLowMemory();
 
@@ -751,8 +756,8 @@ public class SDLActivity extends CTHActivity {
 				case QUICK_SAVE:
 					cthSaveGame(context.getString(R.string.quicksave_name));
 					break;
-				case RESTART_GAME:	
-					cthRestartGame();				
+				case RESTART_GAME:
+					cthRestartGame();
 					break;
 
 				case SHOW_LOAD_DIALOG:
@@ -830,6 +835,12 @@ public class SDLActivity extends CTHActivity {
 		// Call LUA GC
 		onNativeLowMemory();
 
+	}
+
+	public static void toggleScrolling(boolean scrolling) {
+		Log.d(SDLActivity.class.getSimpleName(), "Scrolling Java call: "
+				+ scrolling);
+		mSurface.setScrolling(scrolling);
 	}
 }
 

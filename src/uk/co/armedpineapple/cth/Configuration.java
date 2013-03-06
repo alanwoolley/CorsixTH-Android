@@ -64,8 +64,6 @@ public class Configuration {
 	/**
 	 * Saves the configuration to a SharedPreferences object
 	 * 
-	 * @param preferences
-	 *          the SharedPreferences object to save to
 	 **/
 	public void saveToPreferences() {
 		Log.d(getClass().getSimpleName(), "Saving Configuration");

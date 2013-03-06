@@ -173,7 +173,7 @@
                 android:key="controls_prefs"
                 android:title="@string/preferences_controls" >
                 <CheckBoxPreference
-                    android:enabled="false"
+                    android:enabled="true"
                     android:key="spen_pref"
                     android:persistent="true"
                     android:summaryOff="@string/preferences_spen_disabled"

@@ -51,15 +51,24 @@ char ignoreNextDown = 0;
 
 void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
 		int action, float x, float y, float p, int pc, int gestureTriggered) {
+
+	int tempx, tempy;
+
 	if (!Android_Window) {
 		return;
+	}
+
+	if (x==-1 || y==-1) {
+		SDL_GetMouseState(&tempx, &tempy);
+		x = (int)tempx;
+		y = (int)tempy;
 	}
 
 	if (gestureTriggered == GESTURE_LONGPRESS) {
 
 		LOGI("Mouse Gesture - LongPress");
 
-		SDL_SetMouseFocus(NULL);
+		SDL_SetMouseFocus(NULL );
 		SDL_SetMouseFocus(Android_Window);
 		SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
 		SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_RIGHT);
@@ -79,7 +88,7 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
 			break;
 		case ACTION_DOWN:
 			LOGI("Mouse down - middle");
-			SDL_SetMouseFocus(NULL);
+			SDL_SetMouseFocus(NULL );
 			SDL_SetMouseFocus(Android_Window);
 			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
 			SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_MIDDLE);
@@ -88,7 +97,7 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
 			LOGI("Mouse up - middle");
 			SDL_SendMouseButton(Android_Window, SDL_RELEASED,
 					SDL_BUTTON_MIDDLE);
-			SDL_SetMouseFocus(NULL);
+			SDL_SetMouseFocus(NULL );
 			break;
 		}
 		return;
@@ -130,8 +139,16 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
 
 		}
 	} else {
-		SDL_SetMouseFocus(NULL);
+		SDL_SetMouseFocus(NULL );
 	}
 }
 
+void Android_OnHover(float x, float y) {
+	SDL_WarpMouse((int) x, (int) y);
+}
+
+void Android_OnMouseRightClickEmulation() {
+	SDL_SendMouseButton(Android_Window, SDL_PRESSED, SDL_BUTTON_RIGHT);
+	SDL_SendMouseButton(Android_Window, SDL_RELEASED, SDL_BUTTON_RIGHT);
+}
 /* vi: set ts=4 sw=4 expandtab: */

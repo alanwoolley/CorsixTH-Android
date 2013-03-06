@@ -52,10 +52,10 @@ static jclass mActivityClass;
 // method signatures
 static jmethodID midCreateGLContext;
 static jmethodID midFlipBuffers;
-static jmethodID midAudioInit;static
-jmethodID midAudioWriteShortBuffer;
-static jmethodID midAudioWriteByteBuffer;static
-jmethodID midAudioQuit;
+static jmethodID midAudioInit;
+static jmethodID midAudioWriteShortBuffer;
+static jmethodID midAudioWriteByteBuffer;
+static jmethodID midAudioQuit;
 
 // Accelerometer data storage
 static float fLastAccelerometer[3];
@@ -121,6 +121,16 @@ extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onNativeTouch(
 		jint pc, jint gestureTriggered) {
 	Android_OnTouch(touch_device_id_in, pointer_finger_id_in, action, x, y, p,
 			pc, gestureTriggered);
+}
+
+extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onSpenHover(
+		JNIEnv* env, jclass jcls, jfloat x, jfloat y) {
+	Android_OnHover(x, y);
+}
+
+extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onSpenButton(
+		JNIEnv* env, jclass cls) {
+	Android_OnMouseRightClickEmulation();
 }
 
 // Accelerometer
