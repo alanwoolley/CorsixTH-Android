@@ -173,12 +173,17 @@
                 android:key="controls_prefs"
                 android:title="@string/preferences_controls" >
                 <CheckBoxPreference
-                    android:enabled="true"
                     android:key="spen_pref"
                     android:persistent="true"
                     android:summaryOff="@string/preferences_spen_disabled"
                     android:summaryOn="@string/preferences_spen_enabled"
                     android:title="@string/preferences_spen" />
+                <CheckBoxPreference
+                    android:key="keybmouse_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_keybmouse_disabled"
+                    android:summaryOn="@string/preferences_keybmouse_enabled"
+                    android:title="@string/preferences_keybmouse" />
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>

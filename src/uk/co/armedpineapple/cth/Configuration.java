@@ -41,9 +41,9 @@ public class Configuration {
 	public final static String	UNICODE_PATH				= "/system/fonts/DroidSansFallback.ttf";
 
 	private String							originalFilesPath, cthPath, language;
-	private Boolean							globalAudio, playMusic, playAnnouncements,
+	private boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser, playMovies,
-			playIntroMovie, spen;
+			playIntroMovie, spen, desktopControls;
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
@@ -93,6 +93,7 @@ public class Configuration {
 		editor.putBoolean("movies_pref", playMovies);
 		editor.putBoolean("intromovie_pref", playIntroMovie);
 		editor.putBoolean("spen_pref", spen);
+		editor.putBoolean("keybmouse_pref", desktopControls);
 
 		editor.commit();
 
@@ -142,6 +143,7 @@ public class Configuration {
 
 		// Controls
 		spen = preferences.getBoolean("spen_pref", false);
+		desktopControls = preferences.getBoolean("keyb_mouse", false);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
 				ctx.getString(R.string.off))) {
@@ -499,6 +501,14 @@ public class Configuration {
 
 	public void setSpen(Boolean spen) {
 		this.spen = spen;
+	}
+
+	public boolean isDesktopControls() {
+		return desktopControls;
+	}
+
+	public void setDesktopControls(boolean desktopControls) {
+		this.desktopControls = desktopControls;
 	}
 
 	@Override

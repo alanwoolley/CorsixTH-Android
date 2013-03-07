@@ -172,6 +172,9 @@
 	<string name="preferences_spen_disabled">S Pen support disabled</string>
 	<string name="preferences_spen_enabled">S Pen support enabled</string>
 	<string name="preferences_controls">Controls</string>
+	<string name="preferences_keybmouse">Desktop Controls</string>
+	<string name="preferences_keybmouse_disabled">Keyboard and Mouse disabled</string>
+	<string name="preferences_keybmouse_enabled">Keyboard and Mouse enabled</string>
 	<string name="no_quicksave">No quicksave to load!</string>
 	<string name="dialog_error_title">Error!</string>
 	<string name="recent_changes_title">Recent Changes</string>
