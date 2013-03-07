@@ -17,20 +17,20 @@
     <TextView
         android:id="@+id/languageText"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/languageHeader"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
         android:text="@string/language_text"
         android:textAppearance="@style/WizardText" />
 
-    <Spinner
-        android:id="@+id/languageSpinner"
+    <ListView
+        android:id="@+id/language_list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_below="@+id/languageText"
-        android:layout_marginLeft="30dp"
-        android:entries="@array/languages" />
+        android:layout_centerHorizontal="true"
+        android:choiceMode="singleChoice" />
 
 </uk.co.armedpineapple.cth.wizard.LanguageWizard>

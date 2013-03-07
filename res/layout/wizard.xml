@@ -8,8 +8,9 @@
         android:id="@+id/flipper"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/leftbutton"
         android:autoStart="false" >
+
     </ViewFlipper>
 
     <Button

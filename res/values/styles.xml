@@ -44,4 +44,10 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="activated" parent="Theme.AppTheme">
+        <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
+    </style>
+
+  
+
 </resources>
