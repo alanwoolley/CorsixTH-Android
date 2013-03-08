@@ -42,6 +42,10 @@
 #define GESTURE_LONGPRESS 1
 #define GESTURE_MOVE 2
 
+#define CONTROLS_NORMAL 1
+#define CONTROLS_DESKTOP 2
+#define CONTROLS_TOUCHPAD 3
+
 //#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "SDL", __VA_ARGS__))
 #define LOGI(...)
 
@@ -49,8 +53,11 @@ char ignoreNextUp = 0;
 char doubleClick = 0;
 char ignoreNextDown = 0;
 
+char leftDown = 0, middleDown = 0, rightDown = 0;
+
 void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
-		int action, float x, float y, float p, int pc, int gestureTriggered) {
+		int action, float x, float y, float p, int pc, int gestureTriggered,
+		int controlsMode) {
 
 	int tempx, tempy;
 
@@ -58,10 +65,54 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
 		return;
 	}
 
-	if (x==-1 || y==-1) {
+	if (controlsMode == CONTROLS_DESKTOP) {
+		switch (action) {
+		case ACTION_MOVE:
+			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+			break;
+		case ACTION_DOWN:
+			SDL_SendMouseMotion(Android_Window, 0, (int) x, (int) y);
+			switch (pointer_finger_id_in) {
+			case 1:
+				SDL_SendMouseButton(Android_Window, SDL_PRESSED,
+						SDL_BUTTON_LEFT);
+				leftDown = 1;
+				break;
+			case 2:
+				SDL_SendMouseButton(Android_Window, SDL_PRESSED,
+						SDL_BUTTON_RIGHT);
+				rightDown = 1;
+				break;
+			case 4:
+				SDL_SendMouseButton(Android_Window, SDL_PRESSED,
+						SDL_BUTTON_MIDDLE);
+				middleDown = 1;
+				break;
+			}
+			break;
+		case ACTION_UP:
+			if (leftDown == 1) {
+				SDL_SendMouseButton(Android_Window, SDL_RELEASED,
+						SDL_BUTTON_LEFT);
+				leftDown = 0;
+			} else if (rightDown == 1) {
+				SDL_SendMouseButton(Android_Window, SDL_RELEASED,
+						SDL_BUTTON_RIGHT);
+				rightDown = 0;
+			} else if (middleDown == 1) {
+				SDL_SendMouseButton(Android_Window, SDL_RELEASED,
+						SDL_BUTTON_MIDDLE);
+				middleDown = 0;
+			}
+			break;
+		}
+		return;
+	}
+
+	if (x == -1 || y == -1) {
 		SDL_GetMouseState(&tempx, &tempy);
-		x = (int)tempx;
-		y = (int)tempy;
+		x = (int) tempx;
+		y = (int) tempy;
 	}
 
 	if (gestureTriggered == GESTURE_LONGPRESS) {

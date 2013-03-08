@@ -5,18 +5,26 @@
  */
 package uk.co.armedpineapple.cth.gestures;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
+import uk.co.armedpineapple.cth.CTHApplication;
 import uk.co.armedpineapple.cth.SDLActivity;
 
 public class TwoFingerMoveGesture implements
 		TwoFingerGestureDetector.OnTwoFingerGestureListener {
 
-	private final float	delta	= 10;
+	private final float			delta	= 10;
 
-	private float				prevX, prevY, originX, originY;
+	private float						prevX, prevY, originX, originY;
 
-	private boolean			first	= false;
+	private boolean					first	= false;
+
+	private CTHApplication	appCtx;
+
+	public TwoFingerMoveGesture(Context ctx) {
+		appCtx = (CTHApplication) ctx.getApplicationContext();
+	}
 
 	@Override
 	public boolean onTwoFingerEvent(TwoFingerGestureDetector detector) {
@@ -31,14 +39,14 @@ public class TwoFingerMoveGesture implements
 			if ((Math.abs(originX - prevX) > delta || Math.abs(originY - prevY) > delta)) {
 
 				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_DOWN, prevX, prevY,
-						0, 2, 2);
+						0, 2, 2, appCtx.configuration.getControlsMode());
 				first = false;
 			}
 
 		} else {
 
 			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_MOVE, prevX, prevY, 0,
-					2, 2);
+					2, 2, appCtx.configuration.getControlsMode());
 		}
 
 		return true;
@@ -64,7 +72,7 @@ public class TwoFingerMoveGesture implements
 		if (!first) {
 
 			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, prevX, prevY, 0,
-					2, 2);
+					2, 2, appCtx.configuration.getControlsMode());
 		}
 	}
 

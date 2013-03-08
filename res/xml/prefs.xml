@@ -145,7 +145,7 @@
                     android:title="@string/preferences_edge_border_size" />
                 <ListPreference
                     android:dependency="edgescroll_pref"
-                    android:entries="@array/edgespeed"
+                    android:entries="@array/speeds"
                     android:entryValues="@array/edgespeed_values"
                     android:key="edgescrollspeed_pref"
                     android:persistent="true"
@@ -172,18 +172,20 @@
             <PreferenceCategory
                 android:key="controls_prefs"
                 android:title="@string/preferences_controls" >
+                <ListPreference
+                    android:entries="@array/controls"
+                    android:entryValues="@array/controls_values"
+                    android:key="controlsmode_pref"
+                    android:persistent="true"
+                    android:summary="@string/preferences_controls_mode_summary"
+                    android:title="@string/preferences_controls_mode" />
+
                 <CheckBoxPreference
                     android:key="spen_pref"
                     android:persistent="true"
                     android:summaryOff="@string/preferences_spen_disabled"
                     android:summaryOn="@string/preferences_spen_enabled"
                     android:title="@string/preferences_spen" />
-                <CheckBoxPreference
-                    android:key="keybmouse_pref"
-                    android:persistent="true"
-                    android:summaryOff="@string/preferences_keybmouse_disabled"
-                    android:summaryOn="@string/preferences_keybmouse_enabled"
-                    android:title="@string/preferences_keybmouse" />
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>

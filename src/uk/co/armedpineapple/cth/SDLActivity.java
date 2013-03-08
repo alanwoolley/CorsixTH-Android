@@ -107,7 +107,7 @@ public class SDLActivity extends CTHActivity {
 	public static native void onNativeKeyUp(int keycode);
 
 	public static native void onNativeTouch(int touchDevId, int pointerFingerId,
-			int action, float x, float y, float p, int pc, int gestureTriggered);
+			int action, float x, float y, float p, int pc, int gestureTriggered, int controlsMode);
 
 	public static native void onNativeAccel(float x, float y, float z);
 

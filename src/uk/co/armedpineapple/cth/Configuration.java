@@ -21,37 +21,42 @@ import android.view.WindowManager;
 @SuppressWarnings("nls")
 public class Configuration {
 
-	public final static int			RESOLUTION_DEFAULT	= 1;
-	public final static int			RESOLUTION_NATIVE		= 2;
-	public final static int			RESOLUTION_CUSTOM		= 3;
-	public final static int			DEFAULT_WIDTH				= 640;
-	public final static int			DEFAULT_HEIGHT			= 480;
+	public final static int			RESOLUTION_DEFAULT		= 1;
+	public final static int			RESOLUTION_NATIVE			= 2;
+	public final static int			RESOLUTION_CUSTOM			= 3;
+	public final static int			CONTROLS_NORMAL				= 1;
+	public final static int			CONTROLS_DESKTOP			= 2;
+	public final static int			CONTROLS_TOUCHPAD			= 3;
 
-	public final static String	HEADER							= "---- CorsixTH configuration file ----------------------------------------------\n"
-																											+ "-- Lines starting with two dashes (like this one) are ignored.\n"
-																											+ "-- Text settings should have their values between double square braces, e.g.\n"
-																											+ "--  setting = [[value]]\n"
-																											+ "-- Number settings should not have anything around their value, e.g.\n"
-																											+ "--  setting = 42\n\n\n"
-																											+ "---- If you wish to add any custom settings, please do so below. ---- \n\n";
+	// Defaults
+	public final static int			DEFAULT_WIDTH					= 640;
+	public final static int			DEFAULT_HEIGHT				= 480;
+	public final static String	DEFAULT_UNICODE_PATH	= "/system/fonts/DroidSansFallback.ttf";
 
-	public final static String	SEPARATOR						= "\n\n---- Do not edit below this line ----\n\n";
+	public final static String	HEADER								= "---- CorsixTH configuration file ----------------------------------------------\n"
+																												+ "-- Lines starting with two dashes (like this one) are ignored.\n"
+																												+ "-- Text settings should have their values between double square braces, e.g.\n"
+																												+ "--  setting = [[value]]\n"
+																												+ "-- Number settings should not have anything around their value, e.g.\n"
+																												+ "--  setting = 42\n\n\n"
+																												+ "---- If you wish to add any custom settings, please do so below. ---- \n\n";
+
+	public final static String	SEPARATOR							= "\n\n---- Do not edit below this line ----\n\n";
 
 	// TODO - do this properly
-	public final static String	UNICODE_PATH				= "/system/fonts/DroidSansFallback.ttf";
 
 	private String							originalFilesPath, cthPath, language;
 	private boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser, playMovies,
-			playIntroMovie, spen, desktopControls;
+			playIntroMovie, spen;
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
-			edgeBordersSize, edgeScrollSpeed;
+			edgeBordersSize, edgeScrollSpeed, controlsMode;
 
 	// TODO Get this the proper way.
-	private String							saveGamesPath				= Files.getExtStoragePath()
-																											+ "CTHsaves";
+	private String							saveGamesPath					= Files.getExtStoragePath()
+																												+ "CTHsaves";
 
 	private Context							ctx;
 	private SharedPreferences		preferences;
@@ -93,7 +98,7 @@ public class Configuration {
 		editor.putBoolean("movies_pref", playMovies);
 		editor.putBoolean("intromovie_pref", playIntroMovie);
 		editor.putBoolean("spen_pref", spen);
-		editor.putBoolean("keybmouse_pref", desktopControls);
+		editor.putString("controlsmode_pref", String.valueOf(controlsMode));
 
 		editor.commit();
 
@@ -143,7 +148,8 @@ public class Configuration {
 
 		// Controls
 		spen = preferences.getBoolean("spen_pref", false);
-		desktopControls = preferences.getBoolean("keyb_mouse", false);
+		controlsMode = Integer.valueOf(preferences.getString("controlsmode_pref",
+				"1"));
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
 				ctx.getString(R.string.off))) {
@@ -278,7 +284,7 @@ public class Configuration {
 
 		sbuilder.append("debug = " + String.valueOf(debug) + "\n");
 		sbuilder.append("track_fps = false\n");
-		sbuilder.append("unicode_font = [[" + UNICODE_PATH + "]]\n");
+		sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
 		sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
 
 		sbuilder.append("free_build_mode = false\n");
@@ -293,6 +299,8 @@ public class Configuration {
 				+ "\n");
 
 		sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
+
+		sbuilder.append("controls_mode = " + String.valueOf(controlsMode) + "\n");
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
@@ -503,12 +511,12 @@ public class Configuration {
 		this.spen = spen;
 	}
 
-	public boolean isDesktopControls() {
-		return desktopControls;
+	public int getControlsMode() {
+		return controlsMode;
 	}
 
-	public void setDesktopControls(boolean desktopControls) {
-		this.desktopControls = desktopControls;
+	public void setControlsMode(int controlsMode) {
+		this.controlsMode = controlsMode;
 	}
 
 	@Override

@@ -24,7 +24,7 @@
 #include "SDL_androidvideo.h"
 
 extern void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in,
-		int action, float x, float y, float p, int pc, int gestureTriggered);
+		int action, float x, float y, float p, int pc, int gestureTriggered, int controlsMode);
 extern void Android_OnHover(float x, float y);
 extern void Android_OnMouseRightClickEmulation();
 /* vi: set ts=4 sw=4 expandtab: */

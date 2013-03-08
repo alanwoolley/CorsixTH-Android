@@ -11,6 +11,8 @@ import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
 import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
 import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -18,6 +20,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -35,6 +38,7 @@ import android.view.View;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
+	private static final int					GESTURE_LONGPRESS	= 1;
 	private static final int					GESTURE_MOVE			= 2;
 
 	private boolean										scrolling					= false;
@@ -52,7 +56,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	private SPenEventLibrary					sPenEventLibrary;
 
 	// Startup
-	public SDLSurface(SDLActivity context, int width, int height) {
+	@SuppressLint("NewApi")
+	public SDLSurface(final SDLActivity context, int width, int height) {
 		super(context);
 		sPenEventLibrary = new SPenEventLibrary();
 		this.context = context;
@@ -65,10 +70,32 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		setOnKeyListener(this);
 		setOnTouchListener(this);
 		moveGestureDetector = new TwoFingerGestureDetector(context,
-				new TwoFingerMoveGesture());
+				new TwoFingerMoveGesture(context));
 		longPressGestureDetector = new GestureDetector(context,
-				new LongPressGesture());
+				new LongPressGesture(context));
 		longPressGestureDetector.setIsLongpressEnabled(true);
+
+		if (Build.VERSION.SDK_INT >= 14) {
+			setOnGenericMotionListener(new OnGenericMotionListener() {
+
+				@Override
+				public boolean onGenericMotion(View v, MotionEvent event) {
+					Log.d(getClass().getSimpleName(), event.toString());
+					if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
+						int actionPointerIndex = event.getActionIndex();
+						float[] coords = translateCoords(event.getX(actionPointerIndex),
+								event.getY(actionPointerIndex));
+						SDLActivity.onNativeHover(coords[0], coords[1]);
+
+						return true;
+					}
+
+					return false;
+
+				}
+
+			});
+		}
 
 	}
 
@@ -175,34 +202,57 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	 * always 1:1 (when not using native resolution), we need to do a bit of
 	 * maths.
 	 */
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		Log.d(getClass().getSimpleName(), event.toString());
+		int controlsMode = context.app.configuration.getControlsMode();
+		boolean spenEnabled = context.app.configuration.getSpen();
 		int actionPointerIndex = event.getActionIndex();
 		float[] coords = translateCoords(event.getX(actionPointerIndex),
 				event.getY(actionPointerIndex));
 		int action = event.getAction();
 
 		// S Pen Stuff
-		if (scrolling) {
+		if (scrolling && spenEnabled) {
 			if (action == MotionEvent.ACTION_DOWN) {
 				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_DOWN, coords[0],
-						coords[1], 0, 2, GESTURE_MOVE);
+						coords[1], 0, 2, GESTURE_MOVE,
+						context.app.configuration.getControlsMode());
 				inMiddleOfScroll = true;
 			} else if (action == MotionEvent.ACTION_MOVE) {
 				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_MOVE, coords[0],
-						coords[1], 0, 2, GESTURE_MOVE);
+						coords[1], 0, 2, GESTURE_MOVE,
+						context.app.configuration.getControlsMode());
 			} else if (action == MotionEvent.ACTION_UP) {
 				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, coords[0],
-						coords[1], 0, 2, GESTURE_MOVE);
+						coords[1], 0, 2, GESTURE_MOVE,
+						context.app.configuration.getControlsMode());
 				inMiddleOfScroll = false;
 			}
 			return true;
 		}
 
-		// Forward event to the gesture detector.
-		longPressGestureDetector.onTouchEvent(event);
+		if (controlsMode == Configuration.CONTROLS_NORMAL) {
+			// Forward event to the gesture detector.
+			longPressGestureDetector.onTouchEvent(event);
 
-		moveGestureDetector.onTouchEvent(event);
+			moveGestureDetector.onTouchEvent(event);
+		}
+
+		if (controlsMode == Configuration.CONTROLS_DESKTOP
+				&& Build.VERSION.SDK_INT >= 14
+				&& event.getToolType(actionPointerIndex) != MotionEvent.TOOL_TYPE_FINGER) {
+
+			coords = translateCoords(event.getX(actionPointerIndex),
+					event.getY(actionPointerIndex));
+
+			SDLActivity.onNativeTouch(event.getDeviceId(), event.getButtonState(),
+					event.getAction(), coords[0], coords[1], 0, 0, 0,
+					context.app.configuration.getControlsMode());
+			return true;
+		}
+
 		final int pointerCount = event.getPointerCount();
 
 		if (!moveGestureDetector.isInProgress() && pointerCount < 2) {
@@ -219,11 +269,13 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 							event.getY(actionPointerIndex));
 					p = event.getPressure(i);
 					SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
-							coords[0], coords[1], p, pointerCount, 0);
+							coords[0], coords[1], p, pointerCount, 0,
+							Configuration.CONTROLS_NORMAL);
 				}
 			} else {
 				SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
-						coords[0], coords[1], p, pointerCount, 0);
+						coords[0], coords[1], p, pointerCount, 0,
+						Configuration.CONTROLS_NORMAL);
 			}
 		}
 		return true;
@@ -276,7 +328,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	public void setScrolling(boolean scrolling) {
 		if (!scrolling && inMiddleOfScroll) {
-			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, -1, -1, 0, 2, 2);
+			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, -1, -1, 0, 2, 2,
+					context.app.configuration.getControlsMode());
 			inMiddleOfScroll = false;
 		}
 		this.scrolling = scrolling;

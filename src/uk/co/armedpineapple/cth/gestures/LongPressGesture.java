@@ -5,12 +5,20 @@
  */
 package uk.co.armedpineapple.cth.gestures;
 
+import uk.co.armedpineapple.cth.CTHApplication;
 import uk.co.armedpineapple.cth.SDLActivity;
+import android.content.Context;
 import android.util.Log;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 
 public class LongPressGesture implements OnGestureListener {
+
+	private CTHApplication	appCtx;
+
+	public LongPressGesture(Context ctx) {
+		appCtx = (CTHApplication) ctx.getApplicationContext();
+	}
 
 	@Override
 	public boolean onDown(MotionEvent e) {
@@ -38,7 +46,8 @@ public class LongPressGesture implements OnGestureListener {
 				event.getX(actionPointerIndex), event.getY(actionPointerIndex));
 
 		SDLActivity.onNativeTouch(touchDevId, pointerFingerId, 0, coords[0],
-				coords[1], event.getPressure(actionPointerIndex), pointerCount, 1);
+				coords[1], event.getPressure(actionPointerIndex), pointerCount, 1,
+				appCtx.configuration.getControlsMode());
 
 	}
 

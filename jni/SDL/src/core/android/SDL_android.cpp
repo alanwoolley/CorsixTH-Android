@@ -118,12 +118,12 @@ extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onNativeKeyUp(
 extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onNativeTouch(
 		JNIEnv* env, jclass jcls, jint touch_device_id_in,
 		jint pointer_finger_id_in, jint action, jfloat x, jfloat y, jfloat p,
-		jint pc, jint gestureTriggered) {
+		jint pc, jint gestureTriggered, jint controlsMode) {
 	Android_OnTouch(touch_device_id_in, pointer_finger_id_in, action, x, y, p,
-			pc, gestureTriggered);
+			pc, gestureTriggered, controlsMode);
 }
 
-extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onSpenHover(
+extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_onNativeHover(
 		JNIEnv* env, jclass jcls, jfloat x, jfloat y) {
 	Android_OnHover(x, y);
 }
