@@ -99,6 +99,18 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public void onWindowFocusChanged(boolean hasWindowFocus) {
+
+		super.onWindowFocusChanged(hasWindowFocus);
+		Log.d(getClass().getSimpleName(), "focus changed");
+		if (Build.VERSION.SDK_INT >= 11) {
+			context.getWindow().getDecorView()
+					.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+		}
+	}
+
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.v(getClass().getSimpleName(), "surfaceCreated()");
