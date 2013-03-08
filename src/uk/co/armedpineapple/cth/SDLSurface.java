@@ -217,7 +217,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	@SuppressLint("NewApi")
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		Log.d(getClass().getSimpleName(), event.toString());
 		int controlsMode = context.app.configuration.getControlsMode();
 		boolean spenEnabled = context.app.configuration.getSpen();
 		int actionPointerIndex = event.getActionIndex();
