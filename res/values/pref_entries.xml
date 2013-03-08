@@ -4,12 +4,10 @@
     <string-array name="controls">
         <item>Normal</item>
         <item>Desktop (Keyboard and Mouse)</item>
-        <item>Touchpad</item>
     </string-array>
     <string-array name="controls_values" translatable="false">
         <item>1</item>
         <item>2</item>
-        <item>3</item>
     </string-array>
     <string-array name="edgeborders_values" translatable="false">
         <item>2</item>
