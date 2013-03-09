@@ -193,7 +193,7 @@ public class SDLActivity extends CTHActivity {
 			// Create an alert dialog warning that external storage isn't
 			// mounted. The application will have to exit at this point.
 
-			DialogFactory.createExternalStorageDialog(this, true).show();
+			DialogFactory.createExternalStorageWarningDialog(this, true).show();
 		}
 	}
 
@@ -271,7 +271,7 @@ public class SDLActivity extends CTHActivity {
 			copyTask
 					.execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
 		} else {
-			DialogFactory.createExternalStorageDialog(this, true).show();
+			DialogFactory.createExternalStorageWarningDialog(this, true).show();
 		}
 	}
 

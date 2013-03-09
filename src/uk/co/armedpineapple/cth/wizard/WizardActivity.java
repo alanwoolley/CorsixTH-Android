@@ -39,7 +39,7 @@ public class WizardActivity extends CTHActivity {
 			Log.e(getClass().getSimpleName(), "Can't get storage.");
 
 			// Show dialog and end
-			DialogFactory.createExternalStorageDialog(this, true).show();
+			DialogFactory.createExternalStorageWarningDialog(this, true).show();
 			return;
 
 		}

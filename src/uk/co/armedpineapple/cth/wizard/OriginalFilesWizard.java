@@ -26,6 +26,7 @@ import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -209,9 +210,10 @@ public class OriginalFilesWizard extends WizardView {
 		// Check that there is an active network connection
 		// TODO - warn if connecting over mobile internet
 
-		if (!Network.HasNetworkConnection(ctx)) {
+		if (!Network.hasNetworkConnection(ctx)) {
 			// Connection error
-			Dialog connectionDialog = DialogFactory.createNetworkDialog(ctx);
+			Dialog connectionDialog = DialogFactory
+					.createNoNetworkConnectionDialog(ctx);
 			connectionDialog.show();
 			return;
 		}
@@ -303,8 +305,22 @@ public class OriginalFilesWizard extends WizardView {
 			}
 
 		};
+		Dialog mobileDialog = DialogFactory.createMobileNetworkWarningDialog(ctx,
+				new Dialog.OnClickListener() {
 
-		dft.execute(ctx.getString(R.string.demo_url));
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dft.execute(ctx.getString(R.string.demo_url));
+
+					}
+
+				});
+
+		if (Network.isMobileNetwork(ctx)) {
+			mobileDialog.show();
+		} else {
+			dft.execute(ctx.getString(R.string.demo_url));
+		}
 
 	}
 

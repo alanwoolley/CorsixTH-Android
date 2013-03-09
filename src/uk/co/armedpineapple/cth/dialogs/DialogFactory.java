@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnShowListener;
 import android.view.View;
@@ -75,10 +76,10 @@ public class DialogFactory {
 		final Dialog d = new Dialog(ctx);
 		d.setContentView(R.layout.changes_dialog);
 		d.setTitle(R.string.recent_changes_title);
-		
+
 		d.getWindow()
-		.setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-		
+				.setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
 		button.setOnClickListener(new Button.OnClickListener() {
 
@@ -108,7 +109,7 @@ public class DialogFactory {
 
 	}
 
-	public static Dialog createNetworkDialog(final Context ctx) {
+	public static Dialog createNoNetworkConnectionDialog(final Context ctx) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 
 		builder.setMessage(
@@ -127,23 +128,47 @@ public class DialogFactory {
 
 		return builder.create();
 	}
+
 	public static Dialog createErrorDialog(final Context ctx) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-		builder.setMessage(ctx.getResources().getString(R.string.load_error)).setCancelable(false);
-		builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+		builder.setMessage(ctx.getResources().getString(R.string.load_error))
+				.setCancelable(false);
+		builder.setNeutralButton(R.string.ok,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						SDLActivity.nativeQuit();
+					}
+
+				});
+
+		return builder.create();
+
+	}
+
+	public static Dialog createMobileNetworkWarningDialog(final Context ctx,
+			OnClickListener positive) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+
+		builder.setMessage(
+				ctx.getResources().getString(R.string.mobile_network_warning))
+				.setCancelable(true);
+		builder.setNegativeButton(R.string.cancel, new OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				SDLActivity.nativeQuit();
+				return;
 			}
-			
+
 		});
-		
+		builder.setPositiveButton(R.string.ok, positive);
+		builder.setTitle(R.string.warning);
 		return builder.create();
-		
+
 	}
 
-	public static Dialog createExternalStorageDialog(final Context ctx,
+	public static Dialog createExternalStorageWarningDialog(final Context ctx,
 			boolean finish) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);

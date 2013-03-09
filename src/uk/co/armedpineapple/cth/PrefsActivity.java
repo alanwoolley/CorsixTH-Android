@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
@@ -256,9 +257,10 @@ public class PrefsActivity extends PreferenceActivity implements
 		}
 
 		// Check for network connection
-		if (!Network.HasNetworkConnection(this)) {
+		if (!Network.hasNetworkConnection(this)) {
 			// Connection error
-			Dialog connectionDialog = DialogFactory.createNetworkDialog(this);
+			Dialog connectionDialog = DialogFactory
+					.createNoNetworkConnectionDialog(this);
 			connectionDialog.show();
 			return;
 
@@ -359,7 +361,22 @@ public class PrefsActivity extends PreferenceActivity implements
 
 		};
 
-		dft.execute(getString(R.string.timidity_url));
+		Dialog mobileDialog = DialogFactory.createMobileNetworkWarningDialog(this,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dft.execute(getString(R.string.timidity_url));
+
+					}
+
+				});
+
+		if (Network.isMobileNetwork(this)) {
+			mobileDialog.show();
+		} else {
+			dft.execute(getString(R.string.timidity_url));
+		}
 
 	}
 

@@ -5,9 +5,11 @@
  */
 package uk.co.armedpineapple.cth;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import uk.co.armedpineapple.cth.R;
 
 public class Network {
@@ -17,7 +19,7 @@ public class Network {
 	 * 
 	 * @return true if there is an active network connection
 	 */
-	public static boolean HasNetworkConnection(Context ctx) {
+	public static boolean hasNetworkConnection(Context ctx) {
 		ConnectivityManager cm = (ConnectivityManager) ctx
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -28,5 +30,21 @@ public class Network {
 			return true;
 		}
 		return false;
+	}
+
+	@SuppressLint("InlinedApi")
+	public static boolean isMobileNetwork(Context ctx) {
+		ConnectivityManager cm = (ConnectivityManager) ctx
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+		if (Build.VERSION.SDK_INT < 13) {
+			return netInfo.getType() != ConnectivityManager.TYPE_WIFI;
+		}
+
+		return netInfo.getType() != ConnectivityManager.TYPE_WIFI
+				&& netInfo.getType() != ConnectivityManager.TYPE_ETHERNET;
+
 	}
 }
