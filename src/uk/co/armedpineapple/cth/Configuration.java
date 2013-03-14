@@ -302,6 +302,7 @@ public class Configuration {
 
 		sbuilder.append("controls_mode = " + String.valueOf(controlsMode) + "\n");
 
+		sbuilder.append("scrolling_momentum = 0.9\n");
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
 		writer.close();
