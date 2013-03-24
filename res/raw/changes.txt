@@ -1,1 +1,21 @@
-<< Place changelog here >>
+0.5.0 - 24/03/2013
+==================
+* Updated to CorsixTH 0.20
+* Added a new settings screen
+* Improved scrolling momentum
+* Shortened and improved wizard
+* UI improvements and fixes
+* Smaller game files size
+* Updated libraries
+* Bug fixes
+
+Experimental features:
+* In-game video support
+* Desktop (keyboard & mouse) controls
+* Samsung S Pen support
+* Edge scrolling
+* FPS Limiter
+
+Translation updates:
+* Dutch, French, Hungarian, Spanish, Russian, German and Danish
+(Thanks Omni, hun_gery, miguelkill, Nekser, neuripide, Frederik, Lef1zh)
