@@ -227,7 +227,7 @@ public class OriginalFilesWizard extends WizardView {
 		dialog.setCancelable(false);
 
 		final UnzipTask uzt = new Files.UnzipTask(extDir.getAbsolutePath()
-				+ "/demo/") {
+				+ "/demo/", ctx) {
 
 			@Override
 			protected void onPostExecute(AsyncTaskResult<String> result) {
@@ -267,7 +267,7 @@ public class OriginalFilesWizard extends WizardView {
 		};
 
 		final DownloadFileTask dft = new Files.DownloadFileTask(
-				extDir.getAbsolutePath()) {
+				extDir.getAbsolutePath(), ctx) {
 
 			@Override
 			protected void onPostExecute(AsyncTaskResult<File> result) {

@@ -107,7 +107,8 @@ public class SDLActivity extends CTHActivity {
 	public static native void onNativeKeyUp(int keycode);
 
 	public static native void onNativeTouch(int touchDevId, int pointerFingerId,
-			int action, float x, float y, float p, int pc, int gestureTriggered, int controlsMode);
+			int action, float x, float y, float p, int pc, int gestureTriggered,
+			int controlsMode);
 
 	public static native void onNativeAccel(float x, float y, float z);
 
@@ -200,7 +201,7 @@ public class SDLActivity extends CTHActivity {
 	private void installFiles(final SharedPreferences preferences) {
 		final ProgressDialog dialog = new ProgressDialog(this);
 		final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
-				+ "/scripts/") {
+				+ "/scripts/", this) {
 
 			@Override
 			protected void onPreExecute() {

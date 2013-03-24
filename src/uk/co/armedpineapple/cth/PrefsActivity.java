@@ -275,7 +275,7 @@ public class PrefsActivity extends PreferenceActivity implements
 		dialog.setCancelable(false);
 
 		final UnzipTask uzt = new Files.UnzipTask(Files.getExtStoragePath()
-				+ File.separator + "timidity" + File.separator) {
+				+ File.separator + "timidity" + File.separator, this) {
 
 			@Override
 			protected void onPostExecute(AsyncTaskResult<String> result) {
@@ -323,7 +323,7 @@ public class PrefsActivity extends PreferenceActivity implements
 		};
 
 		final DownloadFileTask dft = new Files.DownloadFileTask(
-				extDir.getAbsolutePath()) {
+				extDir.getAbsolutePath(), this) {
 
 			@Override
 			protected void onPostExecute(AsyncTaskResult<File> result) {
