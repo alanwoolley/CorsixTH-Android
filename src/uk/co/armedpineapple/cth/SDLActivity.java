@@ -114,7 +114,7 @@ public class SDLActivity extends CTHActivity {
 
 	public static native void onNativeHover(float x, float y);
 
-	public static native void onNativeMouseRightClickEmulation();
+	public static native void onSpenButton();
 
 	public static native void onNativeLowMemory();
 
