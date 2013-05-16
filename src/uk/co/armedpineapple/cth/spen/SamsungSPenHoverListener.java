@@ -24,7 +24,7 @@ public class SamsungSPenHoverListener implements SPenHoverListener {
 	@Override
 	public void onHoverButtonUp(View arg0, MotionEvent arg1) {
 		if (PEN_BUTTON_PRESSED == currentPenButtonState) {
-			SDLActivity.onNativeMouseRightClickEmulation();
+			SDLActivity.onSpenButton();
 		}
 
 		currentPenButtonState = PEN_BUTTON_NOT_PRESSED;

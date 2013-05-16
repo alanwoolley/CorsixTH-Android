@@ -6,7 +6,6 @@
 package uk.co.armedpineapple.cth;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,7 +23,11 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import uk.co.armedpineapple.cth.R;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.CountingOutputStream;
+
 import com.bugsense.trace.BugSenseHandler;
 
 import android.annotation.SuppressLint;
@@ -234,19 +237,9 @@ public class Files {
 			throws IOException {
 		// TODO Probably a much nicer way to do this, with buffers.
 		InputStream inputStream = ctx.getResources().openRawResource(resource);
-
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-		int i;
-
-		i = inputStream.read();
-		while (i != -1) {
-			byteArrayOutputStream.write(i);
-			i = inputStream.read();
-		}
+		String r = IOUtils.toString(inputStream);
 		inputStream.close();
-
-		return byteArrayOutputStream.toString();
+		return r;
 
 	}
 
@@ -378,7 +371,6 @@ public class Files {
 	public static void copyAsset(Context ctx, String assetFilename,
 			String destination) throws IOException {
 		InputStream in = null;
-		OutputStream out = null;
 
 		try {
 			AssetManager assetManager = ctx.getAssets();
@@ -386,30 +378,20 @@ public class Files {
 			in = assetManager.open(assetFilename);
 
 			String newFileName = destination + "/" + assetFilename;
-
-			File dir = new File(newFileName).getParentFile();
+			File newFile = new File(newFileName);
+			File dir = newFile.getParentFile();
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
 
-			out = new FileOutputStream(newFileName);
-
 			Log.i(Files.class.getSimpleName(), "Copying file [" + assetFilename
 					+ "] to [" + newFileName + "]");
 
-			byte[] buffer = new byte[1024];
-			int read;
+			FileUtils.copyInputStreamToFile(in, newFile);
 
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
 		} finally {
 			if (in != null) {
 				in.close();
-			}
-			if (out != null) {
-				out.flush();
-				out.close();
 			}
 		}
 
@@ -498,10 +480,29 @@ public class Files {
 	/** AsyncTask for downloading a file */
 	public static class DownloadFileTask extends
 			AsyncTask<String, Integer, AsyncTaskResult<File>> {
-		String	downloadTo;
+		String		downloadTo;
+		Context		ctx;
+		WakeLock	downloadLock;
 
-		public DownloadFileTask(String downloadTo) {
+		public DownloadFileTask(String downloadTo, Context ctx) {
 			this.downloadTo = downloadTo;
+			this.ctx = ctx;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			PowerManager pm = (PowerManager) ctx
+					.getSystemService(Context.POWER_SERVICE);
+			downloadLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+					"downloading");
+			downloadLock.acquire();
+		}
+
+		@Override
+		protected void onPostExecute(AsyncTaskResult<File> result) {
+			super.onPostExecute(result);
+			downloadLock.release();
 		}
 
 		@Override
@@ -517,32 +518,32 @@ public class Files {
 
 				ucon = downloadUrl.openConnection();
 				ucon.connect();
-                
-				int fileSize = ucon.getContentLength();
+
+				final int fileSize = ucon.getContentLength();
 
 				InputStream input = new BufferedInputStream(downloadUrl.openStream());
 				FileOutputStream fos = new FileOutputStream(file);
+				CountingOutputStream cos = new CountingOutputStream(fos) {
 
-                // Is 1KB the best value for this?
-                
-				byte data[] = new byte[1024];
-				int current = 0, total = 0;
+					int	total	= 0;
 
-				while ((current = input.read(data)) != -1) {
-					total += current;
-					publishProgress(total, fileSize);
-                
+					@Override
+					protected void afterWrite(int n) throws IOException {
+						super.afterWrite(n);
+						publishProgress(total += n, fileSize);
+					}
 
-					fos.write(data, 0, current);
-				}
+				};
 
-				fos.flush();
-				fos.close();
+				IOUtils.copy(input, cos);
+
 				input.close();
+				fos.close();
+				cos.close();
 
 				Log.d(Files.class.getSimpleName(),
 						"Downloaded file to: " + file.getAbsolutePath());
-                        
+
 				return new AsyncTaskResult<File>(file);
 
 			} catch (MalformedURLException e) {
@@ -558,10 +559,29 @@ public class Files {
 	/** AsyncTask for extracting a .zip file to a directory */
 	public static class UnzipTask extends
 			AsyncTask<File, Integer, AsyncTaskResult<String>> {
-		String	unzipTo;
+		String		unzipTo;
+		Context		ctx;
+		WakeLock	unzipLock;
 
-		public UnzipTask(String unzipTo) {
+		public UnzipTask(String unzipTo, Context ctx) {
 			this.unzipTo = unzipTo;
+			this.ctx = ctx;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			PowerManager pm = (PowerManager) ctx
+					.getSystemService(Context.POWER_SERVICE);
+			unzipLock = pm
+					.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "unzipping");
+			unzipLock.acquire();
+		}
+
+		@Override
+		protected void onPostExecute(AsyncTaskResult<String> result) {
+			super.onPostExecute(result);
+			unzipLock.release();
 		}
 
 		@Override
@@ -597,12 +617,7 @@ public class Files {
 
 						FileOutputStream fout = new FileOutputStream(unzipTo + ze.getName());
 
-						byte[] buffer = new byte[1024];
-						int read;
-
-						while ((read = zin.read(buffer)) != -1) {
-							fout.write(buffer, 0, read);
-						}
+						IOUtils.copy(zin, fout);
 
 						zin.close();
 						fout.close();
