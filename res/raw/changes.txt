@@ -1,27 +1,8 @@
-0.3.3 - 30/09/2012
+* This is a beta release * 
+
+0.5.2-beta1 - 16/05/2013
 ==================
-* Update to CorsixTH Version 0.10
-* Improve stability
-* Bug fixes
+* Updated to CorsixTH Version 0.21
+* Enabled Czech and Brazilian-Portuguese languages
+* Updated libraries
 
-0.3.2 - 15/09/2012
-==================
-* Bug fixes with game speed
-* Clean up Load/Save UI
-* Build with new NDK
-
-0.3.1 - 03/09/2012 
-================== 
-* Another menu redesign 
-* Can change game speed from menu 
-* Update to latest CorsixTH version
-
-0.3.0 - 23/08/2012 
-================== 
-* Redesign menu system (for new games only)
-* Greatly increased performance
-* Improve wizard and original files game setup
-* Use latest CorsixTH version
-* Controls change - use long press to rotate objects
-* Improve two finger dragging
-* Bug fixes
