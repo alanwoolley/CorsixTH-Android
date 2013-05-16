@@ -72,6 +72,8 @@
         <item>Chinese - Traditional (繁體中文)</item>
         <item>Danish (Dansk)</item>
         <item>Russian (Русский)</item>
+        <item>Brazilian Portuguese (Português do Brasil)</item>
+    	<item>Czech (Čeština)</item>
     </string-array>
 
     <array name="languages_flags" translatable="false">
@@ -89,6 +91,8 @@
         <item>@drawable/flag_cn</item>
         <item>@drawable/flag_de</item>
         <item>@drawable/flag_ru</item>
+        <item>@drawable/flag_br</item>
+        <item>@drawable/flag_cz</item>
     </array>
 
     <string-array name="languages_values" translatable="false">
@@ -106,6 +110,8 @@
         <item>zh(t)</item>
         <item>da</item>
         <item>ru</item>
+        <item>pt_br</item>
+        <item>cs</item>
     </string-array>
     <string-array name="resolutions_values" translatable="false">
         <item>1</item>
