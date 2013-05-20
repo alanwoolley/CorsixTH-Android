@@ -186,9 +186,9 @@ public class Configuration {
 
 			case RESOLUTION_CUSTOM:
 				displayWidth = Integer.valueOf(preferences.getString("reswidth_pref",
-						String.valueOf(DEFAULT_WIDTH)));
+						String.valueOf(DEFAULT_WIDTH)).trim());
 				displayHeight = Integer.valueOf(preferences.getString("resheight_pref",
-						String.valueOf(DEFAULT_HEIGHT)));
+						String.valueOf(DEFAULT_HEIGHT)).trim());
 				break;
 
 		}

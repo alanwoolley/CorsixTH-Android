@@ -96,6 +96,55 @@ public class PrefsActivity extends PreferenceActivity implements
 					}
 				});
 
+		findPreference("reswidth_pref").setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+
+						String s = ((String) newValue).trim();
+						
+						try {
+							Integer i = Integer.parseInt(s);
+							
+							if (i < 640) {
+								return false;
+							}
+							
+						} catch (NumberFormatException e) {
+							return false;
+						}
+
+						return true;
+
+					}
+				});
+
+		findPreference("resheight_pref").setOnPreferenceChangeListener(
+				new OnPreferenceChangeListener() {
+
+					@Override
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+						
+						String s = ((String) newValue).trim();
+						try {
+							Integer i = Integer.parseInt(s);
+							
+							if (i < 480) {
+								return false;
+							}
+
+						} catch (NumberFormatException e) {
+							return false;
+						}
+
+
+						return true;
+					}
+				});
+		
 		findPreference("setupwizard_pref").setOnPreferenceClickListener(
 				new OnPreferenceClickListener() {
 
