@@ -307,7 +307,7 @@ public class PrefsActivity extends PreferenceActivity implements
 			protected void onPreExecute() {
 				super.onPreExecute();
 				dialog.setMessage(getString(R.string.extracting_timidity));
-				if (Build.VERSION.SDK_INT >= 11) {
+				if (Build.VERSION.SDK_INT >= 14) {
 					dialog.setProgressNumberFormat(null);
 				}
 
@@ -346,7 +346,7 @@ public class PrefsActivity extends PreferenceActivity implements
 			protected void onPreExecute() {
 				super.onPreExecute();
 				dialog.show();
-				if (Build.VERSION.SDK_INT >= 11) {
+				if (Build.VERSION.SDK_INT >= 14) {
 					dialog
 							.setProgressNumberFormat(getString(R.string.download_progress_dialog_text));
 				}

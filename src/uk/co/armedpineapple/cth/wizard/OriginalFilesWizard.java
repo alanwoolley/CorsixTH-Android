@@ -252,7 +252,7 @@ public class OriginalFilesWizard extends WizardView {
 			protected void onPreExecute() {
 				super.onPreExecute();
 				dialog.setMessage(ctx.getString(R.string.extracting_demo));
-				if (Build.VERSION.SDK_INT >= 11) {
+				if (Build.VERSION.SDK_INT >= 14) {
 					dialog.setProgressNumberFormat(null);
 				}
 			}
