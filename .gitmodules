@@ -1,6 +1,3 @@
 [submodule "jni/src"]
 	path = jni/src
 	url = git://github.com/alanwoolley/corsix-th.git
-[submodule "jni/glm"]
-	path = jni/glm
-	url = git://github.com/Groovounet/glm.git
