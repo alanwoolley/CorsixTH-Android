@@ -7,7 +7,8 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="libs/FlurryAgent.jar"/>
 	<classpathentry kind="lib" path="libs/libspen23.jar"/>
-	<classpathentry kind="lib" path="libs/bugsense3.2.1.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="lib" path="libs/bugsense3.2.2.jar"/>
 	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
