@@ -1,1 +1,8 @@
-<< Place changelog here >>
+* This is a beta release * 
+
+0.5.2-beta1 - 16/05/2013
+==================
+* Updated to CorsixTH Version 0.21
+* Enabled Czech and Brazilian-Portuguese languages
+* Updated libraries
+
