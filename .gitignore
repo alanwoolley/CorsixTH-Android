@@ -12,3 +12,4 @@ thumbs.db
 .idea/workspace.xml
 .idea/tasks.xml
 *.iws
+/out
