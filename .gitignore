@@ -9,6 +9,6 @@ thumbs.db
 /res/values/GoogleAnalytics.xml
 /theme_hospital
 .c9revisions
-/.idea/workspace.xml
-/.idea/tasks.xml
+.idea/workspace.xml
+.idea/tasks.xml
 *.iws
