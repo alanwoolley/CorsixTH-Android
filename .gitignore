@@ -13,3 +13,4 @@ thumbs.db
 .idea/tasks.xml
 *.iws
 /out
+/build
