@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="org.apache.directory.studio:org.apache.commons.io:2.4" type="repository">
+    <properties maven-id="org.apache.directory.studio:org.apache.commons.io:2.4" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/directory/studio/org.apache.commons.io/2.4/org.apache.commons.io-2.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/2.4/commons-io-2.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/findbugs/annotations/1.0.0/annotations-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
