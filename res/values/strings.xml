@@ -17,7 +17,7 @@
 	</string>
     <string name="previousButton">Previous</string>
     <string name="nextButton">Next</string>
-    <string name="default_resolution">Default (640x480)</string>
+    <string name="automatic_resolution">Automatic</string>
     <string name="download_demo">Download Demo</string>
     <string name="original_files_header">Original Theme Hospital Files</string>
     <string name="original_files_text">You should place the original Theme Hospital files

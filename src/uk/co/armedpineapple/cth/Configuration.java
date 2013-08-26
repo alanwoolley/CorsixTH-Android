@@ -31,8 +31,8 @@ public class Configuration {
 	public final static int			CONTROLS_TOUCHPAD			= 3;
 
 	// Defaults
-	public final static int			DEFAULT_WIDTH					= 640;
-	public final static int			DEFAULT_HEIGHT				= 480;
+	public final static int			MINIMUM_WIDTH					= 640;
+	public final static int			MINIMUM_HEIGHT				= 480;
 	public final static String	DEFAULT_UNICODE_PATH	= "/system/fonts/DroidSansFallback.ttf";
 
 	public final static String	HEADER								= "---- CorsixTH configuration file ----------------------------------------------\n"
@@ -54,9 +54,9 @@ public class Configuration {
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
-			edgeBordersSize, edgeScrollSpeed, controlsMode;
+			edgeBordersSize, edgeScrollSpeed, controlsMode, nativeWidth,
+			nativeHeight;
 
-	// TODO Get this the proper way.
 	private String							saveGamesPath					= Files.getExtStoragePath()
 																												+ "CTHsaves";
 
@@ -66,6 +66,14 @@ public class Configuration {
 	private Configuration(Context ctx, SharedPreferences prefs) {
 		this.ctx = ctx;
 		this.preferences = prefs;
+
+		// Get the device's screen dimensions
+		DisplayMetrics dm = new DisplayMetrics();
+		((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
+				.getDefaultDisplay().getMetrics(dm);
+		nativeWidth = dm.widthPixels;
+		nativeHeight = dm.heightPixels;
+
 	}
 
 	/**
@@ -168,29 +176,28 @@ public class Configuration {
 
 		switch (resolutionMode) {
 			case RESOLUTION_DEFAULT:
-				displayWidth = DEFAULT_WIDTH;
-				displayHeight = DEFAULT_HEIGHT;
+				// Find the lowest possible resolution that is greater or equal to
+				// 640x480 and retains the device's aspect ratio
+
+				float ratio = Math.max(((float) MINIMUM_HEIGHT / nativeHeight),
+						((float) MINIMUM_WIDTH / nativeWidth));
+
+				displayWidth = (int) (nativeWidth * ratio);
+				displayHeight = (int) (nativeHeight * ratio);
+				Log.d(LOG_TAG, "Adjusted resolution is: " + displayWidth + " x "
+						+ displayHeight);
 				break;
 
-			/*
-			 * TODO - the native resolution is easy to get but can sometimes be
-			 * misleading because of the buttons on Android 3.0+. There's probably a
-			 * much better way of doing this
-			 */
-
 			case RESOLUTION_NATIVE:
-				DisplayMetrics dm = new DisplayMetrics();
-				((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
-						.getDefaultDisplay().getMetrics(dm);
-				displayWidth = dm.widthPixels;
-				displayHeight = dm.heightPixels;
+				displayWidth = nativeWidth;
+				displayHeight = nativeHeight;
 				break;
 
 			case RESOLUTION_CUSTOM:
 				displayWidth = Integer.valueOf(preferences.getString("reswidth_pref",
-						String.valueOf(DEFAULT_WIDTH)).trim());
+						String.valueOf(MINIMUM_WIDTH)).trim());
 				displayHeight = Integer.valueOf(preferences.getString("resheight_pref",
-						String.valueOf(DEFAULT_HEIGHT)).trim());
+						String.valueOf(MINIMUM_HEIGHT)).trim());
 				break;
 
 		}
@@ -457,8 +464,8 @@ public class Configuration {
 				this.displayHeight = dm.heightPixels;
 				break;
 			case RESOLUTION_DEFAULT:
-				this.displayWidth = DEFAULT_WIDTH;
-				this.displayHeight = DEFAULT_HEIGHT;
+				this.displayWidth = MINIMUM_WIDTH;
+				this.displayHeight = MINIMUM_HEIGHT;
 		}
 
 		this.resolutionMode = resolutionMode;

@@ -46,7 +46,7 @@
         <item>30</item>
     </string-array>
     <string-array name="resolutions" translatable="false">
-        <item>@string/default_resolution</item>
+        <item>@string/automatic_resolution</item>
         <item>@string/native_resolution</item>
         <item>@string/custom_resolution</item>
     </string-array>
