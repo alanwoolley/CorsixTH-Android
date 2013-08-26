@@ -71,8 +71,13 @@ public class Configuration {
 		DisplayMetrics dm = new DisplayMetrics();
 		((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay().getMetrics(dm);
-		nativeWidth = dm.widthPixels;
-		nativeHeight = dm.heightPixels;
+
+		// Assume that in landscape, the width is always larger than the height.
+		// Sometimes this is detected the other way round.
+		// TODO - find a better way to do this
+
+		nativeWidth = Math.max(dm.widthPixels, dm.heightPixels);
+		nativeHeight = Math.min(dm.widthPixels, dm.heightPixels);
 
 	}
 
