@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class TwoFingerGestureDetector {
+	
+	private static final String	LOG_TAG	= "TwoFingerDetector";
 
 	public interface OnTwoFingerGestureListener {
 
@@ -257,7 +259,7 @@ public class TwoFingerGestureDetector {
 
 		if (prevIndex0 < 0 || prevIndex1 < 0 || currIndex0 < 0 || currIndex1 < 0) {
 			mInvalidGesture = true;
-			Log.e(getClass().getSimpleName(), "Invalid MotionEvent stream detected.",
+			Log.e(LOG_TAG, "Invalid MotionEvent stream detected.",
 					new Throwable());
 			if (mGestureInProgress) {
 				mListener.onTwoFingerEnd(this);

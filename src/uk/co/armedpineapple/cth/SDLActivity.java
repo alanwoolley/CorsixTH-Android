@@ -48,6 +48,8 @@ import android.media.*;
 
 public class SDLActivity extends CTHActivity {
 
+	public static final String	LOG_TAG					= "SDLActivity";
+
 	private int									currentVersion;
 	private Properties					properties;
 	private WakeLock						wake;
@@ -167,7 +169,7 @@ public class SDLActivity extends CTHActivity {
 			if (!preferences.getBoolean("scripts_copied", false)
 					|| preferences.getInt("last_version", 0) < currentVersion) {
 
-				Log.d(getClass().getSimpleName(), "This is a new installation");
+				Log.d(LOG_TAG, "This is a new installation");
 
 				// Show the recent changes dialog
 				Dialog recentChangesDialog = DialogFactory
@@ -189,7 +191,7 @@ public class SDLActivity extends CTHActivity {
 			}
 
 		} else {
-			Log.e(getClass().getSimpleName(), "Can't get storage.");
+			Log.e(LOG_TAG, "Can't get storage.");
 
 			// Create an alert dialog warning that external storage isn't
 			// mounted. The application will have to exit at this point.
@@ -225,7 +227,7 @@ public class SDLActivity extends CTHActivity {
 				super.onPostExecute(result);
 				Exception error;
 				if ((error = result.getError()) != null) {
-					Log.d(getClass().getSimpleName(), "Error copying files.");
+					Log.d(LOG_TAG, "Error copying files.");
 					BugSenseHandler.sendException(error);
 				}
 
@@ -289,7 +291,7 @@ public class SDLActivity extends CTHActivity {
 			app.configuration.writeToFile();
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.e(getClass().getSimpleName(), "Couldn't write to configuration file");
+			Log.e(LOG_TAG, "Couldn't write to configuration file");
 			BugSenseHandler.sendException(e);
 		}
 
@@ -517,7 +519,7 @@ public class SDLActivity extends CTHActivity {
 	// Events
 	protected void onPause() {
 		super.onPause();
-		Log.d(getClass().getSimpleName(), "onPause()");
+		Log.d(LOG_TAG, "onPause()");
 
 		// Attempt to autosave.
 		if (hasGameLoaded) {
@@ -525,7 +527,7 @@ public class SDLActivity extends CTHActivity {
 		}
 
 		if (wake != null && wake.isHeld()) {
-			Log.d(getClass().getSimpleName(), "Releasing wakelock");
+			Log.d(LOG_TAG, "Releasing wakelock");
 			wake.release();
 		}
 
@@ -533,10 +535,10 @@ public class SDLActivity extends CTHActivity {
 
 	protected void onResume() {
 		super.onResume();
-		Log.d(getClass().getSimpleName(), "onResume()");
+		Log.d(LOG_TAG, "onResume()");
 
 		if (app.configuration.getKeepScreenOn()) {
-			Log.d(getClass().getSimpleName(), "Getting wakelock");
+			Log.d(LOG_TAG, "Getting wakelock");
 			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
 					"Keep Screen On Wakelock");
@@ -822,8 +824,7 @@ public class SDLActivity extends CTHActivity {
 	@Override
 	public void onLowMemory() {
 		super.onLowMemory();
-		Log.w(getClass().getSimpleName(),
-				"Low memory detected. Going to try and tighten our belt!");
+		Log.w(LOG_TAG, "Low memory detected. Going to try and tighten our belt!");
 
 		// Attempt to save first
 		cthTryAutoSave(getString(R.string.autosave_name));
@@ -849,8 +850,10 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-	private Configuration	config;
-	private String				toLoad;
+	public static final String	LOG_TAG	= "SDLMain";
+
+	private Configuration				config;
+	private String							toLoad;
 
 	public SDLMain(Configuration config, String toLoad) {
 		this.config = config;
@@ -862,6 +865,6 @@ class SDLMain implements Runnable {
 		// Runs SDL_main()
 		SDLActivity.nativeInit(config, toLoad);
 
-		Log.v(getClass().getSimpleName(), "SDL thread terminated");
+		Log.v(LOG_TAG, "SDL thread terminated");
 	}
 }

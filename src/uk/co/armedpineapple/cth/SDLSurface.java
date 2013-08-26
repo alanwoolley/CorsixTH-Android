@@ -38,6 +38,8 @@ import android.view.View;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
+	public static final String				LOG_TAG						= "SDLSurface";
+
 	private static final int					GESTURE_LONGPRESS	= 1;
 	private static final int					GESTURE_MOVE			= 2;
 
@@ -80,7 +82,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 				@Override
 				public boolean onGenericMotion(View v, MotionEvent event) {
-					Log.d(getClass().getSimpleName(), event.toString());
+					Log.d(LOG_TAG, event.toString());
 					if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
 						int actionPointerIndex = event.getActionIndex();
 						float[] coords = translateCoords(event.getX(actionPointerIndex),
@@ -104,7 +106,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
 
 		super.onWindowFocusChanged(hasWindowFocus);
-		Log.d(getClass().getSimpleName(), "focus changed");
+		Log.d(LOG_TAG, "focus changed");
 		if (Build.VERSION.SDK_INT >= 11) {
 			context.getWindow().getDecorView()
 					.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
@@ -113,20 +115,20 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.v(getClass().getSimpleName(), "surfaceCreated()");
+		Log.v(LOG_TAG, "surfaceCreated()");
 
 		SDLActivity.createEGLSurface();
 
 		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 		if (context.app.configuration.getSpen()) {
-			Log.d(getClass().getSimpleName(), "S Pen support enabled");
+			Log.d(LOG_TAG, "S Pen support enabled");
 			SamsungSPenUtils.registerListeners();
 		}
 	}
 
 	// Called when we lose the surface
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Log.v(getClass().getSimpleName(), "surfaceDestroyed()");
+		Log.v(LOG_TAG, "surfaceDestroyed()");
 
 		// Send a quit message to the application
 		// SDLActivity.nativePause();
@@ -139,35 +141,35 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Called when the surface is resized
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		Log.d(getClass().getSimpleName(), "surfaceChanged()");
+		Log.d(LOG_TAG, "surfaceChanged()");
 
 		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
 		switch (format) {
 			case PixelFormat.A_8:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format A_8");
+				Log.v(LOG_TAG, "pixel format A_8");
 				break;
 			case PixelFormat.L_8:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format L_8");
+				Log.v(LOG_TAG, "pixel format L_8");
 				break;
 			case PixelFormat.RGBA_8888:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBA_8888");
+				Log.v(LOG_TAG, "pixel format RGBA_8888");
 				sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
 				break;
 			case PixelFormat.RGBX_8888:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGBX_8888");
+				Log.v(LOG_TAG, "pixel format RGBX_8888");
 				sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
 				break;
 			case PixelFormat.RGB_565:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_565");
+				Log.v(LOG_TAG, "pixel format RGB_565");
 				sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
 				break;
 			case PixelFormat.RGB_888:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format RGB_888");
+				Log.v(LOG_TAG, "pixel format RGB_888");
 				// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
 				sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
 				break;
 			default:
-				Log.v(SDLActivity.class.getSimpleName(), "pixel format unknown "
+				Log.v(LOG_TAG, "pixel format unknown "
 						+ format);
 				break;
 		}

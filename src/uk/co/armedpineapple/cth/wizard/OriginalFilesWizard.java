@@ -38,6 +38,8 @@ import android.widget.Toast;
 
 public class OriginalFilesWizard extends WizardView {
 
+	private static final String	LOG_TAG	= "OriginalFilesWizard";
+	
 	RadioGroup	originalFilesRadioGroup;
 	RadioButton	automaticRadio;
 	RadioButton	manualRadio;
@@ -236,7 +238,7 @@ public class OriginalFilesWizard extends WizardView {
 
 				if (result.getResult() != null) {
 					customLocation = result.getResult() + "HOSP";
-					Log.d(getClass().getSimpleName(), "Extracted TH demo: "
+					Log.d(LOG_TAG, "Extracted TH demo: "
 							+ customLocation);
 				} else if (result.getError() != null) {
 					Exception e = result.getError();

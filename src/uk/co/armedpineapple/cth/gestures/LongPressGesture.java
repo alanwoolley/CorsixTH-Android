@@ -14,6 +14,8 @@ import android.view.MotionEvent;
 
 public class LongPressGesture implements OnGestureListener {
 
+	private static final String	LOG_TAG	= "LongPressGesture";
+	
 	private CTHApplication	appCtx;
 
 	public LongPressGesture(Context ctx) {
@@ -35,7 +37,7 @@ public class LongPressGesture implements OnGestureListener {
 
 	@Override
 	public void onLongPress(MotionEvent event) {
-		Log.d(getClass().getSimpleName(), "Detected long press");
+		Log.d(LOG_TAG, "Detected long press");
 
 		final int touchDevId = event.getDeviceId();
 		final int pointerCount = event.getPointerCount();

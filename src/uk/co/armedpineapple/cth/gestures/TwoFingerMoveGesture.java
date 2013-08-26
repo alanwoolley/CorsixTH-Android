@@ -14,13 +14,15 @@ import uk.co.armedpineapple.cth.SDLActivity;
 public class TwoFingerMoveGesture implements
 		TwoFingerGestureDetector.OnTwoFingerGestureListener {
 
-	private final float			delta	= 10;
+	private static final String	LOG_TAG	= "TwoFingerMove";
 
-	private float						prevX, prevY, originX, originY;
+	private final float					delta		= 10;
 
-	private boolean					first	= false;
+	private float								prevX, prevY, originX, originY;
 
-	private CTHApplication	appCtx;
+	private boolean							first		= false;
+
+	private CTHApplication			appCtx;
 
 	public TwoFingerMoveGesture(Context ctx) {
 		appCtx = (CTHApplication) ctx.getApplicationContext();
@@ -54,7 +56,7 @@ public class TwoFingerMoveGesture implements
 
 	@Override
 	public boolean onTwoFingerBegin(TwoFingerGestureDetector detector) {
-		Log.d(getClass().getSimpleName(), "Move gesture - BEGIN");
+		Log.d(LOG_TAG, "Move gesture - BEGIN");
 		first = true;
 		float[] coords = SDLActivity.mSurface.translateCoords(detector.getFocusX(),
 				detector.getFocusY());
@@ -67,7 +69,7 @@ public class TwoFingerMoveGesture implements
 
 	@Override
 	public void onTwoFingerEnd(TwoFingerGestureDetector detector) {
-		Log.d(getClass().getSimpleName(), "Move gesture - END");
+		Log.d(LOG_TAG, "Move gesture - END");
 
 		if (!first) {
 

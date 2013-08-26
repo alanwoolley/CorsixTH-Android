@@ -21,6 +21,8 @@ import android.view.WindowManager;
 @SuppressWarnings("nls")
 public class Configuration {
 
+	public static final String	LOG_TAG								= "Config";
+
 	public final static int			RESOLUTION_DEFAULT		= 1;
 	public final static int			RESOLUTION_NATIVE			= 2;
 	public final static int			RESOLUTION_CUSTOM			= 3;
@@ -71,8 +73,8 @@ public class Configuration {
 	 * 
 	 **/
 	public void saveToPreferences() {
-		Log.d(getClass().getSimpleName(), "Saving Configuration");
-		Log.d(getClass().getSimpleName(), this.toString());
+		Log.d(LOG_TAG, "Saving Configuration");
+		Log.d(LOG_TAG, this.toString());
 		Editor editor = preferences.edit();
 		editor.putString("originalfiles_pref", originalFilesPath);
 		editor.putString("gamescripts_pref", cthPath);
@@ -99,7 +101,6 @@ public class Configuration {
 		editor.putBoolean("intromovie_pref", playIntroMovie);
 		editor.putBoolean("spen_pref", spen);
 		editor.putString("controlsmode_pref", String.valueOf(controlsMode));
-		
 
 		editor.commit();
 
@@ -207,11 +208,11 @@ public class Configuration {
 	public static Configuration loadFromPreferences(Context ctx,
 			SharedPreferences preferences) {
 		Configuration config = new Configuration(ctx, preferences);
-		Log.d(Configuration.class.getSimpleName(), "Loading configuration");
+		Log.d(LOG_TAG, "Loading configuration");
 
 		config.refresh();
 		config.gameSpeed = 0;
-		Log.d(Configuration.class.getSimpleName(), config.toString());
+		Log.d(LOG_TAG, config.toString());
 		return config;
 	}
 
@@ -244,7 +245,7 @@ public class Configuration {
 
 			reader.close();
 		} catch (IOException e) {
-			Log.d(getClass().getSimpleName(), "Couldn't read config file.");
+			Log.d(LOG_TAG, "Couldn't read config file.");
 		}
 
 		StringBuilder sbuilder = new StringBuilder();
@@ -294,25 +295,22 @@ public class Configuration {
 		sbuilder.append("allow_user_actions_while_paused = false\n");
 		sbuilder.append("volume_opens_casebook = false\n");
 		sbuilder.append("twentyfour_hour_clock = false\n");
-		
+
 		// Movies
 		sbuilder.append("movies = " + String.valueOf(playMovies) + "\n");
 		sbuilder.append("play_intro = " + String.valueOf(playIntroMovie) + "\n");
 
-		
 		// Controls
 		sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
 				+ "\n");
 		sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
 		sbuilder.append("controls_mode = " + String.valueOf(controlsMode) + "\n");
 		sbuilder.append("scrolling_momentum = 0.9\n");
-		
-		//Aliens 
+
+		// Aliens
 		sbuilder.append("alien_dna_only_by_emergency = true\n");
 		sbuilder.append("alien_dna_must_stand = true\n");
 		sbuilder.append("alien_dna_can_knock_on_doors = false\n");
-		
-		
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());

@@ -19,6 +19,8 @@ import com.bugsense.trace.BugSenseHandler;
 
 public class CTHApplication extends android.app.Application {
 
+	private static final String	LOG_TAG	= "CTHApp";
+	
 	public static final String	PREFERENCES_KEY	= "cthprefs";
 	private SharedPreferences		preferences;
 	public Configuration				configuration;
@@ -41,21 +43,21 @@ public class CTHApplication extends android.app.Application {
 
 		try {
 			InputStream inputStream = getAssets().open("application.properties");
-			Log.d(getClass().getSimpleName(), "Loading properties");
+			Log.d(LOG_TAG, "Loading properties");
 			properties.load(inputStream);
 			debugMode = Boolean.parseBoolean(properties.getProperty("app.debug",
 					"false"));
 			setupBugsense();
 
 		} catch (IOException e) {
-			Log.i(getClass().getSimpleName(), "No properties file found");
+			Log.i(LOG_TAG, "No properties file found");
 		}
 
 	}
 
 	private void setupBugsense() {
 		if (properties.containsKey("bugsense.key") && !debugMode) {
-			Log.d(getClass().getSimpleName(), "Setting up bugsense");
+			Log.d(LOG_TAG, "Setting up bugsense");
 			BugSenseHandler.initAndStartSession(this,
 					(String) properties.get("bugsense.key"));
 		}

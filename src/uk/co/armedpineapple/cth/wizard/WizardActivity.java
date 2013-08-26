@@ -26,6 +26,8 @@ import android.widget.ViewFlipper;
 
 public class WizardActivity extends CTHActivity {
 
+	private static final String	LOG_TAG	= "Wizard";
+	
 	private ViewFlipper								flipper;
 	private Button										previousButton;
 	private Button										nextButton;
@@ -36,7 +38,7 @@ public class WizardActivity extends CTHActivity {
 		super.onCreate(savedInstanceState);
 
 		if (!Files.canAccessExternalStorage()) {
-			Log.e(getClass().getSimpleName(), "Can't get storage.");
+			Log.e(LOG_TAG, "Can't get storage.");
 
 			// Show dialog and end
 			DialogFactory.createExternalStorageWarningDialog(this, true).show();
@@ -47,11 +49,11 @@ public class WizardActivity extends CTHActivity {
 		preferences = app.getPreferences();
 
 		if (preferences.getBoolean("wizard_run", false)) {
-			Log.d(getClass().getSimpleName(), "Wizard isn't going to run.");
+			Log.d(LOG_TAG, "Wizard isn't going to run.");
 			finish();
 			startActivity(new Intent(this, SDLActivity.class));
 		} else {
-			Log.d(getClass().getSimpleName(), "Wizard is going to run.");
+			Log.d(LOG_TAG, "Wizard is going to run.");
 			setContentView(R.layout.wizard);
 			flipper = (ViewFlipper) findViewById(R.id.flipper);
 			previousButton = (Button) findViewById(R.id.leftbutton);

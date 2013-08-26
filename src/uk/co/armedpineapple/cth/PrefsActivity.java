@@ -36,15 +36,17 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 public class PrefsActivity extends PreferenceActivity implements
 		SharedPreferences.OnSharedPreferenceChangeListener {
 
-	private CTHApplication		application;
-	private SharedPreferences	preferences;
+	public static final String	LOG_TAG					= "Settings";
+	
+	private CTHApplication			application;
+	private SharedPreferences		preferences;
 
 	/** Preferences that require the game to be restarted before they take effect **/
-	private String[]					requireRestart	= new String[] { "language_pref",
+	private String[]						requireRestart	= new String[] { "language_pref",
 			"debug_pref", "movies_pref", "intromovie_pref", "resolution_pref",
 			"reswidth_pref", "resheight_pref", "music_pref" };
 
-	private boolean						displayRestartMessage;
+	private boolean							displayRestartMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,7 @@ public class PrefsActivity extends PreferenceActivity implements
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						Log.d(getClass().getSimpleName(), "Res mode: " + newValue);
+						Log.d(LOG_TAG, "Res mode: " + newValue);
 						updateResolutionPrefsDisplay((String) newValue);
 						return true;
 					}
@@ -104,14 +106,14 @@ public class PrefsActivity extends PreferenceActivity implements
 							Object newValue) {
 
 						String s = ((String) newValue).trim();
-						
+
 						try {
 							Integer i = Integer.parseInt(s);
-							
+
 							if (i < 640) {
 								return false;
 							}
-							
+
 						} catch (NumberFormatException e) {
 							return false;
 						}
@@ -127,11 +129,11 @@ public class PrefsActivity extends PreferenceActivity implements
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						
+
 						String s = ((String) newValue).trim();
 						try {
 							Integer i = Integer.parseInt(s);
-							
+
 							if (i < 480) {
 								return false;
 							}
@@ -140,11 +142,10 @@ public class PrefsActivity extends PreferenceActivity implements
 							return false;
 						}
 
-
 						return true;
 					}
 				});
-		
+
 		findPreference("setupwizard_pref").setOnPreferenceClickListener(
 				new OnPreferenceClickListener() {
 
@@ -199,10 +200,10 @@ public class PrefsActivity extends PreferenceActivity implements
 		getPreferenceManager().getSharedPreferences()
 				.unregisterOnSharedPreferenceChangeListener(this);
 
-		Log.d(getClass().getSimpleName(), "Refreshing configuration");
+		Log.d(LOG_TAG, "Refreshing configuration");
 
 		if (displayRestartMessage) {
-			Log.d(getClass().getSimpleName(), "app requires restarting");
+			Log.d(LOG_TAG, "app requires restarting");
 			Toast.makeText(this, R.string.dialog_require_restart, Toast.LENGTH_LONG)
 					.show();
 		}
@@ -217,7 +218,7 @@ public class PrefsActivity extends PreferenceActivity implements
 	protected void onResume() {
 		super.onResume();
 		displayRestartMessage = false;
-		Log.d(getClass().getSimpleName(), "onResume()");
+		Log.d(LOG_TAG, "onResume()");
 		getPreferenceManager().getSharedPreferences()
 				.registerOnSharedPreferenceChangeListener(this);
 	}
@@ -332,7 +333,7 @@ public class PrefsActivity extends PreferenceActivity implements
 				dialog.hide();
 
 				if (result.getResult() != null) {
-					Log.d(getClass().getSimpleName(),
+					Log.d(LOG_TAG,
 							"Downloaded and extracted Timidity successfully");
 
 					Editor editor = preferences.edit();

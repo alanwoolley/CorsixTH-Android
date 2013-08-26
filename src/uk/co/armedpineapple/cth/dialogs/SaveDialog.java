@@ -15,7 +15,9 @@ import android.widget.EditText;
 
 public class SaveDialog extends FilesDialog {
 
-	private AlertDialog	newSaveDialog;
+	private static final String	LOG_TAG	= "SaveDialog";
+
+	private AlertDialog					newSaveDialog;
 
 	public SaveDialog(SDLActivity context, String path) {
 		super(context, path, R.layout.files_dialog, true);
@@ -41,7 +43,7 @@ public class SaveDialog extends FilesDialog {
 
 	@Override
 	public void onSelectedFile(String file) {
-		Log.d(getClass().getSimpleName(), "Saving: " + file);
+		Log.d(LOG_TAG, "Saving: " + file);
 
 		// Reset the game speed - we don't want to save when the game is paused!
 		SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());

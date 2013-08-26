@@ -43,6 +43,8 @@ import android.util.Log;
 @SuppressWarnings("nls")
 public class Files {
 
+	private static final String	LOG_TAG	= "Files";
+	
 	// Look for these files when trying to work out if the original Theme
 	// Hospital files are present
 
@@ -141,7 +143,7 @@ public class Files {
 	 * @return true if all the files are found
 	 */
 	private static Boolean doFilesExist(String[] files, String directory) {
-		// Log.d(Files.class.getSimpleName(), "Checking directory: " +
+		// Log.d(LOG_TAG, "Checking directory: " +
 		// directory);
 
 		if (directory == null) {
@@ -191,18 +193,18 @@ public class Files {
 	 */
 	public static List<FileDetails> listFilesInDirectory(String directory,
 			FilenameFilter filter) throws IOException {
-		// Log.d(Files.class.getSimpleName(), "Looking for files in: " +
+		// Log.d(LOG_TAG, "Looking for files in: " +
 		// directory);
 
 		File f = new File(directory);
 		List<FileDetails> files = new ArrayList<FileDetails>();
 		if (f.isDirectory()) {
-			// Log.d(Files.class.getSimpleName(), "Directory " + directory
+			// Log.d(LOG_TAG, "Directory " + directory
 			// + " looks ok");
 
 			String[] filesArray = f.list(filter);
 
-			// Log.d(Files.class.getSimpleName(), "Found: " + filesArray.length
+			// Log.d(LOG_TAG, "Found: " + filesArray.length
 			// + " files");
 
 			for (String fileName : filesArray) {
@@ -216,7 +218,7 @@ public class Files {
 		}
 
 		// The directory doesn't exist
-		Log.d(Files.class.getSimpleName(), "Directory " + directory
+		Log.d(LOG_TAG, "Directory " + directory
 				+ " doesn't exist");
 		throw new FileNotFoundException();
 
@@ -266,7 +268,7 @@ public class Files {
 			try {
 				paths = listAssets(ctx, path);
 			} catch (IOException e) {
-				Log.e(Files.class.getSimpleName(),
+				Log.e(LOG_TAG,
 						"I/O Exception whilst listing files", e);
 				BugSenseHandler.sendException(e);
 				return new AsyncTaskResult<ArrayList<String>>(e);
@@ -384,7 +386,7 @@ public class Files {
 				dir.mkdirs();
 			}
 
-			Log.i(Files.class.getSimpleName(), "Copying file [" + assetFilename
+			Log.i(LOG_TAG, "Copying file [" + assetFilename
 					+ "] to [" + newFileName + "]");
 
 			FileUtils.copyInputStreamToFile(in, newFile);
@@ -419,7 +421,7 @@ public class Files {
 			// Search common locations first
 			for (String root : searchPaths) {
 				if (isCancelled()) {
-					Log.d(Files.class.getSimpleName(), "Task cancelled");
+					Log.d(LOG_TAG, "Task cancelled");
 					return null;
 				}
 				for (String dir : SearchDirs) {
@@ -433,12 +435,12 @@ public class Files {
 
 			for (String root : searchPaths) {
 				if (isCancelled()) {
-					Log.d(Files.class.getSimpleName(), "Task cancelled");
+					Log.d(LOG_TAG, "Task cancelled");
 					return null;
 				}
 
 				if ((result = findGameFilesInternal(root)) != null) {
-					Log.d(Files.class.getSimpleName(), "Found game files in: " + result);
+					Log.d(LOG_TAG, "Found game files in: " + result);
 					return result;
 				}
 			}
@@ -461,7 +463,7 @@ public class Files {
 							if (f.isDirectory()) {
 								if ((result = findGameFilesInternal(trimPath(f
 										.getAbsolutePath()))) != null) {
-									Log.d(Files.class.getSimpleName(), "Found game files in: "
+									Log.d(LOG_TAG, "Found game files in: "
 											+ result);
 									return result;
 								}
@@ -470,7 +472,7 @@ public class Files {
 					}
 				}
 			} else {
-				Log.d(Files.class.getSimpleName(), "Task cancelled");
+				Log.d(LOG_TAG, "Task cancelled");
 			}
 			return null;
 		}
@@ -518,9 +520,10 @@ public class Files {
 
 				ucon = downloadUrl.openConnection();
 				ucon.connect();
-
+				Log.d(LOG_TAG, ucon.getURL().toString());
+				Log.d(LOG_TAG ,ucon.getContentType());
 				final int fileSize = ucon.getContentLength();
-
+				Log.d(LOG_TAG, "Content length: " + fileSize);
 				InputStream input = new BufferedInputStream(downloadUrl.openStream());
 				FileOutputStream fos = new FileOutputStream(file);
 				CountingOutputStream cos = new CountingOutputStream(fos) {
@@ -541,7 +544,7 @@ public class Files {
 				fos.close();
 				cos.close();
 
-				Log.d(Files.class.getSimpleName(),
+				Log.d(LOG_TAG,
 						"Downloaded file to: " + file.getAbsolutePath());
 
 				return new AsyncTaskResult<File>(file);
@@ -599,7 +602,7 @@ public class Files {
 
 				while (entries.hasMoreElements()) {
 					ZipEntry ze = entries.nextElement();
-					Log.v(Files.class.getSimpleName(), "Unzipping " + ze.getName());
+					Log.v(LOG_TAG, "Unzipping " + ze.getName());
 
 					File f = new File(unzipTo + ze.getName());
 					if (!f.getParentFile().exists()) {
