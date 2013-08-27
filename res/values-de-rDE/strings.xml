@@ -7,7 +7,6 @@
   <string name="welcome_header">Willkommen bei CorsixTH!</string>
   <string name="previousButton">Vorherige</string>
   <string name="nextButton">Nächste</string>
-  <string name="default_resolution">Standard (640 x 480)</string>
   <string name="download_demo">Lade die Demo herunter</string>
   <string name="original_files_header">Original Theme Hospital Dateien</string>
   <string name="native_resolution">Native</string>
