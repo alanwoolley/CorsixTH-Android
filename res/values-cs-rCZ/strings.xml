@@ -15,7 +15,6 @@ je vložena (v případě potřeby). Poté restartujte aplikaci\"</string>
 spustit hru</string>
   <string name="previousButton">Předchozí</string>
   <string name="nextButton">Další</string>
-  <string name="default_resolution">Standardní (640X480)</string>
   <string name="download_demo">Stáhnout Demo</string>
   <string name="original_files_header">Originální Theme Hospital soubory</string>
   <string name="original_files_text">Měli byste umístit původní soubory Theme Hospital
