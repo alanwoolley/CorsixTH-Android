@@ -11,12 +11,12 @@
     <item>Huge</item>
   </string-array>
   <string-array name="edgespeed">
-    <item>Langzamer</item>
+    <item>Slowest</item>
     <item>Slower</item>
     <item>Slow</item>
     <item>Normal</item>
     <item>Fast</item>
     <item>Faster</item>
-    <item>Sneller</item>
+    <item>Fastest</item>
   </string-array>
 </resources>
