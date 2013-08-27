@@ -10,7 +10,6 @@
   <string name="setup_wizard_dialog">El Asistente de instalación se ejecutará de nuevo al iniciar el juego</string>
   <string name="previousButton">Anterior</string>
   <string name="nextButton">Siguiente</string>
-  <string name="default_resolution">Por defecto (640 x 480)</string>
   <string name="download_demo">Descargar Demo</string>
   <string name="original_files_header">Archivos originales de Theme Hospital</string>
   <string name="original_files_text">Debe colocar los archivos originales de Theme Hospital en su dispositivo en un directorio llamado \'th\', o elegir una alternativa más abajo</string>
