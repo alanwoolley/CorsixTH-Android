@@ -537,7 +537,7 @@ public class SDLActivity extends CTHActivity {
 		super.onResume();
 		Log.d(LOG_TAG, "onResume()");
 
-		if (app.configuration.getKeepScreenOn()) {
+		if (app.configuration != null && app.configuration.getKeepScreenOn()) {
 			Log.d(LOG_TAG, "Getting wakelock");
 			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
