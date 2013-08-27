@@ -16,7 +16,7 @@
 	READ_EXTERNAL_STORAGE
 	WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
 	WAKE_LOKE - required to keep the device awake during play
-	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
+	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
     -->
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,9 +25,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
-    // Only in beta. Remove this for release version
-	<uses-permission android:name="android.permission.READ_LOGS" />
-	 
+    // Only in beta. Remove these for release version. This gives us extra debugging information.
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -67,6 +68,7 @@
             android:theme="@style/Theme.WizardTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
