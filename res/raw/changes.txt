@@ -1,13 +1,13 @@
 * This is a beta release * 
 
-0.5.2-beta2 - 20/05/2013
+0.5.3-beta1
 ==================
-* Fix crash on Honeycomb
-* Fix crash when choosing invalid custom display resolution
-
-0.5.2-beta1 - 16/05/2013
-==================
-* Updated to CorsixTH Version 0.21
-* Enabled Czech and Brazilian-Portuguese languages
-* Updated libraries
+* Default resolution now follows device aspect ratio
+* Add Android 4.3 support
+* Temporarily disable low memory handling to fix crash
+* Removed Flurry analytics library
+* Updated Bugsense library
+* Add Estonian translations (thanks Stefan Joemagi)
+* Add Czech translations (Martycz)
+* Updated Polish and Finnish translations (thanks PatrikSelin and lordzik)
 
