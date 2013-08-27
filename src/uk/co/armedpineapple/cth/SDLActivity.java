@@ -835,7 +835,8 @@ public class SDLActivity extends CTHActivity {
 		commandHandler.cleanUp();
 
 		// Call LUA GC
-		onNativeLowMemory();
+		// TODO - this is buggy.
+		//onNativeLowMemory();
 
 	}
 
