@@ -1,6 +1,6 @@
 * This is a beta release * 
 
-0.5.3-beta1
+0.5.3-beta1 - 27/08/2013
 ==================
 * Default resolution now follows device aspect ratio
 * Add Android 4.3 support
