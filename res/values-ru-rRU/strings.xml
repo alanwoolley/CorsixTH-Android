@@ -10,7 +10,6 @@
   <string name="setup_wizard_dialog">Мастер установки будет запущен снова, когда Вы запустите игру.</string>
   <string name="previousButton">Назад</string>
   <string name="nextButton">Дальше</string>
-  <string name="default_resolution">По умолчанию(640х480)</string>
   <string name="download_demo">Скачать Демо-версию</string>
   <string name="original_files_header">Оригинальные файлы Theme Hospital</string>
   <string name="original_files_text">Следует разместить файлы Theme Hospital в каталог с названием \"th\", или выбрать альтернативный.</string>
