@@ -16,7 +16,11 @@
 	READ_EXTERNAL_STORAGE
 	WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
 	WAKE_LOKE - required to keep the device awake during play
-	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
+	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
+	
+	Beta:
+	READ_LOGS - Lets us read the system logs for additional debugging
+	GET_TASKS - Gives us the number of app processes running, for debugging.
     -->
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -60,7 +64,8 @@
             android:name="uk.co.armedpineapple.cth.SDLActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape" >
+            android:screenOrientation="sensorLandscape" 
+            android:configChanges="keyboard|uiMode|keyboardHidden">
         </activity>
         <activity
             android:name="uk.co.armedpineapple.cth.wizard.WizardActivity"
