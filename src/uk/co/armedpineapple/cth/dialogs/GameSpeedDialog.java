@@ -66,7 +66,8 @@ public class GameSpeedDialog extends Dialog {
 
 			@Override
 			public void onClick(View v) {
-				SDLActivity.cthGameSpeed(seekbar.getProgress());
+				// Update the game speed
+				ctx.app.configuration.setGameSpeed(seekbar.getProgress());
 				hide();
 			}
 

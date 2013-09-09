@@ -20,18 +20,13 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
+import uk.co.armedpineapple.cth.CommandHandler.Command;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
-import uk.co.armedpineapple.cth.dialogs.LoadDialog;
-import uk.co.armedpineapple.cth.dialogs.MenuAdapter;
-import uk.co.armedpineapple.cth.dialogs.MenuDialog;
-import uk.co.armedpineapple.cth.dialogs.SaveDialog;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.samsung.spen.lib.input.SPenEventLibrary;
-
 import android.annotation.TargetApi;
 import android.app.*;
 import android.content.*;
@@ -39,13 +34,10 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.os.*;
 import android.os.PowerManager.WakeLock;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.util.Log;
@@ -58,7 +50,6 @@ public class SDLActivity extends CTHActivity {
 	private int									currentVersion;
 	private Properties					properties;
 	private WakeLock						wake;
-	private MenuDialog					mainMenu;
 	private boolean							hasGameLoaded		= false;
 
 	// This is what SDL runs in. It invokes SDL_main(), eventually
@@ -79,32 +70,15 @@ public class SDLActivity extends CTHActivity {
 	private static Thread				mAudioThread;
 	private static AudioTrack		mAudioTrack;
 	private static Object				audioBuffer;
-	
-	//Menu Drawer
-  private DrawerLayout mDrawerLayout;
-  private ListView mDrawerList;
+
+	// Menu Drawer
+	DrawerLayout								mDrawerLayout;
+	private ListView						mDrawerList;
 
 	private static final String	ENGINE_ZIP_FILE	= "game.zip";
 
 	// Handler for the messages
 	public CommandHandler				commandHandler	= new CommandHandler(this);
-
-	// Commands that can be sent from the game
-	public enum Command {
-		SHOW_MENU,
-		SHOW_LOAD_DIALOG,
-		SHOW_SAVE_DIALOG,
-		RESTART_GAME,
-		QUICK_LOAD,
-		QUICK_SAVE,
-		SHOW_KEYBOARD,
-		HIDE_KEYBOARD,
-		SHOW_ABOUT_DIALOG,
-		PAUSE_GAME,
-		SHOW_SETTINGS_DIALOG,
-		GAME_SPEED_UPDATED,
-		GAME_LOAD_ERROR
-	}
 
 	// C functions we call
 	public static native void nativeInit(Configuration config, String toLoad);
@@ -319,15 +293,17 @@ public class SDLActivity extends CTHActivity {
 
 		DrawerLayout mainLayout = (DrawerLayout) getLayoutInflater().inflate(
 				R.layout.game, null);
-		FrameLayout gameFrame = ((FrameLayout) mainLayout.findViewById(R.id.game_frame));
-		
+		FrameLayout gameFrame = ((FrameLayout) mainLayout
+				.findViewById(R.id.game_frame));
+
 		gameFrame.addView(mSurface);
 		setContentView(mainLayout);
-		
+
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
 		mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-		mDrawerList.setAdapter(new MenuAdapter(this, uk.co.armedpineapple.cth.dialogs.MenuItems.getItems()));
-
+		mDrawerList.setAdapter(new NavDrawerAdapter(this,
+				uk.co.armedpineapple.cth.dialogs.MenuItems.getItems()));
+		mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
 		mDrawerLayout.setDrawerListener(new DrawerListener() {
 
 			@Override
@@ -347,15 +323,15 @@ public class SDLActivity extends CTHActivity {
 				arg0.bringToFront();
 				mDrawerLayout.bringChildToFront(arg0);
 				mDrawerLayout.requestLayout();
-				
+
 			}
 
 			@Override
 			public void onDrawerStateChanged(int arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setFixedSize(app.configuration.getDisplayWidth(),
@@ -366,7 +342,6 @@ public class SDLActivity extends CTHActivity {
 		}
 
 		gameFrame.setVisibility(View.VISIBLE);
-		
 
 		hasGameLoaded = true;
 
@@ -737,128 +712,6 @@ public class SDLActivity extends CTHActivity {
 		}
 	}
 
-	static class CommandHandler extends Handler {
-
-		// Dialogs
-		private SaveDialog	saveDialog;
-		private LoadDialog	loadDialog;
-		private Dialog			aboutDialog;
-		private MenuDialog	mainMenuDialog;
-
-		SDLActivity					context;
-
-		public CommandHandler(SDLActivity context) {
-			super();
-			this.context = context;
-
-		}
-
-		public void cleanUp() {
-			saveDialog = null;
-			loadDialog = null;
-			aboutDialog = null;
-			mainMenuDialog = null;
-		}
-
-		public void handleMessage(Message msg) {
-			InputMethodManager mgr;
-			switch (Command.values()[msg.arg1]) {
-				case GAME_LOAD_ERROR:
-					SharedPreferences prefs = context.app.getPreferences();
-					Editor editor = prefs.edit();
-					editor.putInt("last_version", 0);
-					editor.putBoolean("wizard_run", false);
-					editor.commit();
-					Dialog errorDialog = DialogFactory.createErrorDialog(context);
-
-					errorDialog.show();
-
-					break;
-
-				case SHOW_ABOUT_DIALOG:
-					if (aboutDialog == null) {
-						aboutDialog = DialogFactory.createAboutDialog(context);
-					}
-					aboutDialog.show();
-					break;
-
-				case HIDE_KEYBOARD:
-					mgr = (InputMethodManager) context
-							.getSystemService(Context.INPUT_METHOD_SERVICE);
-					mgr.hideSoftInputFromWindow(mSurface.getWindowToken(), 0);
-					break;
-				case SHOW_KEYBOARD:
-					mgr = (InputMethodManager) context
-							.getSystemService(Context.INPUT_METHOD_SERVICE);
-					mgr.showSoftInput(mSurface, InputMethodManager.SHOW_FORCED);
-					break;
-				case QUICK_LOAD:
-					if (Files.doesFileExist(context.app.configuration.getSaveGamesPath()
-							+ File.separator + context.getString(R.string.quicksave_name))) {
-						cthLoadGame(context.getString(R.string.quicksave_name));
-					} else {
-						Toast.makeText(context, R.string.no_quicksave, Toast.LENGTH_SHORT)
-								.show();
-					}
-					break;
-				case QUICK_SAVE:
-					cthSaveGame(context.getString(R.string.quicksave_name));
-					break;
-				case RESTART_GAME:
-					cthRestartGame();
-					break;
-
-				case SHOW_LOAD_DIALOG:
-					if (loadDialog == null) {
-						loadDialog = new LoadDialog(context,
-								context.app.configuration.getSaveGamesPath());
-					}
-					try {
-						loadDialog.updateSaves(context);
-						loadDialog.show();
-					} catch (IOException e) {
-						BugSenseHandler.sendException(e);
-
-						Toast.makeText(context, "Problem loading load dialog",
-								Toast.LENGTH_SHORT).show();
-
-					}
-					break;
-
-				case SHOW_SAVE_DIALOG:
-					if (saveDialog == null) {
-						saveDialog = new SaveDialog(context,
-								context.app.configuration.getSaveGamesPath());
-					}
-					try {
-						saveDialog.updateSaves(context);
-						saveDialog.show();
-					} catch (IOException e) {
-						BugSenseHandler.sendException(e);
-						Toast.makeText(context, "Problem loading save dialog",
-								Toast.LENGTH_SHORT).show();
-					}
-
-					break;
-				case SHOW_MENU:
-					context.mDrawerLayout.openDrawer(GravityCompat.START);
-					break;
-				case PAUSE_GAME:
-					cthGameSpeed(0);
-					break;
-				case SHOW_SETTINGS_DIALOG:
-					context.startActivity(new Intent(context, PrefsActivity.class));
-					break;
-				case GAME_SPEED_UPDATED:
-					context.app.configuration.setGameSpeed((Integer) msg.obj);
-					break;
-				default:
-					break;
-			}
-		}
-
-	}
-
 	@Override
 	public void onLowMemory() {
 		super.onLowMemory();
@@ -869,12 +722,11 @@ public class SDLActivity extends CTHActivity {
 
 		// Remove references to some stuff that can just be regenerated later, so
 		// that the GC can get rid of them.
-		mainMenu = null;
 		commandHandler.cleanUp();
 
 		// Call LUA GC
 		// TODO - this is buggy.
-		//onNativeLowMemory();
+		// onNativeLowMemory();
 
 	}
 

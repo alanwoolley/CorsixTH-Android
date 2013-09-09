@@ -1,8 +1,9 @@
-package uk.co.armedpineapple.cth.dialogs;
+package uk.co.armedpineapple.cth;
 
 import java.util.List;
 
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.dialogs.MenuItems;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MenuAdapter extends BaseAdapter {
+public class NavDrawerAdapter extends BaseAdapter {
 
 	Context					context;
 	List<MenuItems>	items;
 
-	public MenuAdapter(Context context, List<MenuItems> items) {
+	public NavDrawerAdapter(Context context, List<MenuItems> items) {
 		this.context = context;
 		this.items = items;
 	}
