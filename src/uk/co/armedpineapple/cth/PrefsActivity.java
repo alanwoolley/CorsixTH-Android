@@ -211,7 +211,6 @@ public class PrefsActivity extends PreferenceActivity implements
 			application.configuration.refresh();
 
 			SDLActivity.cthUpdateConfiguration(application.configuration);
-			SDLActivity.cthGameSpeed(application.configuration.getGameSpeed());
 		}
 	}
 
