@@ -41,12 +41,12 @@ public class NavDrawerListListener implements ListView.OnItemClickListener {
 				SDLActivity.sendCommand(SHOW_LOAD_DIALOG, null);
 				return;
 			case QUICK_LOAD:
-				SDLActivity.cthGameSpeed(context.app.configuration.getGameSpeed());
 				SDLActivity.sendCommand(QUICK_LOAD, null);
+				SDLActivity.sendCommand(HIDE_MENU, null);
 				return;
 			case QUICK_SAVE:
 				SDLActivity.sendCommand(QUICK_SAVE, null);
-				SDLActivity.cthGameSpeed(context.app.configuration.getGameSpeed());
+				SDLActivity.sendCommand(HIDE_MENU, null);
 				return;
 			case RESTART:
 				SDLActivity.cthGameSpeed(context.app.configuration.getGameSpeed());
