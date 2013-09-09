@@ -37,7 +37,7 @@ public class PrefsActivity extends PreferenceActivity implements
 		SharedPreferences.OnSharedPreferenceChangeListener {
 
 	public static final String	LOG_TAG					= "Settings";
-	
+
 	private CTHApplication			application;
 	private SharedPreferences		preferences;
 
@@ -207,11 +207,12 @@ public class PrefsActivity extends PreferenceActivity implements
 			Toast.makeText(this, R.string.dialog_require_restart, Toast.LENGTH_LONG)
 					.show();
 		}
+		if (Files.canAccessExternalStorage()) {
+			application.configuration.refresh();
 
-		application.configuration.refresh();
-
-		SDLActivity.cthUpdateConfiguration(application.configuration);
-		SDLActivity.cthGameSpeed(application.configuration.getGameSpeed());
+			SDLActivity.cthUpdateConfiguration(application.configuration);
+			SDLActivity.cthGameSpeed(application.configuration.getGameSpeed());
+		}
 	}
 
 	@Override
@@ -333,8 +334,7 @@ public class PrefsActivity extends PreferenceActivity implements
 				dialog.hide();
 
 				if (result.getResult() != null) {
-					Log.d(LOG_TAG,
-							"Downloaded and extracted Timidity successfully");
+					Log.d(LOG_TAG, "Downloaded and extracted Timidity successfully");
 
 					Editor editor = preferences.edit();
 					editor.putBoolean("music_pref", true);
