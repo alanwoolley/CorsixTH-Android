@@ -1,4 +1,4 @@
-package uk.co.armedpineapple.cth.dialogs;
+package uk.co.armedpineapple.cth;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +12,6 @@ public enum MenuItems {
 	LOAD(R.string.menuitem_load, R.drawable.ic_menu_load),
 	SAVE(R.string.menuitem_save, R.drawable.ic_menu_save),
 	RESTART(R.string.menuitem_restart, R.drawable.ic_menu_restart),
-	//WIZARD(R.string.setup_wizard, R.drawable.ic_menu_wizard),
 	SETTINGS(R.string.menuitem_settings, null),
 	ABOUT(R.string.menuitem_about, R.drawable.ic_menu_help),
 	EXIT(R.string.menuitem_exit, R.drawable.ic_menu_exit);

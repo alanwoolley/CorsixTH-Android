@@ -3,7 +3,6 @@ package uk.co.armedpineapple.cth;
 import static uk.co.armedpineapple.cth.CommandHandler.Command.*;
 
 import uk.co.armedpineapple.cth.dialogs.GameSpeedDialog;
-import uk.co.armedpineapple.cth.dialogs.MenuItems;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;

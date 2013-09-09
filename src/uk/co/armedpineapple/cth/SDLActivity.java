@@ -302,7 +302,7 @@ public class SDLActivity extends CTHActivity {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
 		mDrawerList = (ListView) findViewById(R.id.menu_drawer);
 		mDrawerList.setAdapter(new NavDrawerAdapter(this,
-				uk.co.armedpineapple.cth.dialogs.MenuItems.getItems()));
+				uk.co.armedpineapple.cth.MenuItems.getItems()));
 		mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
 		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		mDrawerLayout.setDrawerListener(new DrawerListener() {

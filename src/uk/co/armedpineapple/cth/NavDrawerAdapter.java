@@ -3,7 +3,6 @@ package uk.co.armedpineapple.cth;
 import java.util.List;
 
 import uk.co.armedpineapple.cth.R;
-import uk.co.armedpineapple.cth.dialogs.MenuItems;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
