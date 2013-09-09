@@ -60,15 +60,7 @@ public class DialogFactory {
 			}
 
 		});
-		d.setOnDismissListener(new OnDismissListener() {
 
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());
-
-			}
-
-		});
 		return d;
 	}
 
