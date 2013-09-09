@@ -14,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -139,10 +140,12 @@ class CommandHandler extends Handler {
 
 				break;
 			case SHOW_MENU:
+				context.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 				context.mDrawerLayout.openDrawer(GravityCompat.START);
 				break;
 			case HIDE_MENU:
 				context.mDrawerLayout.closeDrawers();
+				context.mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 				break;
 			case PAUSE_GAME:
 				SDLActivity.cthGameSpeed(0);

@@ -304,12 +304,14 @@ public class SDLActivity extends CTHActivity {
 		mDrawerList.setAdapter(new NavDrawerAdapter(this,
 				uk.co.armedpineapple.cth.dialogs.MenuItems.getItems()));
 		mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
+		mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 		mDrawerLayout.setDrawerListener(new DrawerListener() {
 
 			@Override
 			public void onDrawerClosed(View arg0) {
 				// Restore game speed
 				cthGameSpeed(app.configuration.getGameSpeed());
+				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 			}
 
 			@Override

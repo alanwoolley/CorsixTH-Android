@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
+        android:padding="16dp"
         android:layout_toRightOf="@+id/menu_item_image"
         android:text=""
         android:textAppearance="@style/MenuFont" />
