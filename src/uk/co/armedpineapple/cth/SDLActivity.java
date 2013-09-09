@@ -25,6 +25,7 @@ import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 import uk.co.armedpineapple.cth.dialogs.LoadDialog;
+import uk.co.armedpineapple.cth.dialogs.MenuAdapter;
 import uk.co.armedpineapple.cth.dialogs.MenuDialog;
 import uk.co.armedpineapple.cth.dialogs.SaveDialog;
 
@@ -40,9 +41,13 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.os.*;
 import android.os.PowerManager.WakeLock;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.util.Log;
 import android.media.*;
 
@@ -74,6 +79,10 @@ public class SDLActivity extends CTHActivity {
 	private static Thread				mAudioThread;
 	private static AudioTrack		mAudioTrack;
 	private static Object				audioBuffer;
+	
+	//Menu Drawer
+  private DrawerLayout mDrawerLayout;
+  private ListView mDrawerList;
 
 	private static final String	ENGINE_ZIP_FILE	= "game.zip";
 
@@ -306,22 +315,58 @@ public class SDLActivity extends CTHActivity {
 
 		mSurface = new SDLSurface(this, app.configuration.getDisplayWidth(),
 				app.configuration.getDisplayHeight());
+		mSurface.setZOrderOnTop(false);
 
-		FrameLayout mainLayout = (FrameLayout) getLayoutInflater().inflate(
+		DrawerLayout mainLayout = (DrawerLayout) getLayoutInflater().inflate(
 				R.layout.game, null);
-
-		((FrameLayout) mainLayout.findViewById(R.id.game_frame)).addView(mSurface);
-
+		FrameLayout gameFrame = ((FrameLayout) mainLayout.findViewById(R.id.game_frame));
+		
+		gameFrame.addView(mSurface);
 		setContentView(mainLayout);
+		
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
+		mDrawerList = (ListView) findViewById(R.id.menu_drawer);
+		mDrawerList.setAdapter(new MenuAdapter(this, uk.co.armedpineapple.cth.dialogs.MenuItems.getItems()));
 
+		mDrawerLayout.setDrawerListener(new DrawerListener() {
+
+			@Override
+			public void onDrawerClosed(View arg0) {
+				// Restore game speed
+				cthGameSpeed(app.configuration.getGameSpeed());
+			}
+
+			@Override
+			public void onDrawerOpened(View arg0) {
+				// Pause the game
+				cthGameSpeed(0);
+			}
+
+			@Override
+			public void onDrawerSlide(View arg0, float arg1) {
+				arg0.bringToFront();
+				mDrawerLayout.bringChildToFront(arg0);
+				mDrawerLayout.requestLayout();
+				
+			}
+
+			@Override
+			public void onDrawerStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setFixedSize(app.configuration.getDisplayWidth(),
 				app.configuration.getDisplayHeight());
-
 		// Use low profile mode if supported
 		if (Build.VERSION.SDK_INT >= 11) {
 			hideSystemUi();
 		}
+
+		gameFrame.setVisibility(View.VISIBLE);
+		
 
 		hasGameLoaded = true;
 
@@ -796,14 +841,7 @@ public class SDLActivity extends CTHActivity {
 
 					break;
 				case SHOW_MENU:
-					if (mainMenuDialog == null) {
-						mainMenuDialog = new MenuDialog(context);
-					}
-
-					// Pause the game
-					cthGameSpeed(0);
-					mainMenuDialog.show();
-
+					context.mDrawerLayout.openDrawer(GravityCompat.START);
 					break;
 				case PAUSE_GAME:
 					cthGameSpeed(0);

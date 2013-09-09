@@ -66,9 +66,9 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		getHolder().addCallback(this);
 		this.width = width;
 		this.height = height;
-		setFocusable(true);
-		setFocusableInTouchMode(true);
-		requestFocus();
+	//	setFocusable(true);
+		//setFocusableInTouchMode(true);
+		//requestFocus();
 		setOnKeyListener(this);
 		setOnTouchListener(this);
 		moveGestureDetector = new TwoFingerGestureDetector(context,
@@ -169,12 +169,11 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 				sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
 				break;
 			default:
-				Log.v(LOG_TAG, "pixel format unknown "
-						+ format);
+				Log.v(LOG_TAG, "pixel format unknown " + format);
 				break;
 		}
 
-		SDLActivity.onNativeResize(width, height, sdlFormat);
+		SDLActivity.onNativeResize(width, height, 0x86462004);
 
 		context.startApp();
 
