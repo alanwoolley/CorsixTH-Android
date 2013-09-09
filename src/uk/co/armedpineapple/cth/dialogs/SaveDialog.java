@@ -50,6 +50,9 @@ public class SaveDialog extends FilesDialog {
 
 		// Save the game
 		SDLActivity.cthSaveGame(file);
+		
+		// Reset game speed
+		SDLActivity.cthGameSpeed(0);
 
 		dismiss();
 

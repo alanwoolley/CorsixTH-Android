@@ -7,15 +7,19 @@
     <ImageView
         android:id="@+id/menu_item_image"
         android:layout_width="30dp"
-        android:layout_height="30dp" android:visibility="gone"/>
+        android:layout_height="30dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/menu_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:padding="16dp"
         android:layout_toRightOf="@+id/menu_item_image"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
         android:text=""
         android:textAppearance="@style/MenuFont" />
 

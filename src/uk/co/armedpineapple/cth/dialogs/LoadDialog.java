@@ -22,6 +22,7 @@ public class LoadDialog extends FilesDialog {
 	public void onSelectedFile(String file) {
 		Log.d(LOG_TAG, "Loading: " + file);
 		SDLActivity.cthLoadGame(file);
+		SDLActivity.cthGameSpeed(0);
 		dismiss();
 	}
 
