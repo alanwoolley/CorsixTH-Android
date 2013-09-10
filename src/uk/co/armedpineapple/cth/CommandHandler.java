@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 
-class CommandHandler extends Handler {
+public class CommandHandler extends Handler {
 
 	// Commands that can be sent from the game
 	public enum Command {

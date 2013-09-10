@@ -52,11 +52,6 @@ public class NavDrawerAdapter extends BaseAdapter {
 		TextView tv = (TextView) view.findViewById(R.id.menu_item_text);
 		tv.setText(mi.textResource);
 
-		if (mi.imageResource != null) {
-			ImageView iv = (ImageView) view.findViewById(R.id.menu_item_image);
-			iv.setImageResource(mi.imageResource);
-		}
-
 		return view;
 	}
 

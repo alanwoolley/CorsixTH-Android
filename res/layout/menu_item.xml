@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp" >
-
-    <ImageView
-        android:id="@+id/menu_item_image"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:visibility="gone" />
+    android:layout_height="wrap_content" >
 
     <TextView
         android:id="@+id/menu_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/menu_item_image"
         android:paddingBottom="8dp"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingRight="56dp"
         android:paddingTop="8dp"
         android:text=""
-        android:textAppearance="@style/MenuFont" />
+        android:textAppearance="@style/MenuFont"
+        android:textColor="@color/menu_item"/>
 
 </RelativeLayout>

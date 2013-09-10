@@ -5,6 +5,7 @@
  */
 package uk.co.armedpineapple.cth.dialogs;
 
+import uk.co.armedpineapple.cth.CommandHandler.Command;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import android.app.AlertDialog;
@@ -53,6 +54,8 @@ public class SaveDialog extends FilesDialog {
 		
 		// Pause game
 		SDLActivity.cthGameSpeed(0);
+		
+		SDLActivity.sendCommand(Command.HIDE_MENU, null);
 
 		dismiss();
 
