@@ -1,4 +1,10 @@
-* This is a beta release * 
+* This is a beta release *
+ 
+0.5.3-beta2 - 10/09/2013
+==================
+* Replace menu dialog with a navigation drawer
+* Update Czech and Estonian translations (thanks Martycz and Stefan Joemagi)
+* Bug Fixes
 
 0.5.3-beta1 - 27/08/2013
 ==================

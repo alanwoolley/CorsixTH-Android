@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
-    android:versionCode="80"
-    android:versionName="0.5.3-beta1" >
+    android:versionCode="81"
+    android:versionName="0.5.3-beta2" >
 
     <uses-sdk
         android:minSdkVersion="8"
