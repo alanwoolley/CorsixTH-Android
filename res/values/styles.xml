@@ -36,7 +36,6 @@
     </style>
 
     <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">32sp</item>
     </style>
 
     <style name="Dialogs" parent="@android:style/Theme.Dialog">
