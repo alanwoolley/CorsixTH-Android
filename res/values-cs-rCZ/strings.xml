@@ -15,6 +15,7 @@ je vložena (v případě potřeby). Poté restartujte aplikaci\"</string>
 spustit hru</string>
   <string name="previousButton">Předchozí</string>
   <string name="nextButton">Další</string>
+  <string name="automatic_resolution">Automaticky</string>
   <string name="download_demo">Stáhnout Demo</string>
   <string name="original_files_header">Originální Theme Hospital soubory</string>
   <string name="original_files_text">Měli byste umístit původní soubory Theme Hospital
@@ -142,6 +143,8 @@ rolování</string>
   <string name="preferences_spen_disabled">S Pen vypnutá podpora</string>
   <string name="preferences_spen_enabled">S  Pen zapnutou podporu</string>
   <string name="preferences_controls">řízení</string>
+  <string name="preferences_controls_mode">Režim ovládání</string>
+  <string name="preferences_controls_mode_summary">Jak je řešen vstup</string>
   <string name="no_quicksave">Vypnout funkci rychlého načítání!</string>
   <string name="dialog_error_title">Chyba!</string>
   <string name="recent_changes_title">nedávné změny</string>
@@ -151,4 +154,6 @@ ručně nebo stáhnout demo</string>
   <string name="found_files">Najít soubory v:</string>
   <string name="searching">Hledání</string>
   <string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
+  <string name="mobile_network_warning">Jste připojeni k mobilní síti. Datové poplatky.</string>
+  <string name="warning">Varování!</string>
 </resources>

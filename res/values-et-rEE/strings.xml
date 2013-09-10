@@ -10,6 +10,7 @@
   <string name="setup_wizard_dialog">Seadete sätistamist alustatakse uuesti järgmine kord kui mängu lahti teete.</string>
   <string name="previousButton">Eelmine</string>
   <string name="nextButton">Järgmine</string>
+  <string name="automatic_resolution">Automaatne</string>
   <string name="download_demo">Lae alla Demo</string>
   <string name="original_files_header">Originaal Theme Hosptal failid</string>
   <string name="original_files_text">Sa peaksid tõstma originaal Theme Hospital failid seadmele th kausta, või valima teise kausta.</string>
@@ -120,6 +121,8 @@
   <string name="preferences_spen_disabled">S pliiatsi tugi keelatud</string>
   <string name="preferences_spen_enabled">S pliiatsi tugi lubatud</string>
   <string name="preferences_controls">Kontrollid</string>
+  <string name="preferences_controls_mode">Kontrollnuppude valikud</string>
+  <string name="preferences_controls_mode_summary">Kuidas sisestust käsitletakse</string>
   <string name="no_quicksave">Pole kiirlaadimise save!</string>
   <string name="dialog_error_title">Tõrge!</string>
   <string name="recent_changes_title">Viimased Muudatused</string>
@@ -128,4 +131,6 @@
   <string name="found_files">Leidsin failid: </string>
   <string name="searching">Otsin...</string>
   <string name="download_progress_dialog_text">%1$d MB %2$d MB-ist</string>
+  <string name="mobile_network_warning">Su telefon on ühendatud interneti võrku. Andesideme tasu võib lisanduda.</string>
+  <string name="warning">Hoiatus!</string>
 </resources>
