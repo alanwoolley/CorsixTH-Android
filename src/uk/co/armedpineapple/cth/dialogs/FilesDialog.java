@@ -71,13 +71,6 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 			@Override
 			public void onClick(View v) {
-				Integer speed;
-				if ((speed = ctx.app.configuration.getGameSpeed()) != null) {
-
-					// Unpause the game if the cancel button is pressed
-					SDLActivity.cthGameSpeed(speed);
-
-				}
 				dismiss();
 			}
 
