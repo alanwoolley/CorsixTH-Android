@@ -10,6 +10,7 @@
   <string name="setup_wizard_dialog">El Asistente de instalación se ejecutará de nuevo al iniciar el juego</string>
   <string name="previousButton">Anterior</string>
   <string name="nextButton">Siguiente</string>
+  <string name="automatic_resolution">Resolucion Automatica</string>
   <string name="download_demo">Descargar Demo</string>
   <string name="original_files_header">Archivos originales de Theme Hospital</string>
   <string name="original_files_text">Debe colocar los archivos originales de Theme Hospital en su dispositivo en un directorio llamado \'th\', o elegir una alternativa más abajo</string>
@@ -120,6 +121,8 @@
   <string name="preferences_spen_disabled">Soporte del S Pen desactivado</string>
   <string name="preferences_spen_enabled">Soporte del S Pen activado</string>
   <string name="preferences_controls">controles</string>
+  <string name="preferences_controls_mode">Modo de control</string>
+  <string name="preferences_controls_mode_summary">Metodo de entrada</string>
   <string name="no_quicksave">No hay partidas rapidas guardadas.</string>
   <string name="dialog_error_title">¡Error!</string>
   <string name="recent_changes_title">Cambios recientes</string>
@@ -128,4 +131,6 @@
   <string name="found_files">Encontrar archivos en: </string>
   <string name="searching">Buscando...</string>
   <string name="download_progress_dialog_text">%1$d MB de %2$d MB</string>
+  <string name="mobile_network_warning">Está conectado a una red móvil. Pueden aplicar cargos de datos.</string>
+  <string name="warning">Peligro!</string>
 </resources>
