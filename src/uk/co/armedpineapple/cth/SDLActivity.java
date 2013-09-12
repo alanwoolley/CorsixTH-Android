@@ -718,10 +718,12 @@ public class SDLActivity extends CTHActivity {
 	public void onLowMemory() {
 		super.onLowMemory();
 		Log.w(LOG_TAG, "Low memory detected. Going to try and tighten our belt!");
-
-		// Attempt to save first
-		cthTryAutoSave(getString(R.string.autosave_name));
-
+		
+		if (hasGameLoaded) {
+			// Attempt to save first
+			cthTryAutoSave(getString(R.string.autosave_name));
+		}
+		
 		// Remove references to some stuff that can just be regenerated later, so
 		// that the GC can get rid of them.
 		commandHandler.cleanUp();
