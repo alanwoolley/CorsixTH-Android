@@ -7,9 +7,10 @@ package uk.co.armedpineapple.cth.wizard;
 
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.ConfigurationException;
 import uk.co.armedpineapple.cth.CTHApplication;
+import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
 import uk.co.armedpineapple.cth.Files;
+import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
@@ -26,8 +27,8 @@ import android.widget.ViewFlipper;
 
 public class WizardActivity extends CTHActivity {
 
-	private static final String	LOG_TAG	= "Wizard";
-	
+	private static final String				LOG_TAG	= "Wizard";
+
 	private ViewFlipper								flipper;
 	private Button										previousButton;
 	private Button										nextButton;
@@ -60,8 +61,16 @@ public class WizardActivity extends CTHActivity {
 			nextButton = (Button) findViewById(R.id.rightbutton);
 
 			if (app.configuration == null) {
-				app.configuration = Configuration
-						.loadFromPreferences(this, preferences);
+				try {
+					app.configuration = Configuration.loadFromPreferences(this,
+							preferences);
+				} catch (StorageUnavailableException e) {
+					Log.e(LOG_TAG, "Can't get storage.");
+
+					// Show dialog and end
+					DialogFactory.createExternalStorageWarningDialog(this, true).show();
+					return;
+				}
 			}
 
 			// Add all the wizard views

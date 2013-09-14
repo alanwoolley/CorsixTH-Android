@@ -6,7 +6,7 @@
 package uk.co.armedpineapple.cth.wizard;
 
 import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.ConfigurationException;
+import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
 import android.content.Context;
 import android.util.AttributeSet;
 

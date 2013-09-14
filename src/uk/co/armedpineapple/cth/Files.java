@@ -670,5 +670,9 @@ public class Files {
 
 		}
 	}
+	
+	public class StorageUnavailableException extends Exception {
+	
+	}
 
 }

@@ -8,7 +8,7 @@ package uk.co.armedpineapple.cth.wizard;
 import java.util.Locale;
 
 import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.ConfigurationException;
+import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
 import uk.co.armedpineapple.cth.R;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -27,11 +27,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class LanguageWizard extends WizardView {
-	Context		ctx;
-	ListView	languageListView;
-	
+	Context											ctx;
+	ListView										languageListView;
+
 	private static final String	LOG_TAG	= "LanguageWizard";
-	
+
 	public LanguageWizard(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		ctx = context;
@@ -61,8 +61,7 @@ public class LanguageWizard extends WizardView {
 				}
 			});
 			// Look for the language in the values array
-			Log.d(LOG_TAG, "System Language: "
-					+ Locale.getDefault().getLanguage());
+			Log.d(LOG_TAG, "System Language: " + Locale.getDefault().getLanguage());
 
 			for (int i = 0; i < langValuesArray.length; i++) {
 				if (langValuesArray[i].equals(Locale.getDefault().getLanguage())) {

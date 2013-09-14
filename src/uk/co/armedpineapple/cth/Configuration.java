@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.R;
 
 import android.content.Context;
@@ -124,7 +126,7 @@ public class Configuration {
 	 * initialised from. Does not reset any configuration options that are not
 	 * present in the preferences
 	 **/
-	public void refresh() {
+	public void refresh() throws StorageUnavailableException {
 		originalFilesPath = preferences.getString("originalfiles_pref", "");
 
 		// TODO - No check for external storage availability
@@ -216,15 +218,17 @@ public class Configuration {
 	 * @param preferences
 	 *          the preferences object to retrieve from
 	 * @return a Configuration object containing the preferences
+	 * @throws StorageUnavailableException
+	 *           if storage is unavailable
 	 */
 	public static Configuration loadFromPreferences(Context ctx,
-			SharedPreferences preferences) {
+			SharedPreferences preferences) throws StorageUnavailableException {
 		Configuration config = new Configuration(ctx, preferences);
 		Log.d(LOG_TAG, "Loading configuration");
 
 		config.refresh();
 		config.gameSpeed = 0;
-		Log.d(LOG_TAG, config.toString());
+
 		return config;
 	}
 
@@ -550,6 +554,12 @@ public class Configuration {
 				+ sfxVol + ", language=" + language + ", resMode=" + resolutionMode
 				+ ", width=" + displayWidth + ", height=" + displayHeight + ", debug?="
 				+ debug + "]";
+	}
+
+	public static class ConfigurationException extends Exception {
+
+		private static final long	serialVersionUID	= 2599028839849130837L;
+
 	}
 
 }

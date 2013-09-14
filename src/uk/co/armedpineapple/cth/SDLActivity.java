@@ -21,6 +21,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
+import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
@@ -133,8 +134,17 @@ public class SDLActivity extends CTHActivity {
 			final SharedPreferences preferences = app.getPreferences();
 
 			if (app.configuration == null) {
-				app.configuration = Configuration
-						.loadFromPreferences(this, preferences);
+				try {
+					app.configuration = Configuration.loadFromPreferences(this,
+							preferences);
+				} catch (StorageUnavailableException e) {
+					Log.e(LOG_TAG, "Can't get storage.");
+
+					// Create an alert dialog warning that external storage isn't
+					// mounted. The application will have to exit at this point.
+
+					DialogFactory.createExternalStorageWarningDialog(this, true).show();
+				}
 			}
 
 			currentVersion = preferences.getInt("last_version", 0) - 1;
@@ -718,12 +728,12 @@ public class SDLActivity extends CTHActivity {
 	public void onLowMemory() {
 		super.onLowMemory();
 		Log.w(LOG_TAG, "Low memory detected. Going to try and tighten our belt!");
-		
+
 		if (hasGameLoaded) {
 			// Attempt to save first
 			cthTryAutoSave(getString(R.string.autosave_name));
 		}
-		
+
 		// Remove references to some stuff that can just be regenerated later, so
 		// that the GC can get rid of them.
 		commandHandler.cleanUp();

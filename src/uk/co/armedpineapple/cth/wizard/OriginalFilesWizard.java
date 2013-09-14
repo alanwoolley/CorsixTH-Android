@@ -11,7 +11,7 @@ import com.bugsense.trace.BugSenseHandler;
 
 import uk.co.armedpineapple.cth.AsyncTaskResult;
 import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.ConfigurationException;
+import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
 import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.Network;
 import uk.co.armedpineapple.cth.R;

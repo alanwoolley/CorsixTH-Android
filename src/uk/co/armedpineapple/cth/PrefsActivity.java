@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
+import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.Files.DownloadFileTask;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
@@ -208,9 +209,13 @@ public class PrefsActivity extends PreferenceActivity implements
 					.show();
 		}
 		if (Files.canAccessExternalStorage()) {
-			application.configuration.refresh();
-
-			SDLActivity.cthUpdateConfiguration(application.configuration);
+			try {
+				application.configuration.refresh();
+				SDLActivity.cthUpdateConfiguration(application.configuration);
+			} catch (StorageUnavailableException e) {
+				e.printStackTrace();
+				Log.e(LOG_TAG, "Couldn't access storage. Unable to save configuration");
+			}
 		}
 	}
 
