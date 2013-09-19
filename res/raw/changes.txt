@@ -1,8 +1,19 @@
 * This is a beta release *
 
+Pending any last minute bugs, this will be the final beta version.
+
+0.5.3-beta5 - 19/09/2013
+==================
+* Update Russian translations (thanks Nekser)
+
+0.5.3-beta4 - 12/09/2013
+==================
+* Update Spanish and German translations (thanks miguelkill and eraser2011)
+* Bug fixes
+
 0.5.3-beta3 - 11/09/2013
 ==================
-* Restore compatibility with desktop versions of CorsixTH
+* Restore save game compatibility with desktop versions of CorsixTH
 * Bug Fixes
  
 0.5.3-beta2 - 10/09/2013
