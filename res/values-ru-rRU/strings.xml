@@ -10,6 +10,7 @@
   <string name="setup_wizard_dialog">Мастер установки будет запущен снова, когда Вы запустите игру.</string>
   <string name="previousButton">Назад</string>
   <string name="nextButton">Дальше</string>
+  <string name="automatic_resolution">Автоматически</string>
   <string name="download_demo">Скачать Демо-версию</string>
   <string name="original_files_header">Оригинальные файлы Theme Hospital</string>
   <string name="original_files_text">Следует разместить файлы Theme Hospital в каталог с названием \"th\", или выбрать альтернативный.</string>
@@ -120,6 +121,8 @@
   <string name="preferences_spen_disabled">Поддержка S-pen выключена</string>
   <string name="preferences_spen_enabled">Включена поддержка S-pen</string>
   <string name="preferences_controls">Управление</string>
+  <string name="preferences_controls_mode">Режим Управления</string>
+  <string name="preferences_controls_mode_summary">Обработка устройства ввода</string>
   <string name="no_quicksave">Нет быстрого сохранения для загрузки!</string>
   <string name="dialog_error_title">Ошибка!</string>
   <string name="recent_changes_title">Недавние изменения</string>
@@ -128,4 +131,6 @@
   <string name="found_files">Файлы найдены в:</string>
   <string name="searching">Поиск...</string>
   <string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
+  <string name="mobile_network_warning">Подключение использует мобильную сеть для передачи данных, за что взимается плата, согласно Вашему тарифному плану.</string>
+  <string name="warning">Предупреждение!</string>
 </resources>
