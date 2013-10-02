@@ -1,35 +1,5 @@
 * This is a beta release *
 
-Pending any last minute bugs, this will be the final beta version.
-
-0.5.3-beta5 - 19/09/2013
+0.6.1 - dd/mm/yyyy
 ==================
-* Update Russian translations (thanks Nekser)
-
-0.5.3-beta4 - 12/09/2013
-==================
-* Update Spanish and German translations (thanks miguelkill and eraser2011)
-* Bug fixes
-
-0.5.3-beta3 - 11/09/2013
-==================
-* Restore save game compatibility with desktop versions of CorsixTH
-* Bug Fixes
- 
-0.5.3-beta2 - 10/09/2013
-==================
-* Replace menu dialog with a navigation drawer
-* Update Czech and Estonian translations (thanks Martycz and Stefan Joemagi)
-* Bug Fixes
-
-0.5.3-beta1 - 27/08/2013
-==================
-* Default resolution now follows device aspect ratio
-* Add Android 4.3 support
-* Temporarily disable low memory handling to fix crash
-* Removed Flurry analytics library
-* Updated Bugsense library
-* Add Estonian translations (thanks Stefan Joemagi)
-* Add Czech translations (Martycz)
-* Updated Polish and Finnish translations (thanks PatrikSelin and lordzik)
-
+* Fix occasional crash when downloading demo
