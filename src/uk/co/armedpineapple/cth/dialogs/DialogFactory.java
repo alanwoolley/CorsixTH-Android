@@ -31,7 +31,7 @@ public class DialogFactory {
 		d.setContentView(R.layout.about);
 
 		d.getWindow()
-				.setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
 		d.setTitle(R.string.about_dialog_header);
 
@@ -70,7 +70,7 @@ public class DialogFactory {
 		d.setTitle(R.string.recent_changes_title);
 
 		d.getWindow()
-				.setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
 		Button button = (Button) d.findViewById(R.id.dismissDialogButton);
 		button.setOnClickListener(new Button.OnClickListener() {

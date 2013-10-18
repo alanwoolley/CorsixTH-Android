@@ -26,7 +26,6 @@ import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;

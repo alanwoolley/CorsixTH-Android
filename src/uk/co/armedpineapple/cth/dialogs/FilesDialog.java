@@ -76,7 +76,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
 		});
 		
-		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		
 
 	}

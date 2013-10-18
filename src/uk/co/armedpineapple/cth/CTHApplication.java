@@ -19,6 +19,8 @@ import com.bugsense.trace.BugSenseHandler;
 
 public class CTHApplication extends android.app.Application {
 
+	private static final String	APPLICATION_PROPERTIES_FILE	= "application.properties";
+
 	private static final String	LOG_TAG	= "CTHApp";
 	
 	public static final String	PREFERENCES_KEY	= "cthprefs";
@@ -42,7 +44,7 @@ public class CTHApplication extends android.app.Application {
 		 */
 
 		try {
-			InputStream inputStream = getAssets().open("application.properties");
+			InputStream inputStream = getAssets().open(APPLICATION_PROPERTIES_FILE);
 			Log.d(LOG_TAG, "Loading properties");
 			properties.load(inputStream);
 			debugMode = Boolean.parseBoolean(properties.getProperty("app.debug",
