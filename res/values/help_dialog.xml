@@ -3,11 +3,13 @@
 
     <string-array name="help_list">
         <item>@string/faq</item>
+        <item>@string/game_guide</item>
         <item>@string/feedback</item>
     </string-array>
     
     <string-array name="help_values">
         <item>@string/faq_url</item>
+        <item>@string/game_guide_url</item>
         <item>@string/feedback_url</item>
     </string-array>
 

@@ -69,6 +69,7 @@
     <string name="menuitem_save">Save Game</string>
     <string name="menuitem_restart">Restart Level</string>
     <string name="menuitem_about">About</string>
+    <string name="menuitem_help">Help</string>
     <string name="menuitem_exit">Exit Game</string>
     <string name="about_dialog_header">About</string>
     <string name="gamespeed_dialog_header">Set Game Speed</string>
@@ -163,5 +164,6 @@
     <string name="feedback">Send Feedback</string>
     <string name="external_links">These options will open external links. Your game will be saved.</string>
     <string name="full_version_text">Need help copying Theme Hospital to your device?</string>
+    <string name="game_guide">Game Guide</string>
 
 </resources>
