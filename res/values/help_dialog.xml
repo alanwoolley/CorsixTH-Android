@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="help_list">
+        <item>@string/faq</item>
+        <item>@string/feedback</item>
+    </string-array>
+    
+    <string-array name="help_values">
+        <item>@string/faq_url</item>
+        <item>@string/feedback_url</item>
+    </string-array>
+
+</resources>
