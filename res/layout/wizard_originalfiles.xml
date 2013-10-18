@@ -52,4 +52,15 @@
             android:text="@string/download_demo" />
     </RadioGroup>
 
+    <TextView
+        android:id="@+id/need_help_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/originalFilesRadioGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/full_version_text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff33b5e5" />
+
 </uk.co.armedpineapple.cth.wizard.OriginalFilesWizard>

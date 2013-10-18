@@ -26,6 +26,8 @@ import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -38,15 +40,15 @@ import android.widget.Toast;
 public class OriginalFilesWizard extends WizardView {
 
 	private static final String	LOG_TAG	= "OriginalFilesWizard";
-	
-	RadioGroup	originalFilesRadioGroup;
-	RadioButton	automaticRadio;
-	RadioButton	manualRadio;
-	RadioButton	downloadDemoRadio;
 
-	String			customLocation;
+	RadioGroup									originalFilesRadioGroup;
+	RadioButton									automaticRadio;
+	RadioButton									manualRadio;
+	RadioButton									downloadDemoRadio;
 
-	Context			ctx;
+	String											customLocation;
+
+	Context											ctx;
 
 	public OriginalFilesWizard(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -61,6 +63,21 @@ public class OriginalFilesWizard extends WizardView {
 	public OriginalFilesWizard(Context context) {
 		super(context);
 		ctx = context;
+	}
+
+	@Override
+	protected void onFinishInflate() {
+		findViewById(R.id.need_help_text).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ctx
+						.getResources().getString(R.string.full_version_url)));
+				ctx.startActivity(browserIntent);
+
+			}
+		});
+
 	}
 
 	@Override
@@ -237,8 +254,7 @@ public class OriginalFilesWizard extends WizardView {
 
 				if (result.getResult() != null) {
 					customLocation = result.getResult() + "HOSP";
-					Log.d(LOG_TAG, "Extracted TH demo: "
-							+ customLocation);
+					Log.d(LOG_TAG, "Extracted TH demo: " + customLocation);
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
 					BugSenseHandler.sendException(e);
