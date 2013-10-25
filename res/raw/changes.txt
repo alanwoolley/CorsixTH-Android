@@ -1,17 +1,9 @@
-0.6 - 21/09/2013
+0.6.1 - 25/10/2013
 ==================
-* Replace menu dialog with a navigation drawer
-* Restore save game compatibility with desktop versions of CorsixTH
-* Default resolution now follows device aspect ratio
-* Add Android 4.3 support
-* Removed Flurry analytics library
-* Updated Bugsense library
+* Added help section to the menu
+* Added link to the installation guide to the wizard
+* Fix occasional crash when downloading demo
 * Bug Fixes
 
 Translations:
-* Updated Spanish, German, Polish, Finnish and Russian translations (thanks miguelkill, eraser2011, PatrikSelin, lordzik and Nekser)
-* Added Estonian and Czech translations (thanks Stefan Joemagi and Martycz)
-
-
-
-
+* Updated Finnish, Dutch translations (thanks PatrikSelin, Omni, klambrec)

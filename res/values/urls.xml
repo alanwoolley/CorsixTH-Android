@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="faq_url" translatable="false">http://bit.ly/10qbiz1</string>
+    <string name="full_version_url" translatable="false">http://bit.ly/16eyFQE</string>
+    <string name="feedback_url" translatable="false">mailto:alan@armedpineapple.co.uk?subject=CorsixTH</string>
+    <string name="demo_url" translatable="false">http://www.armedpineapple.co.uk/downloads/Theme+Hospital+Demo</string>
+    <string name="timidity_url" translatable="false">http://www.armedpineapple.co.uk/downloads/Timidity</string>
+    <string name="game_guide_url" translatable="false">http://bit.ly/H8AS4u</string>
+
+</resources>

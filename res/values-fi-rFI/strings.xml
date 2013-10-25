@@ -10,6 +10,7 @@
   <string name="setup_wizard_dialog">Ohjattu asennustoiminto käynnistyy uudelleen, kun käynnistät pelin seuraavan kerran.</string>
   <string name="previousButton">Edellinen</string>
   <string name="nextButton">Seuraava</string>
+  <string name="automatic_resolution">Automaattinen</string>
   <string name="download_demo">Lataa demo</string>
   <string name="original_files_header">Alkuperäisen Theme Hospitalin tiedostot</string>
   <string name="original_files_text">Sinun tulee siirtää alkuperäisen Theme Hospitalin tiedostot laitteesi \'th\'-nimiseen kansioon tai valitse vaihtoehto alta.</string>
@@ -120,6 +121,8 @@
   <string name="preferences_spen_disabled">S Pen -tuki pois käytöstä</string>
   <string name="preferences_spen_enabled">S Pen -tuki käytössä</string>
   <string name="preferences_controls">Kontrollit</string>
+  <string name="preferences_controls_mode">Ohjaustila</string>
+  <string name="preferences_controls_mode_summary">Kuinka sisääntulo käsitellään</string>
   <string name="no_quicksave">Ei pikatallennusta ladattavaksi!</string>
   <string name="dialog_error_title">Virhe!</string>
   <string name="recent_changes_title">Viimeisimmät muutokset</string>
@@ -128,4 +131,6 @@
   <string name="found_files">Löytyi tiedostot kohteesta: </string>
   <string name="searching">Haetaan...</string>
   <string name="download_progress_dialog_text">%1$d Mt:a %2$d Mt:sta</string>
+  <string name="mobile_network_warning">Käytät mobiiliverkkoa, jolloin kustannukset voivat olla suuria.</string>
+  <string name="warning">Varoitus!</string>
 </resources>

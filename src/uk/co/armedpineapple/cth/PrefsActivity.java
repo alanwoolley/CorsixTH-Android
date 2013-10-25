@@ -209,13 +209,8 @@ public class PrefsActivity extends PreferenceActivity implements
 					.show();
 		}
 		if (Files.canAccessExternalStorage()) {
-			try {
-				application.configuration.refresh();
-				SDLActivity.cthUpdateConfiguration(application.configuration);
-			} catch (StorageUnavailableException e) {
-				e.printStackTrace();
-				Log.e(LOG_TAG, "Couldn't access storage. Unable to save configuration");
-			}
+			application.configuration.refresh();
+			SDLActivity.cthUpdateConfiguration(application.configuration);
 		}
 	}
 

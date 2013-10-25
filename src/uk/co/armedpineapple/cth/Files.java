@@ -520,10 +520,13 @@ public class Files {
 
 				ucon = downloadUrl.openConnection();
 				ucon.connect();
-				Log.d(LOG_TAG, ucon.getURL().toString());
-				Log.d(LOG_TAG ,ucon.getContentType());
+				
+				if (ucon.getContentType() == null) {
+					throw new IOException("Could not connect to server");
+				}
+				
 				final int fileSize = ucon.getContentLength();
-				Log.d(LOG_TAG, "Content length: " + fileSize);
+				
 				InputStream input = new BufferedInputStream(downloadUrl.openStream());
 				FileOutputStream fos = new FileOutputStream(file);
 				CountingOutputStream cos = new CountingOutputStream(fos) {

@@ -7,7 +7,6 @@ package uk.co.armedpineapple.cth.wizard;
 
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.CTHApplication;
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
 import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.Files.StorageUnavailableException;

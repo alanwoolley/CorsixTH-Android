@@ -126,7 +126,7 @@ public class Configuration {
 	 * initialised from. Does not reset any configuration options that are not
 	 * present in the preferences
 	 **/
-	public void refresh() throws StorageUnavailableException {
+	public void refresh() {
 		originalFilesPath = preferences.getString("originalfiles_pref", "");
 
 		// TODO - No check for external storage availability

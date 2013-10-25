@@ -3,6 +3,7 @@ package uk.co.armedpineapple.cth;
 import static uk.co.armedpineapple.cth.CommandHandler.Command.*;
 
 import uk.co.armedpineapple.cth.dialogs.GameSpeedDialog;
+import uk.co.armedpineapple.cth.dialogs.HelpDialog;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +13,7 @@ public class NavDrawerListListener implements ListView.OnItemClickListener {
 
 	SDLActivity			context;
 	GameSpeedDialog	gameSpeedDialog;
+	HelpDialog			helpDialog;
 
 	public NavDrawerListListener(SDLActivity context) {
 		this.context = context;
@@ -24,6 +26,12 @@ public class NavDrawerListListener implements ListView.OnItemClickListener {
 		MenuItems clicked = (MenuItems) parent.getItemAtPosition(position);
 
 		switch (clicked) {
+			case HELP:
+				if (helpDialog == null) {
+					helpDialog = new HelpDialog(context);
+				}
+				helpDialog.show();
+				return;
 			case ABOUT:
 				SDLActivity.sendCommand(SHOW_ABOUT_DIALOG, null);
 				return;

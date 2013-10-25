@@ -555,6 +555,9 @@ public class SDLActivity extends CTHActivity {
 
 		// Attempt to autosave.
 		if (hasGameLoaded) {
+			// Reset the game speed back to normal
+			cthGameSpeed(app.configuration.getGameSpeed());
+			
 			cthTryAutoSave("cthAndroidAutoSave.sav");
 		}
 
