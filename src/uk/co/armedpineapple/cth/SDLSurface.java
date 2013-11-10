@@ -66,9 +66,9 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		getHolder().addCallback(this);
 		this.width = width;
 		this.height = height;
-	//	setFocusable(true);
-		//setFocusableInTouchMode(true);
-		//requestFocus();
+		// setFocusable(true);
+		// setFocusableInTouchMode(true);
+		// requestFocus();
 		setOnKeyListener(this);
 		setOnTouchListener(this);
 		moveGestureDetector = new TwoFingerGestureDetector(context,
@@ -101,16 +101,12 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
 
 		super.onWindowFocusChanged(hasWindowFocus);
 		Log.d(LOG_TAG, "focus changed");
-		if (Build.VERSION.SDK_INT >= 11) {
-			context.getWindow().getDecorView()
-					.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-		}
+		context.hideSystemUi();
 	}
 
 	// Called when we have a valid drawing surface

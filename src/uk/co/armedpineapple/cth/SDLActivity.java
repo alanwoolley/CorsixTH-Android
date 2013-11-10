@@ -28,6 +28,7 @@ import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 import com.bugsense.trace.BugSenseHandler;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.*;
 import android.content.*;
@@ -297,6 +298,8 @@ public class SDLActivity extends CTHActivity {
 		// So we can call stuff from static callbacks
 		mSingleton = this;
 
+		hideSystemUi();
+
 		mSurface = new SDLSurface(this, app.configuration.getDisplayWidth(),
 				app.configuration.getDisplayHeight());
 		mSurface.setZOrderOnTop(false);
@@ -348,10 +351,6 @@ public class SDLActivity extends CTHActivity {
 		SurfaceHolder holder = mSurface.getHolder();
 		holder.setFixedSize(app.configuration.getDisplayWidth(),
 				app.configuration.getDisplayHeight());
-		// Use low profile mode if supported
-		if (Build.VERSION.SDK_INT >= 11) {
-			hideSystemUi();
-		}
 
 		gameFrame.setVisibility(View.VISIBLE);
 
@@ -359,10 +358,23 @@ public class SDLActivity extends CTHActivity {
 
 	}
 
-	@TargetApi(11)
-	private void hideSystemUi() {
-		getWindow().getDecorView().setSystemUiVisibility(
-				View.SYSTEM_UI_FLAG_LOW_PROFILE);
+	@SuppressLint("NewApi")
+	public void hideSystemUi() {
+		if (Build.VERSION.SDK_INT >= 19) {
+
+			// Hide the navigation buttons if supported
+			getWindow().getDecorView().setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+							| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+							| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+							| View.SYSTEM_UI_FLAG_FULLSCREEN);
+		} else if (Build.VERSION.SDK_INT >= 11) {
+
+			// Use low profile mode if supported
+			getWindow().getDecorView().setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_LOW_PROFILE);
+
+		}
 	}
 
 	public void startApp() {
@@ -557,7 +569,7 @@ public class SDLActivity extends CTHActivity {
 		if (hasGameLoaded) {
 			// Reset the game speed back to normal
 			cthGameSpeed(app.configuration.getGameSpeed());
-			
+
 			cthTryAutoSave("cthAndroidAutoSave.sav");
 		}
 
