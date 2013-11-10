@@ -33,6 +33,16 @@
                     android:summaryOn="@string/preferences_adviser_enabled"
                     android:title="@string/preferences_adviser" />
             </PreferenceCategory>
+            <PreferenceCategory
+                android:key="game_other_prefs"
+                android:title="@string/preferences_other">
+                <CheckBoxPreference
+                    android:key="autowage_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_auto_wage_disabled"
+                    android:summaryOn="@string/preferences_auto_wage_enabled"
+                    android:title="@string/preferences_auto_wage" />
+            </PreferenceCategory>
         </PreferenceScreen>
         <PreferenceScreen
             android:key="audio_prefs"

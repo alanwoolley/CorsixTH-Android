@@ -52,7 +52,7 @@ public class Configuration {
 	private String							originalFilesPath, cthPath, language;
 	private boolean							globalAudio, playMusic, playAnnouncements,
 			playSoundFx, keepScreenOn, debug, edgeScroll, adviser, playMovies,
-			playIntroMovie, spen;
+			playIntroMovie, spen, autoWageGrant;
 
 	private int									musicVol, announcementsVol, sfxVol,
 			resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
@@ -116,6 +116,7 @@ public class Configuration {
 		editor.putBoolean("intromovie_pref", playIntroMovie);
 		editor.putBoolean("spen_pref", spen);
 		editor.putString("controlsmode_pref", String.valueOf(controlsMode));
+		editor.putBoolean("autowage_pref", autoWageGrant);
 
 		editor.commit();
 
@@ -167,6 +168,8 @@ public class Configuration {
 		spen = preferences.getBoolean("spen_pref", false);
 		controlsMode = Integer.valueOf(preferences.getString("controlsmode_pref",
 				"1"));
+
+		autoWageGrant = preferences.getBoolean("autowage_pref", false);
 
 		if (preferences.getString("fpslimit_pref", "20").equals(
 				ctx.getString(R.string.off))) {
@@ -311,12 +314,13 @@ public class Configuration {
 		sbuilder.append("allow_user_actions_while_paused = false\n");
 		sbuilder.append("volume_opens_casebook = false\n");
 		sbuilder.append("twentyfour_hour_clock = false\n");
-		
+
 		sbuilder.append("check_for_updates = false\n");
 		sbuilder.append("enable_avg_contents = false\n");
-		
-		sbuilder.append("grant_wage_increase = false\n");
-		
+
+		sbuilder.append("grant_wage_increase = " + String.valueOf(autoWageGrant)
+				+ "\n");
+
 		sbuilder.append("disable_fractured_bones_females = true\n");
 
 		// Movies
@@ -335,7 +339,6 @@ public class Configuration {
 		sbuilder.append("alien_dna_only_by_emergency = true\n");
 		sbuilder.append("alien_dna_must_stand = true\n");
 		sbuilder.append("alien_dna_can_knock_on_doors = false\n");
-	
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());

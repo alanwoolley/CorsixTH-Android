@@ -45,7 +45,7 @@ public class PrefsActivity extends PreferenceActivity implements
 	/** Preferences that require the game to be restarted before they take effect **/
 	private String[]						requireRestart	= new String[] { "language_pref",
 			"debug_pref", "movies_pref", "intromovie_pref", "resolution_pref",
-			"reswidth_pref", "resheight_pref", "music_pref" };
+			"reswidth_pref", "resheight_pref", "music_pref", "autowage_pref" };
 
 	private boolean							displayRestartMessage;
 
@@ -192,7 +192,7 @@ public class PrefsActivity extends PreferenceActivity implements
 					});
 		}
 
-		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+		getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 	}
 
 	@Override
