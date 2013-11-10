@@ -311,6 +311,13 @@ public class Configuration {
 		sbuilder.append("allow_user_actions_while_paused = false\n");
 		sbuilder.append("volume_opens_casebook = false\n");
 		sbuilder.append("twentyfour_hour_clock = false\n");
+		
+		sbuilder.append("check_for_updates = false\n");
+		sbuilder.append("enable_avg_contents = false\n");
+		
+		sbuilder.append("grant_wage_increase = false\n");
+		
+		sbuilder.append("disable_fractured_bones_females = true\n");
 
 		// Movies
 		sbuilder.append("movies = " + String.valueOf(playMovies) + "\n");
@@ -322,11 +329,13 @@ public class Configuration {
 		sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
 		sbuilder.append("controls_mode = " + String.valueOf(controlsMode) + "\n");
 		sbuilder.append("scrolling_momentum = 0.9\n");
+		sbuilder.append("zoom_speed = 80\n");
 
 		// Aliens
 		sbuilder.append("alien_dna_only_by_emergency = true\n");
 		sbuilder.append("alien_dna_must_stand = true\n");
 		sbuilder.append("alien_dna_can_knock_on_doors = false\n");
+	
 
 		FileWriter writer = new FileWriter(configFileName, false);
 		writer.write(sbuilder.toString());
