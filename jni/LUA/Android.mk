@@ -34,4 +34,7 @@ LOCAL_SRC_FILES := lapi.c \
 	lvm.c \
 	lzio.c 
 	
+LOCAL_CFLAGS := -DLUA_USE_LINUX
+LOCAL_ARM_MODE := arm
+	
 include $(BUILD_SHARED_LIBRARY)
