@@ -47,49 +47,52 @@ public class WizardActivity extends CTHActivity {
 		}
 
 		preferences = app.getPreferences();
-
-		if (preferences.getBoolean("wizard_run", false)) {
-			Log.d(LOG_TAG, "Wizard isn't going to run.");
-			finish();
-			startActivity(new Intent(this, SDLActivity.class));
-		} else {
-			Log.d(LOG_TAG, "Wizard is going to run.");
-			setContentView(R.layout.wizard);
-			flipper = (ViewFlipper) findViewById(R.id.flipper);
-			previousButton = (Button) findViewById(R.id.leftbutton);
-			nextButton = (Button) findViewById(R.id.rightbutton);
-
-			if (app.configuration == null) {
-				try {
-					app.configuration = Configuration.loadFromPreferences(this,
-							preferences);
-				} catch (StorageUnavailableException e) {
-					Log.e(LOG_TAG, "Can't get storage.");
-
-					// Show dialog and end
-					DialogFactory.createExternalStorageWarningDialog(this, true).show();
-					return;
-				}
+		boolean alreadyRun = preferences.getBoolean("wizard_run", false);
+		if (alreadyRun) {
+			if (Files.hasDataFiles(preferences.getString("originalfiles_pref", ""))) {
+				Log.d(LOG_TAG, "Wizard isn't going to run.");
+				finish();
+				startActivity(new Intent(this, SDLActivity.class));
+				return;
 			}
-
-			// Add all the wizard views
-
-			LayoutInflater inflater = getLayoutInflater();
-			loadAndAdd(inflater, flipper,
-					(WizardView) inflater.inflate(R.layout.wizard_welcome, null));
-			loadAndAdd(inflater, flipper,
-					(LanguageWizard) inflater.inflate(R.layout.wizard_language, null));
-			loadAndAdd(inflater, flipper, (OriginalFilesWizard) inflater.inflate(
-					R.layout.wizard_originalfiles, null));
-
-			// Setup Buttons
-			previousButton.setVisibility(View.GONE);
-			buttonClickListener = new WizardButtonClickListener();
-
-			previousButton.setOnClickListener(buttonClickListener);
-			nextButton.setOnClickListener(buttonClickListener);
-
 		}
+
+		Log.d(LOG_TAG, "Wizard is going to run.");
+		setContentView(R.layout.wizard);
+		flipper = (ViewFlipper) findViewById(R.id.flipper);
+		previousButton = (Button) findViewById(R.id.leftbutton);
+		nextButton = (Button) findViewById(R.id.rightbutton);
+
+		if (app.configuration == null) {
+			try {
+				app.configuration = Configuration
+						.loadFromPreferences(this, preferences);
+			} catch (StorageUnavailableException e) {
+				Log.e(LOG_TAG, "Can't get storage.");
+
+				// Show dialog and end
+				DialogFactory.createExternalStorageWarningDialog(this, true).show();
+				return;
+			}
+		}
+
+		// Add all the wizard views
+
+		LayoutInflater inflater = getLayoutInflater();
+		loadAndAdd(inflater, flipper,
+				(WizardView) inflater.inflate(R.layout.wizard_welcome, null));
+		loadAndAdd(inflater, flipper,
+				(LanguageWizard) inflater.inflate(R.layout.wizard_language, null));
+		loadAndAdd(inflater, flipper, (OriginalFilesWizard) inflater.inflate(
+				R.layout.wizard_originalfiles, null));
+
+		// Setup Buttons
+		previousButton.setVisibility(View.GONE);
+		buttonClickListener = new WizardButtonClickListener();
+
+		previousButton.setOnClickListener(buttonClickListener);
+		nextButton.setOnClickListener(buttonClickListener);
+
 	}
 
 	public WizardView loadAndAdd(LayoutInflater inflater, ViewFlipper flipper,

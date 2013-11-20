@@ -592,6 +592,10 @@ public class SDLActivity extends CTHActivity {
 			wake.acquire();
 		}
 
+		if (mDrawerLayout != null) {
+			mDrawerLayout.closeDrawers();
+		}
+
 	}
 
 	private void restartActivity() {
