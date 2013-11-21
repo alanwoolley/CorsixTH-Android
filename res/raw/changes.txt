@@ -1,11 +1,10 @@
 * This is a beta release *
 
-0.6.1 - 18/10/2013
-==================
-* Added help section to the menu
-* Added link to the installation guide to the wizard
-* Fix occasional crash when downloading demo
-* Bug Fixes
-
-Translations:
-* Updated Finnish, Dutch translations (thanks PatrikSelin, Omni, klambrec)
+0.7-beta1 - 21/11/2013
+=================
+* Updated to CorsixTH 0.30 RC
+* Android 4.4 support
+* Added more links to the help dialog
+* Full screen immersive mode on Android 4.4
+* Higher quality icons
+* Bug Fixes and Optimisations

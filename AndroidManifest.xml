@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
-    android:versionCode="100"
-    android:versionName="0.6.1-beta1" >
+    android:versionCode="110"
+    android:versionName="0.7-beta1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -59,7 +59,7 @@
         android:backupAgent="CTHBackupAgent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppTheme" >
+        android:theme="@style/Theme.AppTheme">
         <activity
             android:name="uk.co.armedpineapple.cth.SDLActivity"
             android:label="@string/app_name"
