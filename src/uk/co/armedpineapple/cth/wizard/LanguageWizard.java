@@ -44,10 +44,9 @@ public class LanguageWizard extends WizardView {
 			String[] langArray = getResources().getStringArray(R.array.languages);
 			String[] langValuesArray = getResources().getStringArray(
 					R.array.languages_values);
-			TypedArray langFlagsArray = getResources().obtainTypedArray(
-					R.array.languages_flags);
+
 			languageListView.setAdapter(new LanguageListAdapter(ctx, langArray,
-					langValuesArray, langFlagsArray));
+					langValuesArray));
 
 			languageListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -90,17 +89,15 @@ public class LanguageWizard extends WizardView {
 	class LanguageListAdapter extends BaseAdapter {
 		String[]				text;
 		String[]				values;
-		TypedArray			resources;
 
 		LayoutInflater	inflater;
 		int							selected	= 0;
 
 		public LanguageListAdapter(Context ctx, String[] langArray,
-				String[] langValuesArray, TypedArray langFlagsArray) {
+				String[] langValuesArray) {
 			super();
 			text = langArray;
 			values = langValuesArray;
-			resources = langFlagsArray;
 			inflater = LayoutInflater.from(ctx);
 
 		}
@@ -139,8 +136,11 @@ public class LanguageWizard extends WizardView {
 				newView = convertView;
 			}
 
+			TypedArray langFlagsArray = getResources().obtainTypedArray(
+					R.array.languages_flags);
 			((ImageView) newView.findViewById(R.id.language_flag))
-					.setImageDrawable(resources.getDrawable(position));
+					.setImageDrawable(langFlagsArray.getDrawable(position));
+			langFlagsArray.recycle();
 			((TextView) newView.findViewById(R.id.language_text))
 					.setText(text[position]);
 
