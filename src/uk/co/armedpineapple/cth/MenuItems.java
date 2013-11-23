@@ -9,13 +9,13 @@ public enum MenuItems {
 	GAME_SPEED(R.string.menuitem_change_game_speed, null),
 	QUICK_LOAD(R.string.menuitem_quickload, null),
 	QUICK_SAVE(R.string.menuitem_quicksave, null),
-	LOAD(R.string.menuitem_load, R.drawable.ic_menu_load),
-	SAVE(R.string.menuitem_save, R.drawable.ic_menu_save),
-	RESTART(R.string.menuitem_restart, R.drawable.ic_menu_restart),
+	LOAD(R.string.menuitem_load, null),
+	SAVE(R.string.menuitem_save, null),
+	RESTART(R.string.menuitem_restart, null),
 	SETTINGS(R.string.menuitem_settings, null),
 	HELP(R.string.menuitem_help, null),
-	ABOUT(R.string.menuitem_about, R.drawable.ic_menu_help),
-	EXIT(R.string.menuitem_exit, R.drawable.ic_menu_exit);
+	ABOUT(R.string.menuitem_about,null),
+	EXIT(R.string.menuitem_exit, null);
 
 	public Integer	imageResource, textResource;
 
