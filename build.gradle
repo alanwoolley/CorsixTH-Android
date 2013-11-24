@@ -27,10 +27,27 @@ android {
     compileSdkVersion 19
     buildToolsVersion "19.0.0"
 
+    buildTypes {
+        beta {
+            packageNameSuffix ".beta"
+        }
+
+        debug {
+            packageNameSuffix ".debug"
+        }
+
+
+        jnidebug.initWith(buildTypes.debug)
+        jnidebug {
+            packageNameSuffix ".jnidebug"
+            jniDebugBuild true
+        }
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
+            java.srcDirs = ['src/Java']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
@@ -47,6 +64,8 @@ android {
         // conflict with src/ being used by the main source set.
         // Adding new build types or product flavors should be accompanied
         // by a similar customization.
+
+        beta.setRoot('build-types/beta')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -56,7 +75,7 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
     pkgTask -> pkgTask.jniDir new File(projectDir, 'libs')
 }
 
-task ndkBuild(type:Exec) {
+task ndkBuild(type: Exec) {
     commandLine 'ndk-build.cmd', '-j'
 }
 tasks.withType(Compile) {

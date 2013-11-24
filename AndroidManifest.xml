@@ -20,7 +20,8 @@
 	
 	Beta:
 	READ_LOGS - Lets us read the system logs for additional debugging
-	GET_TASKS - Gives us the number of app processes running, for debugging.
+	GET_TASKS - Gives us the number of app processes running, for debugging.
+
     -->
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -29,9 +30,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
-    // Only in beta. Remove these for release version. This gives us extra debugging information.
-    <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
+
     
     <supports-screens
         android:largeScreens="true"
