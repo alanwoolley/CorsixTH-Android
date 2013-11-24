@@ -19,9 +19,13 @@ dependencies {
     compile 'com.bugsense.trace:bugsense:3.5'
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.android.gms:play-services:3.2.+'
+    compile 'com.github.gabrielemariotti.changeloglib:library:1.4.0'
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }
+
+Properties signingProperties = new Properties()
+signingProperties.load(new FileInputStream(file("signing.properties")))
 
 android {
     compileSdkVersion 19
@@ -46,10 +50,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("keys/android.keystore")
-            storePassword System.console().readLine("\n\$ Enter keystore password: ")
-            keyAlias "android"
-            keyPassword System.console().readLine("\n\$ Enter key password: ")
+            storeFile file(signingProperties['signing.release.storeFile'])
+            storePassword signingProperties['signing.release.storePassword']
+            keyAlias signingProperties['signing.release.keyAlias']
+            keyPassword signingProperties['signing.release.keyPassword']
         }
     }
 

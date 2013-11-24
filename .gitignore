@@ -27,7 +27,8 @@ local.properties
 proguard/
 
 # Android Studio
-.idea/
+.idea/workspace.xml
+.idea/tasks.xml
 .gradle
 /out
 /build
@@ -38,6 +39,7 @@ proguard/
 *~
 *.swp
 keys/
+signing.properties
 
 # Specific things
 /assets/application.properties
