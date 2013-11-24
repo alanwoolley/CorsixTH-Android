@@ -37,6 +37,7 @@ proguard/
 *.ipr
 *~
 *.swp
+keys/
 
 # Specific things
 /assets/application.properties

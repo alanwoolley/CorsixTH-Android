@@ -7,7 +7,7 @@ buildscript {
     }
 }
 apply plugin: 'android'
-apply plugin: 'maven'
+
 repositories {
     mavenCentral();
     maven {
@@ -41,6 +41,15 @@ android {
         jnidebug {
             packageNameSuffix ".jnidebug"
             jniDebugBuild true
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("keys/android.keystore")
+            storePassword System.console().readLine("\n\$ Enter keystore password: ")
+            keyAlias "android"
+            keyPassword System.console().readLine("\n\$ Enter key password: ")
         }
     }
 
