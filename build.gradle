@@ -48,12 +48,10 @@ android {
 
     buildTypes {
         release {
-            packageNameSuffix ".release"
             signingConfig signingConfigs.release
         }
 
         beta {
-            packageNameSuffix ".beta"
             signingConfig signingConfigs.release
         }
 
