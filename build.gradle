@@ -16,7 +16,7 @@ repositories {
 }
 dependencies {
     compile 'com.android.support:support-v4:18.0.+'
-    compile 'com.bugsense.trace:bugsense:3.5'
+    compile 'com.bugsense.trace:bugsense:3.6'
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.android.gms:play-services:3.2.+'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.4.0'
@@ -28,9 +28,14 @@ Properties signingProperties = new Properties()
 signingProperties.load(new FileInputStream(file("signing.properties")))
 
 android {
+
     compileSdkVersion 19
     buildToolsVersion "19.0.0"
 
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 19
+    }
     signingConfigs {
         release {
             storeFile file(signingProperties['signing.release.storeFile'])
