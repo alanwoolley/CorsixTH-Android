@@ -31,9 +31,25 @@ android {
     compileSdkVersion 19
     buildToolsVersion "19.0.0"
 
+    signingConfigs {
+        release {
+            storeFile file(signingProperties['signing.release.storeFile'])
+            storePassword signingProperties['signing.release.storePassword']
+            keyAlias signingProperties['signing.release.keyAlias']
+            keyPassword signingProperties['signing.release.keyPassword']
+        }
+
+    }
+
     buildTypes {
+        release {
+            packageNameSuffix ".release"
+            signingConfig signingConfigs.release
+        }
+
         beta {
             packageNameSuffix ".beta"
+            signingConfig signingConfigs.release
         }
 
         debug {
@@ -45,15 +61,6 @@ android {
         jnidebug {
             packageNameSuffix ".jnidebug"
             jniDebugBuild true
-        }
-    }
-
-    signingConfigs {
-        release {
-            storeFile file(signingProperties['signing.release.storeFile'])
-            storePassword signingProperties['signing.release.storePassword']
-            keyAlias signingProperties['signing.release.keyAlias']
-            keyPassword signingProperties['signing.release.keyPassword']
         }
     }
 
