@@ -6,6 +6,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:0.6.+'
     }
 }
+
 apply plugin: 'android'
 
 repositories {
@@ -21,7 +22,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:3.2.+'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.4.0'
 
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile fileTree(dir: 'jars', include: '*.jar')
 }
 
 Properties signingProperties = new Properties()
@@ -94,6 +95,26 @@ android {
     }
 }
 
+
+
+// Create ZIP of CorsixTH Lua files
+task createGameZip(type: Zip) {
+
+    destinationDir = file('/assets')
+    archiveName = 'game.zip'
+
+    from('jni/src/CorsixTH') {
+        include 'Levels/**'
+        include 'Lua/**'
+        include 'CorsixTH.lua'
+        include 'Bitmap/aux_ui.*'
+        include 'Bitmap/tree_ctrl.*'
+        include 'Bitmap/mainm   enu1080.dat'
+        include 'Bitmap/mainmenu1080.pal'
+    }
+}
+
+// NDK Stuff
 tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
     pkgTask -> pkgTask.jniDir new File(projectDir, 'libs')
 }
@@ -102,5 +123,6 @@ task ndkBuild(type: Exec) {
     commandLine 'ndk-build.cmd', '-j'
 }
 tasks.withType(Compile) {
-    compileTask -> compileTask.dependsOn ndkBuild
+    compileTask -> compileTask.dependsOn ndkBuild, createGameZip
 }
+
