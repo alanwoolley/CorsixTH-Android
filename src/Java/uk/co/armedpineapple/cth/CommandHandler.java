@@ -156,6 +156,7 @@ public class CommandHandler extends Handler {
 			case GAME_SPEED_UPDATED:
 				context.app.configuration.setGameSpeed((Integer) msg.obj);
 				break;
+
 			default:
 				break;
 		}

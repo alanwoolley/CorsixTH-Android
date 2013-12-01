@@ -291,6 +291,7 @@ public class SDLActivity extends CTHActivity {
 		System.loadLibrary("SDL_mixer");
 		System.loadLibrary("ffmpeg");
 		System.loadLibrary("appmain");
+        System.loadLibrary("ImmEmulatorJ");
 
 		try {
 			app.configuration.writeToFile();
