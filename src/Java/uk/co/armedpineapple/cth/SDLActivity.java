@@ -789,11 +789,13 @@ public class SDLActivity extends CTHActivity {
     public void playVibration(int vibrationCode) {
         if (mHapticLauncher == null)
             mHapticLauncher = new Launcher(this);
-        mHapticLauncher.play(vibrationCode);
+        if (app.hasVibration) {
+            mHapticLauncher.play(vibrationCode);
+        }
     }
 
     public void stopVibration() {
-        if (mHapticLauncher != null) {
+        if (mHapticLauncher != null && app.hasVibration) {
             mHapticLauncher.stop();
         }
 

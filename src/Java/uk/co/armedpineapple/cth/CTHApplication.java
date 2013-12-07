@@ -7,6 +7,7 @@ package uk.co.armedpineapple.cth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -23,11 +24,13 @@ public class CTHApplication extends android.app.Application {
     public Configuration configuration;
     private SharedPreferences preferences;
     private Properties properties = new Properties();
+    public boolean hasVibration = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        hasVibration = ((Vibrator)getSystemService(VIBRATOR_SERVICE)).hasVibrator();
         preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
 
 		/*
