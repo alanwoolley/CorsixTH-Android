@@ -7,6 +7,7 @@ package uk.co.armedpineapple.cth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Vibrator;
 import android.util.Log;
 
@@ -18,19 +19,23 @@ import java.util.Properties;
 
 public class CTHApplication extends android.app.Application {
 
-    public static final String PREFERENCES_KEY = "cthprefs";
+    public static final  String PREFERENCES_KEY             = "cthprefs";
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
-    private static final String LOG_TAG = "CTHApp";
+    private static final String LOG_TAG                     = "CTHApp";
     public Configuration configuration;
+    public boolean hasVibration = false;
     private SharedPreferences preferences;
     private Properties properties = new Properties();
-    public boolean hasVibration = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        hasVibration = ((Vibrator)getSystemService(VIBRATOR_SERVICE)).hasVibrator();
+        Vibrator vib = ((Vibrator) getSystemService(VIBRATOR_SERVICE));
+        if (Build.VERSION.SDK_INT >= 11) {
+            hasVibration = vib.hasVibrator();
+        } else {
+            hasVibration = true;
+        }
         preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
 
 		/*
