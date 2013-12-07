@@ -45,6 +45,7 @@ signing.properties
 /assets/application.properties
 /res/values/GoogleAnalytics.xml
 /theme_hospital
+/assets/game.zip
 
 # c9 IDE
 .c9revisions

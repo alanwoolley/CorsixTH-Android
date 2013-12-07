@@ -50,21 +50,24 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            buildConfig "public final static boolean USE_BUGSENSE = true;"
         }
 
         beta {
             signingConfig signingConfigs.release
+            buildConfig "public final static boolean USE_BUGSENSE = true;"
         }
 
         debug {
-            packageNameSuffix ".debug"
+            buildConfig "public final static boolean USE_BUGSENSE = false;"
         }
 
 
         jnidebug.initWith(buildTypes.debug)
         jnidebug {
-            packageNameSuffix ".jnidebug"
             jniDebugBuild true
+            buildConfig "public final static boolean USE_BUGSENSE = false;"
+            buildConfig "public final static boolean DEBUG = true;"
         }
     }
 
@@ -94,8 +97,6 @@ android {
         release.setRoot('build-types/release')
     }
 }
-
-
 
 // Create ZIP of CorsixTH Lua files
 task createGameZip(type: Zip) {
