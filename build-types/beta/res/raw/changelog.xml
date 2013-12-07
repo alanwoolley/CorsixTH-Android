@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
-    <changelogversion changeDate="TBA" versionName="0.7-beta3">
+    <changelogversion changeDate="07/12/2013" versionName="0.7-beta3">
         <changelogtext>[b]Experimental![/b] Haptic feedback (vibration)</changelogtext>
         <changelogtext>[b]New![/b] Cheats! Enable debug mode in the settings and the option will be
             added to the menu
