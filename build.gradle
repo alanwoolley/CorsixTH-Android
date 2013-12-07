@@ -67,7 +67,6 @@ android {
         jnidebug {
             jniDebugBuild true
             buildConfig "public final static boolean USE_BUGSENSE = false;"
-            buildConfig "public final static boolean DEBUG = true;"
         }
     }
 
