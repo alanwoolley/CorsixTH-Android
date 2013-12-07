@@ -799,6 +799,7 @@ public class SDLActivity extends CTHActivity {
     public void stopVibration() {
         if (mHapticLauncher != null && app.hasVibration) {
             mHapticLauncher.stop();
+            commandHandler.playingEarthquake = false;
         }
 
     }

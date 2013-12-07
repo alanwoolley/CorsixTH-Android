@@ -30,10 +30,11 @@ public class CommandHandler extends Handler {
     private static final int VIBRATION_EXPLOSION   = 3;
     SDLActivity activityContext;
     // Dialogs
-    private SaveDialog    saveDialog;
-    private LoadDialog    loadDialog;
-    private Dialog        aboutDialog;
+    private SaveDialog     saveDialog;
+    private LoadDialog     loadDialog;
+    private Dialog         aboutDialog;
     private CTHApplication app;
+    public boolean        playingEarthquake;
 
 
     public CommandHandler(SDLActivity context) {
@@ -152,16 +153,19 @@ public class CommandHandler extends Handler {
                 if (app.configuration.getHaptic()) {
                     switch (vibrationCode.intValue()) {
                         case VIBRATION_SHORT_CLICK:
-
-                            activityContext.playVibration(Launcher.SHARP_CLICK_33);
-
+                            if (!playingEarthquake) {
+                                activityContext.playVibration(Launcher.SHARP_CLICK_33);
+                            }
                             break;
                         case VIBRATION_LONG_CLICK:
-                            activityContext.playVibration(Launcher.BOUNCE_100);
+                            if (!playingEarthquake) {
+                                activityContext.playVibration(Launcher.BOUNCE_100);
+                            }
                             break;
                         case VIBRATION_EXPLOSION:
                             if (app.configuration.getHapticEarthquakes()) {
                                 activityContext.playVibration(Launcher.TEXTURE9);
+                                playingEarthquake = true;
                             }
                             break;
                     }
@@ -169,6 +173,7 @@ public class CommandHandler extends Handler {
                 break;
             case STOP_VIBRATION:
                 activityContext.stopVibration();
+                playingEarthquake = false;
                 break;
             default:
                 break;
