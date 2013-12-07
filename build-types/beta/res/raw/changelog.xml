@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
-    <changelogversion versionName="0.7-beta2" changeDate="29/11/2013">
+    <changelogversion changeDate="TBA" versionName="0.7-beta3">
+        <changelogtext>[b]Experimental![/b] Haptic feedback (vibration)</changelogtext>
+    </changelogversion>
+    <changelogversion changeDate="29/11/2013" versionName="0.7-beta2">
         <changelogtext>Redesigned changelog dialog</changelogtext>
         <changelogtext>Visual improvements to the wizard</changelogtext>
         <changelogtext>Fixed small memory leak</changelogtext>
         <changelogtext>Updated BugSense to v3.6</changelogtext>
     </changelogversion>
-    <changelogversion versionName="0.7-beta1" changeDate="21/11/2013">
+    <changelogversion changeDate="21/11/2013" versionName="0.7-beta1">
         <changelogtext>Updated to CorsixTH 0.30 RC</changelogtext>
-        <changelogtext>[b]New![/b]Android 4.4 support</changelogtext>
-        <changelogtext>[b]New![/b]Full screen immersive mode on Android 4.4</changelogtext>
+        <changelogtext>[b]New![/b] Android 4.4 support</changelogtext>
+        <changelogtext>[b]New![/b] Full screen immersive mode on Android 4.4</changelogtext>
         <changelogtext>Added more links to the help menu</changelogtext>
         <changelogtext>Higher quality icons on large screens</changelogtext>
         <changelogtext>Bug fixes and optimisations</changelogtext>
