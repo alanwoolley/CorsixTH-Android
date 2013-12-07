@@ -228,7 +228,7 @@ public class Files {
 	 * Returns a string containing the text from a raw resource
 	 * 
 	 * @param ctx
-	 *          a context
+	 *          a activityContext
 	 * @param resource
 	 *          the resource to read
 	 * @return a String containing the text contents of the resource
@@ -326,7 +326,7 @@ public class Files {
 	 * Produces a list of assets in a directory
 	 * 
 	 * @param ctx
-	 *          a context
+	 *          a activityContext
 	 * @param path
 	 *          path to search in
 	 * @return a list of files
@@ -362,7 +362,7 @@ public class Files {
 	 * Copies an assets
 	 * 
 	 * @param ctx
-	 *          a context
+	 *          a activityContext
 	 * @param assetFilename
 	 *          the filename of the asset
 	 * @param destination

@@ -217,7 +217,7 @@ public class Configuration {
 	 * Constructs a configuration object from a SharedPreferences object
 	 * 
 	 * @param ctx
-	 *          a valid context used to retrieve preferences
+	 *          a valid activityContext used to retrieve preferences
 	 * @param preferences
 	 *          the preferences object to retrieve from
 	 * @return a Configuration object containing the preferences
