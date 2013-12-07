@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="first_prefs"
-    android:persistent="true" >
+    android:persistent="true">
 
-    <PreferenceCategory android:title="@string/preferences_setup_wizard" >
+    <PreferenceCategory android:title="@string/preferences_setup_wizard">
         <Preference
             android:key="setupwizard_pref"
             android:title="@string/preferences_run_setup_wizard" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preferences_settings" >
+    <PreferenceCategory android:title="@string/preferences_settings">
         <PreferenceScreen
             android:key="game_prefs"
             android:summary="@string/preferences_gameplay_preferences"
-            android:title="@string/preferences_game" >
+            android:title="@string/preferences_game">
             <PreferenceCategory
                 android:key="local_prefs"
-                android:title="@string/preferences_localisation" >
+                android:title="@string/preferences_localisation">
                 <ListPreference
                     android:entries="@array/languages"
                     android:entryValues="@array/languages_values"
@@ -25,7 +25,7 @@
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="adviser_prefs"
-                android:title="@string/preferences_adviser" >
+                android:title="@string/preferences_adviser">
                 <CheckBoxPreference
                     android:key="adviser_pref"
                     android:persistent="true"
@@ -47,7 +47,7 @@
         <PreferenceScreen
             android:key="audio_prefs"
             android:summary="@string/preferences_audio_preferences"
-            android:title="@string/preferences_audio" >
+            android:title="@string/preferences_audio">
             <CheckBoxPreference
                 android:key="announcer_pref"
                 android:persistent="true"
@@ -70,7 +70,7 @@
         <PreferenceScreen
             android:key="display_prefs"
             android:summary="@string/preferences_display_preferences"
-            android:title="@string/preferences_display" >
+            android:title="@string/preferences_display">
             <ListPreference
                 android:entries="@array/resolutions"
                 android:entryValues="@array/resolutions_values"
@@ -80,7 +80,7 @@
 
             <PreferenceCategory
                 android:key="customres_prefs"
-                android:title="@string/preferences_custom_resolution" >
+                android:title="@string/preferences_custom_resolution">
                 <EditTextPreference
                     android:key="reswidth_pref"
                     android:persistent="true"
@@ -94,7 +94,7 @@
         <PreferenceScreen
             android:key="advanced_prefs"
             android:summary="@string/preferences_advanced_preferences"
-            android:title="@string/preferences_advanced" >
+            android:title="@string/preferences_advanced">
             <CheckBoxPreference
                 android:key="screenon_pref"
                 android:persistent="true"
@@ -104,7 +104,7 @@
 
             <PreferenceCategory
                 android:key="debug_prefs"
-                android:title="@string/preferences_debug" >
+                android:title="@string/preferences_debug">
                 <CheckBoxPreference
                     android:key="debug_pref"
                     android:persistent="true"
@@ -123,10 +123,27 @@
         <PreferenceScreen
             android:key="experimental_prefs"
             android:summary="@string/preferences_experimental_features"
-            android:title="@string/preferences_experimental" >
+            android:title="@string/preferences_experimental">
+            <PreferenceCategory
+                android:key="vibration_prefs"
+                android:title="@string/preferences_haptic">
+                <CheckBoxPreference
+                    android:key="haptic_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_vibration_on"
+                    android:summaryOn="@string/preferences_vibration_off"
+                    android:title="@string/preferences_vibration" />
+                <CheckBoxPreference
+                    android:dependency="haptic_pref"
+                    android:key="earthquake_pref"
+                    android:persistent="true"
+                    android:summaryOff="@string/preferences_earthquake_off"
+                    android:summaryOn="@string/preferences_earthquake_on"
+                    android:title="@string/preferences_earthquakes" />
+            </PreferenceCategory>
             <PreferenceCategory
                 android:key="performance_prefs"
-                android:title="@string/preferences_performance" >
+                android:title="@string/preferences_performance">
                 <ListPreference
                     android:entries="@array/fps_limit_entries"
                     android:entryValues="@array/fps_limit_values"
@@ -137,7 +154,7 @@
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="edge_prefs"
-                android:title="@string/preferences_edge_scrolling" >
+                android:title="@string/preferences_edge_scrolling">
                 <CheckBoxPreference
                     android:key="edgescroll_pref"
                     android:persistent="true"
@@ -164,7 +181,7 @@
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="movies_prefs"
-                android:title="@string/preferences_movies" >
+                android:title="@string/preferences_movies">
                 <CheckBoxPreference
                     android:key="movies_pref"
                     android:persistent="true"
@@ -181,7 +198,7 @@
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="controls_prefs"
-                android:title="@string/preferences_controls" >
+                android:title="@string/preferences_controls">
                 <ListPreference
                     android:entries="@array/controls"
                     android:entryValues="@array/controls_values"

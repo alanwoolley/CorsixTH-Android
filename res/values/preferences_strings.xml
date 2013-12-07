@@ -46,7 +46,8 @@
     <string name="preferences_reduce_cpu">Reduce CPU usage and improve battery life</string>
     <string name="preferences_localisation">Localisation</string>
     <string name="preferences_edgescrollsummary">The amount of space at the screen edges for
-		scrolling</string>
+		scrolling
+</string>
     <string name="preferences_edge_border_size">Edge Border Size</string>
     <string name="preferences_custom_resolution">Custom Resolution</string>
     <string name="preferences_debug">Debug</string>
@@ -70,5 +71,12 @@
 	<string name="preferences_auto_wage">Auto Wages</string>
 	<string name="preferences_auto_wage_disabled">Wage requests will not be automatically granted</string>
 	<string name="preferences_auto_wage_enabled">Wage requests will be automatically granted</string>
-	
+    <string name="preferences_haptic">Haptic Feedback</string>
+    <string name="preferences_vibration">Vibration</string>
+    <string name="preferences_earthquakes">Earthquakes</string>
+    <string name="preferences_vibration_on">Vibration disabled</string>
+    <string name="preferences_vibration_off">Vibration enabled</string>
+    <string name="preferences_earthquake_off">Will not vibrate during earthquakes</string>
+    <string name="preferences_earthquake_on">Will vibrate during earthquakes</string>
+
 </resources>

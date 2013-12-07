@@ -76,7 +76,7 @@ public class SDLActivity extends CTHActivity {
     private static AudioTrack mAudioTrack;
     private static Object     audioBuffer;
     // Handler for the messages
-    public CommandHandler commandHandler = new CommandHandler(this);
+    public CommandHandler commandHandler;
     // Menu Drawer
     DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -400,7 +400,7 @@ public class SDLActivity extends CTHActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        commandHandler = new CommandHandler(this);
         // The volume buttons should change the media volume
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 

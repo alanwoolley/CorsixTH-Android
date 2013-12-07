@@ -30,14 +30,16 @@ public class CommandHandler extends Handler {
     private static final int VIBRATION_EXPLOSION   = 3;
     SDLActivity activityContext;
     // Dialogs
-    private SaveDialog saveDialog;
-    private LoadDialog loadDialog;
-    private Dialog     aboutDialog;
+    private SaveDialog    saveDialog;
+    private LoadDialog    loadDialog;
+    private Dialog        aboutDialog;
+    private CTHApplication app;
 
 
     public CommandHandler(SDLActivity context) {
         super();
         this.activityContext = context;
+        app = context.app;
     }
 
     public void cleanUp() {
@@ -147,16 +149,22 @@ public class CommandHandler extends Handler {
 
                 Integer vibrationCode = (Integer) msg.obj;
                 Log.d("CommandHandler", "Vibrating: " + vibrationCode);
-                switch (vibrationCode.intValue()) {
-                    case VIBRATION_SHORT_CLICK:
-                        activityContext.playVibration(Launcher.SHARP_CLICK_33);
-                        break;
-                    case VIBRATION_LONG_CLICK:
-                        activityContext.playVibration(Launcher.BOUNCE_100);
-                        break;
-                    case VIBRATION_EXPLOSION:
-                        activityContext.playVibration(Launcher.TEXTURE9);
-                        break;
+                if (app.configuration.getHaptic()) {
+                    switch (vibrationCode.intValue()) {
+                        case VIBRATION_SHORT_CLICK:
+
+                            activityContext.playVibration(Launcher.SHARP_CLICK_33);
+
+                            break;
+                        case VIBRATION_LONG_CLICK:
+                            activityContext.playVibration(Launcher.BOUNCE_100);
+                            break;
+                        case VIBRATION_EXPLOSION:
+                            if (app.configuration.getHapticEarthquakes()) {
+                                activityContext.playVibration(Launcher.TEXTURE9);
+                            }
+                            break;
+                    }
                 }
                 break;
             case STOP_VIBRATION:
