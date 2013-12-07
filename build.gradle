@@ -110,7 +110,7 @@ task createGameZip(type: Zip) {
         include 'CorsixTH.lua'
         include 'Bitmap/aux_ui.*'
         include 'Bitmap/tree_ctrl.*'
-        include 'Bitmap/mainm   enu1080.dat'
+        include 'Bitmap/mainmenu1080.dat'
         include 'Bitmap/mainmenu1080.pal'
     }
 }
