@@ -72,11 +72,11 @@ public class SDLActivity extends CTHActivity {
     private static EGLConfig   mEGLConfig;
     private static int         mGLMajor, mGLMinor;
     // Audio
-    private static Thread     mAudioThread;
-    private static AudioTrack mAudioTrack;
-    private static Object     audioBuffer;
+    private static Thread         mAudioThread;
+    private static AudioTrack     mAudioTrack;
+    private static Object         audioBuffer;
     // Handler for the messages
-    public CommandHandler commandHandler;
+    public         CommandHandler commandHandler;
     // Menu Drawer
     DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -122,6 +122,8 @@ public class SDLActivity extends CTHActivity {
     public static native void cthTryAutoSave(String filename);
 
     public static native void cthUpdateConfiguration(Configuration config);
+
+    public static native void cthShowCheats();
 
     public static String nativeGetGamePath() {
         return mSingleton.app.configuration.getCthPath() + "/scripts/";
@@ -594,7 +596,7 @@ public class SDLActivity extends CTHActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         mDrawerList.setAdapter(new NavDrawerAdapter(this,
-                uk.co.armedpineapple.cth.MenuItems.getItems()));
+                uk.co.armedpineapple.cth.MenuItems.getItems(BuildConfig.DEBUG || app.configuration.getDebug())));
         mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerLayout.setDrawerListener(new DrawerListener() {

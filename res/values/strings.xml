@@ -7,12 +7,15 @@
 	<string name="no">No</string>
 	<string name="welcome_header">Welcome to CorsixTH!</string>
 	<string name="welcome_text">You are almost ready to start playing, but there
-		are a few things that we must configure first.	</string>
+		are a few things that we must configure first.
+	</string>
 	<string name="no_external_storage">External storage isn\'t available! Please make sure
 		that your device is unplugged from your computer and that your SD card
-		is inserted (if applicable). Then restart the app.	</string>
+		is inserted (if applicable). Then restart the app.
+	</string>
 	<string name="setup_wizard_dialog">The setup wizard will run again when you next
-		launch the game.	</string>
+		launch the game.
+	</string>
 	<string name="previousButton">Previous</string>
 	<string name="nextButton">Next</string>
 	<string name="automatic_resolution">Automatic</string>
@@ -20,45 +23,57 @@
 	<string name="original_files_header">Original Theme Hospital Files</string>
 	<string name="original_files_text">You should place the original Theme Hospital files
 		on your device in a directory called \'th\', or choose an alternative
-		below.	</string>
+		below.
+	</string>
 	<string name="native_resolution">Native</string>
 	<string name="custom_resolution">Custom</string>
 	<string name="custom_files">Custom</string>
 	<string name="default_files">Automatically Detect</string>
 	<string name="header_image_description">Header</string>
 	<string name="preparing_game_files_dialog">Preparing Game Files. This only needs to run once,
-		but may take a while.	</string>
+		but may take a while.
+	</string>
 	<string name="download_demo_dialog">This will download and install the Theme Hospital
 		demo which will give you access to the basic functionality of the
-		game.	</string>
-	<string name="download_demo_error">There was a problem downloading the demo files!	</string>
+		game.
+	</string>
+	<string name="download_demo_error">There was a problem downloading the demo files!
+	</string>
 	<string name="downloading_demo">Downloading demo files…</string>
 	<string name="extracting_demo">Unpacking demo files…</string>
 	<string name="language_header">Language</string>
 	<string name="language_text">CorsixTH supports multiple languages. Please choose
-		from the supported languages below.	</string>
+		from the supported languages below.
+	</string>
 	<string name="downloading_timidity">Downloading file…</string>
 	<string name="download_timidity_error">Error downloading file. Music will not be
-		available. Please try again later.	</string>
+		available. Please try again later.
+	</string>
 	<string name="extracting_timidity">Unpacking files…</string>
 	<string name="music_download_dialog">Music requires an additional download. Download
-		file (14.1MB)?	</string>
+		file (14.1MB)?
+	</string>
 	<string name="no_connection_error">You need an active internet connection to download.
-		Please connect to a network and try again.	</string>
+		Please connect to a network and try again.
+	</string>
 	<string name="cancel">Cancel</string>
 	<string name="new_save">New Save</string>
 	<string name="no_music_dialog">Your game files don\'t appear to have music
 		included, therefore music could not be enabled. Please make sure you
-		copied the music \'Sound\' directory over.	</string>
+		copied the music \'Sound\' directory over.
+	</string>
 	<string name="no_data_dialog">Cannot locate game files. Please ensure that you
 		have copied them over to a directory called \'th\' on your device, or
-		specified a valid directory.	</string>
+		specified a valid directory.
+	</string>
 	<string name="speed_slowest">Slowest</string>
 	<string name="speed_default">Default</string>
 	<string name="speed_fastest">Fastest</string>
 	<string name="load_last_save">Resume previous game?</string>
-	<string name="autosave_name" translatable="false">cthandroidautosave.sav	</string>
-	<string name="quicksave_name" translatable="false">quicksave.sav	</string>
+	<string name="autosave_name" translatable="false">cthandroidautosave.sav
+	</string>
+	<string name="quicksave_name" translatable="false">quicksave.sav
+	</string>
 	<string name="save_game_dialog_title">Save Game</string>
 	<string name="save_game_dialog_message">Please enter a save game name</string>
 	<string name="load_game_dialog_title">Load Game</string>
@@ -77,11 +92,13 @@
 	<string name="custom_location_message">Theme Hospital Game Files location</string>
 	<string name="game_paused">Game Paused</string>
 	<string name="load_error">CorsixTH could not load. The setup wizard will run
-		again when you next start the app.	</string>
+		again when you next start the app.
+	</string>
 	<string name="menuitem_settings">Settings</string>
 	<string name="dialog_require_restart">You may have to restart the game for some of these
 		changes
-		take effect	</string>
+		take effect
+	</string>
 	<string name="off">Off</string>
 
 	<string name="no_quicksave">No quicksave to load!</string>
@@ -89,7 +106,8 @@
 	<string name="recent_changes_title">Recent Changes</string>
 	<string name="search_cancelled">Search cancelled</string>
 	<string name="couldnt_find_game_files">Couldn\'t find game files. Please set location
-		manually or download the demo	</string>
+		manually or download the demo
+	</string>
 	<string name="found_files">Found files in: </string>
 	<string name="searching">Searching...</string>
 	<string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
@@ -106,5 +124,6 @@
 	<string name="game_guide">Game Guide</string>
 	<string name="facebook_group">Facebook Group</string>
 	<string name="gplus_community">G+ Community</string>
+    <string name="menuitem_cheats">Cheats</string>
 
 </resources>
