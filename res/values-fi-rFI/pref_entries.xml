@@ -16,11 +16,11 @@
   </string-array>
   <string-array name="speeds">
     <item>Hitain</item>
-    <item>Slower</item>
-    <item>Slow</item>
-    <item>Normal</item>
-    <item>Fast</item>
-    <item>Faster</item>
+    <item>Hitaampi</item>
+    <item>Hidas</item>
+    <item>Normaali</item>
+    <item>Nopea</item>
+    <item>Nopeampi</item>
     <item>Nopein</item>
   </string-array>
 </resources>

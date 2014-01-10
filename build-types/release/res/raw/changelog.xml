@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog bulletedList="true">
+    <changelogversion changeDate="10/1/2014" versionName="0.7">
+        <changelogtext>Updated to CorsixTH 0.30 RC</changelogtext>
+        <changelogtext>[b]New![/b] Cheats! Enable debug mode in the settings and the option will be
+            added to the menu
+        </changelogtext>
+        <changelogtext>[b]New![/b] Android 4.4 support</changelogtext>
+        <changelogtext>[b]New![/b] Full screen immersive mode on Android 4.4</changelogtext>
+        <changelogtext>[b]Experimental![/b] Haptic feedback (vibration)</changelogtext>
+        <changelogtext>Redesigned changelog dialog</changelogtext>
+        <changelogtext>Visual improvements to the wizard</changelogtext>
+        <changelogtext>Fixed small memory leak</changelogtext>
+        <changelogtext>Updated BugSense to v3.6</changelogtext>
+        <changelogtext>Added more links to the help menu</changelogtext>
+        <changelogtext>Higher quality icons on large screens</changelogtext>
+        <changelogtext>Bug fixes and optimisations</changelogtext>
+        <changelogtext>Updated Russian, German, Italian, Danish and Finnish translations
+            (thanks Nekser, kazymov1999, eraser2011, Carte, GiorgioPomettini, Mitus, Lef1zh and
+            PatrikSelin)
+        </changelogtext>
+    </changelogversion>
+</changelog>
