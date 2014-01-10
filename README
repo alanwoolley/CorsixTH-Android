@@ -1,4 +1,4 @@
-This is a port of CorsixTH (http://code.google.com/p/corsix-th) to Android.
+This is a port of CorsixTH (https://github.com/CorsixTH/CorsixTH) to Android.
 
 You will need either a copy of the original Theme Hospital game or a demo of Theme Hospital in order to use this port. The demo can be automatically downloaded from within the app.
 
@@ -8,7 +8,7 @@ HUGE thanks to everyone for their bug reports, feedback and suggestions.
 Credits
 --------
 Everyone who's worked on the CorsixTH project deserves a mention here, but there's far too many. 
-See https://code.google.com/p/corsix-th/people/list for a very superficial list.
+See https://code.google.com/p/corsix-th/people/list and https://github.com/CorsixTH/CorsixTH/graphs/contributors for a very superficial list.
 
 Port: Alan Woolley
 S Pen Support: István Nagy
