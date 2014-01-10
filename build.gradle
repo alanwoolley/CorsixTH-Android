@@ -3,24 +3,77 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
+        classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
+
 apply plugin: 'android'
 
+repositories {
+    mavenCentral();
+    maven {
+        url "http://www.bugsense.com/gradle/"
+    }
+}
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile "com.android.support:support-v4:18.0.+"
+    compile 'com.android.support:support-v4:18.0.+'
+    compile 'com.bugsense.trace:bugsense:3.6'
+    compile 'commons-io:commons-io:2.4'
+    compile 'com.google.android.gms:play-services:3.2.+'
+    compile 'com.github.gabrielemariotti.changeloglib:library:1.4.0'
+
+    compile fileTree(dir: 'jars', include: '*.jar')
 }
 
+Properties signingProperties = new Properties()
+signingProperties.load(new FileInputStream(file("signing.properties")))
+
 android {
-    compileSdkVersion 18
-    buildToolsVersion "18.0.0"
+
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 19
+    }
+    signingConfigs {
+        release {
+            storeFile file(signingProperties['signing.release.storeFile'])
+            storePassword signingProperties['signing.release.storePassword']
+            keyAlias signingProperties['signing.release.keyAlias']
+            keyPassword signingProperties['signing.release.keyPassword']
+        }
+
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            buildConfigField "boolean", "USE_BUGSENSE", "true"
+        }
+
+        beta {
+            signingConfig signingConfigs.release
+            buildConfigField "boolean", "USE_BUGSENSE", "true"
+        }
+
+        debug {
+            buildConfigField "boolean", "USE_BUGSENSE", "false"
+        }
+
+
+        jnidebug.initWith(buildTypes.debug)
+        jnidebug {
+            jniDebugBuild true
+            buildConfigField "boolean", "USE_BUGSENSE", "false"
+        }
+    }
 
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
+            java.srcDirs = ['src/Java']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
@@ -37,7 +90,45 @@ android {
         // conflict with src/ being used by the main source set.
         // Adding new build types or product flavors should be accompanied
         // by a similar customization.
+
+        beta.setRoot('build-types/beta')
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
+
+// Create ZIP of CorsixTH Lua files
+task createGameZip(type: Zip) {
+
+    destinationDir = file('/assets')
+    archiveName = 'game.zip'
+
+    from('jni/src/CorsixTH') {
+        include 'Levels/**'
+        include 'Lua/**'
+        include 'CorsixTH.lua'
+        include 'Bitmap/aux_ui.*'
+        include 'Bitmap/tree_ctrl.*'
+        include 'Bitmap/mainmenu1080.dat'
+        include 'Bitmap/mainmenu1080.pal'
+    }
+}
+
+// NDK Stuff
+tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
+    pkgTask -> pkgTask.jniFolders = new HashSet<File>()
+    pkgTask.jniFolders.add(new File(projectDir, 'libs'))
+}
+
+task ndkBuild(type: Exec) {
+    commandLine 'ndk-build.cmd', '-j'
+}
+tasks.withType(Compile) {
+    compileTask -> compileTask.dependsOn ndkBuild, createGameZip
+}
+

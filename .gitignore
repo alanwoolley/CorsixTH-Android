@@ -1,16 +1,53 @@
+# OS crap
 thumbs.db
+
+# Built apps
+*.apk
+*.apk_
+
+# Java class files
+*.class
+
+# Generated files
 /obj
 /bin
 /gen
+*.dex
+
+# Built native libraries
 /libs/armeabi/*
 /libs/armeabi-v7a/*
-/local.properties
+
+# Local Android conf
+local.properties
+
+# Eclipse project files
+.classpath
+.project
+proguard/
+
+# Android Studio
+.idea/workspace.xml
+.idea/tasks.xml
+.gradle
+/out
+/build
+/production
+*.iml
+*.iws
+*.ipr
+*~
+*.swp
+keys/
+signing.properties
+
+# Specific things
 /assets/application.properties
 /res/values/GoogleAnalytics.xml
 /theme_hospital
+/assets/game.zip
+
+# c9 IDE
 .c9revisions
-.idea/workspace.xml
-.idea/tasks.xml
-*.iws
-/out
-/build
+
+

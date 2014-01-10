@@ -8,7 +8,9 @@ APP_SUBDIRS := $(patsubst $(LOCAL_PATH)/%, %, $(shell find $(LOCAL_PATH)/src -ty
 
 # Add more subdirs here, like src/subdir1 src/subdir2
 
-LOCAL_CFLAGS := -DFT2_BUILD_LIBRARY -O3
+LOCAL_CFLAGS := -DFT2_BUILD_LIBRARY -O2
+
+LOCAL_ARM_MODE := arm
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 
@@ -116,7 +118,6 @@ src/base/ftbbox.c
 LOCAL_SHARED_LIBRARIES := 
 LOCAL_STATIC_LIBRARIES := 
 
-LOCAL_EXPORT_LDLIBS := -lz
 LOCAL_LDLIBS :=
 
 include $(BUILD_STATIC_LIBRARY)

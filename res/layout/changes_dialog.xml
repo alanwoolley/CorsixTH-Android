@@ -1,29 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<view xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:chg="http://schemas.android.com/apk/res-auto"
+    class="it.gmariotti.changelibs.library.view.ChangeLogListView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <ScrollView
-        android:id="@+id/changesScroller"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/dismissDialogButton"
-        android:layout_alignParentLeft="true"
-        android:fillViewport="true"
-        android:scrollbars="vertical" >
-
-        <TextView
-            android:id="@+id/changesTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
-
-    <Button
-        android:id="@+id/dismissDialogButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/ok" />
-
-</RelativeLayout>
+    android:layout_height="match_parent"
+    android:id="@+id/changelogview"
+    chg:rowLayoutId="@layout/changelog_row"
+    />

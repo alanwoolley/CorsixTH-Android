@@ -1,9 +1,0 @@
-0.6.1 - 25/10/2013
-==================
-* Added help section to the menu
-* Added link to the installation guide to the wizard
-* Fix occasional crash when downloading demo
-* Bug Fixes
-
-Translations:
-* Updated Finnish, Dutch translations (thanks PatrikSelin, Omni, klambrec)

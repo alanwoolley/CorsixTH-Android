@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="bugsense-3.5">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/bugsense-3.5.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-26/filestore/com.bugsense.trace/bugsense/3.5/jar/5b8153490571768d9cf0e5e900b66e3333f98592/bugsense-3.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

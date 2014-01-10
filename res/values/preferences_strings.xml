@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="preferences_run_setup_wizard">Run Setup Wizard</string>
+    <string name="preferences_settings">Settings</string>
+    <string name="preferences_gameplay_preferences">Gameplay preferences</string>
+    <string name="preferences_language">Language</string>
+    <string name="preferences_edge_scrolling">Edge Scrolling</string>
+    <string name="preferences_adviser">Adviser</string>
+    <string name="preferences_audio_preferences">Audio preferences</string>
+    <string name="preferences_audio">Audio</string>
+    <string name="preferences_announcer">Announcer</string>
+    <string name="preferences_announcer_disabled">Announcer Disabled</string>
+    <string name="preferences_announcer_enabled">Announcer Enabled</string>
+    <string name="preferences_adviser_disabled">Adviser Disabled</string>
+    <string name="preferences_adviser_enabled">Adviser Enabled</string>
+    <string name="preferences_game">Game</string>
+    <string name="preferences_setup_wizard">Setup Wizard</string>
+    <string name="preferences_edge_scrolling_off">Edge scrolling is off</string>
+    <string name="preferences_edge_scrolling_on">Edge scrolling is on</string>
+    <string name="preferences_music">Music</string>
+    <string name="preferences_music_disabled">Music Disabled</string>
+    <string name="preferences_music_enabled">Music Enabled</string>
+    <string name="preferences_sound_fx">Sound FX</string>
+    <string name="preferences_sound_fx_disabled">Sound FX Disabled</string>
+    <string name="preferences_sound_fx_enabled">Sound FX Enabled</string>
+    <string name="preferences_display_preferences">Display preferences</string>
+    <string name="preferences_display">Display</string>
+    <string name="preferences_resolution">Resolution Mode	</string>
+    <string name="preferences_width">Width</string>
+    <string name="preferences_height">Height</string>
+    <string name="preferences_advanced_preferences">Advanced preferences</string>
+    <string name="preferences_advanced">Advanced</string>
+    <string name="preferences_debug_mode_disabled">Debug Mode Disabled</string>
+    <string name="preferences_debug_mode_enabled">Debug Mode Enabled</string>
+    <string name="preferences_debug_mode">Debug mode</string>
+    <string name="preferences_not_tracking_fps">Not Tracking FPS</string>
+    <string name="preferences_tracking_fps">Tracking FPS</string>
+    <string name="preferences_track_fps">Track FPS</string>
+    <string name="preferences_keep_screen_on_off">Will not keep screen on during play</string>
+    <string name="preferences_keep_screen_on_on">Will keep screen on during play</string>
+    <string name="preferences_keep_screen_on">Keep Screen On</string>
+    <string name="preferences_experimental_features">Experimental Features</string>
+    <string name="preferences_experimental">Experimental</string>
+    <string name="preferences_fps_limiter">FPS Limiter</string>
+    <string name="preferences_reduce_cpu">Reduce CPU usage and improve battery life</string>
+    <string name="preferences_localisation">Localisation</string>
+    <string name="preferences_edgescrollsummary">The amount of space at the screen edges for
+		scrolling
+</string>
+    <string name="preferences_edge_border_size">Edge Border Size</string>
+    <string name="preferences_custom_resolution">Custom Resolution</string>
+    <string name="preferences_debug">Debug</string>
+    <string name="preferences_performance">Performance</string>
+    <string name="preferences_movies">Movies</string>
+    <string name="preferences_play_movies">Play Movies</string>
+    <string name="preferences_movies_disabled">Movies Disabled</string>
+    <string name="preferences_movies_enabled">Movies Enabled</string>
+    <string name="preferences_intro_movie_disabled">Intro Movie Disabled</string>
+    <string name="preferences_intro_movie_enabled">Intro Movie Enabled</string>
+    <string name="preferences_play_intro_movie">Play Intro Movie</string>
+    <string name="preferences_edge_scroll_speed">Edge Scroll Speed</string>
+    <string name="preferences_edgescrollspeedsummary">How quickly the game world scrolls</string>
+    <string name="preferences_spen">Samsung S Pen Support</string>
+    <string name="preferences_spen_disabled">S Pen support disabled</string>
+    <string name="preferences_spen_enabled">S Pen support enabled</string>
+    <string name="preferences_controls">Controls</string>
+    <string name="preferences_controls_mode">Controls Mode</string>
+    <string name="preferences_controls_mode_summary">How input is handled</string>
+    <string name="preferences_other">Other</string>
+	<string name="preferences_auto_wage">Auto Wages</string>
+	<string name="preferences_auto_wage_disabled">Wage requests will not be automatically granted</string>
+	<string name="preferences_auto_wage_enabled">Wage requests will be automatically granted</string>
+    <string name="preferences_haptic">Haptic Feedback</string>
+    <string name="preferences_vibration">Vibration</string>
+    <string name="preferences_earthquakes">Earthquakes</string>
+    <string name="preferences_vibration_on">Vibration disabled</string>
+    <string name="preferences_vibration_off">Vibration enabled</string>
+    <string name="preferences_earthquake_off">Will not vibrate during earthquakes</string>
+    <string name="preferences_earthquake_on">Will vibrate during earthquakes</string>
+
+</resources>
