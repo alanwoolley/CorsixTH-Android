@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
 
@@ -50,23 +50,23 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            buildConfig "public final static boolean USE_BUGSENSE = true;"
+            buildConfigField "boolean", "USE_BUGSENSE", "true"
         }
 
         beta {
             signingConfig signingConfigs.release
-            buildConfig "public final static boolean USE_BUGSENSE = true;"
+            buildConfigField "boolean", "USE_BUGSENSE", "true"
         }
 
         debug {
-            buildConfig "public final static boolean USE_BUGSENSE = false;"
+            buildConfigField "boolean", "USE_BUGSENSE", "false"
         }
 
 
         jnidebug.initWith(buildTypes.debug)
         jnidebug {
             jniDebugBuild true
-            buildConfig "public final static boolean USE_BUGSENSE = false;"
+            buildConfigField "boolean", "USE_BUGSENSE", "false"
         }
     }
 
@@ -116,7 +116,8 @@ task createGameZip(type: Zip) {
 
 // NDK Stuff
 tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
-    pkgTask -> pkgTask.jniDir new File(projectDir, 'libs')
+    pkgTask -> pkgTask.jniFolders = new HashSet<File>()
+    pkgTask.jniFolders.add(new File(projectDir, 'libs'))
 }
 
 task ndkBuild(type: Exec) {
