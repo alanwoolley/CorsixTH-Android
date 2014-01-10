@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
+    <changelogversion changeDate="10/1/2014" versionName="0.7-RC">
+        <changelogtext>Updated Russian, German, Italian, Danish and Finnish translations
+            (thanks Nekser, kazymov1999, eraser2011, Carte, GiorgioPomettini, Mitus, Lef1zh and
+            PatrikSelin)
+        </changelogtext>
+    </changelogversion>
     <changelogversion changeDate="07/12/2013" versionName="0.7-beta3">
         <changelogtext>[b]Experimental![/b] Haptic feedback (vibration)</changelogtext>
         <changelogtext>[b]New![/b] Cheats! Enable debug mode in the settings and the option will be
