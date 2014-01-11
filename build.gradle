@@ -9,6 +9,8 @@ buildscript {
 
 apply plugin: 'android'
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 repositories {
     mavenCentral();
     maven {
