@@ -135,8 +135,12 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
     pkgTask.jniFolders.add(new File(projectDir, 'libs'))
 }
 
-task ndkBuild(type: Exec) {
-    commandLine 'ndk-build.cmd', '-j'
+task ndkBuild(type: Exec) {`
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) { 
+      commandLine 'ndk-build.cmd', '-j'
+    } else {
+      commandLine 'ndk-build', '-j'
+    }
 }
 tasks.withType(Compile) {
     compileTask -> compileTask.dependsOn ndkBuild, createGameZip
