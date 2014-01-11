@@ -135,7 +135,7 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
     pkgTask.jniFolders.add(new File(projectDir, 'libs'))
 }
 
-task ndkBuild(type: Exec) {`
+task ndkBuild(type: Exec) {
     if (Os.isFamily(Os.FAMILY_WINDOWS)) { 
       commandLine 'ndk-build.cmd', '-j'
     } else {
