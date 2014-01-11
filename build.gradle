@@ -25,8 +25,7 @@ dependencies {
     compile fileTree(dir: 'jars', include: '*.jar')
 }
 
-Properties signingProperties = new Properties()
-signingProperties.load(new FileInputStream(file("signing.properties")))
+
 
 android {
 
@@ -37,24 +36,36 @@ android {
         minSdkVersion 8
         targetSdkVersion 19
     }
-    signingConfigs {
+    Properties signingProperties = new Properties()
+  
+    if (file("signing.properties").exists()) {
+      signingProperties.load(new FileInputStream(file("signing.properties")))
+      signingConfigs {
+          release {
+              storeFile file(signingProperties['signing.release.storeFile'])
+              storePassword signingProperties['signing.release.storePassword']
+              keyAlias signingProperties['signing.release.keyAlias']
+              keyPassword signingProperties['signing.release.keyPassword']
+          }
+       }
+       
+       buildTypes {
         release {
-            storeFile file(signingProperties['signing.release.storeFile'])
-            storePassword signingProperties['signing.release.storePassword']
-            keyAlias signingProperties['signing.release.keyAlias']
-            keyPassword signingProperties['signing.release.keyPassword']
+          signingConfig signingConfigs.release
         }
-
+        
+        beta {
+          signingConfig signingConfigs.release
+        }
+       }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
             buildConfigField "boolean", "USE_BUGSENSE", "true"
         }
 
         beta {
-            signingConfig signingConfigs.release
             buildConfigField "boolean", "USE_BUGSENSE", "true"
         }
 
