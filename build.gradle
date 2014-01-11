@@ -77,7 +77,6 @@ android {
         jnidebug.initWith(buildTypes.debug)
         jnidebug {
             jniDebugBuild true
-            buildConfigField "boolean", "USE_BUGSENSE", "false"
         }
     }
 
@@ -116,7 +115,7 @@ android {
 // Create ZIP of CorsixTH Lua files
 task createGameZip(type: Zip) {
 
-    destinationDir = file('/assets')
+    destinationDir = file('assets')
     archiveName = 'game.zip'
 
     from('jni/src/CorsixTH') {
