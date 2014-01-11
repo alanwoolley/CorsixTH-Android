@@ -809,9 +809,9 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-    public static final String LOG_TAG = "SDLMain";
-    private Configuration config;
-    private String        toLoad;
+    private static final String LOG_TAG = "SDLMain";
+    private final Configuration config;
+    private final String        toLoad;
 
     public SDLMain(Configuration config, String toLoad) {
         this.config = config;

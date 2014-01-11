@@ -16,29 +16,28 @@ public class TwoFingerMoveGesture implements
 
 	private static final String	LOG_TAG	= "TwoFingerMove";
 
-	private final float					delta		= 10;
+    private float								prevX, prevY, originX, originY;
 
-	private float								prevX, prevY, originX, originY;
+    private boolean first = false;
 
-	private boolean							first		= false;
+    private final CTHApplication appCtx;
 
-	private CTHApplication			appCtx;
+    public TwoFingerMoveGesture(Context ctx) {
+        appCtx = (CTHApplication) ctx.getApplicationContext();
+    }
 
-	public TwoFingerMoveGesture(Context ctx) {
-		appCtx = (CTHApplication) ctx.getApplicationContext();
-	}
+    @Override
+    public boolean onTwoFingerEvent(TwoFingerGestureDetector detector) {
 
-	@Override
-	public boolean onTwoFingerEvent(TwoFingerGestureDetector detector) {
-
-		float[] coords = SDLActivity.mSurface.translateCoords(detector.getFocusX(),
-				detector.getFocusY());
-		prevX = coords[0];
-		prevY = coords[1];
-		if (first) {
-			// Check to see if we've moved a suitable distance. By doing this,
-			// we can make the start of the gesture much smoother.
-			if ((Math.abs(originX - prevX) > delta || Math.abs(originY - prevY) > delta)) {
+        float[] coords = SDLActivity.mSurface.translateCoords(detector.getFocusX(),
+                detector.getFocusY());
+        prevX = coords[0];
+        prevY = coords[1];
+        if (first) {
+            // Check to see if we've moved a suitable distance. By doing this,
+            // we can make the start of the gesture much smoother.
+            float delta = 10;
+            if ((Math.abs(originX - prevX) > delta || Math.abs(originY - prevY) > delta)) {
 
 				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_DOWN, prevX, prevY,
 						0, 2, 2, appCtx.configuration.getControlsMode());

@@ -22,25 +22,25 @@ import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 @SuppressWarnings("nls")
 public class Configuration {
 
-    public static final String LOG_TAG              = "Config";
-    public final static int    RESOLUTION_DEFAULT   = 1;
-    public final static int    RESOLUTION_NATIVE    = 2;
-    public final static int    RESOLUTION_CUSTOM    = 3;
-    public final static int    CONTROLS_NORMAL      = 1;
-    public final static int    CONTROLS_DESKTOP     = 2;
-    public final static int    CONTROLS_TOUCHPAD    = 3;
+    private static final String LOG_TAG              = "Config";
+    public final static  int    RESOLUTION_DEFAULT   = 1;
+    public final static  int    RESOLUTION_NATIVE    = 2;
+    public final static  int    RESOLUTION_CUSTOM    = 3;
+    public final static  int    CONTROLS_NORMAL      = 1;
+    public final static  int    CONTROLS_DESKTOP     = 2;
+    public final static  int    CONTROLS_TOUCHPAD    = 3;
     // Defaults
-    public final static int    MINIMUM_WIDTH        = 640;
-    public final static int    MINIMUM_HEIGHT       = 480;
-    public final static String DEFAULT_UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
-    public final static String HEADER               = "---- CorsixTH configuration file ----------------------------------------------\n"
+    public final static  int    MINIMUM_WIDTH        = 640;
+    public final static  int    MINIMUM_HEIGHT       = 480;
+    public final static  String DEFAULT_UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
+    public final static  String HEADER               = "---- CorsixTH configuration file ----------------------------------------------\n"
             + "-- Lines starting with two dashes (like this one) are ignored.\n"
             + "-- Text settings should have their values between double square braces, e.g.\n"
             + "--  setting = [[value]]\n"
             + "-- Number settings should not have anything around their value, e.g.\n"
             + "--  setting = 42\n\n\n"
             + "---- If you wish to add any custom settings, please do so below. ---- \n\n";
-    public final static String SEPARATOR            = "\n\n---- Do not edit below this line ----\n\n";
+    public final static  String SEPARATOR            = "\n\n---- Do not edit below this line ----\n\n";
     // TODO - do this properly
     private String originalFilesPath, cthPath, language;
     private boolean globalAudio, playMusic, playAnnouncements,
@@ -52,8 +52,8 @@ public class Configuration {
             nativeHeight;
     private String saveGamesPath = Files.getExtStoragePath()
             + "CTHsaves";
-    private Context           ctx;
-    private SharedPreferences preferences;
+    private final Context           ctx;
+    private final SharedPreferences preferences;
 
     private Configuration(Context ctx, SharedPreferences prefs) {
         this.ctx = ctx;
@@ -264,41 +264,38 @@ public class Configuration {
         }
 
         sbuilder.append(SEPARATOR);
-        sbuilder.append("theme_hospital_install = [[" + originalFilesPath + "]]\n");
+        sbuilder.append("theme_hospital_install = [[").append(originalFilesPath).append("]]\n");
 
-        sbuilder.append("prevent_edge_scrolling = " + String.valueOf(!edgeScroll)
-                + "\n");
+        sbuilder.append("prevent_edge_scrolling = ").append(String.valueOf(!edgeScroll)).append("\n");
 
-        sbuilder.append("audio = " + String.valueOf(globalAudio) + "\n");
+        sbuilder.append("audio = ").append(String.valueOf(globalAudio)).append("\n");
 
         sbuilder.append("audio_frequency = 22050\n");
         sbuilder.append("audio_channels = 2\n");
         sbuilder.append("audio_buffer_size = 2048\n");
 
-        sbuilder.append("play_music = " + String.valueOf(playMusic) + "\n");
-        sbuilder.append("music_volume = 0." + String.valueOf(musicVol) + "\n");
+        sbuilder.append("play_music = ").append(String.valueOf(playMusic)).append("\n");
+        sbuilder.append("music_volume = 0.").append(String.valueOf(musicVol)).append("\n");
 
-        sbuilder.append("play_announcements = " + String.valueOf(playAnnouncements)
-                + "\n");
-        sbuilder.append("announcement_volume = 0."
-                + String.valueOf(announcementsVol) + "\n");
+        sbuilder.append("play_announcements = ").append(String.valueOf(playAnnouncements)).append("\n");
+        sbuilder.append("announcement_volume = 0.").append(String.valueOf(announcementsVol)).append("\n");
 
-        sbuilder.append("play_sounds = " + String.valueOf(playSoundFx) + "\n");
-        sbuilder.append("sound_volume = 0." + String.valueOf(sfxVol) + "\n");
+        sbuilder.append("play_sounds = ").append(String.valueOf(playSoundFx)).append("\n");
+        sbuilder.append("sound_volume = 0.").append(String.valueOf(sfxVol)).append("\n");
 
-        sbuilder.append("language = [[" + language + "]]\n");
+        sbuilder.append("language = [[").append(language).append("]]\n");
 
-        sbuilder.append("width = " + String.valueOf(displayWidth) + "\n");
-        sbuilder.append("height = " + String.valueOf(displayHeight) + "\n");
+        sbuilder.append("width = ").append(String.valueOf(displayWidth)).append("\n");
+        sbuilder.append("height = ").append(String.valueOf(displayHeight)).append("\n");
         sbuilder.append("fullscreen = true\n");
 
-        sbuilder.append("debug = " + String.valueOf(debug) + "\n");
+        sbuilder.append("debug = ").append(String.valueOf(debug)).append("\n");
         sbuilder.append("track_fps = false\n");
         sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
-        sbuilder.append("savegames = [[" + saveGamesPath + "]]\n");
+        sbuilder.append("savegames = [[").append(saveGamesPath).append("]]\n");
 
         sbuilder.append("free_build_mode = false\n");
-        sbuilder.append("adviser_disabled = " + String.valueOf(!adviser) + "\n");
+        sbuilder.append("adviser_disabled = ").append(String.valueOf(!adviser)).append("\n");
         sbuilder.append("warmth_colors_display_default = 1\n");
         sbuilder.append("allow_user_actions_while_paused = false\n");
         sbuilder.append("volume_opens_casebook = false\n");
@@ -307,20 +304,18 @@ public class Configuration {
         sbuilder.append("check_for_updates = false\n");
         sbuilder.append("enable_avg_contents = false\n");
 
-        sbuilder.append("grant_wage_increase = " + String.valueOf(autoWageGrant)
-                + "\n");
+        sbuilder.append("grant_wage_increase = ").append(String.valueOf(autoWageGrant)).append("\n");
 
         sbuilder.append("disable_fractured_bones_females = true\n");
 
         // Movies
-        sbuilder.append("movies = " + String.valueOf(playMovies) + "\n");
-        sbuilder.append("play_intro = " + String.valueOf(playIntroMovie) + "\n");
+        sbuilder.append("movies = ").append(String.valueOf(playMovies)).append("\n");
+        sbuilder.append("play_intro = ").append(String.valueOf(playIntroMovie)).append("\n");
 
         // Controls
-        sbuilder.append("scroll_region_size = " + String.valueOf(edgeBordersSize)
-                + "\n");
-        sbuilder.append("scroll_speed = " + String.valueOf(edgeScrollSpeed) + "\n");
-        sbuilder.append("controls_mode = " + String.valueOf(controlsMode) + "\n");
+        sbuilder.append("scroll_region_size = ").append(String.valueOf(edgeBordersSize)).append("\n");
+        sbuilder.append("scroll_speed = ").append(String.valueOf(edgeScrollSpeed)).append("\n");
+        sbuilder.append("controls_mode = ").append(String.valueOf(controlsMode)).append("\n");
         sbuilder.append("scrolling_momentum = 0.9\n");
         sbuilder.append("zoom_speed = 80\n");
 
@@ -438,6 +433,7 @@ public class Configuration {
     public boolean getHapticEarthquakes() {
         return hapticEarthquakes;
     }
+
     public void setResolutionMode(int resolutionMode) {
 
         switch (resolutionMode) {

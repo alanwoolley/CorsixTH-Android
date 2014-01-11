@@ -28,13 +28,13 @@ public class CommandHandler extends Handler {
     private static final int VIBRATION_SHORT_CLICK = 1;
     private static final int VIBRATION_LONG_CLICK  = 2;
     private static final int VIBRATION_EXPLOSION   = 3;
-    SDLActivity activityContext;
+    private final SDLActivity    activityContext;
     // Dialogs
-    private SaveDialog     saveDialog;
-    private LoadDialog     loadDialog;
-    private Dialog         aboutDialog;
-    private CTHApplication app;
-    public boolean        playingEarthquake;
+    private       SaveDialog     saveDialog;
+    private       LoadDialog     loadDialog;
+    private       Dialog         aboutDialog;
+    private final CTHApplication app;
+    public        boolean        playingEarthquake;
 
 
     public CommandHandler(SDLActivity context) {
@@ -151,7 +151,7 @@ public class CommandHandler extends Handler {
                 Integer vibrationCode = (Integer) msg.obj;
                 Log.d("CommandHandler", "Vibrating: " + vibrationCode);
                 if (app.configuration.getHaptic()) {
-                    switch (vibrationCode.intValue()) {
+                    switch (vibrationCode) {
                         case VIBRATION_SHORT_CLICK:
                             if (!playingEarthquake) {
                                 activityContext.playVibration(Launcher.SHARP_CLICK_33);

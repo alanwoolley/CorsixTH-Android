@@ -5,6 +5,16 @@
  */
 package uk.co.armedpineapple.cth.wizard;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ViewFlipper;
+
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Configuration;
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
@@ -13,16 +23,6 @@ import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-
-import android.widget.Button;
-import android.widget.ViewFlipper;
 
 public class WizardActivity extends CTHActivity {
 
@@ -31,10 +31,8 @@ public class WizardActivity extends CTHActivity {
 	private ViewFlipper								flipper;
 	private Button										previousButton;
 	private Button										nextButton;
-	private WizardButtonClickListener	buttonClickListener;
-	private SharedPreferences					preferences;
 
-	public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		if (!Files.canAccessExternalStorage()) {
@@ -46,7 +44,7 @@ public class WizardActivity extends CTHActivity {
 
 		}
 
-		preferences = app.getPreferences();
+        SharedPreferences preferences = app.getPreferences();
 		boolean alreadyRun = preferences.getBoolean("wizard_run", false);
 		if (alreadyRun) {
 			if (Files.hasDataFiles(preferences.getString("originalfiles_pref", ""))) {
@@ -88,7 +86,7 @@ public class WizardActivity extends CTHActivity {
 
 		// Setup Buttons
 		previousButton.setVisibility(View.GONE);
-		buttonClickListener = new WizardButtonClickListener();
+        WizardButtonClickListener buttonClickListener = new WizardButtonClickListener();
 
 		previousButton.setOnClickListener(buttonClickListener);
 		nextButton.setOnClickListener(buttonClickListener);
@@ -154,12 +152,9 @@ public class WizardActivity extends CTHActivity {
 		}
 
 		public boolean hasNext(ViewFlipper flipper) {
-			if (flipper.indexOfChild(flipper.getCurrentView()) == flipper
-					.getChildCount() - 1) {
-				return false;
-			}
-			return true;
-		}
+            return flipper.indexOfChild(flipper.getCurrentView()) != flipper
+                    .getChildCount() - 1;
+        }
 
 		public boolean hasPrevious(ViewFlipper flipper) {
 			if (flipper.indexOfChild(flipper.getCurrentView()) == 0) {

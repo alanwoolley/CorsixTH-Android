@@ -5,6 +5,21 @@
  */
 package uk.co.armedpineapple.cth;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.util.Log;
+
+import com.bugsense.trace.BugSenseHandler;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.CountingOutputStream;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +27,6 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,21 +37,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.CountingOutputStream;
-
-import com.bugsense.trace.BugSenseHandler;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.util.Log;
 
 /** Class to help with file manipulation */
 @SuppressWarnings("nls")
@@ -252,430 +251,431 @@ public class Files {
 	static class DiscoverAssetsTask extends
 			AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
 
-		ArrayList<String>	paths;
-		Context						ctx;
-		String						path;
-
-		DiscoverAssetsTask(Context ctx, String path) {
-			this.ctx = ctx;
-			this.path = path;
-		}
-
-		@Override
-		protected AsyncTaskResult<ArrayList<String>> doInBackground(Void... params) {
-
-			paths = new ArrayList<String>();
-			try {
-				paths = listAssets(ctx, path);
-			} catch (IOException e) {
-				Log.e(LOG_TAG,
-						"I/O Exception whilst listing files", e);
-				BugSenseHandler.sendException(e);
-				return new AsyncTaskResult<ArrayList<String>>(e);
-
-			}
-			return new AsyncTaskResult<ArrayList<String>>(paths);
-		}
-
-	}
-
-	/**
-	 * {@link AsyncTask}syncTask for copying assets
-	 */
-	static class CopyAssetsTask extends
-			AsyncTask<ArrayList<String>, Integer, AsyncTaskResult<Void>> {
-		WakeLock	copyLock;
-		Context		ctx;
-		String		root, message;
-
-		CopyAssetsTask(Context ctx, String root) {
-			this.ctx = ctx;
-			this.root = root;
-
-		}
-
-		@Override
-		protected void onPreExecute() {
-			PowerManager pm = (PowerManager) ctx
-					.getSystemService(Context.POWER_SERVICE);
-			copyLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "copying");
-			copyLock.acquire();
-		}
-
-		@Override
-		protected AsyncTaskResult<Void> doInBackground(ArrayList<String>... params) {
-			int max = params[0].size();
-			for (int i = 0; i < max; i++) {
-				try {
-					copyAsset(ctx, params[0].get(i), root);
-				} catch (IOException e) {
-					return new AsyncTaskResult<Void>(e);
-				}
-				publishProgress(i + 1, max);
-			}
-			return new AsyncTaskResult<Void>((Void) null);
-		}
-
-		@Override
-		protected void onPostExecute(AsyncTaskResult<Void> result) {
-			copyLock.release();
-		}
-	}
-
-	/**
-	 * Produces a list of assets in a directory
-	 * 
-	 * @param ctx
-	 *          a activityContext
-	 * @param path
-	 *          path to search in
-	 * @return a list of files
-	 * @throws IOException
-	 *           if the path doesn't exist, or asset can't be accessed
-	 */
-	public static ArrayList<String> listAssets(Context ctx, String path)
-			throws IOException {
-		ArrayList<String> assets = new ArrayList<String>();
-		listAssetsInternal(ctx, path, assets);
-		return assets;
-	}
-
-	private static void listAssetsInternal(Context ctx, String path,
-			ArrayList<String> paths) throws IOException {
-		AssetManager assetManager = ctx.getAssets();
-		String assets[] = null;
-
-		assets = assetManager.list(path);
-
-		if (assets.length == 0) {
-			paths.add(path);
-
-		} else {
-			for (int i = 0; i < assets.length; ++i) {
-				listAssetsInternal(ctx, path + "/" + assets[i], paths);
-			}
-		}
-
-	}
-
-	/**
-	 * Copies an assets
-	 * 
-	 * @param ctx
-	 *          a activityContext
-	 * @param assetFilename
-	 *          the filename of the asset
-	 * @param destination
-	 *          the destination directory
-	 * @throws IOException
-	 *           if the asset cannot be copied
-	 */
-	public static void copyAsset(Context ctx, String assetFilename,
-			String destination) throws IOException {
-		InputStream in = null;
-
-		try {
-			AssetManager assetManager = ctx.getAssets();
-
-			in = assetManager.open(assetFilename);
-
-			String newFileName = destination + "/" + assetFilename;
-			File newFile = new File(newFileName);
-			File dir = newFile.getParentFile();
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-
-			Log.i(LOG_TAG, "Copying file [" + assetFilename
-					+ "] to [" + newFileName + "]");
-
-			FileUtils.copyInputStreamToFile(in, newFile);
-
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-
-	}
-
-	public static class FindFilesTask extends
-			AsyncTask<Void, Void, AsyncTaskResult<String>> {
-
-		@Override
-		protected AsyncTaskResult<String> doInBackground(Void... arg0) {
-			return new AsyncTaskResult<String>(findGameFiles());
-		}
-
-		private String findGameFiles() {
-			String result;
-			List<String> searchPaths = new ArrayList<String>(
-					Arrays.asList(SearchRoot));
-			String sdcard = trimPath(Environment.getExternalStorageDirectory()
-					.getAbsolutePath());
-
-			if (!searchPaths.contains(sdcard)) {
-				searchPaths.add(sdcard);
-			}
-
-			// Search common locations first
-			for (String root : searchPaths) {
-				if (isCancelled()) {
-					Log.d(LOG_TAG, "Task cancelled");
-					return null;
-				}
-				for (String dir : SearchDirs) {
-					String toSearch = root + File.separator + dir;
-					if ((result = findGameFilesInternal(toSearch)) != null) {
-
-						return result;
-					}
-				}
-			}
-
-			for (String root : searchPaths) {
-				if (isCancelled()) {
-					Log.d(LOG_TAG, "Task cancelled");
-					return null;
-				}
-
-				if ((result = findGameFilesInternal(root)) != null) {
-					Log.d(LOG_TAG, "Found game files in: " + result);
-					return result;
-				}
-			}
-			return null;
-		}
-
-		private String findGameFilesInternal(String root) {
-			if (!isCancelled()) {
-				String result;
-				File dir = new File(root);
-
-				if (hasDataFiles(root)) {
-					return root;
-				}
-
-				if (dir.exists() && dir.isDirectory()) {
-					File[] sub = dir.listFiles();
-					if (sub != null) {
-						for (File f : sub) {
-							if (f.isDirectory()) {
-								if ((result = findGameFilesInternal(trimPath(f
-										.getAbsolutePath()))) != null) {
-									Log.d(LOG_TAG, "Found game files in: "
-											+ result);
-									return result;
-								}
-							}
-						}
-					}
-				}
-			} else {
-				Log.d(LOG_TAG, "Task cancelled");
-			}
-			return null;
-		}
-
-	}
-
-	/** AsyncTask for downloading a file */
-	public static class DownloadFileTask extends
-			AsyncTask<String, Integer, AsyncTaskResult<File>> {
-		String		downloadTo;
-		Context		ctx;
-		WakeLock	downloadLock;
-
-		public DownloadFileTask(String downloadTo, Context ctx) {
-			this.downloadTo = downloadTo;
-			this.ctx = ctx;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			PowerManager pm = (PowerManager) ctx
-					.getSystemService(Context.POWER_SERVICE);
-			downloadLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-					"downloading");
-			downloadLock.acquire();
-		}
-
-		@Override
-		protected void onPostExecute(AsyncTaskResult<File> result) {
-			super.onPostExecute(result);
-			downloadLock.release();
-		}
-
-		@Override
-		protected AsyncTaskResult<File> doInBackground(String... url) {
-			URL downloadUrl;
-			URLConnection ucon;
-
-			try {
-				downloadUrl = new URL(url[0]);
-
-				File file = new File(downloadTo + "/" + downloadUrl.getFile());
-				file.getParentFile().mkdirs();
-
-				ucon = downloadUrl.openConnection();
-				ucon.connect();
-				
-				if (ucon.getContentType() == null) {
-					throw new IOException("Could not connect to server");
-				}
-				
-				final int fileSize = ucon.getContentLength();
-				
-				InputStream input = new BufferedInputStream(downloadUrl.openStream());
-				FileOutputStream fos = new FileOutputStream(file);
-				CountingOutputStream cos = new CountingOutputStream(fos) {
-
-					int	total	= 0;
-
-					@Override
-					protected void afterWrite(int n) throws IOException {
-						super.afterWrite(n);
-						publishProgress(total += n, fileSize);
-					}
-
-				};
-
-				IOUtils.copy(input, cos);
-
-				input.close();
-				fos.close();
-				cos.close();
-
-				Log.d(LOG_TAG,
-						"Downloaded file to: " + file.getAbsolutePath());
-
-				return new AsyncTaskResult<File>(file);
-
-			} catch (MalformedURLException e) {
-				return new AsyncTaskResult<File>(e);
-			} catch (IOException e) {
-				return new AsyncTaskResult<File>(e);
-			}
-
-		}
-
-	}
-
-	/** AsyncTask for extracting a .zip file to a directory */
-	public static class UnzipTask extends
-			AsyncTask<File, Integer, AsyncTaskResult<String>> {
-		String		unzipTo;
-		Context		ctx;
-		WakeLock	unzipLock;
-
-		public UnzipTask(String unzipTo, Context ctx) {
-			this.unzipTo = unzipTo;
-			this.ctx = ctx;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			PowerManager pm = (PowerManager) ctx
-					.getSystemService(Context.POWER_SERVICE);
-			unzipLock = pm
-					.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "unzipping");
-			unzipLock.acquire();
-		}
-
-		@Override
-		protected void onPostExecute(AsyncTaskResult<String> result) {
-			super.onPostExecute(result);
-			unzipLock.release();
-		}
-
-		@Override
-		protected AsyncTaskResult<String> doInBackground(File... files) {
-			try {
-
-				File to = new File(unzipTo);
-				to.mkdirs();
-
-				ZipFile zf = new ZipFile(files[0]);
-				int entryCount = zf.size();
-
-				Enumeration<? extends ZipEntry> entries = zf.entries();
-				int count = 0;
-
-				while (entries.hasMoreElements()) {
-					ZipEntry ze = entries.nextElement();
-					Log.v(LOG_TAG, "Unzipping " + ze.getName());
-
-					File f = new File(unzipTo + ze.getName());
-					if (!f.getParentFile().exists()) {
-						f.getParentFile().mkdirs();
-					}
-
-					if (ze.isDirectory()) {
-
-						if (!f.isDirectory()) {
-							f.mkdirs();
-						}
-					} else {
-
-						InputStream zin = zf.getInputStream(ze);
-
-						FileOutputStream fout = new FileOutputStream(unzipTo + ze.getName());
-
-						IOUtils.copy(zin, fout);
-
-						zin.close();
-						fout.close();
-
-					}
-
-					count++;
-					publishProgress(count, entryCount);
-
-				}
-
-			} catch (IOException e) {
-				BugSenseHandler.sendException(e);
-				return new AsyncTaskResult<String>(e);
-			}
-
-			return new AsyncTaskResult<String>(unzipTo);
-
-		}
-	}
-
-	public static class FileDetails implements Comparable<FileDetails> {
-
-		private Date		lastModified;
-		private String	fileName;
-
-		public FileDetails(String filename, Date lastModified) {
-			this.fileName = filename;
-			this.lastModified = lastModified;
-		}
-
-		public Date getLastModified() {
-			return lastModified;
-		}
-
-		public String getFileName() {
-			return fileName;
-		}
-
-		@Override
-		public int compareTo(FileDetails another) {
-			if (lastModified.equals(another.getLastModified())) {
-				return 0;
-			}
-
-			return lastModified.after(another.getLastModified()) ? 1 : -1;
-
-		}
-	}
-	
-	public class StorageUnavailableException extends Exception {
-	
-	}
+        ArrayList<String> paths;
+        final Context ctx;
+        final String  path;
+
+        DiscoverAssetsTask(Context ctx, String path) {
+            this.ctx = ctx;
+            this.path = path;
+        }
+
+        @Override
+        protected AsyncTaskResult<ArrayList<String>> doInBackground(Void... params) {
+
+            paths = new ArrayList<String>();
+            try {
+                paths = listAssets(ctx, path);
+            } catch (IOException e) {
+                Log.e(LOG_TAG,
+                        "I/O Exception whilst listing files", e);
+                BugSenseHandler.sendException(e);
+                return new AsyncTaskResult<ArrayList<String>>(e);
+
+            }
+            return new AsyncTaskResult<ArrayList<String>>(paths);
+        }
+
+    }
+
+    /**
+     * {@link AsyncTask}syncTask for copying assets
+     */
+    static class CopyAssetsTask extends
+            AsyncTask<ArrayList<String>, Integer, AsyncTaskResult<Void>> {
+        WakeLock copyLock;
+        final Context ctx;
+        final String  root;
+        String message;
+
+        CopyAssetsTask(Context ctx, String root) {
+            this.ctx = ctx;
+            this.root = root;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            PowerManager pm = (PowerManager) ctx
+                    .getSystemService(Context.POWER_SERVICE);
+            copyLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "copying");
+            copyLock.acquire();
+        }
+
+        @Override
+        protected AsyncTaskResult<Void> doInBackground(ArrayList<String>... params) {
+            int max = params[0].size();
+            for (int i = 0; i < max; i++) {
+                try {
+                    copyAsset(ctx, params[0].get(i), root);
+                } catch (IOException e) {
+                    return new AsyncTaskResult<Void>(e);
+                }
+                publishProgress(i + 1, max);
+            }
+            return new AsyncTaskResult<Void>((Void) null);
+        }
+
+        @Override
+        protected void onPostExecute(AsyncTaskResult<Void> result) {
+            copyLock.release();
+        }
+    }
+
+    /**
+     * Produces a list of assets in a directory
+     *
+     * @param ctx
+     *          a activityContext
+     * @param path
+     *          path to search in
+     * @return a list of files
+     * @throws IOException
+     *           if the path doesn't exist, or asset can't be accessed
+     */
+    public static ArrayList<String> listAssets(Context ctx, String path)
+            throws IOException {
+        ArrayList<String> assets = new ArrayList<String>();
+        listAssetsInternal(ctx, path, assets);
+        return assets;
+    }
+
+    private static void listAssetsInternal(Context ctx, String path,
+                                           ArrayList<String> paths) throws IOException {
+        AssetManager assetManager = ctx.getAssets();
+        String assets[];
+
+        assets = assetManager.list(path);
+
+        if (assets.length == 0) {
+            paths.add(path);
+
+        } else {
+            for (String asset : assets) {
+                listAssetsInternal(ctx, path + "/" + asset, paths);
+            }
+        }
+
+    }
+
+    /**
+     * Copies an assets
+     *
+     * @param ctx
+     *          a activityContext
+     * @param assetFilename
+     *          the filename of the asset
+     * @param destination
+     *          the destination directory
+     * @throws IOException
+     *           if the asset cannot be copied
+     */
+    public static void copyAsset(Context ctx, String assetFilename,
+                                 String destination) throws IOException {
+        InputStream in = null;
+
+        try {
+            AssetManager assetManager = ctx.getAssets();
+
+            in = assetManager.open(assetFilename);
+
+            String newFileName = destination + "/" + assetFilename;
+            File newFile = new File(newFileName);
+            File dir = newFile.getParentFile();
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            Log.i(LOG_TAG, "Copying file [" + assetFilename
+                    + "] to [" + newFileName + "]");
+
+            FileUtils.copyInputStreamToFile(in, newFile);
+
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+
+    }
+
+    public static class FindFilesTask extends
+            AsyncTask<Void, Void, AsyncTaskResult<String>> {
+
+        @Override
+        protected AsyncTaskResult<String> doInBackground(Void... arg0) {
+            return new AsyncTaskResult<String>(findGameFiles());
+        }
+
+        private String findGameFiles() {
+            String result;
+            List<String> searchPaths = new ArrayList<String>(
+                    Arrays.asList(SearchRoot));
+            String sdcard = trimPath(Environment.getExternalStorageDirectory()
+                    .getAbsolutePath());
+
+            if (!searchPaths.contains(sdcard)) {
+                searchPaths.add(sdcard);
+            }
+
+            // Search common locations first
+            for (String root : searchPaths) {
+                if (isCancelled()) {
+                    Log.d(LOG_TAG, "Task cancelled");
+                    return null;
+                }
+                for (String dir : SearchDirs) {
+                    String toSearch = root + File.separator + dir;
+                    if ((result = findGameFilesInternal(toSearch)) != null) {
+
+                        return result;
+                    }
+                }
+            }
+
+            for (String root : searchPaths) {
+                if (isCancelled()) {
+                    Log.d(LOG_TAG, "Task cancelled");
+                    return null;
+                }
+
+                if ((result = findGameFilesInternal(root)) != null) {
+                    Log.d(LOG_TAG, "Found game files in: " + result);
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        private String findGameFilesInternal(String root) {
+            if (!isCancelled()) {
+                String result;
+                File dir = new File(root);
+
+                if (hasDataFiles(root)) {
+                    return root;
+                }
+
+                if (dir.exists() && dir.isDirectory()) {
+                    File[] sub = dir.listFiles();
+                    if (sub != null) {
+                        for (File f : sub) {
+                            if (f.isDirectory()) {
+                                if ((result = findGameFilesInternal(trimPath(f
+                                        .getAbsolutePath()))) != null) {
+                                    Log.d(LOG_TAG, "Found game files in: "
+                                            + result);
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Log.d(LOG_TAG, "Task cancelled");
+            }
+            return null;
+        }
+
+    }
+
+    /** AsyncTask for downloading a file */
+    public static class DownloadFileTask extends
+            AsyncTask<String, Integer, AsyncTaskResult<File>> {
+        final String  downloadTo;
+        final Context ctx;
+        WakeLock downloadLock;
+
+        public DownloadFileTask(String downloadTo, Context ctx) {
+            this.downloadTo = downloadTo;
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            PowerManager pm = (PowerManager) ctx
+                    .getSystemService(Context.POWER_SERVICE);
+            downloadLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+                    "downloading");
+            downloadLock.acquire();
+        }
+
+        @Override
+        protected void onPostExecute(AsyncTaskResult<File> result) {
+            super.onPostExecute(result);
+            downloadLock.release();
+        }
+
+        @Override
+        protected AsyncTaskResult<File> doInBackground(String... url) {
+            URL downloadUrl;
+            URLConnection ucon;
+
+            try {
+                downloadUrl = new URL(url[0]);
+
+                File file = new File(downloadTo + "/" + downloadUrl.getFile());
+                file.getParentFile().mkdirs();
+
+                ucon = downloadUrl.openConnection();
+                ucon.connect();
+
+                if (ucon.getContentType() == null) {
+                    throw new IOException("Could not connect to server");
+                }
+
+                final int fileSize = ucon.getContentLength();
+
+                InputStream input = new BufferedInputStream(downloadUrl.openStream());
+                FileOutputStream fos = new FileOutputStream(file);
+                CountingOutputStream cos = new CountingOutputStream(fos) {
+
+                    int total = 0;
+
+                    @Override
+                    protected void afterWrite(int n) throws IOException {
+                        super.afterWrite(n);
+                        publishProgress(total += n, fileSize);
+                    }
+
+                };
+
+                IOUtils.copy(input, cos);
+
+                input.close();
+                fos.close();
+                cos.close();
+
+                Log.d(LOG_TAG,
+                        "Downloaded file to: " + file.getAbsolutePath());
+
+                return new AsyncTaskResult<File>(file);
+
+            } catch (MalformedURLException e) {
+                return new AsyncTaskResult<File>(e);
+            } catch (IOException e) {
+                return new AsyncTaskResult<File>(e);
+            }
+
+        }
+
+    }
+
+    /** AsyncTask for extracting a .zip file to a directory */
+    public static class UnzipTask extends
+            AsyncTask<File, Integer, AsyncTaskResult<String>> {
+        final String  unzipTo;
+        final Context ctx;
+        WakeLock unzipLock;
+
+        public UnzipTask(String unzipTo, Context ctx) {
+            this.unzipTo = unzipTo;
+            this.ctx = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            PowerManager pm = (PowerManager) ctx
+                    .getSystemService(Context.POWER_SERVICE);
+            unzipLock = pm
+                    .newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "unzipping");
+            unzipLock.acquire();
+        }
+
+        @Override
+        protected void onPostExecute(AsyncTaskResult<String> result) {
+            super.onPostExecute(result);
+            unzipLock.release();
+        }
+
+        @Override
+        protected AsyncTaskResult<String> doInBackground(File... files) {
+            try {
+
+                File to = new File(unzipTo);
+                to.mkdirs();
+
+                ZipFile zf = new ZipFile(files[0]);
+                int entryCount = zf.size();
+
+                Enumeration<? extends ZipEntry> entries = zf.entries();
+                int count = 0;
+
+                while (entries.hasMoreElements()) {
+                    ZipEntry ze = entries.nextElement();
+                    Log.v(LOG_TAG, "Unzipping " + ze.getName());
+
+                    File f = new File(unzipTo + ze.getName());
+                    if (!f.getParentFile().exists()) {
+                        f.getParentFile().mkdirs();
+                    }
+
+                    if (ze.isDirectory()) {
+
+                        if (!f.isDirectory()) {
+                            f.mkdirs();
+                        }
+                    } else {
+
+                        InputStream zin = zf.getInputStream(ze);
+
+                        FileOutputStream fout = new FileOutputStream(unzipTo + ze.getName());
+
+                        IOUtils.copy(zin, fout);
+
+                        zin.close();
+                        fout.close();
+
+                    }
+
+                    count++;
+                    publishProgress(count, entryCount);
+
+                }
+
+            } catch (IOException e) {
+                BugSenseHandler.sendException(e);
+                return new AsyncTaskResult<String>(e);
+            }
+
+            return new AsyncTaskResult<String>(unzipTo);
+
+        }
+    }
+
+    public static class FileDetails implements Comparable<FileDetails> {
+
+        private final Date   lastModified;
+        private final String fileName;
+
+        public FileDetails(String filename, Date lastModified) {
+            this.fileName = filename;
+            this.lastModified = lastModified;
+        }
+
+        public Date getLastModified() {
+            return lastModified;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        @Override
+        public int compareTo(FileDetails another) {
+            if (lastModified.equals(another.getLastModified())) {
+                return 0;
+            }
+
+            return lastModified.after(another.getLastModified()) ? 1 : -1;
+
+        }
+    }
+
+    public class StorageUnavailableException extends Exception {
+
+    }
 
 }

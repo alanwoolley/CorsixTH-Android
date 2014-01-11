@@ -5,6 +5,15 @@
  */
 package uk.co.armedpineapple.cth.dialogs;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ListView;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -14,24 +23,15 @@ import java.util.Locale;
 
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Files;
+import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
-import uk.co.armedpineapple.cth.Files.FileDetails;
-import android.app.Dialog;
-import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public abstract class FilesDialog extends Dialog implements OnItemClickListener {
 
 	private String							savePath;
-	private Button							cancelButton;
 
-	protected List<FileDetails>	saves;
+    protected List<FileDetails>	saves;
 	protected FilesAdapter			arrayAdapter;
 	protected ListView					savesList;
 	protected CTHActivity				ctx;
@@ -65,16 +65,16 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 		setContentView(layout);
 		savesList = (ListView) findViewById(R.id.filesList);
 		savesList.setOnItemClickListener(this);
-		cancelButton = (Button) findViewById(R.id.dismissDialogButton);
+        Button cancelButton = (Button) findViewById(R.id.dismissDialogButton);
 
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				dismiss();
-			}
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
 
-		});
+        });
 		
 		getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		

@@ -5,11 +5,6 @@
  */
 package uk.co.armedpineapple.cth.wizard;
 
-import java.util.Locale;
-
-import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
-import uk.co.armedpineapple.cth.R;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -24,40 +19,46 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Locale;
+
+import uk.co.armedpineapple.cth.Configuration;
+import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
+import uk.co.armedpineapple.cth.R;
+
 public class LanguageWizard extends WizardView {
-	Context											ctx;
-	ListView										languageListView;
+    private final Context  ctx;
+    private       ListView languageListView;
 
-	private static final String	LOG_TAG	= "LanguageWizard";
+    private static final String LOG_TAG = "LanguageWizard";
 
-	public LanguageWizard(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		ctx = context;
+    public LanguageWizard(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        ctx = context;
 
-	}
+    }
 
-	@Override
-	protected void onFinishInflate() {
-		super.onFinishInflate();
-		if (!isInEditMode()) {
-			languageListView = (ListView) findViewById(R.id.language_list);
-			String[] langArray = getResources().getStringArray(R.array.languages);
-			String[] langValuesArray = getResources().getStringArray(
-					R.array.languages_values);
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (!isInEditMode()) {
+            languageListView = (ListView) findViewById(R.id.language_list);
+            String[] langArray = getResources().getStringArray(R.array.languages);
+            String[] langValuesArray = getResources().getStringArray(
+                    R.array.languages_values);
 
-			languageListView.setAdapter(new LanguageListAdapter(ctx, langArray,
-					langValuesArray));
+            languageListView.setAdapter(new LanguageListAdapter(ctx, langArray,
+                    langValuesArray));
 
-			languageListView.setOnItemClickListener(new OnItemClickListener() {
+            languageListView.setOnItemClickListener(new OnItemClickListener() {
 
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-						long arg3) {
-					((LanguageListAdapter) arg0.getAdapter()).setSelectedItem(pos);
+                @Override
+                public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
+                                        long arg3) {
+                    ((LanguageListAdapter) arg0.getAdapter()).setSelectedItem(pos);
 
-				}
-			});
-			// Look for the language in the values array
+                }
+            });
+            // Look for the language in the values array
 			Log.d(LOG_TAG, "System Language: " + Locale.getDefault().getLanguage());
 
 			for (int i = 0; i < langValuesArray.length; i++) {
@@ -87,73 +88,73 @@ public class LanguageWizard extends WizardView {
 	}
 
 	class LanguageListAdapter extends BaseAdapter {
-		String[]				text;
-		String[]				values;
+        final String[] text;
+        final String[] values;
 
-		LayoutInflater	inflater;
-		int							selected	= 0;
+        final LayoutInflater inflater;
+        int selected = 0;
 
-		public LanguageListAdapter(Context ctx, String[] langArray,
-				String[] langValuesArray) {
-			super();
-			text = langArray;
-			values = langValuesArray;
-			inflater = LayoutInflater.from(ctx);
+        public LanguageListAdapter(Context ctx, String[] langArray,
+                                   String[] langValuesArray) {
+            super();
+            text = langArray;
+            values = langValuesArray;
+            inflater = LayoutInflater.from(ctx);
 
-		}
+        }
 
-		@Override
-		public int getCount() {
-			return text.length;
-		}
+        @Override
+        public int getCount() {
+            return text.length;
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return values[position];
-		}
+        @Override
+        public Object getItem(int position) {
+            return values[position];
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-		public Object getSelectedItem() {
-			return getItem(selected);
-		}
+        public Object getSelectedItem() {
+            return getItem(selected);
+        }
 
-		public void setSelectedItem(int pos) {
-			selected = pos;
-			notifyDataSetChanged();
-		}
+        public void setSelectedItem(int pos) {
+            selected = pos;
+            notifyDataSetChanged();
+        }
 
-		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
-			View newView;
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View newView;
 
-			if (convertView == null) {
-				newView = inflater.inflate(R.layout.language_list_item, null);
-			} else {
-				newView = convertView;
-			}
+            if (convertView == null) {
+                newView = inflater.inflate(R.layout.language_list_item, null);
+            } else {
+                newView = convertView;
+            }
 
-			TypedArray langFlagsArray = getResources().obtainTypedArray(
-					R.array.languages_flags);
-			((ImageView) newView.findViewById(R.id.language_flag))
-					.setImageDrawable(langFlagsArray.getDrawable(position));
-			langFlagsArray.recycle();
-			((TextView) newView.findViewById(R.id.language_text))
-					.setText(text[position]);
+            TypedArray langFlagsArray = getResources().obtainTypedArray(
+                    R.array.languages_flags);
+            ((ImageView) newView.findViewById(R.id.language_flag))
+                    .setImageDrawable(langFlagsArray.getDrawable(position));
+            langFlagsArray.recycle();
+            ((TextView) newView.findViewById(R.id.language_text))
+                    .setText(text[position]);
 
-			if (selected == position) {
-				((ImageView) newView.findViewById(R.id.language_tick))
-						.setVisibility(VISIBLE);
-			} else {
-				((ImageView) newView.findViewById(R.id.language_tick))
-						.setVisibility(INVISIBLE);
-			}
+            if (selected == position) {
+                newView.findViewById(R.id.language_tick)
+                        .setVisibility(VISIBLE);
+            } else {
+                newView.findViewById(R.id.language_tick)
+                        .setVisibility(INVISIBLE);
+            }
 
-			return newView;
-		}
-	}
+            return newView;
+        }
+    }
 
 }

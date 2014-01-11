@@ -5,25 +5,11 @@
  */
 package uk.co.armedpineapple.cth.wizard;
 
-import java.io.File;
-
-import com.bugsense.trace.BugSenseHandler;
-
-import uk.co.armedpineapple.cth.AsyncTaskResult;
-import uk.co.armedpineapple.cth.Configuration;
-import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
-import uk.co.armedpineapple.cth.Files;
-import uk.co.armedpineapple.cth.Network;
-import uk.co.armedpineapple.cth.R;
-import uk.co.armedpineapple.cth.Files.DownloadFileTask;
-import uk.co.armedpineapple.cth.Files.FindFilesTask;
-import uk.co.armedpineapple.cth.Files.UnzipTask;
-import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,67 +23,82 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
+
+import java.io.File;
+
+import uk.co.armedpineapple.cth.AsyncTaskResult;
+import uk.co.armedpineapple.cth.Configuration;
+import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
+import uk.co.armedpineapple.cth.Files;
+import uk.co.armedpineapple.cth.Files.DownloadFileTask;
+import uk.co.armedpineapple.cth.Files.FindFilesTask;
+import uk.co.armedpineapple.cth.Files.UnzipTask;
+import uk.co.armedpineapple.cth.Network;
+import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.dialogs.DialogFactory;
+
 public class OriginalFilesWizard extends WizardView {
 
-	private static final String	LOG_TAG	= "OriginalFilesWizard";
+    private static final String LOG_TAG = "OriginalFilesWizard";
 
-	RadioGroup									originalFilesRadioGroup;
-	RadioButton									automaticRadio;
-	RadioButton									manualRadio;
-	RadioButton									downloadDemoRadio;
+    private RadioGroup  originalFilesRadioGroup;
+    private RadioButton automaticRadio;
+    private RadioButton manualRadio;
+    private RadioButton downloadDemoRadio;
 
-	String											customLocation;
+    private String customLocation;
 
-	Context											ctx;
+    private final Context ctx;
 
-	public OriginalFilesWizard(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		ctx = context;
-	}
+    public OriginalFilesWizard(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        ctx = context;
+    }
 
-	public OriginalFilesWizard(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		ctx = context;
-	}
+    public OriginalFilesWizard(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        ctx = context;
+    }
 
-	public OriginalFilesWizard(Context context) {
-		super(context);
-		ctx = context;
-	}
+    public OriginalFilesWizard(Context context) {
+        super(context);
+        ctx = context;
+    }
 
-	@Override
-	protected void onFinishInflate() {
-		findViewById(R.id.need_help_text).setOnClickListener(new OnClickListener() {
+    @Override
+    protected void onFinishInflate() {
+        findViewById(R.id.need_help_text).setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ctx
-						.getResources().getString(R.string.full_version_url)));
-				ctx.startActivity(browserIntent);
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ctx
+                        .getResources().getString(R.string.full_version_url)));
+                ctx.startActivity(browserIntent);
 
-			}
-		});
+            }
+        });
 
-	}
+    }
 
-	@Override
-	void saveConfiguration(Configuration config) throws ConfigurationException {
-		if (!Files.hasDataFiles(customLocation)) {
+    @Override
+    void saveConfiguration(Configuration config) throws ConfigurationException {
+        if (!Files.hasDataFiles(customLocation)) {
 
-			// Check to see if there's a HOSP directory instead
+            // Check to see if there's a HOSP directory instead
 
-			File hosp = new File(config.getOriginalFilesPath() + "/HOSP");
-			if (hosp.exists()
-					&& Files.hasDataFiles(config.getOriginalFilesPath() + "/HOSP")) {
-				manualRadio.setChecked(true);
-				customLocation = config.getOriginalFilesPath() + "/HOSP";
-				config.setOriginalFilesPath(customLocation);
-				return;
-			}
+            File hosp = new File(config.getOriginalFilesPath() + "/HOSP");
+            if (hosp.exists()
+                    && Files.hasDataFiles(config.getOriginalFilesPath() + "/HOSP")) {
+                manualRadio.setChecked(true);
+                customLocation = config.getOriginalFilesPath() + "/HOSP";
+                config.setOriginalFilesPath(customLocation);
+                return;
+            }
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 
-			builder.setMessage(ctx.getString(R.string.no_data_dialog))
+            builder.setMessage(ctx.getString(R.string.no_data_dialog))
 					.setCancelable(true)
 					.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
 
