@@ -1,7 +1,5 @@
 package uk.co.armedpineapple.cth.dialogs;
 
-import uk.co.armedpineapple.cth.R;
-import uk.co.armedpineapple.cth.SDLActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,29 +14,32 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.SDLActivity;
+
 public class HelpDialog extends Dialog implements OnItemClickListener {
 
-	HelpListAdapter	mHelpListAdapter;
-	ListView				mHelpListView;
-	Context ctx;
+    private HelpListAdapter mHelpListAdapter;
+    private ListView        mHelpListView;
+    private Context         ctx;
 
-	public HelpDialog(SDLActivity context) {
-		super(context);
-		this.ctx = context;
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.help_dialog);
+    public HelpDialog(SDLActivity context) {
+        super(context);
+        this.ctx = context;
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.help_dialog);
 
-		mHelpListView = (ListView) findViewById(R.id.help_list);
-		mHelpListAdapter = new HelpListAdapter(context, context.getResources()
-				.getStringArray(R.array.help_list), context.getResources()
-				.getStringArray(R.array.help_values));
-		mHelpListView.setAdapter(mHelpListAdapter);
-		mHelpListView.setOnItemClickListener(this);
-	}
-	
-	@Override
-	public void onItemClick(AdapterView<?> adapterview, View arg1, int pos, long arg3) {
-		String intentUrl = (String) mHelpListAdapter.getItem(pos);
+        mHelpListView = (ListView) findViewById(R.id.help_list);
+        mHelpListAdapter = new HelpListAdapter(context, context.getResources()
+                .getStringArray(R.array.help_list), context.getResources()
+                .getStringArray(R.array.help_values));
+        mHelpListView.setAdapter(mHelpListAdapter);
+        mHelpListView.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterview, View arg1, int pos, long arg3) {
+        String intentUrl = (String) mHelpListAdapter.getItem(pos);
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(intentUrl));
 		ctx.startActivity(browserIntent);
 		

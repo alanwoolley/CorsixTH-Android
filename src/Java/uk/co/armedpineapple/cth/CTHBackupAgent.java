@@ -1,8 +1,5 @@
 package uk.co.armedpineapple.cth;
 
-import java.io.IOException;
-import uk.co.armedpineapple.cth.R;
-
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.BackupDataInput;
 import android.app.backup.SharedPreferencesBackupHelper;
@@ -10,6 +7,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.ParcelFileDescriptor;
+
+import java.io.IOException;
 
 public class CTHBackupAgent extends BackupAgentHelper {
 

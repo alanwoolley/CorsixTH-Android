@@ -5,8 +5,6 @@
  */
 package uk.co.armedpineapple.cth;
 
-import uk.co.armedpineapple.cth.R;
-
 public class AsyncTaskResult<T> {
 	private T					result;
 	private Exception	error;

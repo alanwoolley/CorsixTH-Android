@@ -1,9 +1,5 @@
 package uk.co.armedpineapple.cth.dialogs;
 
-import java.util.List;
-
-import uk.co.armedpineapple.cth.R;
-import uk.co.armedpineapple.cth.Files.FileDetails;
 import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -13,36 +9,41 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
+import uk.co.armedpineapple.cth.Files.FileDetails;
+import uk.co.armedpineapple.cth.R;
+
 public class FilesAdapter extends BaseAdapter {
 
-	Context						context;
-	List<FileDetails>	items;
-	boolean						newButton;
+    private final Context           context;
+    private final List<FileDetails> items;
+    private final boolean           newButton;
 
-	public FilesAdapter(Context context, List<FileDetails> items,
-			boolean newbutton) {
-		this.context = context;
-		this.items = items;
-		this.newButton = newbutton;
-	}
+    public FilesAdapter(Context context, List<FileDetails> items,
+                        boolean newbutton) {
+        this.context = context;
+        this.items = items;
+        this.newButton = newbutton;
+    }
 
-	@Override
-	public int getCount() {
-		return newButton ? items.size() + 1 : items.size();
-	}
+    @Override
+    public int getCount() {
+        return newButton ? items.size() + 1 : items.size();
+    }
 
-	@Override
-	public Object getItem(int position) {
-		return items.get(position);
-	}
+    @Override
+    public Object getItem(int position) {
+        return items.get(position);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
 		View view;
 

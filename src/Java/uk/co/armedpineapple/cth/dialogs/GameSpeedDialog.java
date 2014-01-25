@@ -5,8 +5,6 @@
  */
 package uk.co.armedpineapple.cth.dialogs;
 
-import uk.co.armedpineapple.cth.R;
-import uk.co.armedpineapple.cth.SDLActivity;
 import android.app.Dialog;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -15,6 +13,9 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.SDLActivity;
+
 public class GameSpeedDialog extends Dialog {
 
 	@SuppressWarnings("nls")
@@ -22,8 +23,7 @@ public class GameSpeedDialog extends Dialog {
 			"Max speed", "And then some more" };
 	private SeekBar			seekbar;
 	private TextView		gameSpeedText;
-	private Button			gameSpeedButton;
-	private SDLActivity	ctx;
+    private SDLActivity	ctx;
 
 	@Override
 	public void onBackPressed() {
@@ -41,7 +41,7 @@ public class GameSpeedDialog extends Dialog {
 		getWindow().setLayout(800, LayoutParams.WRAP_CONTENT);
 		seekbar = (SeekBar) findViewById(R.id.gamespeed_seek);
 		gameSpeedText = (TextView) findViewById(R.id.gamespeed_text);
-		gameSpeedButton = (Button) findViewById(R.id.gamespeed_ok);
+        Button gameSpeedButton = (Button) findViewById(R.id.gamespeed_ok);
 
 		seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -64,14 +64,14 @@ public class GameSpeedDialog extends Dialog {
 
 		gameSpeedButton.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// Update the game speed
-				ctx.app.configuration.setGameSpeed(seekbar.getProgress());
-				hide();
-			}
+            @Override
+            public void onClick(View v) {
+                // Update the game speed
+                ctx.app.configuration.setGameSpeed(seekbar.getProgress());
+                hide();
+            }
 
-		});
+        });
 
 	}
 

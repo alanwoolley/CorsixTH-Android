@@ -12,7 +12,6 @@ import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
 import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -38,66 +37,65 @@ import android.view.View;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-	public static final String				LOG_TAG						= "SDLSurface";
+    public static final String LOG_TAG = "SDLSurface";
 
-	private static final int					GESTURE_LONGPRESS	= 1;
-	private static final int					GESTURE_MOVE			= 2;
+    private static final int GESTURE_LONGPRESS = 1;
+    private static final int GESTURE_MOVE      = 2;
 
-	private boolean										scrolling					= false;
-	private boolean										inMiddleOfScroll	= false;
-	public int												width, height;
+    private boolean scrolling        = false;
+    private boolean inMiddleOfScroll = false;
+    public final int width;
+    public final int height;
 
-	// Sensors
-	private static SensorManager			mSensorManager;
+    // Sensors
+    private static SensorManager mSensorManager;
 
-	private GestureDetector						longPressGestureDetector;
-	private TwoFingerGestureDetector	moveGestureDetector;
+    private final GestureDetector          longPressGestureDetector;
+    private final TwoFingerGestureDetector moveGestureDetector;
 
-	private SDLActivity								context;
-	// Samsung S Pen library usable with Galaxy Note family devices
-	private SPenEventLibrary					sPenEventLibrary;
+    private final SDLActivity context;
 
-	// Startup
-	@SuppressLint("NewApi")
-	public SDLSurface(final SDLActivity context, int width, int height) {
-		super(context);
-		sPenEventLibrary = new SPenEventLibrary();
-		this.context = context;
-		getHolder().addCallback(this);
-		this.width = width;
-		this.height = height;
-		// setFocusable(true);
-		// setFocusableInTouchMode(true);
-		// requestFocus();
-		setOnKeyListener(this);
-		setOnTouchListener(this);
-		moveGestureDetector = new TwoFingerGestureDetector(context,
-				new TwoFingerMoveGesture(context));
-		longPressGestureDetector = new GestureDetector(context,
-				new LongPressGesture(context));
-		longPressGestureDetector.setIsLongpressEnabled(true);
+    // Startup
+    @SuppressLint("NewApi")
+    public SDLSurface(final SDLActivity context, int width, int height) {
+        super(context);
+        SPenEventLibrary sPenEventLibrary = new SPenEventLibrary();
+        this.context = context;
+        getHolder().addCallback(this);
+        this.width = width;
+        this.height = height;
+        // setFocusable(true);
+        // setFocusableInTouchMode(true);
+        // requestFocus();
+        setOnKeyListener(this);
+        setOnTouchListener(this);
+        moveGestureDetector = new TwoFingerGestureDetector(context,
+                new TwoFingerMoveGesture(context));
+        longPressGestureDetector = new GestureDetector(context,
+                new LongPressGesture(context));
+        longPressGestureDetector.setIsLongpressEnabled(true);
 
-		if (Build.VERSION.SDK_INT >= 14) {
-			setOnGenericMotionListener(new OnGenericMotionListener() {
+        if (Build.VERSION.SDK_INT >= 14) {
+            setOnGenericMotionListener(new OnGenericMotionListener() {
 
-				@Override
-				public boolean onGenericMotion(View v, MotionEvent event) {
-					Log.d(LOG_TAG, event.toString());
-					if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
-						int actionPointerIndex = event.getActionIndex();
-						float[] coords = translateCoords(event.getX(actionPointerIndex),
-								event.getY(actionPointerIndex));
-						SDLActivity.onNativeHover(coords[0], coords[1]);
+                @Override
+                public boolean onGenericMotion(View v, MotionEvent event) {
+                    Log.d(LOG_TAG, event.toString());
+                    if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
+                        int actionPointerIndex = event.getActionIndex();
+                        float[] coords = translateCoords(event.getX(actionPointerIndex),
+                                event.getY(actionPointerIndex));
+                        SDLActivity.onNativeHover(coords[0], coords[1]);
 
-						return true;
-					}
+                        return true;
+                    }
 
-					return false;
+                    return false;
 
-				}
+                }
 
-			});
-		}
+            });
+        }
 
 	}
 

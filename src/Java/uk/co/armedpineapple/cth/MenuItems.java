@@ -16,8 +16,9 @@ public enum MenuItems {
     ABOUT(R.string.menuitem_about, null, false),
     EXIT(R.string.menuitem_exit, null, false);
 
-    public Integer imageResource, textResource;
-    private boolean debugOnly;
+    public final  Integer imageResource;
+    public final  Integer textResource;
+    private final boolean debugOnly;
 
     MenuItems(Integer textResource, Integer imageResource, boolean debugOnly) {
         this.imageResource = imageResource;

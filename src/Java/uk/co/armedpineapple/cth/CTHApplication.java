@@ -5,6 +5,7 @@
  */
 package uk.co.armedpineapple.cth;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -25,8 +26,9 @@ public class CTHApplication extends android.app.Application {
     public Configuration configuration;
     public boolean hasVibration = false;
     private SharedPreferences preferences;
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
+    @SuppressLint("NewApi")
     @Override
     public void onCreate() {
         super.onCreate();

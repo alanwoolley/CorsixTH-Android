@@ -10,7 +10,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import uk.co.armedpineapple.cth.R;
 
 public class Network {
 

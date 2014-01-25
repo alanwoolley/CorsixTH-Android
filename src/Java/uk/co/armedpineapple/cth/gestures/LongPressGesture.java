@@ -5,39 +5,40 @@
  */
 package uk.co.armedpineapple.cth.gestures;
 
-import uk.co.armedpineapple.cth.CTHApplication;
-import uk.co.armedpineapple.cth.SDLActivity;
 import android.content.Context;
 import android.util.Log;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 
+import uk.co.armedpineapple.cth.CTHApplication;
+import uk.co.armedpineapple.cth.SDLActivity;
+
 public class LongPressGesture implements OnGestureListener {
 
-	private static final String	LOG_TAG	= "LongPressGesture";
-	
-	private CTHApplication	appCtx;
+    private static final String LOG_TAG = "LongPressGesture";
 
-	public LongPressGesture(Context ctx) {
-		appCtx = (CTHApplication) ctx.getApplicationContext();
-	}
+    private final CTHApplication appCtx;
 
-	@Override
-	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public LongPressGesture(Context ctx) {
+        appCtx = (CTHApplication) ctx.getApplicationContext();
+    }
 
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean onDown(MotionEvent e) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void onLongPress(MotionEvent event) {
-		Log.d(LOG_TAG, "Detected long press");
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                           float velocityY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent event) {
+        Log.d(LOG_TAG, "Detected long press");
 
 		final int touchDevId = event.getDeviceId();
 		final int pointerCount = event.getPointerCount();

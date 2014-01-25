@@ -18,7 +18,7 @@ import static uk.co.armedpineapple.cth.CommandHandler.Command.SHOW_SAVE_DIALOG;
 
 public class NavDrawerListListener implements ListView.OnItemClickListener {
 
-    SDLActivity     context;
+    final SDLActivity context;
     GameSpeedDialog gameSpeedDialog;
     HelpDialog      helpDialog;
 
