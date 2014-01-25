@@ -1,4 +1,4 @@
 [submodule "jni/src"]
 	path = jni/src
-	url = git@github.com:alanwoolley/CorsixTH.git
+	url = https://github.com/alanwoolley/CorsixTH.git
 	branch = Android
