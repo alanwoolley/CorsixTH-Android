@@ -3,8 +3,8 @@ jdk: oraclejdk7
 
 before_install:
   # required libs for android build tools
-  - if [ `uname -m` = x86_64 ]; then sudo apt-get update; fi
-  - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch; fi
+  - sudo apt-get update
+  - sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
   # for gradle output style
   - export TERM=dumb
   # newer version of gradle
@@ -13,7 +13,7 @@ before_install:
   - export GRADLE_HOME=$PWD/gradle-1.10
   - export PATH=$GRADLE_HOME/bin:$PATH
   - chmod +x gradlew
-  # newest android SDK 22.3
+  # newest Android SDK 22.3
   - wget http://dl.google.com/android/android-sdk_r22.3-linux.tgz
   - tar -zxf android-sdk_r22.3-linux.tgz
   - export ANDROID_HOME=`pwd`/android-sdk-linux
@@ -25,4 +25,4 @@ before_install:
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK_HOME}
   # manually set sdk.dir variable, according to local paths
   - echo "sdk.dir=$ANDROID_HOME" > local.properties
-  - echo yes | android update sdk -a -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.0,extra-google-google_play_services,extra-google-m2repository --force --no-ui  
+  - echo yes | android update sdk -a -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.1,extra-google-google_play_services,extra-google-m2repository --force --no-ui  
