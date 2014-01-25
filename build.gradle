@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 
@@ -32,12 +32,13 @@ dependencies {
 android {
 
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion "19.0.1"
 
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
     }
+
     Properties signingProperties = new Properties()
   
     if (file("signing.properties").exists()) {
@@ -91,6 +92,7 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
         }
 
         // Move the tests to tests/java, tests/res, etc...
@@ -131,20 +133,15 @@ task createGameZip(type: Zip) {
     }
 }
 
-// NDK Stuff
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) {
-    pkgTask -> pkgTask.jniFolders = new HashSet<File>()
-    pkgTask.jniFolders.add(new File(projectDir, 'libs'))
-}
 
 task ndkBuild(type: Exec) {
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) { 
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
       commandLine 'ndk-build.cmd', '-j'
     } else {
       commandLine 'ndk-build', '-j'
     }
 }
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn ndkBuild, createGameZip
 }
 
