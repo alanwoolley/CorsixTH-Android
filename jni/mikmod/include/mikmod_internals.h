@@ -44,14 +44,17 @@ extern "C" {
 #include <mikmod_build.h>
 
 #ifdef WIN32
+#undef unix
+#ifdef _MSC_VER
 #pragma warning(disable:4761)
 #endif
+#endif /* WIN32 */
 
 /*========== More type definitions */
 
 /* SLONGLONG: 64bit, signed */
 #if defined(__arch64__) || defined(__alpha) || defined(__x86_64) || defined(_LP64)
-typedef long		SLONGLONG;
+typedef long long	SLONGLONG;
 #define NATIVE_64BIT_INT
 #elif defined(__WATCOMC__)
 typedef __int64		SLONGLONG;
@@ -69,6 +72,9 @@ extern MikMod_handler_t _mm_errorhandler;
 
 /*========== Memory allocation */
 
+#undef _mm_malloc
+#undef _mm_calloc
+#undef _mm_free
 extern void* _mm_malloc(size_t);
 extern void* _mm_calloc(size_t,size_t);
 #define _mm_free(p) do { if (p) free(p); p = NULL; } while(0)

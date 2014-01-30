@@ -83,7 +83,7 @@ void _mm_registeralldrivers(void)
 #endif
 
 	/* Register disk writers */
-	//_mm_registerdriver(&drv_raw);
+	_mm_registerdriver(&drv_raw);
 	_mm_registerdriver(&drv_wav);
 
 	/* Register other drivers */

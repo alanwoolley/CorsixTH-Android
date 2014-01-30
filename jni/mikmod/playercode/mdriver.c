@@ -34,6 +34,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef WIN32
+#undef unix
+#endif
+
 #if defined unix || (defined __APPLE__ && defined __MACH__)
 #include <pwd.h>
 #include <sys/stat.h>

@@ -13,7 +13,7 @@ BETA=
 LIBMIKMOD_VERSION=$LIBMIKMOD_MAJOR_VERSION.$LIBMIKMOD_MINOR_VERSION.$LIBMIKMOD_MICRO_VERSION$BETA
 
 AM_INIT_AUTOMAKE(libmikmod,$LIBMIKMOD_VERSION)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AM_MAINTAINER_MODE
 
 # ==============================================================
@@ -385,7 +385,7 @@ AC_HEADER_EGREP(srandom,math.h,AC_DEFINE(SRANDOM_IN_MATH_H))
 # Choose settings.
 # ================
 
-AC_DEFINE(DRV_PIPE)
+#AC_DEFINE(DRV_PIPE)
 
 # If we can guess the drivers needed from the system, no need to ask the user
 # to specify it manually
@@ -666,6 +666,8 @@ then
 		LIB_LDADD="-pthread"
 	fi
 fi
+
+CFLAGS="$CFLAGS -D_DLL -DDLL_EXPORTS"
 		
 # =================
 # Create Makefiles.
@@ -708,7 +710,8 @@ win32/Makefile,chmod +x libmikmod-config)
 # Print configuration.
 # ====================
 
-libmikmod_driverlist=`echo $libmikmod_driverlist raw wav pipe stdout nosound|sed -e 's,  , ,g'`
+#libmikmod_driverlist=`echo $libmikmod_driverlist raw wav pipe stdout nosound|sed -e 's,  , ,g'`
+libmikmod_driverlist=`echo $libmikmod_driverlist raw wav stdout nosound|sed -e 's,  , ,g'`
 if test $libmikmod_dynload != no
 then
 	libmikmod_dynload="yes, ${libmikmod_dynload} style"
