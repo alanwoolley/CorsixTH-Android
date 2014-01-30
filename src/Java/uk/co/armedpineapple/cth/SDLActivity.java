@@ -6,37 +6,7 @@
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.cth;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-
-import com.bugsense.trace.BugSenseHandler;
 import com.immersion.uhl.Launcher;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -51,10 +21,29 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
-import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
+import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
+
+import com.bugsense.trace.BugSenseHandler;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.*;
+import android.content.*;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.view.*;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.os.*;
+import android.os.PowerManager.WakeLock;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.util.Log;
+import android.media.*;
 
 public class SDLActivity extends CTHActivity {
 
@@ -555,7 +544,7 @@ public class SDLActivity extends CTHActivity {
 
         // Load the libraries
         System.loadLibrary("SDL");
-        System.loadLibrary("luajit");
+	System.loadLibrary("LUA");
         System.loadLibrary("SDL_mixer");
         System.loadLibrary("ffmpeg");
         System.loadLibrary("appmain");

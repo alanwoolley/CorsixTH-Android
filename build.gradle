@@ -27,8 +27,6 @@ dependencies {
     compile fileTree(dir: 'jars', include: '*.jar')
 }
 
-
-
 android {
 
     compileSdkVersion 19
