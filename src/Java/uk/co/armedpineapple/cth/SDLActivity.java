@@ -591,7 +591,9 @@ public class SDLActivity extends CTHActivity {
         gameFrame.addView(mSurface);
         setContentView(mainLayout);
 
-        mHapticLauncher = new Launcher(this);
+        if (app.configuration.getHaptic()) {
+            mHapticLauncher = new Launcher(this);
+        }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
@@ -789,15 +791,17 @@ public class SDLActivity extends CTHActivity {
     }
 
     public void playVibration(int vibrationCode) {
-        if (mHapticLauncher == null)
-            mHapticLauncher = new Launcher(this);
-        if (app.hasVibration) {
-            mHapticLauncher.play(vibrationCode);
+        if (app.configuration.getHaptic()) {
+            if (mHapticLauncher == null)
+                mHapticLauncher = new Launcher(this);
+            if (app.hasVibration) {
+                mHapticLauncher.play(vibrationCode);
+            }
         }
     }
 
     public void stopVibration() {
-        if (mHapticLauncher != null && app.hasVibration) {
+        if (mHapticLauncher != null && app.hasVibration && app.configuration.getHaptic()) {
             mHapticLauncher.stop();
             commandHandler.playingEarthquake = false;
         }
