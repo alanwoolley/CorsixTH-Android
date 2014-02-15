@@ -38,218 +38,207 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-/** Class to help with file manipulation */
+/**
+ * Class to help with file manipulation
+ */
 @SuppressWarnings("nls")
 public class Files {
 
-	private static final String	LOG_TAG	= "Files";
-	
-	// Look for these files when trying to work out if the original Theme
-	// Hospital files are present
+    private static final String LOG_TAG = "Files";
 
-	private static final String[]	RequiredSoundFiles	= { "Sound/Data/Sound-0.dat" };
+    // Look for these files when trying to work out if the original Theme
+    // Hospital files are present
 
-	private static final String[]	RequiredMusicFiles	= { "Sound/Midi/ATLANTIS.XMI" };
-	private static final String[]	RequiredDataFiles		= { "Data/VBlk-0.tab",
-			"Levels/Level.L1", "QData/SPointer.dat"			};
+    private static final String[] RequiredSoundFiles = {"Sound/Data/Sound-0.dat"};
 
-	// Places to look for files
-	@SuppressLint("SdCardPath")
-	private static final String[]	SearchRoot					= { "/mnt/sdcard",
-			"/sdcard", "/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc" };
+    private static final String[] RequiredMusicFiles = {"Sound/Midi/ATLANTIS.XMI"};
+    private static final String[] RequiredDataFiles  = {"Data/VBlk-0.tab",
+            "Levels/Level.L1", "QData/SPointer.dat"};
 
-	private static final String[]	SearchDirs					= { "th", "TH",
-			"themehospital", "ThemeHospital", "Themehospital", "theme_hospital",
-			"Theme_Hospital"															};
+    // Places to look for files
+    @SuppressLint("SdCardPath")
+    private static final String[] SearchRoot = {"/mnt/sdcard",
+            "/sdcard", "/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc"};
 
-	private Files() {
-	}
+    private static final String[] SearchDirs = {"th", "TH",
+            "themehospital", "ThemeHospital", "Themehospital", "theme_hospital",
+            "Theme_Hospital"};
 
-	/**
-	 * Checks if a file exists on the filesystem
-	 * 
-	 * @param filename
-	 *          the file to check
-	 * @return true if file exists
-	 */
-	public static Boolean doesFileExist(String filename) {
-		File f = new File(filename);
-		return f.exists();
-	}
+    private Files() {
+    }
 
-	/**
-	 * Removes path separators from the end of path strings
-	 * 
-	 * @param path
-	 *          the path to trim
-	 * @return the trimmed path
-	 */
-	public static String trimPath(String path) {
-		return path.endsWith(File.separator) ? path.substring(0, path.length() - 1)
-				: path;
-	}
+    /**
+     * Checks if a file exists on the filesystem
+     *
+     * @param filename the file to check
+     * @return true if file exists
+     */
+    public static Boolean doesFileExist(String filename) {
+        File f = new File(filename);
+        return f.exists();
+    }
 
-	/**
-	 * Gets the external storage path including a trailing file separator.
-	 * 
-	 * @return the external storage path
-	 */
-	public static String getExtStoragePath() {
-		return trimPath(Environment.getExternalStorageDirectory().getAbsolutePath())
-				+ File.separator;
-	}
+    /**
+     * Removes path separators from the end of path strings
+     *
+     * @param path the path to trim
+     * @return the trimmed path
+     */
+    public static String trimPath(String path) {
+        return path.endsWith(File.separator) ? path.substring(0, path.length() - 1)
+                : path;
+    }
 
-	/**
-	 * Checks if Theme Hospital data files exist in a directory
-	 * 
-	 * @param directory
-	 *          the directory to search
-	 * @return true if data files exist
-	 */
-	public static Boolean hasDataFiles(String directory) {
-		return doFilesExist(RequiredDataFiles, directory);
-	}
+    /**
+     * Gets the external storage path including a trailing file separator.
+     *
+     * @return the external storage path
+     */
+    public static String getExtStoragePath() {
+        return trimPath(Environment.getExternalStorageDirectory().getAbsolutePath())
+                + File.separator;
+    }
 
-	/**
-	 * Checks if Theme Hospital music files exist in a directory
-	 * 
-	 * @param directory
-	 *          the directory to search
-	 * @return true if music files exist
-	 */
-	public static Boolean hasMusicFiles(String directory) {
-		return doFilesExist(RequiredMusicFiles, directory);
-	}
+    /**
+     * Checks if Theme Hospital data files exist in a directory
+     *
+     * @param directory the directory to search
+     * @return true if data files exist
+     */
+    public static Boolean hasDataFiles(String directory) {
+        return doFilesExist(RequiredDataFiles, directory);
+    }
 
-	/**
-	 * Checks if Theme Hospital sound files exist in a directory
-	 * 
-	 * @param directory
-	 *          the directory to search
-	 * @return true if sound files exist
-	 */
-	public static Boolean hasSoundFiles(String directory) {
-		return doFilesExist(RequiredSoundFiles, directory);
-	}
+    /**
+     * Checks if Theme Hospital music files exist in a directory
+     *
+     * @param directory the directory to search
+     * @return true if music files exist
+     */
+    public static Boolean hasMusicFiles(String directory) {
+        return doFilesExist(RequiredMusicFiles, directory);
+    }
 
-	/**
-	 * Checks if all the given files exist in a given directory
-	 * 
-	 * @param files
-	 *          an array of filenames to check for
-	 * @param directory
-	 *          the directory to search
-	 * @return true if all the files are found
-	 */
-	private static Boolean doFilesExist(String[] files, String directory) {
-		// Log.d(LOG_TAG, "Checking directory: " +
-		// directory);
+    /**
+     * Checks if Theme Hospital sound files exist in a directory
+     *
+     * @param directory the directory to search
+     * @return true if sound files exist
+     */
+    public static Boolean hasSoundFiles(String directory) {
+        return doFilesExist(RequiredSoundFiles, directory);
+    }
 
-		if (directory == null) {
-			return false;
-		}
+    /**
+     * Checks if all the given files exist in a given directory
+     *
+     * @param files     an array of filenames to check for
+     * @param directory the directory to search
+     * @return true if all the files are found
+     */
+    private static Boolean doFilesExist(String[] files, String directory) {
+        // Log.d(LOG_TAG, "Checking directory: " +
+        // directory);
 
-		File dir = new File(directory);
-		if (!dir.exists() || !dir.isDirectory()) {
-			return false;
-		}
+        if (directory == null) {
+            return false;
+        }
 
-		// As soon as a file is not found in the directory, fail.
-		for (String file : files) {
-			File f = new File(directory + "/" + file);
-			if (!f.exists()) {
-				return false;
-			}
-		}
+        File dir = new File(directory);
+        if (!dir.exists() || !dir.isDirectory()) {
+            return false;
+        }
 
-		return true;
-	}
+        // As soon as a file is not found in the directory, fail.
+        for (String file : files) {
+            File f = new File(directory + "/" + file);
+            if (!f.exists()) {
+                return false;
+            }
+        }
 
-	/**
-	 * Checks if external storage can be accessed. This should be called any time
-	 * external storage is used to make sure that it is accessible. Reasons that
-	 * it may not be accessible include SD card missing, mounted on a computer,
-	 * not formatted etc.
-	 * 
-	 * @return true if external storage can be accessed
-	 */
-	public static boolean canAccessExternalStorage() {
-		return Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState());
-	}
+        return true;
+    }
 
-	/**
-	 * Lists all the files in a directory. It will not list files in
-	 * subdirectories.
-	 * 
-	 * @param directory
-	 *          the directory to search in
-	 * @param filter
-	 *          a {@link FilenameFilter} to filter the search by
-	 * @return a String array of filenames
-	 * @throws IOException
-	 *           if the directory doesn't exist or cannot be accessed
-	 */
-	public static List<FileDetails> listFilesInDirectory(String directory,
-			FilenameFilter filter) throws IOException {
-		// Log.d(LOG_TAG, "Looking for files in: " +
-		// directory);
+    /**
+     * Checks if external storage can be accessed. This should be called any time
+     * external storage is used to make sure that it is accessible. Reasons that
+     * it may not be accessible include SD card missing, mounted on a computer,
+     * not formatted etc.
+     *
+     * @return true if external storage can be accessed
+     */
+    public static boolean canAccessExternalStorage() {
+        return Environment.MEDIA_MOUNTED.equals(Environment
+                .getExternalStorageState());
+    }
 
-		File f = new File(directory);
-		List<FileDetails> files = new ArrayList<FileDetails>();
-		if (f.isDirectory()) {
-			// Log.d(LOG_TAG, "Directory " + directory
-			// + " looks ok");
+    /**
+     * Lists all the files in a directory. It will not list files in
+     * subdirectories.
+     *
+     * @param directory the directory to search in
+     * @param filter    a {@link FilenameFilter} to filter the search by
+     * @return a String array of filenames
+     * @throws IOException if the directory doesn't exist or cannot be accessed
+     */
+    public static List<FileDetails> listFilesInDirectory(String directory,
+                                                         FilenameFilter filter) throws IOException {
+        // Log.d(LOG_TAG, "Looking for files in: " +
+        // directory);
 
-			String[] filesArray = f.list(filter);
+        File f = new File(directory);
+        List<FileDetails> files = new ArrayList<FileDetails>();
+        if (f.isDirectory()) {
+            // Log.d(LOG_TAG, "Directory " + directory
+            // + " looks ok");
 
-			// Log.d(LOG_TAG, "Found: " + filesArray.length
-			// + " files");
+            String[] filesArray = f.list(filter);
 
-			for (String fileName : filesArray) {
+            // Log.d(LOG_TAG, "Found: " + filesArray.length
+            // + " files");
 
-				File file = new File(directory + File.separator + fileName);
-				long lastModified = file.lastModified();
-				files.add(new FileDetails(fileName, new Date(lastModified)));
-			}
+            for (String fileName : filesArray) {
 
-			return files;
-		}
+                File file = new File(directory + File.separator + fileName);
+                long lastModified = file.lastModified();
+                files.add(new FileDetails(fileName, directory, new Date(lastModified)));
+            }
 
-		// The directory doesn't exist
-		Log.d(LOG_TAG, "Directory " + directory
-				+ " doesn't exist");
-		throw new FileNotFoundException();
+            return files;
+        }
 
-	}
+        // The directory doesn't exist
+        Log.d(LOG_TAG, "Directory " + directory
+                + " doesn't exist");
+        throw new FileNotFoundException();
 
-	/**
-	 * Returns a string containing the text from a raw resource
-	 * 
-	 * @param ctx
-	 *          a activityContext
-	 * @param resource
-	 *          the resource to read
-	 * @return a String containing the text contents of the resource
-	 * @throws IOException
-	 *           if the resource cannot be found or read
-	 */
-	public static String readTextFromResource(Context ctx, int resource)
-			throws IOException {
-		// TODO Probably a much nicer way to do this, with buffers.
-		InputStream inputStream = ctx.getResources().openRawResource(resource);
-		String r = IOUtils.toString(inputStream);
-		inputStream.close();
-		return r;
+    }
 
-	}
+    /**
+     * Returns a string containing the text from a raw resource
+     *
+     * @param ctx      a activityContext
+     * @param resource the resource to read
+     * @return a String containing the text contents of the resource
+     * @throws IOException if the resource cannot be found or read
+     */
+    public static String readTextFromResource(Context ctx, int resource)
+            throws IOException {
+        // TODO Probably a much nicer way to do this, with buffers.
+        InputStream inputStream = ctx.getResources().openRawResource(resource);
+        String r = IOUtils.toString(inputStream);
+        inputStream.close();
+        return r;
 
-	/**
-	 * {@link AsyncTask} for discovering all the assets included in the
-	 * application
-	 * */
-	static class DiscoverAssetsTask extends
-			AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
+    }
+
+    /**
+     * {@link AsyncTask} for discovering all the assets included in the
+     * application
+     */
+    static class DiscoverAssetsTask extends
+            AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
 
         ArrayList<String> paths;
         final Context ctx;
@@ -325,13 +314,10 @@ public class Files {
     /**
      * Produces a list of assets in a directory
      *
-     * @param ctx
-     *          a activityContext
-     * @param path
-     *          path to search in
+     * @param ctx  a activityContext
+     * @param path path to search in
      * @return a list of files
-     * @throws IOException
-     *           if the path doesn't exist, or asset can't be accessed
+     * @throws IOException if the path doesn't exist, or asset can't be accessed
      */
     public static ArrayList<String> listAssets(Context ctx, String path)
             throws IOException {
@@ -361,14 +347,10 @@ public class Files {
     /**
      * Copies an assets
      *
-     * @param ctx
-     *          a activityContext
-     * @param assetFilename
-     *          the filename of the asset
-     * @param destination
-     *          the destination directory
-     * @throws IOException
-     *           if the asset cannot be copied
+     * @param ctx           a activityContext
+     * @param assetFilename the filename of the asset
+     * @param destination   the destination directory
+     * @throws IOException if the asset cannot be copied
      */
     public static void copyAsset(Context ctx, String assetFilename,
                                  String destination) throws IOException {
@@ -479,7 +461,9 @@ public class Files {
 
     }
 
-    /** AsyncTask for downloading a file */
+    /**
+     * AsyncTask for downloading a file
+     */
     public static class DownloadFileTask extends
             AsyncTask<String, Integer, AsyncTaskResult<File>> {
         final String  downloadTo;
@@ -562,7 +546,9 @@ public class Files {
 
     }
 
-    /** AsyncTask for extracting a .zip file to a directory */
+    /**
+     * AsyncTask for extracting a .zip file to a directory
+     */
     public static class UnzipTask extends
             AsyncTask<File, Integer, AsyncTaskResult<String>> {
         final String  unzipTo;
@@ -650,9 +636,18 @@ public class Files {
         private final Date   lastModified;
         private final String fileName;
 
-        public FileDetails(String filename, Date lastModified) {
+
+        private final String directory;
+
+        public FileDetails(String filename, String directory, Date lastModified) {
             this.fileName = filename;
             this.lastModified = lastModified;
+            this.directory = directory;
+        }
+
+
+        public String getDirectory() {
+            return directory;
         }
 
         public Date getLastModified() {

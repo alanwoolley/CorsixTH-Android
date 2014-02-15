@@ -18,7 +18,8 @@ public class FilesAdapter extends BaseAdapter {
 
     private final Context           context;
     private final List<FileDetails> items;
-    private final boolean           newButton;
+
+    private final boolean newButton;
 
     public FilesAdapter(Context context, List<FileDetails> items,
                         boolean newbutton) {
@@ -42,19 +43,23 @@ public class FilesAdapter extends BaseAdapter {
         return position;
     }
 
+    public boolean hasNewButton() {
+        return newButton;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-		View view;
+        View view;
 
-		if (convertView != null) {
+        if (convertView != null) {
 			// If we have a view we can use already, use it
 			view = convertView;
 		} else {
 			// Otherwise, create a new one
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.files_list, parent, false);
+			view = inflater.inflate(R.layout.files_list_item, parent, false);
 		}
 
 		TextView largeText = (TextView) view.findViewById(R.id.saveGameLargeText);

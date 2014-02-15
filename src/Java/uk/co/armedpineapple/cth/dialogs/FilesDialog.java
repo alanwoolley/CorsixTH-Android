@@ -29,104 +29,98 @@ import uk.co.armedpineapple.cth.SDLActivity;
 
 public abstract class FilesDialog extends Dialog implements OnItemClickListener {
 
-	private String							savePath;
+    protected CTHActivity ctx;
+    protected String path;
 
-    protected List<FileDetails>	saves;
-	protected FilesAdapter			arrayAdapter;
-	protected ListView					savesList;
-	protected CTHActivity				ctx;
-
-	private boolean							hasNewButton;
-
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
 		/*
-		 * Unpause the game if the back button is pressed. Note that it is possible
+         * Unpause the game if the back button is pressed. Note that it is possible
 		 * for getGameSpeed() to return null if the game is on the main menu screen,
 		 * for example.
 		 */
 
-		Integer speed;
-		if ((speed = ctx.app.configuration.getGameSpeed()) != null) {
-			SDLActivity.cthGameSpeed(speed);
-		}
-	}
+        Integer speed;
+        if ((speed = ctx.app.configuration.getGameSpeed()) != null) {
+            SDLActivity.cthGameSpeed(speed);
+        }
+    }
 
-	public FilesDialog(SDLActivity context, String path, int layout,
-			boolean hasNewButton) {
-		super(context);
+    public FilesDialog(SDLActivity context, String path, int layout) {
+        super(context);
 
-		this.ctx = context;
-		this.hasNewButton = hasNewButton;
+        this.ctx = context;
+        this.path=path;
 
-		savePath = path;
-		setContentView(layout);
-		savesList = (ListView) findViewById(R.id.filesList);
-		savesList.setOnItemClickListener(this);
+        setContentView(layout);
+
         Button cancelButton = (Button) findViewById(R.id.dismissDialogButton);
 
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
-
         });
-		
-		getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		
 
-	}
+        getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
-	public void updateSaves(final Context ctx) throws IOException {
-		saves = Files.listFilesInDirectory(savePath, new FilenameFilter() {
 
-			@Override
-			public boolean accept(File dir, String filename) {
+    }
+
+    public void updateSaves(final Context ctx, ListView savesList, String directory,
+                            boolean hasNewButton) throws IOException {
+
+        List<FileDetails> saves = Files.listFilesInDirectory(directory, new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String filename) {
 
 				/*
-				 * Filter out any files that don't end with .sav, or are the quicksave
+                 * Filter out any files that don't end with .sav, or are the quicksave
 				 * or autosave files
 				 */
 
-				return filename.toLowerCase(Locale.US).endsWith(".sav")
-						&& !filename.toLowerCase(Locale.US).equals(
-								ctx.getString(R.string.quicksave_name))
-						&& !filename.toLowerCase(Locale.US).equals(
-								ctx.getString(R.string.autosave_name));
-			}
-		});
+                return filename.toLowerCase(Locale.US).endsWith(".sav")
+                        && !filename.toLowerCase(Locale.US).equals(
+                        ctx.getString(R.string.quicksave_name))
+                        && !filename.toLowerCase(Locale.US).equals(
+                        ctx.getString(R.string.autosave_name));
+            }
+        });
 
-		// Sort the saves to be most recent first.
+        // Sort the saves to be most recent first.
 
-		Collections.sort(saves, Collections.reverseOrder());
+        Collections.sort(saves, Collections.reverseOrder());
 
-		// Update the adapter
+        // Update the adapter
+        FilesAdapter arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);
+        savesList.setAdapter(arrayAdapter);
+        savesList.setOnItemClickListener(this);
+    }
 
-		arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);
-		savesList.setAdapter(arrayAdapter);
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position,
+                            long id) {
 
-	}
+        FilesAdapter adapter = (FilesAdapter) parent.getAdapter();
+        if (adapter.hasNewButton() && position == 0) {
+            onNewClicked();
+        } else {
+            FileDetails clicked = (FileDetails) adapter.getItem(
+                    adapter.hasNewButton() ? position - 1 : position);
+            onSelectedFile(clicked.getDirectory(),clicked.getFileName());
+        }
+    }
 
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
+    public abstract void onSelectedFile(String directory, String filename);
 
-		if (hasNewButton && position == 0) {
-			onNewClicked();
-		} else {
-			onSelectedFile(saves.get(hasNewButton ? position - 1 : position)
-					.getFileName());
-		}
-	}
+    public abstract void refreshSaves(Context ctx) throws IOException;
 
-	public abstract void onSelectedFile(String file);
+    public void onNewClicked() {
 
-	public void onNewClicked() {
-
-	}
+    }
 
 }

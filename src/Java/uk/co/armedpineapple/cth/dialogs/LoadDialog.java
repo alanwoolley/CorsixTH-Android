@@ -5,27 +5,44 @@
  */
 package uk.co.armedpineapple.cth.dialogs;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+
+import java.io.IOException;
+
 import uk.co.armedpineapple.cth.CommandHandler.Command;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
-import android.util.Log;
 
 public class LoadDialog extends FilesDialog {
 
-	private static final String	LOG_TAG	= "LoadDialog";
+    private static final String LOG_TAG = "LoadDialog";
+    private final ListView filesList;
 
-	public LoadDialog(SDLActivity context, String path) {
-		super(context, path, R.layout.files_dialog, false);
-		setTitle(R.string.load_game_dialog_title);
-	}
+    public LoadDialog(SDLActivity context, String path) {
+        super(context, path, R.layout.files_dialog);
+        setTitle(R.string.load_game_dialog_title);
 
-	@Override
-	public void onSelectedFile(String file) {
-		Log.d(LOG_TAG, "Loading: " + file);
-		SDLActivity.cthLoadGame(file);
+        FrameLayout flayout = (FrameLayout) findViewById(R.id.files_frame);
+        filesList = (ListView) getLayoutInflater().inflate(R.layout.files_list, null);
+        flayout.addView(filesList);
+    }
 
-		SDLActivity.sendCommand(Command.HIDE_MENU, null);
-		dismiss();
-	}
+    @Override
+    public void onSelectedFile(String directory, String file) {
+        Log.d(LOG_TAG, "Loading: " + file);
+        SDLActivity.cthLoadGame(file);
+
+        SDLActivity.sendCommand(Command.HIDE_MENU, null);
+        dismiss();
+    }
+
+    @Override
+    public void refreshSaves(Context ctx) throws IOException {
+        updateSaves(ctx, filesList, path, false);
+    }
+
 
 }

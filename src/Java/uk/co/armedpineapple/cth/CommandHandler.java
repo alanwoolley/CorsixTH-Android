@@ -103,7 +103,7 @@ public class CommandHandler extends Handler {
                             activityContext.app.configuration.getSaveGamesPath());
                 }
                 try {
-                    loadDialog.updateSaves(activityContext);
+                    loadDialog.refreshSaves(activityContext);
                     loadDialog.show();
                 } catch (IOException e) {
                     BugSenseHandler.sendException(e);
@@ -120,7 +120,7 @@ public class CommandHandler extends Handler {
                             activityContext.app.configuration.getSaveGamesPath());
                 }
                 try {
-                    saveDialog.updateSaves(activityContext);
+                    saveDialog.refreshSaves(activityContext);
                     saveDialog.show();
                 } catch (IOException e) {
                     BugSenseHandler.sendException(e);
