@@ -8,8 +8,12 @@ package uk.co.armedpineapple.cth.dialogs;
 import android.content.Context;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 
+import java.io.File;
 import java.io.IOException;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
@@ -18,21 +22,45 @@ import uk.co.armedpineapple.cth.SDLActivity;
 
 public class LoadDialog extends FilesDialog {
 
-    private static final String LOG_TAG = "LoadDialog";
-    private final ListView filesList;
+    private static final String LOG_TAG   = "LoadDialog";
+    private static final String AUTOSAVES = "autosaves";
+    private final LinearLayout tabsView;
+    private final TabHost      tabHost;
+    private       ListView     userSavesList;
+    private       ListView     autoSavesList;
 
     public LoadDialog(SDLActivity context, String path) {
-        super(context, path, R.layout.files_dialog);
-        setTitle(R.string.load_game_dialog_title);
+        super(context, path, R.layout.files_dialog, R.string.load_game_dialog_title);
 
         FrameLayout flayout = (FrameLayout) findViewById(R.id.files_frame);
-        filesList = (ListView) getLayoutInflater().inflate(R.layout.files_list, null);
-        flayout.addView(filesList);
+        tabsView = (LinearLayout) getLayoutInflater().inflate(R.layout.files_load_tabs, null);
+        flayout.addView(tabsView);
+
+        tabHost = (TabHost) findViewById(R.id.tabHost);
+        tabHost.setup();
+        TabSpec userSavesSpec = tabHost.newTabSpec("Saves");
+        userSavesSpec.setIndicator("Saves");
+        userSavesSpec.setContent(R.id.user_files);
+        TabSpec autoSavesSpec = tabHost.newTabSpec("Autosaves");
+        autoSavesSpec.setIndicator("Autosaves");
+        autoSavesSpec.setContent(R.id.autosave_files);
+
+        tabHost.addTab(userSavesSpec);
+        tabHost.addTab(autoSavesSpec);
+        tabHost.setCurrentTab(0);
+
+        userSavesList = (ListView) findViewById(R.id.user_files);
+        autoSavesList = (ListView) findViewById(R.id.autosave_files);
+
+
     }
 
     @Override
     public void onSelectedFile(String directory, String file) {
         Log.d(LOG_TAG, "Loading: " + file);
+        if (directory.endsWith(File.separator + AUTOSAVES)) {
+            SDLActivity.cthLoadGame(AUTOSAVES + File.separator + file);
+        }
         SDLActivity.cthLoadGame(file);
 
         SDLActivity.sendCommand(Command.HIDE_MENU, null);
@@ -41,7 +69,8 @@ public class LoadDialog extends FilesDialog {
 
     @Override
     public void refreshSaves(Context ctx) throws IOException {
-        updateSaves(ctx, filesList, path, false);
+        updateSaves(ctx, userSavesList, path, false);
+        updateSaves(ctx, autoSavesList, path + File.separator + AUTOSAVES, false);
     }
 
 

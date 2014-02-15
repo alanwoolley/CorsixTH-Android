@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -30,29 +31,19 @@ import uk.co.armedpineapple.cth.SDLActivity;
 public abstract class FilesDialog extends Dialog implements OnItemClickListener {
 
     protected CTHActivity ctx;
-    protected String path;
+    protected String      path;
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-		/*
-         * Unpause the game if the back button is pressed. Note that it is possible
-		 * for getGameSpeed() to return null if the game is on the main menu screen,
-		 * for example.
-		 */
-
-        Integer speed;
-        if ((speed = ctx.app.configuration.getGameSpeed()) != null) {
-            SDLActivity.cthGameSpeed(speed);
-        }
-    }
-
-    public FilesDialog(SDLActivity context, String path, int layout) {
+    public FilesDialog(SDLActivity context, String path, int layout, int title) {
         super(context);
 
+        if (title == -1) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        } else {
+            setTitle(title);
+        }
+
         this.ctx = context;
-        this.path=path;
+        this.path = path;
 
         setContentView(layout);
 
@@ -66,8 +57,6 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
         });
 
         getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-
-
     }
 
     public void updateSaves(final Context ctx, ListView savesList, String directory,
@@ -111,7 +100,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
         } else {
             FileDetails clicked = (FileDetails) adapter.getItem(
                     adapter.hasNewButton() ? position - 1 : position);
-            onSelectedFile(clicked.getDirectory(),clicked.getFileName());
+            onSelectedFile(clicked.getDirectory(), clicked.getFileName());
         }
     }
 

@@ -188,6 +188,11 @@ public class Files {
         // directory);
 
         File f = new File(directory);
+
+        if (!f.exists() || !f.isDirectory()) {
+            return new ArrayList<FileDetails>();
+        }
+
         List<FileDetails> files = new ArrayList<FileDetails>();
         if (f.isDirectory()) {
             // Log.d(LOG_TAG, "Directory " + directory

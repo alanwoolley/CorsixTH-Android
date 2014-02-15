@@ -27,8 +27,8 @@ public class SaveDialog extends FilesDialog {
     private final ListView filesList;
 
     public SaveDialog(SDLActivity context, final String path) {
-        super(context, path, R.layout.files_dialog);
-        setTitle(R.string.save_game_dialog_title);
+        super(context, path, R.layout.files_dialog, R.string.save_game_dialog_title);
+
 
         FrameLayout flayout = (FrameLayout) findViewById(R.id.files_frame);
         filesList = (ListView) getLayoutInflater().inflate(R.layout.files_list, null);
