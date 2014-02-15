@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
-    <changelogversion changeDate="TBA" versionName="0.7.1-beta">
+    <changelogversion changeDate="15/2/2014" versionName="0.7.1-beta">
         <changelogtext>[b]New![/b] Ability to load autosaves</changelogtext>
         <changelogtext>Misc. visual improvements</changelogtext>
         <changelogtext>Updated Dutch and Finnish translations (thanks PatrikSelin and mrtnptrs)</changelogtext>
