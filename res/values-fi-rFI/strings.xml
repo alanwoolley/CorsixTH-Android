@@ -22,13 +22,13 @@
   <string name="preparing_game_files_dialog">Valmistellaan pelitiedostoja. Tämä hoidetaan vain kerran, mutta saattaa viedä tovin.</string>
   <string name="download_demo_dialog">Tämä lataa ja asentaa Theme Hospitalin demon, joka mahdollistaa pääsyn pelin perustoimintoihin.</string>
   <string name="download_demo_error">Sattui ongelma ladattaessa demon tiedostoja!</string>
-  <string name="downloading_demo">Ladataan demon tiedostoja…</string>
-  <string name="extracting_demo">Puretaan demon tiedostoja…</string>
+  <string name="downloading_demo">Ladataan demon tiedostoja&#8230;</string>
+  <string name="extracting_demo">Puretaan demon tiedostoja&#8230;</string>
   <string name="language_header">Kieli</string>
   <string name="language_text">CorsixTH tukee useita kieliä. Valitse tuetuista kielistä haluamasi.</string>
-  <string name="downloading_timidity">Ladataan tiedostoa…</string>
+  <string name="downloading_timidity">Ladataan tiedostoa&#8230;</string>
   <string name="download_timidity_error">Virhe ladattaessa tiedostoa. Musiikkia ei ole saatavilla. Yritä myöhemmin uudelleen.</string>
-  <string name="extracting_timidity">Puretaan tiedostoja…</string>
+  <string name="extracting_timidity">Puretaan tiedostoja&#8230;</string>
   <string name="music_download_dialog">Musiikki vaatii ylimääräisen latauksen. Ladataanko tiedosto (14.1 Mt)?</string>
   <string name="no_connection_error">Tarvitset toimivan internetyhteyden ladataksesi. Muodosta yhteys verkkoon ja yritä uudelleen.</string>
   <string name="cancel">Peruuta</string>
@@ -75,4 +75,7 @@
   <string name="external_links">Nämä vaihtoehdot avaavat ulkoisia linkkejä. Pelisi tullaan tallennetaan.</string>
   <string name="full_version_text">Tarvitsetko apua The Hospital -pelin kopioimisessa laitteellesi?</string>
   <string name="game_guide">Peliopas</string>
+  <string name="facebook_group">Facebook-ryhmä</string>
+  <string name="gplus_community">Google+-yhteisö</string>
+  <string name="menuitem_cheats">Huijaukset</string>
 </resources>
