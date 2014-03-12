@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.bugsense.trace/bugsense/3.6/3928cf9ff54683b522cee09da9034106c53fea91/bugsense-3.6.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.bugsense.trace/bugsense/3.6/3928cf9ff54683b522cee09da9034106c53fea91/bugsense-3.6-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
