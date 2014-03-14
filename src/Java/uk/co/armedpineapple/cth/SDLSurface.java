@@ -48,7 +48,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public final int height;
 
     // Sensors
-    private static SensorManager mSensorManager;
+    protected static SensorManager mSensorManager;
+    protected static Display mDisplay;
 
     private final GestureDetector          longPressGestureDetector;
     private final TwoFingerGestureDetector moveGestureDetector;
@@ -69,6 +70,11 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
+
+        mDisplay = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+
+
         moveGestureDetector = new TwoFingerGestureDetector(context,
                 new TwoFingerMoveGesture(context));
         longPressGestureDetector = new GestureDetector(context,
@@ -98,6 +104,10 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         }
 
 	}
+
+    public Surface getNativeSurface() {
+        return getHolder().getSurface();
+    }
 
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
@@ -138,37 +148,57 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		Log.d(LOG_TAG, "surfaceChanged()");
 
 		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
-		switch (format) {
-			case PixelFormat.A_8:
-				Log.v(LOG_TAG, "pixel format A_8");
-				break;
-			case PixelFormat.L_8:
-				Log.v(LOG_TAG, "pixel format L_8");
-				break;
-			case PixelFormat.RGBA_8888:
-				Log.v(LOG_TAG, "pixel format RGBA_8888");
-				sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
-				break;
-			case PixelFormat.RGBX_8888:
-				Log.v(LOG_TAG, "pixel format RGBX_8888");
-				sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
-				break;
-			case PixelFormat.RGB_565:
-				Log.v(LOG_TAG, "pixel format RGB_565");
-				sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
-				break;
-			case PixelFormat.RGB_888:
-				Log.v(LOG_TAG, "pixel format RGB_888");
-				// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-				sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
-				break;
-			default:
-				Log.v(LOG_TAG, "pixel format unknown " + format);
-				break;
-		}
+        switch (format) {
+            case PixelFormat.A_8:
+                Log.v("SDL", "pixel format A_8");
+                break;
+            case PixelFormat.LA_88:
+                Log.v("SDL", "pixel format LA_88");
+                break;
+            case PixelFormat.L_8:
+                Log.v("SDL", "pixel format L_8");
+                break;
+            case PixelFormat.RGBA_4444:
+                Log.v("SDL", "pixel format RGBA_4444");
+                sdlFormat = 0x15421002; // SDL_PIXELFORMAT_RGBA4444
+                break;
+            case PixelFormat.RGBA_5551:
+                Log.v("SDL", "pixel format RGBA_5551");
+                sdlFormat = 0x15441002; // SDL_PIXELFORMAT_RGBA5551
+                break;
+            case PixelFormat.RGBA_8888:
+                Log.v("SDL", "pixel format RGBA_8888");
+                sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
+                break;
+            case PixelFormat.RGBX_8888:
+                Log.v("SDL", "pixel format RGBX_8888");
+                sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
+                break;
+            case PixelFormat.RGB_332:
+                Log.v("SDL", "pixel format RGB_332");
+                sdlFormat = 0x14110801; // SDL_PIXELFORMAT_RGB332
+                break;
+            case PixelFormat.RGB_565:
+                Log.v("SDL", "pixel format RGB_565");
+                sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
+                break;
+            case PixelFormat.RGB_888:
+                Log.v("SDL", "pixel format RGB_888");
+                // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
+                sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
+                break;
+            default:
+                Log.v("SDL", "pixel format unknown " + format);
+                break;
+        }
 
-		SDLActivity.onNativeResize(width, height, 0x86462004);
+		SDLActivity.onNativeResize(width, height, sdlFormat);
 
+        // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
+        SDLActivity.mIsSurfaceReady = true;
+        SDLActivity.onNativeSurfaceChanged();
+
+        // TODO - more SDL2 stuff here
 		context.startApp();
 
 	}
@@ -179,6 +209,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	// Key events
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+        // TODO - handle pad input here. Fallback to keyboard otherwise.
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_VOLUME_DOWN:
 				return false;
@@ -299,40 +331,58 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		return new float[] { newX, newY };
 	}
 
-	// Sensor events
-	public void enableSensor(int sensortype, boolean enabled) {
-		// TODO: This uses getDefaultSensor - what if we have >1 accels?
+    // Sensor events
+    public void enableSensor(int sensortype, boolean enabled) {
+        // TODO: This uses getDefaultSensor - what if we have >1 accels?
+        if (enabled) {
+            mSensorManager.registerListener(this,
+                    mSensorManager.getDefaultSensor(sensortype),
+                    SensorManager.SENSOR_DELAY_GAME, null);
+        } else {
+            mSensorManager.unregisterListener(this,
+                    mSensorManager.getDefaultSensor(sensortype));
+        }
+    }
 
-		if (enabled) {
-			if (mSensorManager == null) {
-				mSensorManager = (SensorManager) context
-						.getSystemService(Context.SENSOR_SERVICE);
-			}
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // TODO
+    }
 
-			mSensorManager.registerListener(this,
-					mSensorManager.getDefaultSensor(sensortype),
-					SensorManager.SENSOR_DELAY_GAME, null);
-		} else {
-			if (mSensorManager != null) {
-				mSensorManager.unregisterListener(this,
-						mSensorManager.getDefaultSensor(sensortype));
-			}
-		}
-	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO
 	}
 
-	public void onSensorChanged(SensorEvent event) {
-		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			SDLActivity.onNativeAccel(event.values[0] / SensorManager.GRAVITY_EARTH,
-					event.values[1] / SensorManager.GRAVITY_EARTH, event.values[2]
-							/ SensorManager.GRAVITY_EARTH);
-		}
-	}
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x, y;
+            switch (mDisplay.getRotation()) {
+                case Surface.ROTATION_90:
+                    x = -event.values[1];
+                    y = event.values[0];
+                    break;
+                case Surface.ROTATION_270:
+                    x = event.values[1];
+                    y = -event.values[0];
+                    break;
+                case Surface.ROTATION_180:
+                    x = -event.values[1];
+                    y = -event.values[0];
+                    break;
+                default:
+                    x = event.values[0];
+                    y = event.values[1];
+                    break;
+            }
+            SDLActivity.onNativeAccel(-x / SensorManager.GRAVITY_EARTH,
+                    y / SensorManager.GRAVITY_EARTH,
+                    event.values[2] / SensorManager.GRAVITY_EARTH - 1);
+        }
+    }
 
-	public void setScrolling(boolean scrolling) {
+    public void setScrolling(boolean scrolling) {
 		if (!scrolling && inMiddleOfScroll) {
 			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, -1, -1, 0, 2, 2,
 					context.app.configuration.getControlsMode());

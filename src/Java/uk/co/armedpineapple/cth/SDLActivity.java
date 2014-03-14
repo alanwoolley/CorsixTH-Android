@@ -6,7 +6,38 @@
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.cth;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+
+import com.bugsense.trace.BugSenseHandler;
 import com.immersion.uhl.Launcher;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -21,55 +52,45 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
-import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
-import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.Files.FileDetails;
+import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
-import com.bugsense.trace.BugSenseHandler;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.*;
-import android.content.*;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.view.*;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.os.*;
-import android.os.PowerManager.WakeLock;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.util.Log;
-import android.media.*;
-
 public class SDLActivity extends CTHActivity {
 
-    public static final  String LOG_TAG         = "SDLActivity";
+    public static final String LOG_TAG = "SDLActivity";
     private static final String ENGINE_ZIP_FILE = "game.zip";
+
+    // Keep track of the paused state
+    public static boolean mIsPaused, mIsSurfaceReady, mHasFocus;
+    public static boolean mExitCalledFromJava;
+
     // Main components
-    public static  SDLActivity mSingleton;
-    public static  SDLSurface  mSurface;
+    public static SDLActivity mSingleton;
+    public static SDLSurface mSurface;
+    protected static View mTextEdit;
+    protected static ViewGroup mLayout;
+    //protected static SDLJoystickHandler mJoystickHandler;
+
     // This is what SDL runs in. It invokes SDL_main(), eventually
-    private static Thread      mSDLThread;
+    private static Thread mSDLThread;
     // EGL private objects
-    private static EGLContext  mEGLContext;
-    private static EGLSurface  mEGLSurface;
-    private static EGLDisplay  mEGLDisplay;
-    private static EGLConfig   mEGLConfig;
-    private static int         mGLMajor, mGLMinor;
+    private static EGLContext mEGLContext;
+    private static EGLSurface mEGLSurface;
+    private static EGLDisplay mEGLDisplay;
+    private static EGLConfig mEGLConfig;
+    private static int mGLMajor, mGLMinor;
     // Audio
-    private static Thread         mAudioThread;
-    private static AudioTrack     mAudioTrack;
-    private static Object         audioBuffer;
+    private static Thread mAudioThread;
+    private static AudioTrack mAudioTrack;
+    private static Object audioBuffer;
     // Handler for the messages
-    public         CommandHandler commandHandler;
+    public CommandHandler commandHandler;
     // Menu Drawer
     DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private int      currentVersion;
+    private int currentVersion;
     private WakeLock wake;
     private boolean hasGameLoaded = false;
     // Vibration launcher
@@ -113,6 +134,22 @@ public class SDLActivity extends CTHActivity {
     public static native void cthUpdateConfiguration(Configuration config);
 
     public static native void cthShowCheats();
+
+    public static void initialize() {
+        // The static nature of the singleton and Android quirkyness force us to initialize everything here
+        // Otherwise, when exiting the app and returning to it, these variables *keep* their pre exit values
+        mSingleton = null;
+        mSurface = null;
+        mTextEdit = null;
+        mLayout = null;
+        // mJoystickHandler = null;
+        mSDLThread = null;
+        mAudioTrack = null;
+        mExitCalledFromJava = false;
+        mIsPaused = false;
+        mIsSurfaceReady = false;
+        mHasFocus = true;
+    }
 
     public static String nativeGetGamePath() {
         return mSingleton.app.configuration.getCthPath() + "/scripts/";
@@ -169,6 +206,30 @@ public class SDLActivity extends CTHActivity {
             SDLActivity.createEGLSurface();
 
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.v("SDL", "onDestroy()");
+        // Send a quit message to the application
+        SDLActivity.mExitCalledFromJava = true;
+        SDLActivity.nativeQuit();
+
+        // Now wait for the SDL thread to quit
+        if (SDLActivity.mSDLThread != null) {
+            try {
+                SDLActivity.mSDLThread.join();
+            } catch (Exception e) {
+                Log.v("SDL", "Problem stopping thread: " + e);
+            }
+            SDLActivity.mSDLThread = null;
+
+            //Log.v("SDL", "Finished waiting for SDL thread");
+        }
+
+        super.onDestroy();
+        // Reset everything in case the user re opens the app
+        SDLActivity.initialize();
     }
 
     public static boolean createEGLContext() {
@@ -268,6 +329,7 @@ public class SDLActivity extends CTHActivity {
 
     public static Object audioInit(int sampleRate, boolean is16Bit,
                                    boolean isStereo, int desiredFrames) {
+        // int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
         int channelConfig = isStereo ? AudioFormat.CHANNEL_OUT_STEREO
                 : AudioFormat.CHANNEL_OUT_MONO;
         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT
@@ -284,13 +346,21 @@ public class SDLActivity extends CTHActivity {
         desiredFrames = Math.max(desiredFrames,
                 (AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat)
                         + frameSize - 1)
-                        / frameSize);
+                        / frameSize
+        );
 
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
-                channelConfig, audioFormat, desiredFrames * frameSize,
-                AudioTrack.MODE_STREAM);
+        if (mAudioTrack == null) {
+            mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
+                    channelConfig, audioFormat, desiredFrames * frameSize,
+                    AudioTrack.MODE_STREAM);
 
-        audioStartThread();
+            if (mAudioTrack.getState() != AudioTrack.STATE_INITIALIZED) {
+                Log.e("SDL", "Failed during initialization of Audio Track");
+                mAudioTrack = null;
+                return -1;
+            }
+        }
+
 
         Log.v(
                 "SDL",
@@ -299,7 +369,13 @@ public class SDLActivity extends CTHActivity {
                         + " "
                         + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit"
                         : "8-bit") + " " + (mAudioTrack.getSampleRate() / 1000f)
-                        + "kHz, " + desiredFrames + " frames buffer");
+                        + "kHz, " + desiredFrames + " frames buffer"
+        );
+
+        // TODO - change this to SDL2 way. I think in SDL2 it's handled in it's own thread on
+        // the native side, rather than in the JVM.
+
+        audioStartThread();
 
         if (is16Bit) {
             audioBuffer = new short[desiredFrames * (isStereo ? 2 : 1)];
@@ -365,6 +441,7 @@ public class SDLActivity extends CTHActivity {
     // Send a message from the SDLMain thread
 
     public static void audioQuit() {
+        // TODO - change this to SDL2 style
         if (mAudioThread != null) {
             try {
                 mAudioThread.join();
@@ -391,6 +468,11 @@ public class SDLActivity extends CTHActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SDLActivity.initialize();
+        // So we can call stuff from static callbacks
+        mSingleton = this;
+
         commandHandler = new CommandHandler(this);
         // The volume buttons should change the media volume
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -544,7 +626,7 @@ public class SDLActivity extends CTHActivity {
 
         // Load the libraries
         System.loadLibrary("SDL");
-	System.loadLibrary("LUA");
+        System.loadLibrary("LUA");
         System.loadLibrary("SDL_mixer");
         System.loadLibrary("ffmpeg");
         System.loadLibrary("appmain");
@@ -562,9 +644,6 @@ public class SDLActivity extends CTHActivity {
         if (!f.isDirectory()) {
             f.mkdirs();
         }
-
-        // So we can call stuff from static callbacks
-        mSingleton = this;
 
         hideSystemUi();
 
@@ -639,7 +718,8 @@ public class SDLActivity extends CTHActivity {
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            );
         } else if (Build.VERSION.SDK_INT >= 11) {
 
             // Use low profile mode if supported
@@ -659,11 +739,12 @@ public class SDLActivity extends CTHActivity {
                 saves = Files.listFilesInDirectory(
                         app.configuration.getSaveGamesPath(), new FilenameFilter() {
 
-                    @Override
-                    public boolean accept(File dir, String filename) {
-                        return filename.toLowerCase(Locale.US).endsWith(".sav");
-                    }
-                });
+                            @Override
+                            public boolean accept(File dir, String filename) {
+                                return filename.toLowerCase(Locale.US).endsWith(".sav");
+                            }
+                        }
+                );
             } catch (IOException e) {
             }
 
@@ -804,7 +885,7 @@ public class SDLActivity extends CTHActivity {
 class SDLMain implements Runnable {
     private static final String LOG_TAG = "SDLMain";
     private final Configuration config;
-    private final String        toLoad;
+    private final String toLoad;
 
     public SDLMain(Configuration config, String toLoad) {
         this.config = config;
