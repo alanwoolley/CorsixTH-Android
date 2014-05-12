@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.10.+'
     }
 }
 
@@ -38,27 +38,27 @@ android {
     }
 
     Properties signingProperties = new Properties()
-  
+
     if (file("signing.properties").exists()) {
-      signingProperties.load(new FileInputStream(file("signing.properties")))
-      signingConfigs {
-          release {
-              storeFile file(signingProperties['signing.release.storeFile'])
-              storePassword signingProperties['signing.release.storePassword']
-              keyAlias signingProperties['signing.release.keyAlias']
-              keyPassword signingProperties['signing.release.keyPassword']
-          }
-       }
-       
-       buildTypes {
-        release {
-          signingConfig signingConfigs.release
+        signingProperties.load(new FileInputStream(file("signing.properties")))
+        signingConfigs {
+            release {
+                storeFile file(signingProperties['signing.release.storeFile'])
+                storePassword signingProperties['signing.release.storePassword']
+                keyAlias signingProperties['signing.release.keyAlias']
+                keyPassword signingProperties['signing.release.keyPassword']
+            }
         }
-        
-        beta {
-          signingConfig signingConfigs.release
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+
+            beta {
+                signingConfig signingConfigs.release
+            }
         }
-       }
     }
 
     buildTypes {
@@ -134,9 +134,9 @@ task createGameZip(type: Zip) {
 
 task ndkBuild(type: Exec) {
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-      commandLine 'ndk-build.cmd', '-j'
+        commandLine 'ndk-build.cmd', '-j'
     } else {
-      commandLine 'ndk-build', '-j'
+        commandLine 'ndk-build', '-j'
     }
 }
 tasks.withType(JavaCompile) {
