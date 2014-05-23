@@ -5,12 +5,6 @@
  */
 package uk.co.armedpineapple.cth;
 
-import com.samsung.spen.lib.input.SPenEventLibrary;
-import uk.co.armedpineapple.cth.gestures.LongPressGesture;
-import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
-import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
-import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -21,12 +15,22 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
+
+import com.samsung.spen.lib.input.SPenEventLibrary;
+
+import uk.co.armedpineapple.cth.gestures.LongPressGesture;
+import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
+import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
+import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
 /**
  * SDLSurface. This is what we draw on, so we need to know when it's created in
@@ -49,7 +53,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Sensors
     protected static SensorManager mSensorManager;
-    protected static Display mDisplay;
+    protected static Display       mDisplay;
 
     private final GestureDetector          longPressGestureDetector;
     private final TwoFingerGestureDetector moveGestureDetector;
@@ -71,8 +75,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         setOnKeyListener(this);
         setOnTouchListener(this);
 
-        mDisplay = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+        mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
 
         moveGestureDetector = new TwoFingerGestureDetector(context,
@@ -196,7 +200,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         SDLActivity.mIsSurfaceReady = true;
-        SDLActivity.onNativeSurfaceChanged();
+        //SDLActivity.onNativeSurfaceChanged();
 
         // TODO - more SDL2 stuff here
 		context.startApp();
@@ -349,10 +353,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // TODO
     }
 
-
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO
-	}
 
     @Override
     public void onSensorChanged(SensorEvent event) {

@@ -625,9 +625,9 @@ public class SDLActivity extends CTHActivity {
     void loadApplication() {
 
         // Load the libraries
-        System.loadLibrary("SDL");
+        System.loadLibrary("SDL2");
         System.loadLibrary("LUA");
-        System.loadLibrary("SDL_mixer");
+        System.loadLibrary("SDL2_mixer");
         System.loadLibrary("ffmpeg");
         System.loadLibrary("appmain");
 
