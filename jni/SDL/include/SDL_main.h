@@ -23,6 +23,7 @@
 #define _SDL_main_h
 
 #include "SDL_stdinc.h"
+#include <jni.h>
 
 /**
  *  \file SDL_main.h
@@ -98,7 +99,7 @@
 /**
  *  The prototype for the application's main() function
  */
-extern C_LINKAGE int SDL_main(int argc, char *argv[]);
+extern C_LINKAGE int SDL_main(int argc, char *argv[], JavaVM* jvm, jobject configuration);
 
 
 #include "begin_code.h"
