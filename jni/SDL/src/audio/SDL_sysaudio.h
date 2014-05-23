@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is SDL_free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 #ifndef _SDL_sysaudio_h
 #define _SDL_sysaudio_h
@@ -29,12 +28,14 @@
 
 /* The SDL audio driver */
 typedef struct SDL_AudioDevice SDL_AudioDevice;
-#define _THIS	SDL_AudioDevice *_this
+#define _THIS   SDL_AudioDevice *_this
+
+/* Used by audio targets during DetectDevices() */
+typedef void (*SDL_AddAudioDevice)(const char *name);
 
 typedef struct SDL_AudioDriverImpl
 {
-    int (*DetectDevices) (int iscapture);
-    const char *(*GetDeviceName) (int index, int iscapture);
+    void (*DetectDevices) (int iscapture, SDL_AddAudioDevice addfn);
     int (*OpenDevice) (_THIS, const char *devname, int iscapture);
     void (*ThreadInit) (_THIS); /* Called by audio thread at start */
     void (*WaitDevice) (_THIS);
@@ -46,12 +47,14 @@ typedef struct SDL_AudioDriverImpl
     void (*UnlockDevice) (_THIS);
     void (*Deinitialize) (void);
 
+    /* !!! FIXME: add pause(), so we can optimize instead of mixing silence. */
+
     /* Some flags to push duplicate code into the core and reduce #ifdefs. */
-    int ProvidesOwnCallbackThread:1;
-    int SkipMixerLock:1;
-    int HasCaptureSupport:1;
-    int OnlyHasDefaultOutputDevice:1;
-    int OnlyHasDefaultInputDevice:1;
+    int ProvidesOwnCallbackThread;
+    int SkipMixerLock;  /* !!! FIXME: do we need this anymore? */
+    int HasCaptureSupport;
+    int OnlyHasDefaultOutputDevice;
+    int OnlyHasDefaultInputDevice;
 } SDL_AudioDriverImpl;
 
 
@@ -66,6 +69,12 @@ typedef struct SDL_AudioDriver
     const char *desc;
 
     SDL_AudioDriverImpl impl;
+
+    char **outputDevices;
+    int outputDeviceCount;
+
+    char **inputDevices;
+    int inputDeviceCount;
 } SDL_AudioDriver;
 
 
@@ -121,7 +130,7 @@ typedef struct AudioBootStrap
     const char *name;
     const char *desc;
     int (*init) (SDL_AudioDriverImpl * impl);
-    int demand_only:1;          /* 1==request explicitly, or it won't be available. */
+    int demand_only;  /* 1==request explicitly, or it won't be available. */
 } AudioBootStrap;
 
 #endif /* _SDL_sysaudio_h */

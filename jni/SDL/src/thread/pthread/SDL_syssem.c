@@ -1,29 +1,29 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #include <errno.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <sys/time.h>
 
 #include "SDL_thread.h"
 #include "SDL_timer.h"
@@ -72,8 +72,7 @@ SDL_SemTryWait(SDL_sem * sem)
     int retval;
 
     if (!sem) {
-        SDL_SetError("Passed a NULL semaphore");
-        return -1;
+        return SDL_SetError("Passed a NULL semaphore");
     }
     retval = SDL_MUTEX_TIMEDOUT;
     if (sem_trywait(&sem->sem) == 0) {
@@ -88,13 +87,12 @@ SDL_SemWait(SDL_sem * sem)
     int retval;
 
     if (!sem) {
-        SDL_SetError("Passed a NULL semaphore");
-        return -1;
+        return SDL_SetError("Passed a NULL semaphore");
     }
 
     retval = sem_wait(&sem->sem);
     if (retval < 0) {
-        SDL_SetError("sem_wait() failed");
+        retval = SDL_SetError("sem_wait() failed");
     }
     return retval;
 }
@@ -103,12 +101,15 @@ int
 SDL_SemWaitTimeout(SDL_sem * sem, Uint32 timeout)
 {
     int retval;
+#ifdef HAVE_SEM_TIMEDWAIT
     struct timeval now;
     struct timespec ts_timeout;
+#else
+    Uint32 end;
+#endif
 
     if (!sem) {
-        SDL_SetError("Passed a NULL semaphore");
-        return -1;
+        return SDL_SetError("Passed a NULL semaphore");
     }
 
     /* Try the easy cases first */
@@ -119,6 +120,7 @@ SDL_SemWaitTimeout(SDL_sem * sem, Uint32 timeout)
         return SDL_SemWait(sem);
     }
 
+#ifdef HAVE_SEM_TIMEDWAIT
     /* Setup the timeout. sem_timedwait doesn't wait for
     * a lapse of time, but until we reach a certain time.
     * This time is now plus the timeout.
@@ -145,8 +147,21 @@ SDL_SemWaitTimeout(SDL_sem * sem, Uint32 timeout)
     } while (retval < 0 && errno == EINTR);
 
     if (retval < 0) {
-        SDL_SetError("sem_timedwait() failed");
+        if (errno == ETIMEDOUT) {
+            retval = SDL_MUTEX_TIMEDOUT;
+        } else {
+            SDL_SetError(strerror(errno));
+        }
     }
+#else
+    end = SDL_GetTicks() + timeout;
+    while ((retval = SDL_SemTryWait(sem)) == SDL_MUTEX_TIMEDOUT) {
+        if (SDL_TICKS_PASSED(SDL_GetTicks(), end)) {
+            break;
+        }
+        SDL_Delay(1);
+    }
+#endif /* HAVE_SEM_TIMEDWAIT */
 
     return retval;
 }
@@ -170,8 +185,7 @@ SDL_SemPost(SDL_sem * sem)
     int retval;
 
     if (!sem) {
-        SDL_SetError("Passed a NULL semaphore");
-        return -1;
+        return SDL_SetError("Passed a NULL semaphore");
     }
 
     retval = sem_post(&sem->sem);

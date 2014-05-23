@@ -1,23 +1,22 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /* Mac virtual key code to SDL scancode mapping table
@@ -92,7 +91,7 @@ static const SDL_Scancode darwin_scancode_table[] = {
     /*  61 */   SDL_SCANCODE_RALT,
     /*  62 */   SDL_SCANCODE_RCTRL,
     /*  63 */   SDL_SCANCODE_RGUI, /* fn on portables, acts as a hardware-level modifier already, so we don't generate events for it, also XK_Meta_R */
-    /*  64 */   SDL_SCANCODE_UNKNOWN, /* unknown (unused?) */
+    /*  64 */   SDL_SCANCODE_F17,
     /*  65 */   SDL_SCANCODE_KP_PERIOD,
     /*  66 */   SDL_SCANCODE_UNKNOWN, /* unknown (unused?) */
     /*  67 */   SDL_SCANCODE_KP_MULTIPLY,
@@ -107,8 +106,8 @@ static const SDL_Scancode darwin_scancode_table[] = {
     /*  76 */   SDL_SCANCODE_KP_ENTER, /* keypad enter on external keyboards, fn-return on portables */
     /*  77 */   SDL_SCANCODE_UNKNOWN, /* unknown (unused?) */
     /*  78 */   SDL_SCANCODE_KP_MINUS,
-    /*  79 */   SDL_SCANCODE_UNKNOWN, /* unknown (unused?) */
-    /*  80 */   SDL_SCANCODE_UNKNOWN, /* unknown (unused?) */
+    /*  79 */   SDL_SCANCODE_F18,
+    /*  80 */   SDL_SCANCODE_F19,
     /*  81 */   SDL_SCANCODE_KP_EQUALS,
     /*  82 */   SDL_SCANCODE_KP_0,
     /*  83 */   SDL_SCANCODE_KP_1,

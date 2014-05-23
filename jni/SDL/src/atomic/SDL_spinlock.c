@@ -1,34 +1,33 @@
 /*
-  SDL - Simple DirectMedia Layer
-  Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-  Sam Lantinga
-  slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_stdinc.h"
+#include "../SDL_internal.h"
+
+#if defined(__WIN32__) || defined(__WINRT__)
+#include "../core/windows/SDL_windows.h"
+#endif
 
 #include "SDL_atomic.h"
 #include "SDL_mutex.h"
 #include "SDL_timer.h"
 
-/* Don't do the check for Visual Studio 2005, it's safe here */
-#ifdef __WIN32__
-#include "../core/windows/SDL_windows.h"
-#endif
 
 /* This function is where all the magic happens... */
 SDL_bool
@@ -42,13 +41,13 @@ SDL_AtomicTryLock(SDL_SpinLock *lock)
         /* Race condition on first lock... */
         _spinlock_mutex = SDL_CreateMutex();
     }
-    SDL_mutexP(_spinlock_mutex);
+    SDL_LockMutex(_spinlock_mutex);
     if (*lock == 0) {
         *lock = 1;
-        SDL_mutexV(_spinlock_mutex);
+        SDL_UnlockMutex(_spinlock_mutex);
         return SDL_TRUE;
     } else {
-        SDL_mutexV(_spinlock_mutex);
+        SDL_UnlockMutex(_spinlock_mutex);
         return SDL_FALSE;
     }
 
@@ -56,15 +55,13 @@ SDL_AtomicTryLock(SDL_SpinLock *lock)
     SDL_COMPILE_TIME_ASSERT(locksize, sizeof(*lock) == sizeof(long));
     return (InterlockedExchange((long*)lock, 1) == 0);
 
-#elif defined(__MACOSX__)
-    return OSAtomicCompareAndSwap32Barrier(0, 1, lock);
-
 #elif HAVE_GCC_ATOMICS || HAVE_GCC_SYNC_LOCK_TEST_AND_SET
     return (__sync_lock_test_and_set(lock, 1) == 0);
 
 #elif defined(__GNUC__) && defined(__arm__) && \
         (defined(__ARM_ARCH_4__) || defined(__ARM_ARCH_4T__) || \
-         defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_5TE__))
+         defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_5TE__) || \
+         defined(__ARM_ARCH_5TEJ__))
     int result;
     __asm__ __volatile__ (
         "swp %0, %1, [%2]\n"
@@ -78,9 +75,24 @@ SDL_AtomicTryLock(SDL_SpinLock *lock)
         : "=&r" (result) : "r" (1), "r" (lock) : "cc", "memory");
     return (result == 0);
 
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+    int result;
+    __asm__ __volatile__(
+        "lock ; xchgl %0, (%1)\n"
+        : "=r" (result) : "r" (lock), "0" (1) : "cc", "memory");
+    return (result == 0);
+
+#elif defined(__MACOSX__) || defined(__IPHONEOS__)
+    /* Maybe used for PowerPC, but the Intel asm or gcc atomics are favored. */
+    return OSAtomicCompareAndSwap32Barrier(0, 1, lock);
+
+#elif HAVE_PTHREAD_SPINLOCK
+    /* pthread instructions */
+    return (pthread_spin_trylock(lock) == 0);
+
 #else
-    /* Need CPU instructions for spinlock here! */
-    __need_spinlock_implementation__
+#error Please implement for your platform.
+    return SDL_FALSE;
 #endif
 }
 
@@ -102,6 +114,9 @@ SDL_AtomicUnlock(SDL_SpinLock *lock)
 
 #elif HAVE_GCC_ATOMICS || HAVE_GCC_SYNC_LOCK_TEST_AND_SET
     __sync_lock_release(lock);
+
+#elif HAVE_PTHREAD_SPINLOCK
+    pthread_spin_unlock(lock);
 
 #else
     *lock = 0;

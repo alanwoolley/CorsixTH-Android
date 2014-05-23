@@ -1,23 +1,22 @@
 /*
-    native_midi_macosx:  Native Midi support on Mac OS X for the SDL_mixer library
-    Copyright (C) 2009  Ryan C. Gordon
+  native_midi_macosx:  Native Midi support on Mac OS X for the SDL_mixer library
+  Copyright (C) 2009  Ryan C. Gordon <icculus@icculus.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    Ryan C. Gordon
-    icculus@icculus.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /* This is Mac OS X only, using Core MIDI.
@@ -27,7 +26,8 @@
 
 #if __MACOSX__
 
-#include <Carbon/Carbon.h>
+#include <CoreServices/CoreServices.h>      /* ComponentDescription */
+#include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AvailabilityMacros.h>
 
@@ -42,6 +42,7 @@ struct _NativeMidiSong
     MusicSequence sequence;
     MusicTimeStamp endTime;
     AudioUnit audiounit;
+    int loops;
 };
 
 static NativeMidiSong *currentsong = NULL;
@@ -107,7 +108,7 @@ GetSequenceAudioUnit(MusicSequence sequence, AudioUnit *aunit)
         if (AUGraphGetIndNode(graph, i, &node) != noErr)
             continue;  /* better luck next time. */
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED < 1060 /* this is deprecated, but works back to 10.0 */
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050 /* this is deprecated, but works back to 10.0 */
         {
             struct ComponentDescription desc;
             UInt32 classdatasize = 0;
@@ -123,6 +124,14 @@ GetSequenceAudioUnit(MusicSequence sequence, AudioUnit *aunit)
         }
         #else  /* not deprecated, but requires 10.5 or later */
         {
+        # if !defined(AUDIO_UNIT_VERSION) || ((AUDIO_UNIT_VERSION + 0) < 1060)
+         /* AUGraphAddNode () is changed to take an AudioComponentDescription*
+          * desc parameter instead of a ComponentDescription* in the 10.6 SDK.
+          * AudioComponentDescription is in 10.6 or newer, but it is actually
+          * the same as struct ComponentDescription with 20 bytes of size and
+          * the same offsets of all members, therefore, is binary compatible. */
+        #   define AudioComponentDescription ComponentDescription
+        # endif
             AudioComponentDescription desc;
             if (AUGraphNodeInfo(graph, node, &desc, aunit) != noErr)
                 continue;
@@ -145,38 +154,26 @@ int native_midi_detect()
     return 1;  /* always available. */
 }
 
-NativeMidiSong *native_midi_loadsong(const char *midifile)
-{
-    NativeMidiSong *retval = NULL;
-    SDL_RWops *rw = SDL_RWFromFile(midifile, "rb");
-    if (rw != NULL) {
-        retval = native_midi_loadsong_RW(rw);
-        SDL_RWclose(rw);
-    }
-
-    return retval;
-}
-
-NativeMidiSong *native_midi_loadsong_RW(SDL_RWops *rw)
+NativeMidiSong *native_midi_loadsong_RW(SDL_RWops *src, int freesrc)
 {
     NativeMidiSong *retval = NULL;
     void *buf = NULL;
-    int len = 0;
+    Sint64 len = 0;
     CFDataRef data = NULL;
 
-    if (SDL_RWseek(rw, 0, RW_SEEK_END) < 0)
+    if (SDL_RWseek(src, 0, RW_SEEK_END) < 0)
         goto fail;
-    len = SDL_RWtell(rw);
+    len = SDL_RWtell(src);
     if (len < 0)
         goto fail;
-    if (SDL_RWseek(rw, 0, RW_SEEK_SET) < 0)
+    if (SDL_RWseek(src, 0, RW_SEEK_SET) < 0)
         goto fail;
 
     buf = malloc(len);
     if (buf == NULL)
         goto fail;
 
-    if (SDL_RWread(rw, buf, len, 1) != 1)
+    if (SDL_RWread(src, buf, len, 1) != 1)
         goto fail;
 
     retval = malloc(sizeof(NativeMidiSong));
@@ -197,10 +194,20 @@ NativeMidiSong *native_midi_loadsong_RW(SDL_RWops *rw)
     free(buf);
     buf = NULL;
 
-    #if MAC_OS_X_VERSION_MIN_REQUIRED <= MAC_OS_X_VERSION_10_4 /* this is deprecated, but works back to 10.3 */
+    #if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
+    /* MusicSequenceLoadSMFData() (avail. in 10.2, no 64 bit) is
+     * equivalent to calling MusicSequenceLoadSMFDataWithFlags()
+     * with a flags value of 0 (avail. in 10.3, avail. 64 bit).
+     * So, we use MusicSequenceLoadSMFData() for powerpc versions
+     * but the *WithFlags() on intel which require 10.4 anyway. */
+    # if defined(__ppc__) || defined(__POWERPC__)
+    if (MusicSequenceLoadSMFData(song->sequence, data) != noErr)
+        goto fail;
+    # else
     if (MusicSequenceLoadSMFDataWithFlags(retval->sequence, data, 0) != noErr)
         goto fail;
-    #else  /* not deprecated, but requires 10.5 or later */
+    # endif
+    #else  /* MusicSequenceFileLoadData() requires 10.5 or later.  */
     if (MusicSequenceFileLoadData(retval->sequence, data, 0, 0) != noErr)
         goto fail;
     #endif
@@ -213,6 +220,9 @@ NativeMidiSong *native_midi_loadsong_RW(SDL_RWops *rw)
 
     if (MusicPlayerSetSequence(retval->player, retval->sequence) != noErr)
         goto fail;
+
+    if (freesrc)
+        SDL_RWclose(src);
 
     return retval;
 
@@ -246,7 +256,7 @@ void native_midi_freesong(NativeMidiSong *song)
     }
 }
 
-void native_midi_start(NativeMidiSong *song)
+void native_midi_start(NativeMidiSong *song, int loops)
 {
     int vol;
 
@@ -260,6 +270,10 @@ void native_midi_start(NativeMidiSong *song)
         MusicPlayerStop(currentsong->player);
 
     currentsong = song;
+    currentsong->loops = loops;
+
+    MusicPlayerPreroll(song->player);
+    MusicPlayerSetTime(song->player, 0);
     MusicPlayerStart(song->player);
 
     GetSequenceAudioUnit(song->sequence, &song->audiounit);
@@ -291,8 +305,15 @@ int native_midi_active()
         return 0;
 
     MusicPlayerGetTime(currentsong->player, &currentTime);
-    return ((currentTime < currentsong->endTime) ||
-            (currentTime >= kMusicTimeStamp_EndOfTrack));
+    if ((currentTime < currentsong->endTime) ||
+        (currentTime >= kMusicTimeStamp_EndOfTrack)) {
+        return 1;
+    } else if (currentsong->loops) {
+        --currentsong->loops;
+        MusicPlayerSetTime(currentsong->player, 0);
+        return 1;
+    }
+    return 0;
 }
 
 void native_midi_setvolume(int volume)

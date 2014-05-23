@@ -1,28 +1,27 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /**
  *  \file SDL_opengl.h
- *  
+ *
  *  This is a simple file to encapsulate the OpenGL API headers.
  */
 
@@ -31,6 +30,8 @@
 
 #include "SDL_config.h"
 
+#ifndef __IPHONEOS__
+
 #ifdef __WIN32__
 #define WIN32_LEAN_AND_MEAN
 #ifndef NOMINMAX
@@ -38,6 +39,7 @@
 #endif
 #include <windows.h>
 #endif
+
 #ifdef __glext_h_
 /* Someone has already included glext.h */
 #define NO_SDL_GLEXT
@@ -57,23 +59,22 @@
 
 /**
  *  \file SDL_opengl.h
- *  
+ *
  *  This file is included because glext.h is not available on some systems.
  *  If you don't want this version included, simply define ::NO_SDL_GLEXT.
- *  
+ *
  *  The latest version is available from:
- *  	http://www.opengl.org/registry/
+ *      http://www.opengl.org/registry/
  */
 
 /**
  *  \def NO_SDL_GLEXT
- *  
- *  Define this if you have your own version of glext.h and want to disable the 
+ *
+ *  Define this if you have your own version of glext.h and want to disable the
  *  version included in SDL_opengl.h.
  */
 
 #if !defined(NO_SDL_GLEXT) && !defined(GL_GLEXT_LEGACY)
-/* *INDENT-OFF* */
 #ifndef __glext_h_
 #define __glext_h_
 
@@ -83,7 +84,7 @@ extern "C" {
 
 /*
 ** Copyright (c) 2007-2010 The Khronos Group Inc.
-** 
+**
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
 ** "Materials"), to deal in the Materials without restriction, including
@@ -91,10 +92,10 @@ extern "C" {
 ** distribute, sublicense, and/or sell copies of the Materials, and to
 ** permit persons to whom the Materials are furnished to do so, subject to
 ** the following conditions:
-** 
+**
 ** The above copyright notice and this permission notice shall be included
 ** in all copies or substantial portions of the Materials.
-** 
+**
 ** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 ** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 ** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -5106,20 +5107,34 @@ typedef char GLchar;
 
 #ifndef GL_VERSION_1_5
 /* GL types for handling large vertex buffer objects */
+#if defined(__APPLE__)
+typedef long GLintptr;
+typedef long GLsizeiptr;
+#else
 typedef ptrdiff_t GLintptr;
 typedef ptrdiff_t GLsizeiptr;
+#endif
 #endif
 
 #ifndef GL_ARB_vertex_buffer_object
 /* GL types for handling large vertex buffer objects */
+#if defined(__APPLE__)
+typedef long GLintptrARB;
+typedef long GLsizeiptrARB;
+#else
 typedef ptrdiff_t GLintptrARB;
 typedef ptrdiff_t GLsizeiptrARB;
+#endif
 #endif
 
 #ifndef GL_ARB_shader_objects
 /* GL types for program/shader text and shader object handles */
 typedef char GLcharARB;
+#if defined(__APPLE__)
+typedef void *GLhandleARB;
+#else
 typedef unsigned int GLhandleARB;
+#endif
 #endif
 
 /* GL type for "half" precision (s10e5) float data in host memory */
@@ -11102,8 +11117,9 @@ typedef void (APIENTRYP PFNGLVDPAUUNMAPSURFACESNVPROC) (GLsizei numSurface, cons
 #endif
 
 #endif
-/* *INDENT-ON* */
 #endif /* NO_SDL_GLEXT */
+
+#endif /* !__IPHONEOS__ */
 
 #endif /* _SDL_opengl_h */
 

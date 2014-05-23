@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED
 
@@ -31,13 +30,13 @@
 
 /* OpenGL shader implementation */
 
-/*#define DEBUG_SHADERS*/
+/* #define DEBUG_SHADERS */
 
 typedef struct
 {
-    GLenum program;
-    GLenum vert_shader;
-    GLenum frag_shader;
+    GLhandleARB program;
+    GLhandleARB vert_shader;
+    GLhandleARB frag_shader;
 } GL_ShaderData;
 
 struct GL_ShaderContext
@@ -168,7 +167,7 @@ static const char *shader_source[NUM_SHADERS][2] =
 };
 
 static SDL_bool
-CompileShader(GL_ShaderContext *ctx, GLenum shader, const char *defines, const char *source)
+CompileShader(GL_ShaderContext *ctx, GLhandleARB shader, const char *defines, const char *source)
 {
     GLint status;
     const char *sources[2];
@@ -217,7 +216,7 @@ CompileShaderProgram(GL_ShaderContext *ctx, int index, GL_ShaderData *data)
 
     /* Make sure we use the correct sampler type for our texture type */
     if (ctx->GL_ARB_texture_rectangle_supported) {
-        frag_defines = 
+        frag_defines =
 "#define sampler2D sampler2DRect\n"
 "#define texture2D texture2DRect\n";
     }
@@ -245,7 +244,7 @@ CompileShaderProgram(GL_ShaderContext *ctx, int index, GL_ShaderData *data)
     /* Set up some uniform variables */
     ctx->glUseProgramObjectARB(data->program);
     for (i = 0; i < num_tmus_bound; ++i) {
-        char tex_name[5];
+        char tex_name[10];
         SDL_snprintf(tex_name, SDL_arraysize(tex_name), "tex%d", i);
         location = ctx->glGetUniformLocationARB(data->program, tex_name);
         if (location >= 0) {
@@ -253,7 +252,7 @@ CompileShaderProgram(GL_ShaderContext *ctx, int index, GL_ShaderData *data)
         }
     }
     ctx->glUseProgramObjectARB(0);
-    
+
     return (ctx->glGetError() == GL_NO_ERROR);
 }
 

@@ -1,27 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Carsten Griwodz
-    griff@kom.tu-darmstadt.de
-
-    based on linux/SDL_dspaudio.c by Sam Lantinga
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_AUDIO_DRIVER_PAUDIO
 
 /* Allow access to a raw mixing buffer */
 
@@ -48,17 +47,14 @@
 #undef BIG_ENDIAN
 #include <sys/audio.h>
 
-/* The tag name used by paud audio */
-#define PAUDIO_DRIVER_NAME         "paud"
-
 /* Open the audio device for playback, and don't block if busy */
-/* #define OPEN_FLAGS	(O_WRONLY|O_NONBLOCK) */
-#define OPEN_FLAGS	O_WRONLY
+/* #define OPEN_FLAGS   (O_WRONLY|O_NONBLOCK) */
+#define OPEN_FLAGS  O_WRONLY
 
 /* Get the name of the audio device we use for output */
 
 #ifndef _PATH_DEV_DSP
-#define _PATH_DEV_DSP	"/dev/%caud%c/%c"
+#define _PATH_DEV_DSP   "/dev/%caud%c/%c"
 #endif
 
 static char devsettings[][3] = {
@@ -137,9 +133,7 @@ PAUDIO_WaitDevice(_THIS)
         /* Use timer for general audio synchronization */
         Sint32 ticks;
 
-        ticks =
-            ((Sint32) (this->hidden->next_frame - SDL_GetTicks())) -
-            FUDGE_TICKS;
+        ticks = ((Sint32) (this->hidden->next_frame - SDL_GetTicks())) - FUDGE_TICKS;
         if (ticks > 0) {
             SDL_Delay(ticks);
         }
@@ -235,10 +229,8 @@ static void
 PAUDIO_CloseDevice(_THIS)
 {
     if (this->hidden != NULL) {
-        if (this->hidden->mixbuf != NULL) {
-            SDL_FreeAudioMem(this->hidden->mixbuf);
-            this->hidden->mixbuf = NULL;
-        }
+        SDL_FreeAudioMem(this->hidden->mixbuf);
+        this->hidden->mixbuf = NULL;
         if (this->hidden->audio_fd >= 0) {
             close(this->hidden->audio_fd);
             this->hidden->audio_fd = -1;
@@ -268,8 +260,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc((sizeof *this->hidden));
     if (this->hidden == NULL) {
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden, 0, (sizeof *this->hidden));
 
@@ -278,8 +269,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->audio_fd = fd;
     if (fd < 0) {
         PAUDIO_CloseDevice(this);
-        SDL_SetError("Couldn't open %s: %s", audiodev, strerror(errno));
-        return 0;
+        return SDL_SetError("Couldn't open %s: %s", audiodev, strerror(errno));
     }
 
     /*
@@ -288,8 +278,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
      */
     if (ioctl(fd, AUDIO_BUFFER, &paud_bufinfo) < 0) {
         PAUDIO_CloseDevice(this);
-        SDL_SetError("Couldn't get audio buffer information");
-        return 0;
+        return SDL_SetError("Couldn't get audio buffer information");
     }
 
     if (this->spec.channels > 1)
@@ -403,8 +392,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
         fprintf(stderr, "Couldn't find any hardware audio formats\n");
 #endif
         PAUDIO_CloseDevice(this);
-        SDL_SetError("Couldn't find any hardware audio formats");
-        return 0;
+        return SDL_SetError("Couldn't find any hardware audio formats");
     }
     this->spec.format = test_format;
 
@@ -432,7 +420,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     /*
      * The AIX paud device init can't modify the values of the audio_init
      * structure that we pass to it. So we don't need any recalculation
-     * of this stuff and no reinit call as in linux dsp and dma code.
+     * of this stuff and no reinit call as in linux dsp code.
      *
      * /dev/paud supports all of the encoding formats, so we don't need
      * to do anything like reopening the device, either.
@@ -462,8 +450,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
 
     if (err != NULL) {
         PAUDIO_CloseDevice(this);
-        SDL_SetError("Paudio: %s", err);
-        return 0;
+        return SDL_SetError("Paudio: %s", err);
     }
 
     /* Allocate mixing buffer */
@@ -471,8 +458,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->mixbuf = (Uint8 *) SDL_AllocAudioMem(this->hidden->mixlen);
     if (this->hidden->mixbuf == NULL) {
         PAUDIO_CloseDevice(this);
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden->mixbuf, this->spec.silence, this->spec.size);
 
@@ -510,8 +496,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
 #ifdef DEBUG_AUDIO
         fprintf(stderr, "Can't start audio play\n");
 #endif
-        SDL_SetError("Can't start audio play");
-        return 0;
+        return SDL_SetError("Can't start audio play");
     }
 
     /* Check to see if we need to use select() workaround */
@@ -522,7 +507,7 @@ PAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     }
 
     /* We're ready to rock and roll. :-) */
-    return 1;
+    return 0;
 }
 
 static int
@@ -548,7 +533,9 @@ PAUDIO_Init(SDL_AudioDriverImpl * impl)
 }
 
 AudioBootStrap PAUDIO_bootstrap = {
-    PAUDIO_DRIVER_NAME, "AIX Paudio", PAUDIO_Init, 0
+    "paud", "AIX Paudio", PAUDIO_Init, 0
 };
+
+#endif /* SDL_AUDIO_DRIVER_PAUDIO */
 
 /* vi: set ts=4 sw=4 expandtab: */

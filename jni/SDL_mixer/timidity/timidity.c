@@ -1,28 +1,14 @@
 /*
-
     TiMidity -- Experimental MIDI to WAVE converter
     Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
 
-	 This program is free software; you can redistribute it and/or modify
-	 it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-	 (at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the Perl Artistic License, available in COPYING.
+ */
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <android/log.h>
 
 #include "SDL.h"
 #include "config.h"
@@ -33,9 +19,6 @@
 #include "output.h"
 #include "ctrlmode.h"
 #include "timidity.h"
-
-
-
 
 #include "tables.h"
 
@@ -170,7 +153,7 @@ static int read_config_file(const char *name)
     {
      ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
         "%s: line %d: syntax error\n", name, line);
-     return -2;
+     continue;
     }
   i=atoi(w[0]);
   if (i<0 || i>127)
@@ -303,8 +286,9 @@ int Timidity_Init(int rate, int format, int channels, int samples)
   if (!env || read_config_file(env)<0) {
     if (read_config_file(CONFIG_FILE)<0) {
       if (read_config_file(CONFIG_FILE_ETC)<0) {
-       __android_log_print(ANDROID_LOG_INFO, "libSDL", "SDL_Mixer: Timidity: cannot find timidity.cfg, MIDI support disabled");
-        return(-1);
+        if (read_config_file(CONFIG_FILE_ETC_TIMIDITY_FREEPATS)<0) {
+          return(-1);
+        }
       }
     }
   }

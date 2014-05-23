@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="SDLmain"
+	Name="SDL2main"
 	ProjectGUID="{DA956FD3-E142-46F2-9DD5-C78BEBB56B7A}"
 	RootNamespace="SDLmain"
 	TargetFrameworkVersion="131072"
@@ -49,10 +49,12 @@
 				AdditionalIncludeDirectories="..\..\include,..\..\include\SDL"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="1"
 				CompileAs="0"
 			/>
 			<Tool
@@ -66,8 +68,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)\SDLmain.lib"
-				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -116,10 +116,12 @@
 				AdditionalIncludeDirectories="..\..\include,..\..\include\SDL"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="1"
 				CompileAs="0"
 			/>
 			<Tool
@@ -133,8 +135,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)\SDLmain.lib"
-				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -147,6 +147,65 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release_NoSTDIO|Win32"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExceptionHandling="0"
+				DebugInformationFormat="1"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -183,10 +242,12 @@
 				AdditionalIncludeDirectories="..\..\include,..\..\include\SDL"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,NO_STDIO_REDIRECT"
 				StringPooling="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="1"
 				CompileAs="0"
 			/>
 			<Tool
@@ -249,10 +310,11 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include,..\..\include\SDL"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS"
+				ExceptionHandling="0"
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="1"
 				CompileAs="0"
 			/>
 			<Tool
@@ -266,8 +328,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)\SDLmain.lib"
-				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -315,10 +375,11 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\include,..\..\include\SDL"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS"
+				ExceptionHandling="0"
 				RuntimeLibrary="2"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="1"
 				CompileAs="0"
 			/>
 			<Tool
@@ -332,8 +393,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)\SDLmain.lib"
-				SuppressStartupBanner="true"
 			/>
 			<Tool
 				Name="VCALinkTool"

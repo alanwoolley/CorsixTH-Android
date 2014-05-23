@@ -1,30 +1,31 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 #ifndef _SDL_sysvideo_h
 #define _SDL_sysvideo_h
 
+#include "SDL_messagebox.h"
 #include "SDL_shape.h"
+#include "SDL_thread.h"
 
 /* The SDL video driver */
 
@@ -35,19 +36,19 @@ typedef struct SDL_VideoDevice SDL_VideoDevice;
 
 /* Define the SDL window-shaper structure */
 struct SDL_WindowShaper
-{   
+{
     /* The window associated with the shaper */
     SDL_Window *window;
-    
+
     /* The user's specified coordinates for the window, for once we give it a shape. */
     Uint32 userx,usery;
-    
+
     /* The parameters for shape calculation. */
     SDL_WindowShapeMode mode;
-    
+
     /* Has this window been assigned a shape? */
     SDL_bool hasshape;
-    
+
     void *driverdata;
 };
 
@@ -72,21 +73,27 @@ struct SDL_Window
     const void *magic;
     Uint32 id;
     char *title;
+    SDL_Surface *icon;
     int x, y;
     int w, h;
+    int min_w, min_h;
+    int max_w, max_h;
     Uint32 flags;
+    Uint32 last_fullscreen_flags;
 
     /* Stored position and size for windowed mode */
     SDL_Rect windowed;
 
     SDL_DisplayMode fullscreen_mode;
-    
+
     float brightness;
     Uint16 *gamma;
     Uint16 *saved_gamma;        /* (just offset into gamma) */
 
     SDL_Surface *surface;
     SDL_bool surface_valid;
+
+    SDL_bool is_destroying;
 
     SDL_WindowShaper *shaper;
 
@@ -108,6 +115,7 @@ struct SDL_Window
  */
 struct SDL_VideoDisplay
 {
+    char *name;
     int max_display_modes;
     int num_display_modes;
     SDL_DisplayMode *display_modes;
@@ -125,7 +133,7 @@ struct SDL_VideoDisplay
 struct SDL_SysWMinfo;
 
 /* Define the SDL video driver structure */
-#define _THIS	SDL_VideoDevice *_this
+#define _THIS   SDL_VideoDevice *_this
 
 struct SDL_VideoDevice
 {
@@ -181,20 +189,24 @@ struct SDL_VideoDevice
     void (*SetWindowIcon) (_THIS, SDL_Window * window, SDL_Surface * icon);
     void (*SetWindowPosition) (_THIS, SDL_Window * window);
     void (*SetWindowSize) (_THIS, SDL_Window * window);
+    void (*SetWindowMinimumSize) (_THIS, SDL_Window * window);
+    void (*SetWindowMaximumSize) (_THIS, SDL_Window * window);
     void (*ShowWindow) (_THIS, SDL_Window * window);
     void (*HideWindow) (_THIS, SDL_Window * window);
     void (*RaiseWindow) (_THIS, SDL_Window * window);
     void (*MaximizeWindow) (_THIS, SDL_Window * window);
     void (*MinimizeWindow) (_THIS, SDL_Window * window);
     void (*RestoreWindow) (_THIS, SDL_Window * window);
+    void (*SetWindowBordered) (_THIS, SDL_Window * window, SDL_bool bordered);
     void (*SetWindowFullscreen) (_THIS, SDL_Window * window, SDL_VideoDisplay * display, SDL_bool fullscreen);
     int (*SetWindowGammaRamp) (_THIS, SDL_Window * window, const Uint16 * ramp);
     int (*GetWindowGammaRamp) (_THIS, SDL_Window * window, Uint16 * ramp);
-    void (*SetWindowGrab) (_THIS, SDL_Window * window);
+    void (*SetWindowGrab) (_THIS, SDL_Window * window, SDL_bool grabbed);
     void (*DestroyWindow) (_THIS, SDL_Window * window);
     int (*CreateWindowFramebuffer) (_THIS, SDL_Window * window, Uint32 * format, void ** pixels, int *pitch);
-    int (*UpdateWindowFramebuffer) (_THIS, SDL_Window * window, SDL_Rect * rects, int numrects);
+    int (*UpdateWindowFramebuffer) (_THIS, SDL_Window * window, const SDL_Rect * rects, int numrects);
     void (*DestroyWindowFramebuffer) (_THIS, SDL_Window * window);
+    void (*OnWindowEnter) (_THIS, SDL_Window * window);
 
     /* * * */
     /*
@@ -215,6 +227,7 @@ struct SDL_VideoDevice
     void (*GL_UnloadLibrary) (_THIS);
       SDL_GLContext(*GL_CreateContext) (_THIS, SDL_Window * window);
     int (*GL_MakeCurrent) (_THIS, SDL_Window * window, SDL_GLContext context);
+    void (*GL_GetDrawableSize) (_THIS, SDL_Window * window, int *w, int *h);
     int (*GL_SetSwapInterval) (_THIS, int interval);
     int (*GL_GetSwapInterval) (_THIS);
     void (*GL_SwapWindow) (_THIS, SDL_Window * window);
@@ -234,10 +247,19 @@ struct SDL_VideoDevice
     void (*StopTextInput) (_THIS);
     void (*SetTextInputRect) (_THIS, SDL_Rect *rect);
 
+    /* Screen keyboard */
+    SDL_bool (*HasScreenKeyboardSupport) (_THIS);
+    void (*ShowScreenKeyboard) (_THIS, SDL_Window *window);
+    void (*HideScreenKeyboard) (_THIS, SDL_Window *window);
+    SDL_bool (*IsScreenKeyboardShown) (_THIS, SDL_Window *window);
+
     /* Clipboard */
     int (*SetClipboardText) (_THIS, const char *text);
     char * (*GetClipboardText) (_THIS);
     SDL_bool (*HasClipboardText) (_THIS);
+
+    /* MessageBox */
+    int (*ShowMessageBox) (_THIS, const SDL_MessageBoxData *messageboxdata, int *buttonid);
 
     /* * * */
     /* Data common to all drivers */
@@ -271,6 +293,10 @@ struct SDL_VideoDevice
         int accelerated;
         int major_version;
         int minor_version;
+        int flags;
+        int profile_mask;
+        int share_with_current_context;
+        int framebuffer_srgb_capable;
         int retained_backing;
         int driver_loaded;
         char driver_path[256];
@@ -278,11 +304,25 @@ struct SDL_VideoDevice
     } gl_config;
 
     /* * * */
+    /* Cache current GL context; don't call the OS when it hasn't changed. */
+    /* We have the global pointers here so Cocoa continues to work the way
+       it always has, and the thread-local storage for the general case.
+     */
+    SDL_Window *current_glwin;
+    SDL_GLContext current_glctx;
+    SDL_TLSID current_glwin_tls;
+    SDL_TLSID current_glctx_tls;
+
+    /* * * */
     /* Data private to this driver */
     void *driverdata;
     struct SDL_GLDriverData *gl_data;
-
-#if SDL_VIDEO_DRIVER_PANDORA
+    
+#if SDL_VIDEO_OPENGL_EGL
+    struct SDL_EGL_VideoData *egl_data;
+#endif
+    
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
     struct SDL_PrivateGLESData *gles_data;
 #endif
 
@@ -305,20 +345,23 @@ extern VideoBootStrap COCOA_bootstrap;
 #if SDL_VIDEO_DRIVER_X11
 extern VideoBootStrap X11_bootstrap;
 #endif
+#if SDL_VIDEO_DRIVER_MIR
+extern VideoBootStrap MIR_bootstrap;
+#endif
 #if SDL_VIDEO_DRIVER_DIRECTFB
 extern VideoBootStrap DirectFB_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_WINDOWS
 extern VideoBootStrap WINDOWS_bootstrap;
 #endif
-#if SDL_VIDEO_DRIVER_BWINDOW
-extern VideoBootStrap BWINDOW_bootstrap;
+#if SDL_VIDEO_DRIVER_WINRT
+extern VideoBootStrap WINRT_bootstrap;
+#endif
+#if SDL_VIDEO_DRIVER_HAIKU
+extern VideoBootStrap HAIKU_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_PANDORA
 extern VideoBootStrap PND_bootstrap;
-#endif
-#if SDL_VIDEO_DRIVER_NDS
-extern VideoBootStrap NDS_bootstrap;
 #endif
 #if SDL_VIDEO_DRIVER_UIKIT
 extern VideoBootStrap UIKIT_bootstrap;
@@ -326,8 +369,17 @@ extern VideoBootStrap UIKIT_bootstrap;
 #if SDL_VIDEO_DRIVER_ANDROID
 extern VideoBootStrap Android_bootstrap;
 #endif
+#if SDL_VIDEO_DRIVER_PSP
+extern VideoBootStrap PSP_bootstrap;
+#endif
+#if SDL_VIDEO_DRIVER_RPI
+extern VideoBootStrap RPI_bootstrap;
+#endif
 #if SDL_VIDEO_DRIVER_DUMMY
 extern VideoBootStrap DUMMY_bootstrap;
+#endif
+#if SDL_VIDEO_DRIVER_WAYLAND
+extern VideoBootStrap Wayland_bootstrap;
 #endif
 
 extern SDL_VideoDevice *SDL_GetVideoDevice(void);
@@ -335,6 +387,7 @@ extern int SDL_AddBasicVideoDisplay(const SDL_DisplayMode * desktop_mode);
 extern int SDL_AddVideoDisplay(const SDL_VideoDisplay * display);
 extern SDL_bool SDL_AddDisplayMode(SDL_VideoDisplay *display, const SDL_DisplayMode * mode);
 extern SDL_VideoDisplay *SDL_GetDisplayForWindow(SDL_Window *window);
+extern void *SDL_GetDisplayDriverData( int displayIndex );
 
 extern int SDL_RecreateWindow(SDL_Window * window, Uint32 flags);
 
@@ -343,9 +396,14 @@ extern void SDL_OnWindowHidden(SDL_Window * window);
 extern void SDL_OnWindowResized(SDL_Window * window);
 extern void SDL_OnWindowMinimized(SDL_Window * window);
 extern void SDL_OnWindowRestored(SDL_Window * window);
+extern void SDL_OnWindowEnter(SDL_Window * window);
+extern void SDL_OnWindowLeave(SDL_Window * window);
 extern void SDL_OnWindowFocusGained(SDL_Window * window);
 extern void SDL_OnWindowFocusLost(SDL_Window * window);
+extern void SDL_UpdateWindowGrab(SDL_Window * window);
 extern SDL_Window * SDL_GetFocusWindow(void);
+
+extern SDL_bool SDL_ShouldAllowTopmost(void);
 
 #endif /* _SDL_sysvideo_h */
 

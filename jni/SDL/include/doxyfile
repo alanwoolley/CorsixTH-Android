@@ -31,7 +31,7 @@ PROJECT_NAME           = SDL
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 1.3.0
+PROJECT_NUMBER         = 2.0.0
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -635,7 +635,7 @@ EXCLUDE                = ../doxy \
                          ../Xcode \
                          ../VisualC \
                          ../VisualCE \
-                         ../Xcode-iPhoneOS
+                         ../Xcode-iOS
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
@@ -862,14 +862,14 @@ GENERATE_DOCSET        = NO
 # documentation sets from a single provider (such as a company or product suite) 
 # can be grouped.
 
-DOCSET_FEEDNAME        = "SDL 1.2 Doxygen"
+DOCSET_FEEDNAME        = "SDL 2.0 Doxygen"
 
 # When GENERATE_DOCSET tag is set to YES, this tag specifies a string that 
 # should uniquely identify the documentation set bundle. This should be a 
 # reverse domain-name style string, e.g. com.mycompany.MyDocSet. Doxygen 
 # will append .docset to the name.
 
-DOCSET_BUNDLE_ID       = org.libsdl.sdl12
+DOCSET_BUNDLE_ID       = org.libsdl.sdl20
 
 # If the GENERATE_HTMLHELP tag is set to YES, additional index files 
 # will be generated that can be used as input for tools like the 
@@ -883,7 +883,7 @@ GENERATE_HTMLHELP      = NO
 # can add a path in front of the file if the result should not be 
 # written to the html output directory.
 
-CHM_FILE               = ./sdl12.chm
+CHM_FILE               = ./sdl20.chm
 
 # If the GENERATE_HTMLHELP tag is set to YES, the HHC_LOCATION tag can 
 # be used to specify the location (absolute path including file name) of 

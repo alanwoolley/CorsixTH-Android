@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 #include "SDL_video.h"
 #include "SDL_blit.h"
@@ -28,7 +27,7 @@
 
 #ifdef __SSE__
 /* This assumes 16-byte aligned src and dst */
-static __inline__ void
+static SDL_INLINE void
 SDL_memcpySSE(Uint8 * dst, const Uint8 * src, int len)
 {
     int i;
@@ -57,39 +56,34 @@ SDL_memcpySSE(Uint8 * dst, const Uint8 * src, int len)
 #ifdef _MSC_VER
 #pragma warning(disable:4799)
 #endif
-/* This assumes 8-byte aligned src and dst */
-static __inline__ void
+static SDL_INLINE void
 SDL_memcpyMMX(Uint8 * dst, const Uint8 * src, int len)
 {
+    const int remain = (len & 63);
     int i;
 
-    __m64 values[8];
-    for (i = len / 64; i--;) {
-#ifdef __SSE__
-        _mm_prefetch(src, _MM_HINT_NTA);
-#endif
-        values[0] = *(__m64 *) (src + 0);
-        values[1] = *(__m64 *) (src + 8);
-        values[2] = *(__m64 *) (src + 16);
-        values[3] = *(__m64 *) (src + 24);
-        values[4] = *(__m64 *) (src + 32);
-        values[5] = *(__m64 *) (src + 40);
-        values[6] = *(__m64 *) (src + 48);
-        values[7] = *(__m64 *) (src + 56);
-        _mm_stream_pi((__m64 *) (dst + 0), values[0]);
-        _mm_stream_pi((__m64 *) (dst + 8), values[1]);
-        _mm_stream_pi((__m64 *) (dst + 16), values[2]);
-        _mm_stream_pi((__m64 *) (dst + 24), values[3]);
-        _mm_stream_pi((__m64 *) (dst + 32), values[4]);
-        _mm_stream_pi((__m64 *) (dst + 40), values[5]);
-        _mm_stream_pi((__m64 *) (dst + 48), values[6]);
-        _mm_stream_pi((__m64 *) (dst + 56), values[7]);
-        src += 64;
-        dst += 64;
+    __m64* d64 = (__m64*)dst;
+    __m64* s64 = (__m64*)src;
+
+    for(i= len / 64; i--;) {
+        d64[0] = s64[0];
+        d64[1] = s64[1];
+        d64[2] = s64[2];
+        d64[3] = s64[3];
+        d64[4] = s64[4];
+        d64[5] = s64[5];
+        d64[6] = s64[6];
+        d64[7] = s64[7];
+
+        d64 += 8;
+        s64 += 8;
     }
 
-    if (len & 63)
-        SDL_memcpy(dst, src, len & 63);
+    if (remain)
+    {
+        const int skip = len - remain;
+        SDL_memcpy(dst + skip, src + skip, remain);
+    }
 }
 #endif /* __MMX__ */
 
@@ -137,9 +131,7 @@ SDL_BlitCopy(SDL_BlitInfo * info)
 #endif
 
 #ifdef __MMX__
-    if (SDL_HasMMX() &&
-        !((uintptr_t) src & 7) && !(srcskip & 7) &&
-        !((uintptr_t) dst & 7) && !(dstskip & 7)) {
+    if (SDL_HasMMX() && !(srcskip & 7) && !(dstskip & 7)) {
         while (h--) {
             SDL_memcpyMMX(dst, src, w);
             src += srcskip;

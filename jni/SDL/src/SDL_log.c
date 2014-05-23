@@ -1,25 +1,28 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "./SDL_internal.h"
+
+#if defined(__WIN32__) || defined(__WINRT__)
+#include "core/windows/SDL_windows.h"
+#endif
 
 /* Simple log messages in SDL */
 
@@ -29,14 +32,17 @@
 #include <stdio.h>
 #endif
 
-#if defined(__WIN32__)
-#include "core/windows/SDL_windows.h"
-#elif defined(__ANDROID__)
+#if defined(__ANDROID__)
 #include <android/log.h>
 #endif
 
 #define DEFAULT_PRIORITY                SDL_LOG_PRIORITY_CRITICAL
+#define DEFAULT_ASSERT_PRIORITY         SDL_LOG_PRIORITY_WARN
 #define DEFAULT_APPLICATION_PRIORITY    SDL_LOG_PRIORITY_INFO
+#define DEFAULT_TEST_PRIORITY           SDL_LOG_PRIORITY_VERBOSE
+
+/* Forward definition of error function */
+extern int SDL_SetError(const char *fmt, ...);
 
 typedef struct SDL_LogLevel
 {
@@ -51,8 +57,10 @@ static void SDL_LogOutput(void *userdata,
                           const char *message);
 
 static SDL_LogLevel *SDL_loglevels;
-static SDL_LogPriority SDL_application_priority = DEFAULT_APPLICATION_PRIORITY;
 static SDL_LogPriority SDL_default_priority = DEFAULT_PRIORITY;
+static SDL_LogPriority SDL_assert_priority = DEFAULT_ASSERT_PRIORITY;
+static SDL_LogPriority SDL_application_priority = DEFAULT_APPLICATION_PRIORITY;
+static SDL_LogPriority SDL_test_priority = DEFAULT_TEST_PRIORITY;
 static SDL_LogOutputFunction SDL_log_function = SDL_LogOutput;
 static void *SDL_log_userdata = NULL;
 
@@ -78,6 +86,7 @@ static const char *SDL_category_prefixes[SDL_LOG_CATEGORY_RESERVED1] = {
 };
 
 static int SDL_android_priority[SDL_NUM_LOG_PRIORITIES] = {
+    ANDROID_LOG_UNKNOWN,
     ANDROID_LOG_VERBOSE,
     ANDROID_LOG_DEBUG,
     ANDROID_LOG_INFO,
@@ -96,7 +105,9 @@ SDL_LogSetAllPriority(SDL_LogPriority priority)
     for (entry = SDL_loglevels; entry; entry = entry->next) {
         entry->priority = priority;
     }
-    SDL_application_priority = SDL_default_priority = priority;
+    SDL_default_priority = priority;
+    SDL_assert_priority = priority;
+    SDL_application_priority = priority;
 }
 
 void
@@ -132,8 +143,12 @@ SDL_LogGetPriority(int category)
         }
     }
 
-    if (category == SDL_LOG_CATEGORY_APPLICATION) {
+    if (category == SDL_LOG_CATEGORY_TEST) {
+        return SDL_test_priority;
+    } else if (category == SDL_LOG_CATEGORY_APPLICATION) {
         return SDL_application_priority;
+    } else if (category == SDL_LOG_CATEGORY_ASSERT) {
+        return SDL_assert_priority;
     } else {
         return SDL_default_priority;
     }
@@ -150,8 +165,10 @@ SDL_LogResetPriorities(void)
         SDL_free(entry);
     }
 
-    SDL_application_priority = DEFAULT_APPLICATION_PRIORITY;
     SDL_default_priority = DEFAULT_PRIORITY;
+    SDL_assert_priority = DEFAULT_ASSERT_PRIORITY;
+    SDL_application_priority = DEFAULT_APPLICATION_PRIORITY;
+    SDL_test_priority = DEFAULT_TEST_PRIORITY;
 }
 
 void
@@ -252,6 +269,7 @@ void
 SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va_list ap)
 {
     char *message;
+    size_t len;
 
     /* Nothing to do if we don't have an output function */
     if (!SDL_log_function) {
@@ -259,7 +277,7 @@ SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va_list
     }
 
     /* Make sure we don't exceed array bounds */
-    if (priority < 0 || priority >= SDL_NUM_LOG_PRIORITIES) {
+    if ((int)priority < 0 || priority >= SDL_NUM_LOG_PRIORITIES) {
         return;
     }
 
@@ -272,27 +290,96 @@ SDL_LogMessageV(int category, SDL_LogPriority priority, const char *fmt, va_list
     if (!message) {
         return;
     }
+
     SDL_vsnprintf(message, SDL_MAX_LOG_MESSAGE, fmt, ap);
+
+    /* Chop off final endline. */
+    len = SDL_strlen(message);
+    if ((len > 0) && (message[len-1] == '\n')) {
+        message[--len] = '\0';
+        if ((len > 0) && (message[len-1] == '\r')) {  /* catch "\r\n", too. */
+            message[--len] = '\0';
+        }
+    }
+
     SDL_log_function(SDL_log_userdata, category, priority, message);
     SDL_stack_free(message);
 }
+
+#if defined(__WIN32__)
+/* Flag tracking the attachment of the console: 0=unattached, 1=attached, -1=error */
+static int consoleAttached = 0;
+
+/* Handle to stderr output of console. */
+static HANDLE stderrHandle = NULL;
+#endif
 
 static void
 SDL_LogOutput(void *userdata, int category, SDL_LogPriority priority,
               const char *message)
 {
-#if defined(__WIN32__)
+#if defined(__WIN32__) || defined(__WINRT__)
     /* Way too many allocations here, urgh */
+    /* Note: One can't call SDL_SetError here, since that function itself logs. */
     {
         char *output;
         size_t length;
         LPTSTR tstr;
 
-        length = SDL_strlen(SDL_priority_prefixes[priority]) + 2 + SDL_strlen(message) + 1;
+#ifndef __WINRT__
+        BOOL attachResult;
+        DWORD attachError;
+        unsigned long charsWritten; 
+
+        /* Maybe attach console and get stderr handle */
+        if (consoleAttached == 0) {
+            attachResult = AttachConsole(ATTACH_PARENT_PROCESS);
+            if (!attachResult) {
+                    attachError = GetLastError();
+                    if (attachError == ERROR_INVALID_HANDLE) {
+                        OutputDebugString(TEXT("Parent process has no console\r\n"));
+                        consoleAttached = -1;
+                    } else if (attachError == ERROR_GEN_FAILURE) {
+                         OutputDebugString(TEXT("Could not attach to console of parent process\r\n"));
+                         consoleAttached = -1;
+                    } else if (attachError == ERROR_ACCESS_DENIED) {  
+                         /* Already attached */
+                        consoleAttached = 1;
+                    } else {
+                        OutputDebugString(TEXT("Error attaching console\r\n"));
+                        consoleAttached = -1;
+                    }
+                } else {
+                    /* Newly attached */
+                    consoleAttached = 1;
+                }
+			
+                if (consoleAttached == 1) {
+                        stderrHandle = GetStdHandle(STD_ERROR_HANDLE);
+                }
+        }
+#endif /* ifndef __WINRT__ */
+
+        length = SDL_strlen(SDL_priority_prefixes[priority]) + 2 + SDL_strlen(message) + 1 + 1 + 1;
         output = SDL_stack_alloc(char, length);
-        SDL_snprintf(output, length, "%s: %s", SDL_priority_prefixes[priority], message);
+        SDL_snprintf(output, length, "%s: %s\r\n", SDL_priority_prefixes[priority], message);
         tstr = WIN_UTF8ToString(output);
+        
+        /* Output to debugger */
         OutputDebugString(tstr);
+       
+#ifndef __WINRT__
+        /* Screen output to stderr, if console was attached. */
+        if (consoleAttached == 1) {
+                if (!WriteConsole(stderrHandle, tstr, lstrlen(tstr), &charsWritten, NULL)) {
+                    OutputDebugString(TEXT("Error calling WriteConsole\r\n"));
+                }
+                if (charsWritten == ERROR_NOT_ENOUGH_MEMORY) {
+                    OutputDebugString(TEXT("Insufficient heap memory to write message\r\n"));
+                }
+        }
+#endif /* ifndef __WINRT__ */
+
         SDL_free(tstr);
         SDL_stack_free(output);
     }
@@ -302,6 +389,28 @@ SDL_LogOutput(void *userdata, int category, SDL_LogPriority priority,
 
         SDL_snprintf(tag, SDL_arraysize(tag), "SDL/%s", GetCategoryPrefix(category));
         __android_log_write(SDL_android_priority[priority], tag, message);
+    }
+#elif defined(__APPLE__) && defined(SDL_VIDEO_DRIVER_COCOA)
+    /* Technically we don't need SDL_VIDEO_DRIVER_COCOA, but that's where this function is defined for now.
+    */
+    extern void SDL_NSLog(const char *text);
+    {
+        char *text;
+
+        text = SDL_stack_alloc(char, SDL_MAX_LOG_MESSAGE);
+        if (text) {
+            SDL_snprintf(text, SDL_MAX_LOG_MESSAGE, "%s: %s", SDL_priority_prefixes[priority], message);
+            SDL_NSLog(text);
+            SDL_stack_free(text);
+            return;
+        }
+    }
+#elif defined(__PSP__)
+    {
+        FILE*        pFile;
+        pFile = fopen ("SDL_Log.txt", "a");
+        fprintf(pFile, "%s: %s\n", SDL_priority_prefixes[priority], message);
+        fclose (pFile);
     }
 #endif
 #if HAVE_STDIO_H

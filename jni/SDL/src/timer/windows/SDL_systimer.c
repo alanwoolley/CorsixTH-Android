@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifdef SDL_TIMER_WINDOWS
 
@@ -27,15 +26,12 @@
 #include <mmsystem.h>
 
 #include "SDL_timer.h"
+#include "SDL_hints.h"
 
-#ifdef _WIN32_WCE
-#error This is WinCE. Please use src/timer/wince/SDL_systimer.c instead.
-#endif
-
-#define TIME_WRAP_VALUE	(~(DWORD)0)
 
 /* The first (low-resolution) ticks value of the application */
 static DWORD start;
+static BOOL ticks_started = FALSE; 
 
 #ifndef USE_GETTICKCOUNT
 /* Store if a high-resolution performance counter exists on the system */
@@ -44,36 +40,106 @@ static BOOL hires_timer_available;
 static LARGE_INTEGER hires_start_ticks;
 /* The number of ticks per second of the high-resolution performance counter */
 static LARGE_INTEGER hires_ticks_per_second;
-#endif
+
+#ifndef __WINRT__
+static void
+timeSetPeriod(UINT uPeriod)
+{
+    static UINT timer_period = 0;
+
+    if (uPeriod != timer_period) {
+        if (timer_period) {
+            timeEndPeriod(timer_period);
+        }
+
+        timer_period = uPeriod;
+
+        if (timer_period) {
+            timeBeginPeriod(timer_period);
+        }
+    }
+}
+
+static void
+SDL_TimerResolutionChanged(void *userdata, const char *name, const char *oldValue, const char *hint)
+{
+    UINT uPeriod;
+
+    /* Unless the hint says otherwise, let's have good sleep precision */
+    if (hint && *hint) {
+        uPeriod = SDL_atoi(hint);
+    } else {
+        uPeriod = 1;
+    }
+    if (uPeriod || oldValue != hint) {
+        timeSetPeriod(uPeriod);
+    }
+}
+#endif /* ifndef __WINRT__ */
+
+#endif /* !USE_GETTICKCOUNT */
 
 void
-SDL_StartTicks(void)
+SDL_TicksInit(void)
 {
+    if (ticks_started) {
+        return;
+    }
+    ticks_started = SDL_TRUE;
+
     /* Set first ticks value */
 #ifdef USE_GETTICKCOUNT
     start = GetTickCount();
 #else
-#if 0                           /* Apparently there are problems with QPC on Win2K */
+    /* QueryPerformanceCounter has had problems in the past, but lots of games
+       use it, so we'll rely on it here.
+     */
     if (QueryPerformanceFrequency(&hires_ticks_per_second) == TRUE) {
         hires_timer_available = TRUE;
         QueryPerformanceCounter(&hires_start_ticks);
-    } else
-#endif
-    {
+    } else {
         hires_timer_available = FALSE;
-        timeBeginPeriod(1);     /* use 1 ms timer precision */
+#ifdef __WINRT__
+        start = 0;            /* the timer failed to start! */
+#else
+        timeSetPeriod(1);     /* use 1 ms timer precision */
         start = timeGetTime();
+
+        SDL_AddHintCallback(SDL_HINT_TIMER_RESOLUTION,
+                            SDL_TimerResolutionChanged, NULL);
+#endif /* __WINRT__ */
     }
-#endif
+#endif /* USE_GETTICKCOUNT */
+}
+
+void
+SDL_TicksQuit(void)
+{
+#ifndef USE_GETTICKCOUNT
+    if (!hires_timer_available) {
+#ifndef __WINRT__
+        SDL_DelHintCallback(SDL_HINT_TIMER_RESOLUTION,
+                            SDL_TimerResolutionChanged, NULL);
+
+        timeSetPeriod(0);
+#endif /* __WINRT__ */
+    }
+#endif /* USE_GETTICKCOUNT */
+
+    ticks_started = SDL_FALSE;
 }
 
 Uint32
 SDL_GetTicks(void)
 {
-    DWORD now, ticks;
+    DWORD now;
 #ifndef USE_GETTICKCOUNT
     LARGE_INTEGER hires_now;
 #endif
+
+    if (!ticks_started) {
+        SDL_TicksInit();
+    }
 
 #ifdef USE_GETTICKCOUNT
     now = GetTickCount();
@@ -87,17 +153,51 @@ SDL_GetTicks(void)
 
         return (DWORD) hires_now.QuadPart;
     } else {
+#ifdef __WINRT__
+        now = 0;
+#else
         now = timeGetTime();
+#endif /* __WINRT__ */
     }
 #endif
 
-    if (now < start) {
-        ticks = (TIME_WRAP_VALUE - start) + now;
-    } else {
-        ticks = (now - start);
-    }
-    return (ticks);
+    return (now - start);
 }
+
+Uint64
+SDL_GetPerformanceCounter(void)
+{
+    LARGE_INTEGER counter;
+
+    if (!QueryPerformanceCounter(&counter)) {
+        return SDL_GetTicks();
+    }
+    return counter.QuadPart;
+}
+
+Uint64
+SDL_GetPerformanceFrequency(void)
+{
+    LARGE_INTEGER frequency;
+
+    if (!QueryPerformanceFrequency(&frequency)) {
+        return 1000;
+    }
+    return frequency.QuadPart;
+}
+
+#ifdef __WINRT__
+static void
+Sleep(DWORD timeout)
+{
+    static HANDLE mutex = 0;
+    if ( ! mutex )
+    {
+        mutex = CreateEventEx(0, 0, 0, EVENT_ALL_ACCESS);
+    }
+    WaitForSingleObjectEx(mutex, timeout, FALSE);
+}
+#endif
 
 void
 SDL_Delay(Uint32 ms)

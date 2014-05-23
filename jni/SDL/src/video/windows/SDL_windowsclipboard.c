@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_VIDEO_DRIVER_WINDOWS
 
 #include "SDL_windowsvideo.h"
 #include "SDL_windowswindow.h"
@@ -76,33 +77,29 @@ WIN_SetClipboardText(_THIS, const char *text)
         hMem = GlobalAlloc(GMEM_MOVEABLE, size);
         if (hMem) {
             LPTSTR dst = (LPTSTR)GlobalLock(hMem);
-            /* Copy the text over, adding carriage returns as necessary */
-            for (i = 0; tstr[i]; ++i) {
-                if (tstr[i] == '\n' && (i == 0 || tstr[i-1] != '\r')) {
-                    *dst++ = '\r';
+            if (dst) {
+                /* Copy the text over, adding carriage returns as necessary */
+                for (i = 0; tstr[i]; ++i) {
+                    if (tstr[i] == '\n' && (i == 0 || tstr[i-1] != '\r')) {
+                        *dst++ = '\r';
+                    }
+                    *dst++ = tstr[i];
                 }
-                *dst++ = tstr[i];
+                *dst = 0;
+                GlobalUnlock(hMem);
             }
-            *dst = 0;
-            GlobalUnlock(hMem);
 
             EmptyClipboard();
             if (!SetClipboardData(TEXT_FORMAT, hMem)) {
-                WIN_SetError("Couldn't set clipboard data");
-                result = -1;
+                result = WIN_SetError("Couldn't set clipboard data");
             }
-#ifdef _WIN32_WCE
-            data->clipboard_count = 0;
-#else
             data->clipboard_count = GetClipboardSequenceNumber();
-#endif
         }
         SDL_free(tstr);
 
         CloseClipboard();
     } else {
-        WIN_SetError("Couldn't open clipboard");
-        result = -1;
+        result = WIN_SetError("Couldn't open clipboard");
     }
     return result;
 }
@@ -137,23 +134,19 @@ WIN_GetClipboardText(_THIS)
 SDL_bool
 WIN_HasClipboardText(_THIS)
 {
-    if (IsClipboardFormatAvailable(TEXT_FORMAT)) {
-        return SDL_TRUE;
-    } else {
-        return SDL_FALSE;
+    SDL_bool result = SDL_FALSE;
+    char *text = WIN_GetClipboardText(_this);
+    if (text) {
+        result = text[0] != '\0' ? SDL_TRUE : SDL_FALSE;
+        SDL_free(text);
     }
+    return result;
 }
 
 void
 WIN_CheckClipboardUpdate(struct SDL_VideoData * data)
 {
-    DWORD count;
-
-#ifdef _WIN32_WCE
-    count = 0;
-#else
-    count = GetClipboardSequenceNumber();
-#endif
+    const DWORD count = GetClipboardSequenceNumber();
     if (count != data->clipboard_count) {
         if (data->clipboard_count) {
             SDL_SendClipboardUpdate();
@@ -161,5 +154,7 @@ WIN_CheckClipboardUpdate(struct SDL_VideoData * data)
         data->clipboard_count = count;
     }
 }
+
+#endif /* SDL_VIDEO_DRIVER_WINDOWS */
 
 /* vi: set ts=4 sw=4 expandtab: */

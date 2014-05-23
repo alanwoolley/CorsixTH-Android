@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_X11
 
@@ -33,10 +32,225 @@
 #include "SDL_x11video.h"
 #include "SDL_x11framebuffer.h"
 #include "SDL_x11shape.h"
-#include "SDL_x11touch.h" 
+#include "SDL_x11touch.h"
+#include "SDL_x11xinput2.h"
 
-#if SDL_VIDEO_DRIVER_PANDORA
+#if SDL_VIDEO_OPENGL_EGL
 #include "SDL_x11opengles.h"
+#endif
+
+/* !!! FIXME: move dbus stuff to somewhere under src/core/linux ... */
+#if SDL_USE_LIBDBUS
+/* we never link directly to libdbus. */
+#include "SDL_loadso.h"
+static const char *dbus_library = "libdbus-1.so.3";
+static void *dbus_handle = NULL;
+static unsigned int screensaver_cookie = 0;
+
+/* !!! FIXME: this is kinda ugly. */
+static SDL_bool
+load_dbus_sym(const char *fn, void **addr)
+{
+    *addr = SDL_LoadFunction(dbus_handle, fn);
+    if (*addr == NULL) {
+        /* Don't call SDL_SetError(): SDL_LoadFunction already did. */
+        return SDL_FALSE;
+    }
+
+    return SDL_TRUE;
+}
+
+/* libdbus entry points... */
+static DBusConnection *(*DBUS_dbus_bus_get_private)(DBusBusType, DBusError *) = NULL;
+static void (*DBUS_dbus_connection_set_exit_on_disconnect)(DBusConnection *, dbus_bool_t) = NULL;
+static dbus_bool_t (*DBUS_dbus_connection_send)(DBusConnection *, DBusMessage *, dbus_uint32_t *) = NULL;
+static DBusMessage *(*DBUS_dbus_connection_send_with_reply_and_block)(DBusConnection *, DBusMessage *, int, DBusError *) = NULL;
+static void (*DBUS_dbus_connection_close)(DBusConnection *) = NULL;
+static void (*DBUS_dbus_connection_unref)(DBusConnection *) = NULL;
+static void (*DBUS_dbus_connection_flush)(DBusConnection *) = NULL;
+static DBusMessage *(*DBUS_dbus_message_new_method_call)(const char *, const char *, const char *, const char *) = NULL;
+static dbus_bool_t (*DBUS_dbus_message_append_args)(DBusMessage *, int, ...) = NULL;
+static dbus_bool_t (*DBUS_dbus_message_get_args)(DBusMessage *, DBusError *, int, ...) = NULL;
+static void (*DBUS_dbus_message_unref)(DBusMessage *) = NULL;
+static void (*DBUS_dbus_error_init)(DBusError *) = NULL;
+static dbus_bool_t (*DBUS_dbus_error_is_set)(const DBusError *) = NULL;
+static void (*DBUS_dbus_error_free)(DBusError *) = NULL;
+
+static int
+load_dbus_syms(void)
+{
+    /* cast funcs to char* first, to please GCC's strict aliasing rules. */
+    #define SDL_DBUS_SYM(x) \
+        if (!load_dbus_sym(#x, (void **) (char *) &DBUS_##x)) return -1
+
+    SDL_DBUS_SYM(dbus_bus_get_private);
+    SDL_DBUS_SYM(dbus_connection_set_exit_on_disconnect);
+    SDL_DBUS_SYM(dbus_connection_send);
+    SDL_DBUS_SYM(dbus_connection_send_with_reply_and_block);
+    SDL_DBUS_SYM(dbus_connection_close);
+    SDL_DBUS_SYM(dbus_connection_unref);
+    SDL_DBUS_SYM(dbus_connection_flush);
+    SDL_DBUS_SYM(dbus_message_append_args);
+    SDL_DBUS_SYM(dbus_message_get_args);
+    SDL_DBUS_SYM(dbus_message_new_method_call);
+    SDL_DBUS_SYM(dbus_message_unref);
+    SDL_DBUS_SYM(dbus_error_init);
+    SDL_DBUS_SYM(dbus_error_is_set);
+    SDL_DBUS_SYM(dbus_error_free);
+
+    #undef SDL_DBUS_SYM
+
+    return 0;
+}
+
+static void
+UnloadDBUSLibrary(void)
+{
+    if (dbus_handle != NULL) {
+        SDL_UnloadObject(dbus_handle);
+        dbus_handle = NULL;
+    }
+}
+
+static int
+LoadDBUSLibrary(void)
+{
+    int retval = 0;
+    if (dbus_handle == NULL) {
+        dbus_handle = SDL_LoadObject(dbus_library);
+        if (dbus_handle == NULL) {
+            retval = -1;
+            /* Don't call SDL_SetError(): SDL_LoadObject already did. */
+        } else {
+            retval = load_dbus_syms();
+            if (retval < 0) {
+                UnloadDBUSLibrary();
+            }
+        }
+    }
+
+    return retval;
+}
+
+static void
+X11_InitDBus(_THIS)
+{
+    if (LoadDBUSLibrary() != -1) {
+        SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+        DBusError err;
+        DBUS_dbus_error_init(&err);
+        data->dbus = DBUS_dbus_bus_get_private(DBUS_BUS_SESSION, &err);
+        if (DBUS_dbus_error_is_set(&err)) {
+            DBUS_dbus_error_free(&err);
+            if (data->dbus) {
+                DBUS_dbus_connection_unref(data->dbus);
+                data->dbus = NULL;
+            }
+            return;  /* oh well */
+        }
+        DBUS_dbus_connection_set_exit_on_disconnect(data->dbus, 0);
+    }
+}
+
+static void
+X11_QuitDBus(_THIS)
+{
+    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    if (data->dbus) {
+        DBUS_dbus_connection_close(data->dbus);
+        DBUS_dbus_connection_unref(data->dbus);
+        data->dbus = NULL;
+    }
+}
+
+void
+SDL_dbus_screensaver_tickle(_THIS)
+{
+    const SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    DBusConnection *conn = data->dbus;
+    if (conn != NULL) {
+        DBusMessage *msg = DBUS_dbus_message_new_method_call("org.gnome.ScreenSaver",
+                                                             "/org/gnome/ScreenSaver",
+                                                             "org.gnome.ScreenSaver",
+                                                             "SimulateUserActivity");
+        if (msg != NULL) {
+            if (DBUS_dbus_connection_send(conn, msg, NULL)) {
+                DBUS_dbus_connection_flush(conn);
+            }
+            DBUS_dbus_message_unref(msg);
+        }
+    }
+}
+
+SDL_bool
+SDL_dbus_screensaver_inhibit(_THIS)
+{
+    const SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    DBusConnection *conn = data->dbus;
+
+    if (conn == NULL)
+        return SDL_FALSE;
+
+    if (_this->suspend_screensaver &&
+        screensaver_cookie != 0)
+        return SDL_TRUE;
+    if (!_this->suspend_screensaver &&
+        screensaver_cookie == 0)
+        return SDL_TRUE;
+
+    if (_this->suspend_screensaver) {
+        const char *app = "My SDL application";
+        const char *reason = "Playing a game";
+
+        DBusMessage *msg = DBUS_dbus_message_new_method_call("org.freedesktop.ScreenSaver",
+                                                             "/org/freedesktop/ScreenSaver",
+                                                             "org.freedesktop.ScreenSaver",
+                                                             "Inhibit");
+        if (msg != NULL) {
+            DBUS_dbus_message_append_args (msg,
+                                           DBUS_TYPE_STRING, &app,
+                                           DBUS_TYPE_STRING, &reason,
+                                           DBUS_TYPE_INVALID);
+        }
+
+        if (msg != NULL) {
+            DBusMessage *reply;
+
+            reply = DBUS_dbus_connection_send_with_reply_and_block(conn, msg, 300, NULL);
+            if (reply) {
+                if (!DBUS_dbus_message_get_args(reply, NULL,
+                                                DBUS_TYPE_UINT32, &screensaver_cookie,
+                                                DBUS_TYPE_INVALID))
+                    screensaver_cookie = 0;
+                DBUS_dbus_message_unref(reply);
+            }
+
+            DBUS_dbus_message_unref(msg);
+        }
+
+        if (screensaver_cookie == 0) {
+            return SDL_FALSE;
+        }
+        return SDL_TRUE;
+    } else {
+        DBusMessage *msg = DBUS_dbus_message_new_method_call("org.freedesktop.ScreenSaver",
+                                                             "/org/freedesktop/ScreenSaver",
+                                                             "org.freedesktop.ScreenSaver",
+                                                             "UnInhibit");
+        DBUS_dbus_message_append_args (msg,
+                                       DBUS_TYPE_UINT32, &screensaver_cookie,
+                                       DBUS_TYPE_INVALID);
+        if (msg != NULL) {
+            if (DBUS_dbus_connection_send(conn, msg, NULL)) {
+                DBUS_dbus_connection_flush(conn);
+            }
+            DBUS_dbus_message_unref(msg);
+        }
+
+        screensaver_cookie = 0;
+        return SDL_TRUE;
+    }
+}
 #endif
 
 /* Initialization/Query functions */
@@ -93,9 +307,9 @@ X11_Available(void)
 {
     Display *display = NULL;
     if (SDL_X11_LoadSymbols()) {
-        display = XOpenDisplay(NULL);
+        display = X11_XOpenDisplay(NULL);
         if (display != NULL) {
-            XCloseDisplay(display);
+            X11_XCloseDisplay(display);
         }
         SDL_X11_UnloadSymbols();
     }
@@ -107,16 +321,43 @@ X11_DeleteDevice(SDL_VideoDevice * device)
 {
     SDL_VideoData *data = (SDL_VideoData *) device->driverdata;
     if (data->display) {
-        XCloseDisplay(data->display);
+        X11_XCloseDisplay(data->display);
     }
     SDL_free(data->windowlist);
     SDL_free(device->driverdata);
-#if SDL_VIDEO_DRIVER_PANDORA
-    SDL_free(device->gles_data);
-#endif
     SDL_free(device);
 
     SDL_X11_UnloadSymbols();
+}
+
+/* An error handler to reset the vidmode and then call the default handler. */
+static SDL_bool safety_net_triggered = SDL_FALSE;
+static int (*orig_x11_errhandler) (Display *, XErrorEvent *) = NULL;
+static int
+X11_SafetyNetErrHandler(Display * d, XErrorEvent * e)
+{
+    SDL_VideoDevice *device = NULL;
+    /* if we trigger an error in our error handler, don't try again. */
+    if (!safety_net_triggered) {
+        safety_net_triggered = SDL_TRUE;
+        device = SDL_GetVideoDevice();
+        if (device != NULL) {
+            int i;
+            for (i = 0; i < device->num_displays; i++) {
+                SDL_VideoDisplay *display = &device->displays[i];
+                if (SDL_memcmp(&display->current_mode, &display->desktop_mode,
+                               sizeof (SDL_DisplayMode)) != 0) {
+                    X11_SetDisplayMode(device, display, &display->desktop_mode);
+                }
+            }
+        }
+    }
+
+    if (orig_x11_errhandler != NULL) {
+        return orig_x11_errhandler(d, e);  /* probably terminate. */
+    }
+
+    return 0;
 }
 
 static SDL_VideoDevice *
@@ -130,6 +371,10 @@ X11_CreateDevice(int devindex)
         return NULL;
     }
 
+    /* Need for threading gl calls. This is also required for the proprietary
+        nVidia driver to be threaded. */
+    X11_XInitThreads();
+
     /* Initialize all variables that we clean on shutdown */
     device = (SDL_VideoDevice *) SDL_calloc(1, sizeof(SDL_VideoDevice));
     if (!device) {
@@ -138,29 +383,21 @@ X11_CreateDevice(int devindex)
     }
     data = (struct SDL_VideoData *) SDL_calloc(1, sizeof(SDL_VideoData));
     if (!data) {
-        SDL_OutOfMemory();
         SDL_free(device);
+        SDL_OutOfMemory();
         return NULL;
     }
     device->driverdata = data;
 
-#if SDL_VIDEO_DRIVER_PANDORA
-    device->gles_data = (struct SDL_PrivateGLESData *) SDL_calloc(1, sizeof(SDL_PrivateGLESData));
-    if (!device->gles_data) {
-        SDL_OutOfMemory();
-        return NULL;
-    }
-#endif
-
     /* FIXME: Do we need this?
-       if ( (SDL_strncmp(XDisplayName(display), ":", 1) == 0) ||
-       (SDL_strncmp(XDisplayName(display), "unix:", 5) == 0) ) {
+       if ( (SDL_strncmp(X11_XDisplayName(display), ":", 1) == 0) ||
+       (SDL_strncmp(X11_XDisplayName(display), "unix:", 5) == 0) ) {
        local_X11 = 1;
        } else {
        local_X11 = 0;
        }
      */
-    data->display = XOpenDisplay(display);
+    data->display = X11_XOpenDisplay(display);
 #if defined(__osf__) && defined(SDL_VIDEO_DRIVER_X11_DYNAMIC)
     /* On Tru64 if linking without -lX11, it fails and you get following message.
      * Xlib: connection to ":0.0" refused by server
@@ -171,22 +408,28 @@ X11_CreateDevice(int devindex)
      */
     if (data->display == NULL) {
         SDL_Delay(1000);
-        data->display = XOpenDisplay(display);
+        data->display = X11_XOpenDisplay(display);
     }
 #endif
     if (data->display == NULL) {
+        SDL_free(device->driverdata);
         SDL_free(device);
         SDL_SetError("Couldn't open X11 display");
         return NULL;
     }
 #ifdef X11_DEBUG
-    XSynchronize(data->display, True);
+    X11_XSynchronize(data->display, True);
 #endif
+
+    /* Hook up an X11 error handler to recover the desktop resolution. */
+    safety_net_triggered = SDL_FALSE;
+    orig_x11_errhandler = X11_XSetErrorHandler(X11_SafetyNetErrHandler);
 
     /* Set the function pointers */
     device->VideoInit = X11_VideoInit;
     device->VideoQuit = X11_VideoQuit;
     device->GetDisplayModes = X11_GetDisplayModes;
+    device->GetDisplayBounds = X11_GetDisplayBounds;
     device->SetDisplayMode = X11_SetDisplayMode;
     device->SuspendScreenSaver = X11_SuspendScreenSaver;
     device->PumpEvents = X11_PumpEvents;
@@ -197,12 +440,15 @@ X11_CreateDevice(int devindex)
     device->SetWindowIcon = X11_SetWindowIcon;
     device->SetWindowPosition = X11_SetWindowPosition;
     device->SetWindowSize = X11_SetWindowSize;
+    device->SetWindowMinimumSize = X11_SetWindowMinimumSize;
+    device->SetWindowMaximumSize = X11_SetWindowMaximumSize;
     device->ShowWindow = X11_ShowWindow;
     device->HideWindow = X11_HideWindow;
     device->RaiseWindow = X11_RaiseWindow;
     device->MaximizeWindow = X11_MaximizeWindow;
     device->MinimizeWindow = X11_MinimizeWindow;
     device->RestoreWindow = X11_RestoreWindow;
+    device->SetWindowBordered = X11_SetWindowBordered;
     device->SetWindowFullscreen = X11_SetWindowFullscreen;
     device->SetWindowGammaRamp = X11_SetWindowGammaRamp;
     device->SetWindowGrab = X11_SetWindowGrab;
@@ -226,8 +472,7 @@ X11_CreateDevice(int devindex)
     device->GL_GetSwapInterval = X11_GL_GetSwapInterval;
     device->GL_SwapWindow = X11_GL_SwapWindow;
     device->GL_DeleteContext = X11_GL_DeleteContext;
-#endif
-#if SDL_VIDEO_DRIVER_PANDORA
+#elif SDL_VIDEO_OPENGL_EGL
     device->GL_LoadLibrary = X11_GLES_LoadLibrary;
     device->GL_GetProcAddress = X11_GLES_GetProcAddress;
     device->GL_UnloadLibrary = X11_GLES_UnloadLibrary;
@@ -272,39 +517,43 @@ X11_CheckWindowManager(_THIS)
     Atom _NET_SUPPORTING_WM_CHECK;
     int status, real_format;
     Atom real_type;
-    unsigned long items_read, items_left;
-    unsigned char *propdata;
+    unsigned long items_read = 0, items_left = 0;
+    unsigned char *propdata = NULL;
     Window wm_window = 0;
 #ifdef DEBUG_WINDOW_MANAGER
     char *wm_name;
 #endif
 
     /* Set up a handler to gracefully catch errors */
-    XSync(display, False);
-    handler = XSetErrorHandler(X11_CheckWindowManagerErrorHandler);
+    X11_XSync(display, False);
+    handler = X11_XSetErrorHandler(X11_CheckWindowManagerErrorHandler);
 
-    _NET_SUPPORTING_WM_CHECK = XInternAtom(display, "_NET_SUPPORTING_WM_CHECK", False);
-    status = XGetWindowProperty(display, DefaultRootWindow(display), _NET_SUPPORTING_WM_CHECK, 0L, 1L, False, XA_WINDOW, &real_type, &real_format, &items_read, &items_left, &propdata);
-    if (status == Success && items_read) {
-        wm_window = ((Window*)propdata)[0];
-    }
-    if (propdata) {
-        XFree(propdata);
+    _NET_SUPPORTING_WM_CHECK = X11_XInternAtom(display, "_NET_SUPPORTING_WM_CHECK", False);
+    status = X11_XGetWindowProperty(display, DefaultRootWindow(display), _NET_SUPPORTING_WM_CHECK, 0L, 1L, False, XA_WINDOW, &real_type, &real_format, &items_read, &items_left, &propdata);
+    if (status == Success) {
+        if (items_read) {
+            wm_window = ((Window*)propdata)[0];
+        }
+        if (propdata) {
+            X11_XFree(propdata);
+            propdata = NULL;
+        }
     }
 
     if (wm_window) {
-        status = XGetWindowProperty(display, wm_window, _NET_SUPPORTING_WM_CHECK, 0L, 1L, False, XA_WINDOW, &real_type, &real_format, &items_read, &items_left, &propdata);
+        status = X11_XGetWindowProperty(display, wm_window, _NET_SUPPORTING_WM_CHECK, 0L, 1L, False, XA_WINDOW, &real_type, &real_format, &items_read, &items_left, &propdata);
         if (status != Success || !items_read || wm_window != ((Window*)propdata)[0]) {
             wm_window = None;
         }
-        if (propdata) {
-            XFree(propdata);
+        if (status == Success && propdata) {
+            X11_XFree(propdata);
+            propdata = NULL;
         }
     }
 
     /* Reset the error handler, we're done checking */
-    XSync(display, False);
-    XSetErrorHandler(handler);
+    X11_XSync(display, False);
+    X11_XSetErrorHandler(handler);
 
     if (!wm_window) {
 #ifdef DEBUG_WINDOW_MANAGER
@@ -321,6 +570,7 @@ X11_CheckWindowManager(_THIS)
 #endif
 }
 
+
 int
 X11_VideoInit(_THIS)
 {
@@ -329,26 +579,44 @@ X11_VideoInit(_THIS)
     /* Get the window class name, usually the name of the application */
     data->classname = get_classname();
 
+    /* Get the process PID to be associated to the window */
+    data->pid = getpid();
+
     /* Open a connection to the X input manager */
 #ifdef X_HAVE_UTF8_STRING
     if (SDL_X11_HAVE_UTF8) {
         data->im =
-            XOpenIM(data->display, NULL, data->classname, data->classname);
+            X11_XOpenIM(data->display, NULL, data->classname, data->classname);
     }
 #endif
 
     /* Look up some useful Atoms */
-#define GET_ATOM(X) data->X = XInternAtom(data->display, #X, False)
+#define GET_ATOM(X) data->X = X11_XInternAtom(data->display, #X, False)
+    GET_ATOM(WM_PROTOCOLS);
     GET_ATOM(WM_DELETE_WINDOW);
     GET_ATOM(_NET_WM_STATE);
     GET_ATOM(_NET_WM_STATE_HIDDEN);
+    GET_ATOM(_NET_WM_STATE_FOCUSED);
     GET_ATOM(_NET_WM_STATE_MAXIMIZED_VERT);
     GET_ATOM(_NET_WM_STATE_MAXIMIZED_HORZ);
     GET_ATOM(_NET_WM_STATE_FULLSCREEN);
+    GET_ATOM(_NET_WM_ALLOWED_ACTIONS);
+    GET_ATOM(_NET_WM_ACTION_FULLSCREEN);
     GET_ATOM(_NET_WM_NAME);
     GET_ATOM(_NET_WM_ICON_NAME);
     GET_ATOM(_NET_WM_ICON);
+    GET_ATOM(_NET_WM_PING);
+    GET_ATOM(_NET_ACTIVE_WINDOW);
     GET_ATOM(UTF8_STRING);
+    GET_ATOM(PRIMARY);
+    GET_ATOM(XdndEnter);
+    GET_ATOM(XdndPosition);
+    GET_ATOM(XdndStatus);
+    GET_ATOM(XdndTypeList);
+    GET_ATOM(XdndActionCopy);
+    GET_ATOM(XdndDrop);
+    GET_ATOM(XdndFinished);
+    GET_ATOM(XdndSelection);
 
     /* Detect the window manager */
     X11_CheckWindowManager(_this);
@@ -357,12 +625,19 @@ X11_VideoInit(_THIS)
         return -1;
     }
 
+    X11_InitXinput2(_this);
+
     if (X11_InitKeyboard(_this) != 0) {
         return -1;
     }
     X11_InitMouse(_this);
 
     X11_InitTouch(_this);
+
+#if SDL_USE_LIBDBUS
+    X11_InitDBus(_this);
+#endif
+
     return 0;
 }
 
@@ -371,12 +646,10 @@ X11_VideoQuit(_THIS)
 {
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
 
-    if (data->classname) {
-        SDL_free(data->classname);
-    }
+    SDL_free(data->classname);
 #ifdef X_HAVE_UTF8_STRING
     if (data->im) {
-        XCloseIM(data->im);
+        X11_XCloseIM(data->im);
     }
 #endif
 
@@ -384,6 +657,10 @@ X11_VideoQuit(_THIS)
     X11_QuitKeyboard(_this);
     X11_QuitMouse(_this);
     X11_QuitTouch(_this);
+
+#if SDL_USE_LIBDBUS
+    X11_QuitDBus(_this);
+#endif
 }
 
 SDL_bool

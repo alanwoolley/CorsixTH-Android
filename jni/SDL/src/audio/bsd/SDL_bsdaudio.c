@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_AUDIO_DRIVER_BSD
 
 /*
  * Driver for native OpenBSD/NetBSD audio(4).
@@ -42,100 +43,17 @@
 #include "../SDL_audiodev_c.h"
 #include "SDL_bsdaudio.h"
 
-/* The tag name used by NetBSD/OpenBSD audio */
-#ifdef __NetBSD__
-#define BSD_AUDIO_DRIVER_NAME         "netbsd"
-#define BSD_AUDIO_DRIVER_DESC         "Native NetBSD audio"
-#else
-#define BSD_AUDIO_DRIVER_NAME         "openbsd"
-#define BSD_AUDIO_DRIVER_DESC         "Native OpenBSD audio"
-#endif
-
-/* Open the audio device for playback, and don't block if busy */
-/* #define USE_BLOCKING_WRITES */
-
 /* Use timer for synchronization */
 /* #define USE_TIMER_SYNC */
 
 /* #define DEBUG_AUDIO */
 /* #define DEBUG_AUDIO_STREAM */
 
-#ifdef USE_BLOCKING_WRITES
-#define OPEN_FLAGS_OUTPUT O_WRONLY
-#define OPEN_FLAGS_INPUT O_RDONLY
-#else
-#define OPEN_FLAGS_OUTPUT (O_WRONLY|O_NONBLOCK)
-#define OPEN_FLAGS_INPUT (O_RDONLY|O_NONBLOCK)
-#endif
-
-/* !!! FIXME: so much cut and paste with dsp/dma drivers... */
-static char **outputDevices = NULL;
-static int outputDeviceCount = 0;
-static char **inputDevices = NULL;
-static int inputDeviceCount = 0;
-
-static inline void
-free_device_list(char ***devs, int *count)
-{
-    SDL_FreeUnixAudioDevices(devs, count);
-}
-
-static inline void
-build_device_list(int iscapture, char ***devs, int *count)
-{
-    const int flags = ((iscapture) ? OPEN_FLAGS_INPUT : OPEN_FLAGS_OUTPUT);
-    free_device_list(devs, count);
-    SDL_EnumUnixAudioDevices(flags, 0, NULL, devs, count);
-}
-
-static inline void
-build_device_lists(void)
-{
-    build_device_list(0, &outputDevices, &outputDeviceCount);
-    build_device_list(1, &inputDevices, &inputDeviceCount);
-}
-
-
-static inline void
-free_device_lists(void)
-{
-    free_device_list(&outputDevices, &outputDeviceCount);
-    free_device_list(&inputDevices, &inputDeviceCount);
-}
-
 
 static void
-BSDAUDIO_Deinitialize(void)
+BSDAUDIO_DetectDevices(int iscapture, SDL_AddAudioDevice addfn)
 {
-    free_device_lists();
-}
-
-
-static int
-BSDAUDIO_DetectDevices(int iscapture)
-{
-    if (iscapture) {
-        build_device_list(1, &inputDevices, &inputDeviceCount);
-        return inputDeviceCount;
-    } else {
-        build_device_list(0, &outputDevices, &outputDeviceCount);
-        return outputDeviceCount;
-    }
-
-    return 0;                   /* shouldn't ever hit this. */
-}
-
-static const char *
-BSDAUDIO_GetDeviceName(int index, int iscapture)
-{
-    if ((iscapture) && (index < inputDeviceCount)) {
-        return inputDevices[index];
-    } else if ((!iscapture) && (index < outputDeviceCount)) {
-        return outputDevices[index];
-    }
-
-    SDL_SetError("No such device");
-    return NULL;
+    SDL_EnumUnixAudioDevices(iscapture, 0, NULL, addfn);
 }
 
 
@@ -207,9 +125,7 @@ BSDAUDIO_WaitDevice(_THIS)
         /* Use timer for general audio synchronization */
         Sint32 ticks;
 
-        ticks =
-            ((Sint32) (this->hidden->next_frame - SDL_GetTicks())) -
-            FUDGE_TICKS;
+        ticks = ((Sint32) (this->hidden->next_frame - SDL_GetTicks())) - FUDGE_TICKS;
         if (ticks > 0) {
             SDL_Delay(ticks);
         }
@@ -296,10 +212,8 @@ static void
 BSDAUDIO_CloseDevice(_THIS)
 {
     if (this->hidden != NULL) {
-        if (this->hidden->mixbuf != NULL) {
-            SDL_FreeAudioMem(this->hidden->mixbuf);
-            this->hidden->mixbuf = NULL;
-        }
+        SDL_FreeAudioMem(this->hidden->mixbuf);
+        this->hidden->mixbuf = NULL;
         if (this->hidden->audio_fd >= 0) {
             close(this->hidden->audio_fd);
             this->hidden->audio_fd = -1;
@@ -319,28 +233,24 @@ BSDAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     /* We don't care what the devname is...we'll try to open anything. */
     /*  ...but default to first name in the list... */
     if (devname == NULL) {
-        if (((iscapture) && (inputDeviceCount == 0)) ||
-            ((!iscapture) && (outputDeviceCount == 0))) {
-            SDL_SetError("No such audio device");
-            return 0;
+        devname = SDL_GetAudioDeviceName(0, iscapture);
+        if (devname == NULL) {
+            return SDL_SetError("No such audio device");
         }
-        devname = ((iscapture) ? inputDevices[0] : outputDevices[0]);
     }
 
     /* Initialize all variables that we clean on shutdown */
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc((sizeof *this->hidden));
     if (this->hidden == NULL) {
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden, 0, (sizeof *this->hidden));
 
     /* Open the audio device */
     this->hidden->audio_fd = open(devname, flags, 0);
     if (this->hidden->audio_fd < 0) {
-        SDL_SetError("Couldn't open %s: %s", devname, strerror(errno));
-        return 0;
+        return SDL_SetError("Couldn't open %s: %s", devname, strerror(errno));
     }
 
     AUDIO_INITINFO(&info);
@@ -352,8 +262,7 @@ BSDAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     info.mode = AUMODE_PLAY;
     if (ioctl(this->hidden->audio_fd, AUDIO_SETINFO, &info) < 0) {
         BSDAUDIO_CloseDevice(this);
-        SDL_SetError("Couldn't put device into play mode");
-        return 0;
+        return SDL_SetError("Couldn't put device into play mode");
     }
 
     AUDIO_INITINFO(&info);
@@ -395,8 +304,7 @@ BSDAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
 
     if (!format) {
         BSDAUDIO_CloseDevice(this);
-        SDL_SetError("No supported encoding for 0x%x", this->spec.format);
-        return 0;
+        return SDL_SetError("No supported encoding for 0x%x", this->spec.format);
     }
 
     this->spec.format = format;
@@ -419,15 +327,14 @@ BSDAUDIO_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->mixbuf = (Uint8 *) SDL_AllocAudioMem(this->hidden->mixlen);
     if (this->hidden->mixbuf == NULL) {
         BSDAUDIO_CloseDevice(this);
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden->mixbuf, this->spec.silence, this->spec.size);
 
     BSDAUDIO_Status(this);
 
     /* We're ready to rock and roll. :-) */
-    return (0);
+    return 0;
 }
 
 static int
@@ -435,22 +342,20 @@ BSDAUDIO_Init(SDL_AudioDriverImpl * impl)
 {
     /* Set the function pointers */
     impl->DetectDevices = BSDAUDIO_DetectDevices;
-    impl->GetDeviceName = BSDAUDIO_GetDeviceName;
     impl->OpenDevice = BSDAUDIO_OpenDevice;
     impl->PlayDevice = BSDAUDIO_PlayDevice;
     impl->WaitDevice = BSDAUDIO_WaitDevice;
     impl->GetDeviceBuf = BSDAUDIO_GetDeviceBuf;
     impl->CloseDevice = BSDAUDIO_CloseDevice;
-    impl->Deinitialize = BSDAUDIO_Deinitialize;
-
-    build_device_lists();
 
     return 1;   /* this audio target is available. */
 }
 
 
 AudioBootStrap BSD_AUDIO_bootstrap = {
-    BSD_AUDIO_DRIVER_NAME, BSD_AUDIO_DRIVER_DESC, BSDAUDIO_Init, 0
+    "bsd", "BSD audio", BSDAUDIO_Init, 0
 };
+
+#endif /* SDL_AUDIO_DRIVER_BSD */
 
 /* vi: set ts=4 sw=4 expandtab: */

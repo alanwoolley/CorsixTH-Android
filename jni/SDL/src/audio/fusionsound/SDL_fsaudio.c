@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_AUDIO_DRIVER_FUSIONSOUND
 
 /* Allow access to a raw mixing buffer */
 
@@ -36,23 +37,21 @@
 
 #include <fusionsound/fusionsound_version.h>
 
-//#define SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC "libfusionsound.so"
+/* #define SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC "libfusionsound.so" */
 
 #ifdef SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC
 #include "SDL_name.h"
 #include "SDL_loadso.h"
 #else
-#define SDL_NAME(X)	X
+#define SDL_NAME(X) X
 #endif
 
 #if (FUSIONSOUND_MAJOR_VERSION == 1) && (FUSIONSOUND_MINOR_VERSION < 1)
 typedef DFBResult DirectResult;
 #endif
 
-/* The tag name used by fusionsoundc audio */
-#define SDL_FS_DRIVER_NAME         "fusionsound"
 /* Buffers to use - more than 2 gives a lot of latency */
-#define FUSION_BUFFERS				(2)
+#define FUSION_BUFFERS              (2)
 
 #ifdef SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC
 
@@ -170,10 +169,8 @@ static void
 SDL_FS_CloseDevice(_THIS)
 {
     if (this->hidden != NULL) {
-        if (this->hidden->mixbuf != NULL) {
-            SDL_FreeAudioMem(this->hidden->mixbuf);
-            this->hidden->mixbuf = NULL;
-        }
+        SDL_FreeAudioMem(this->hidden->mixbuf);
+        this->hidden->mixbuf = NULL;
         if (this->hidden->stream) {
             this->hidden->stream->Release(this->hidden->stream);
             this->hidden->stream = NULL;
@@ -201,8 +198,7 @@ SDL_FS_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc((sizeof *this->hidden));
     if (this->hidden == NULL) {
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden, 0, (sizeof *this->hidden));
 
@@ -244,8 +240,7 @@ SDL_FS_OpenDevice(_THIS, const char *devname, int iscapture)
 
     if (format == 0) {
         SDL_FS_CloseDevice(this);
-        SDL_SetError("Couldn't find any hardware audio formats");
-        return 0;
+        return SDL_SetError("Couldn't find any hardware audio formats");
     }
     this->spec.format = test_format;
 
@@ -253,8 +248,7 @@ SDL_FS_OpenDevice(_THIS, const char *devname, int iscapture)
     ret = SDL_NAME(FusionSoundCreate) (&this->hidden->fs);
     if (ret) {
         SDL_FS_CloseDevice(this);
-        SDL_SetError("Unable to initialize FusionSound: %d", ret);
-        return 0;
+        return SDL_SetError("Unable to initialize FusionSound: %d", ret);
     }
 
     this->hidden->mixsamples = this->spec.size / bytes / this->spec.channels;
@@ -273,8 +267,7 @@ SDL_FS_OpenDevice(_THIS, const char *devname, int iscapture)
                                        &this->hidden->stream);
     if (ret) {
         SDL_FS_CloseDevice(this);
-        SDL_SetError("Unable to create FusionSoundStream: %d", ret);
-        return 0;
+        return SDL_SetError("Unable to create FusionSoundStream: %d", ret);
     }
 
     /* See what we got */
@@ -295,13 +288,12 @@ SDL_FS_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->mixbuf = (Uint8 *) SDL_AllocAudioMem(this->hidden->mixlen);
     if (this->hidden->mixbuf == NULL) {
         SDL_FS_CloseDevice(this);
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden->mixbuf, this->spec.silence, this->spec.size);
 
     /* We're ready to rock and roll. :-) */
-    return 1;
+    return 0;
 }
 
 
@@ -345,7 +337,9 @@ SDL_FS_Init(SDL_AudioDriverImpl * impl)
 
 
 AudioBootStrap FUSIONSOUND_bootstrap = {
-    SDL_FS_DRIVER_NAME, "FusionSound", SDL_FS_Init, 0
+    "fusionsound", "FusionSound", SDL_FS_Init, 0
 };
+
+#endif /* SDL_AUDIO_DRIVER_FUSIONSOUND */
 
 /* vi: set ts=4 sw=4 expandtab: */

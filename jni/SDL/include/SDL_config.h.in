@@ -1,23 +1,22 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 #ifndef _SDL_config_h
@@ -43,23 +42,14 @@
 #undef volatile
 
 /* C datatypes */
-#if !defined(_STDINT_H_) && (!defined(HAVE_STDINT_H) || !_HAVE_STDINT_H)
-#undef size_t
-#undef int8_t
-#undef uint8_t
-#undef int16_t
-#undef uint16_t
-#undef int32_t
-#undef uint32_t
-#undef int64_t
-#undef uint64_t
-#undef uintptr_t
-#endif /* !_STDINT_H_ && !HAVE_STDINT_H */
-
-#undef SIZEOF_VOIDP
-#undef SDL_HAS_64BIT_TYPE
+#ifdef __LP64__
+#define SIZEOF_VOIDP 8
+#else
+#define SIZEOF_VOIDP 4
+#endif
 #undef HAVE_GCC_ATOMICS
 #undef HAVE_GCC_SYNC_LOCK_TEST_AND_SET
+#undef HAVE_PTHREAD_SPINLOCK
 
 /* Comment this if you want to build without any C library requirements */
 #undef HAVE_LIBC
@@ -83,6 +73,9 @@
 #undef HAVE_ICONV_H
 #undef HAVE_SIGNAL_H
 #undef HAVE_ALTIVEC_H
+#undef HAVE_PTHREAD_NP_H
+#undef HAVE_LIBUDEV_H
+#undef HAVE_DBUS_DBUS_H
 
 /* C library functions */
 #undef HAVE_MALLOC
@@ -135,11 +128,14 @@
 #undef HAVE__STRNICMP
 #undef HAVE_STRNCASECMP
 #undef HAVE_SSCANF
+#undef HAVE_VSSCANF
 #undef HAVE_SNPRINTF
 #undef HAVE_VSNPRINTF
 #undef HAVE_M_PI
 #undef HAVE_ATAN
 #undef HAVE_ATAN2
+#undef HAVE_ACOS
+#undef HAVE_ASIN
 #undef HAVE_CEIL
 #undef HAVE_COPYSIGN
 #undef HAVE_COS
@@ -152,7 +148,10 @@
 #undef HAVE_SIN
 #undef HAVE_SINF
 #undef HAVE_SQRT
+#undef HAVE_FSEEKO
+#undef HAVE_FSEEKO64
 #undef HAVE_SIGACTION
+#undef HAVE_SA_SIGACTION
 #undef HAVE_SETJMP
 #undef HAVE_NANOSLEEP
 #undef HAVE_SYSCONF
@@ -161,10 +160,14 @@
 #undef HAVE_GETPAGESIZE
 #undef HAVE_MPROTECT
 #undef HAVE_ICONV
+#undef HAVE_PTHREAD_SETNAME_NP
+#undef HAVE_PTHREAD_SET_NAME_NP
+#undef HAVE_SEM_TIMEDWAIT
 
 #else
-/* We may need some replacement for stdarg.h here */
-#include <stdarg.h>
+#define HAVE_STDARG_H   1
+#define HAVE_STDDEF_H   1
+#define HAVE_STDINT_H   1
 #endif /* HAVE_LIBC */
 
 /* SDL internal assertion support */
@@ -184,6 +187,7 @@
 #undef SDL_TIMERS_DISABLED
 #undef SDL_VIDEO_DISABLED
 #undef SDL_POWER_DISABLED
+#undef SDL_FILESYSTEM_DISABLED
 
 /* Enable various audio drivers */
 #undef SDL_AUDIO_DRIVER_ALSA
@@ -192,35 +196,37 @@
 #undef SDL_AUDIO_DRIVER_ARTS_DYNAMIC
 #undef SDL_AUDIO_DRIVER_PULSEAUDIO
 #undef SDL_AUDIO_DRIVER_PULSEAUDIO_DYNAMIC
-#undef SDL_AUDIO_DRIVER_BEOSAUDIO
+#undef SDL_AUDIO_DRIVER_HAIKU
 #undef SDL_AUDIO_DRIVER_BSD
 #undef SDL_AUDIO_DRIVER_COREAUDIO
 #undef SDL_AUDIO_DRIVER_DISK
 #undef SDL_AUDIO_DRIVER_DUMMY
+#undef SDL_AUDIO_DRIVER_XAUDIO2
 #undef SDL_AUDIO_DRIVER_DSOUND
 #undef SDL_AUDIO_DRIVER_ESD
 #undef SDL_AUDIO_DRIVER_ESD_DYNAMIC
 #undef SDL_AUDIO_DRIVER_NAS
 #undef SDL_AUDIO_DRIVER_NAS_DYNAMIC
-#undef SDL_AUDIO_DRIVER_NDS
+#undef SDL_AUDIO_DRIVER_SNDIO
+#undef SDL_AUDIO_DRIVER_SNDIO_DYNAMIC
 #undef SDL_AUDIO_DRIVER_OSS
 #undef SDL_AUDIO_DRIVER_OSS_SOUNDCARD_H
 #undef SDL_AUDIO_DRIVER_PAUDIO
 #undef SDL_AUDIO_DRIVER_QSA
 #undef SDL_AUDIO_DRIVER_SUNAUDIO
-#undef SDL_AUDIO_DRIVER_WINWAVEOUT
+#undef SDL_AUDIO_DRIVER_WINMM
 #undef SDL_AUDIO_DRIVER_FUSIONSOUND
 #undef SDL_AUDIO_DRIVER_FUSIONSOUND_DYNAMIC
 
 /* Enable various input drivers */
 #undef SDL_INPUT_LINUXEV
+#undef SDL_INPUT_LINUXKD
 #undef SDL_INPUT_TSLIB
-#undef SDL_JOYSTICK_BEOS
+#undef SDL_JOYSTICK_HAIKU
 #undef SDL_JOYSTICK_DINPUT
 #undef SDL_JOYSTICK_DUMMY
 #undef SDL_JOYSTICK_IOKIT
 #undef SDL_JOYSTICK_LINUX
-#undef SDL_JOYSTICK_NDS
 #undef SDL_JOYSTICK_WINMM
 #undef SDL_JOYSTICK_USBHID
 #undef SDL_JOYSTICK_USBHID_MACHINE_JOYSTICK_H
@@ -230,65 +236,77 @@
 #undef SDL_HAPTIC_DINPUT
 
 /* Enable various shared object loading systems */
-#undef SDL_LOADSO_BEOS
-#undef SDL_LOADSO_DLCOMPAT
+#undef SDL_LOADSO_HAIKU
 #undef SDL_LOADSO_DLOPEN
 #undef SDL_LOADSO_DUMMY
 #undef SDL_LOADSO_LDG
 #undef SDL_LOADSO_WINDOWS
 
 /* Enable various threading systems */
-#undef SDL_THREAD_BEOS
-#undef SDL_THREAD_NDS
 #undef SDL_THREAD_PTHREAD
 #undef SDL_THREAD_PTHREAD_RECURSIVE_MUTEX
 #undef SDL_THREAD_PTHREAD_RECURSIVE_MUTEX_NP
-#undef SDL_THREAD_SPROC
 #undef SDL_THREAD_WINDOWS
 
 /* Enable various timer systems */
-#undef SDL_TIMER_BEOS
+#undef SDL_TIMER_HAIKU
 #undef SDL_TIMER_DUMMY
-#undef SDL_TIMER_NDS
 #undef SDL_TIMER_UNIX
 #undef SDL_TIMER_WINDOWS
-#undef SDL_TIMER_WINCE
 
 /* Enable various video drivers */
-#undef SDL_VIDEO_DRIVER_BWINDOW
+#undef SDL_VIDEO_DRIVER_HAIKU
 #undef SDL_VIDEO_DRIVER_COCOA
 #undef SDL_VIDEO_DRIVER_DIRECTFB
 #undef SDL_VIDEO_DRIVER_DIRECTFB_DYNAMIC
 #undef SDL_VIDEO_DRIVER_DUMMY
-#undef SDL_VIDEO_DRIVER_NDS
 #undef SDL_VIDEO_DRIVER_WINDOWS
+#undef SDL_VIDEO_DRIVER_WAYLAND
+#undef SDL_VIDEO_DRIVER_WAYLAND_QT_TOUCH
+#undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC
+#undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL
+#undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR
+#undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON
+#undef SDL_VIDEO_DRIVER_MIR
+#undef SDL_VIDEO_DRIVER_MIR_DYNAMIC
+#undef SDL_VIDEO_DRIVER_MIR_DYNAMIC_XKBCOMMON
 #undef SDL_VIDEO_DRIVER_X11
+#undef SDL_VIDEO_DRIVER_RPI
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XEXT
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XCURSOR
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XINERAMA
-#undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XINPUT
+#undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XINPUT2
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XRANDR
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XSS
 #undef SDL_VIDEO_DRIVER_X11_DYNAMIC_XVIDMODE
 #undef SDL_VIDEO_DRIVER_X11_XCURSOR
 #undef SDL_VIDEO_DRIVER_X11_XINERAMA
-#undef SDL_VIDEO_DRIVER_X11_XINPUT
+#undef SDL_VIDEO_DRIVER_X11_XINPUT2
+#undef SDL_VIDEO_DRIVER_X11_XINPUT2_SUPPORTS_MULTITOUCH
 #undef SDL_VIDEO_DRIVER_X11_XRANDR
 #undef SDL_VIDEO_DRIVER_X11_XSCRNSAVER
 #undef SDL_VIDEO_DRIVER_X11_XSHAPE
 #undef SDL_VIDEO_DRIVER_X11_XVIDMODE
+#undef SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS
+#undef SDL_VIDEO_DRIVER_X11_CONST_PARAM_XDATA32
+#undef SDL_VIDEO_DRIVER_X11_CONST_PARAM_XEXTADDDISPLAY
+#undef SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM
 
 #undef SDL_VIDEO_RENDER_D3D
+#undef SDL_VIDEO_RENDER_D3D11
 #undef SDL_VIDEO_RENDER_OGL
 #undef SDL_VIDEO_RENDER_OGL_ES
+#undef SDL_VIDEO_RENDER_OGL_ES2
 #undef SDL_VIDEO_RENDER_DIRECTFB
 
 /* Enable OpenGL support */
 #undef SDL_VIDEO_OPENGL
 #undef SDL_VIDEO_OPENGL_ES
+#undef SDL_VIDEO_OPENGL_ES2
 #undef SDL_VIDEO_OPENGL_BGL
 #undef SDL_VIDEO_OPENGL_CGL
+#undef SDL_VIDEO_OPENGL_EGL
 #undef SDL_VIDEO_OPENGL_GLX
 #undef SDL_VIDEO_OPENGL_WGL
 #undef SDL_VIDEO_OPENGL_OSMESA
@@ -298,9 +316,15 @@
 #undef SDL_POWER_LINUX
 #undef SDL_POWER_WINDOWS
 #undef SDL_POWER_MACOSX
-#undef SDL_POWER_BEOS
-#undef SDL_POWER_NINTENDODS
+#undef SDL_POWER_HAIKU
 #undef SDL_POWER_HARDWIRED
+
+/* Enable system filesystem support */
+#undef SDL_FILESYSTEM_HAIKU
+#undef SDL_FILESYSTEM_COCOA
+#undef SDL_FILESYSTEM_DUMMY
+#undef SDL_FILESYSTEM_UNIX
+#undef SDL_FILESYSTEM_WINDOWS
 
 /* Enable assembly routines */
 #undef SDL_ASSEMBLY_ROUTINES

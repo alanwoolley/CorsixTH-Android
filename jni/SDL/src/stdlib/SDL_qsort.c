@@ -41,7 +41,7 @@
  *
  * Gareth McCaughan   Peterhouse   Cambridge   1998
  */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /*
 #include <assert.h>
@@ -49,11 +49,20 @@
 #include <string.h>
 */
 #include "SDL_stdinc.h"
+#include "SDL_assert.h"
+
+#if defined(HAVE_QSORT)
+void
+SDL_qsort(void *base, size_t nmemb, size_t size, int (*compare) (const void *, const void *))
+{
+    qsort(base, nmemb, size, compare);
+}
+#else
 
 #ifdef assert
 #undef assert
 #endif
-#define assert(X)
+#define assert(X) SDL_assert(X)
 #ifdef malloc
 #undef malloc
 #endif
@@ -74,9 +83,6 @@
 #undef qsort
 #endif
 #define qsort	SDL_qsort
-
-
-#ifndef HAVE_QSORT
 
 static const char _ID[] = "<qsort.c gjm 1.12 1998-03-19>";
 
@@ -465,5 +471,6 @@ qsort(void *base, size_t nmemb, size_t size,
         qsort_words(base, nmemb, compare);
 }
 
-#endif /* !HAVE_QSORT */
+#endif /* !SDL_qsort */
+
 /* vi: set ts=4 sw=4 expandtab: */

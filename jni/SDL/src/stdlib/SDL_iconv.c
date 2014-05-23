@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /* This file contains portable iconv functions for SDL */
 
@@ -32,12 +31,26 @@
    iconv() may or may not use const char ** for the inbuf param.
    If we get this wrong, it's just a warning, so no big deal.
 */
-#if defined(_XGP6) || \
-    defined(__GLIBC__) && ((__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2))
+#if defined(_XGP6) || defined(__APPLE__) || \
+    (defined(__GLIBC__) && ((__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2)))
 #define ICONV_INBUF_NONCONST
 #endif
 
 #include <errno.h>
+
+SDL_COMPILE_TIME_ASSERT(iconv_t, sizeof (iconv_t) <= sizeof (SDL_iconv_t));
+
+SDL_iconv_t
+SDL_iconv_open(const char *tocode, const char *fromcode)
+{
+    return (SDL_iconv_t) ((size_t) iconv_open(tocode, fromcode));
+}
+
+int
+SDL_iconv_close(SDL_iconv_t cd)
+{
+    return iconv_close((iconv_t) ((size_t) cd));
+}
 
 size_t
 SDL_iconv(SDL_iconv_t cd,
@@ -46,9 +59,9 @@ SDL_iconv(SDL_iconv_t cd,
 {
     size_t retCode;
 #ifdef ICONV_INBUF_NONCONST
-    retCode = iconv(cd, (char **) inbuf, inbytesleft, outbuf, outbytesleft);
+    retCode = iconv((iconv_t) ((size_t) cd), (char **) inbuf, inbytesleft, outbuf, outbytesleft);
 #else
-    retCode = iconv(cd, inbuf, inbytesleft, outbuf, outbytesleft);
+    retCode = iconv((iconv_t) ((size_t) cd), inbuf, inbytesleft, outbuf, outbytesleft);
 #endif
     if (retCode == (size_t) - 1) {
         switch (errno) {
@@ -88,15 +101,21 @@ enum
     ENCODING_UTF32,             /* Needs byte order marker */
     ENCODING_UTF32BE,
     ENCODING_UTF32LE,
-    ENCODING_UCS2,              /* Native byte order assumed */
-    ENCODING_UCS4,              /* Native byte order assumed */
+    ENCODING_UCS2BE,
+    ENCODING_UCS2LE,
+    ENCODING_UCS4BE,
+    ENCODING_UCS4LE,
 };
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define ENCODING_UTF16NATIVE	ENCODING_UTF16BE
 #define ENCODING_UTF32NATIVE	ENCODING_UTF32BE
+#define ENCODING_UCS2NATIVE     ENCODING_UCS2BE
+#define ENCODING_UCS4NATIVE     ENCODING_UCS4BE
 #else
 #define ENCODING_UTF16NATIVE	ENCODING_UTF16LE
 #define ENCODING_UTF32NATIVE	ENCODING_UTF32LE
+#define ENCODING_UCS2NATIVE     ENCODING_UCS2LE
+#define ENCODING_UCS4NATIVE     ENCODING_UCS4LE
 #endif
 
 struct _SDL_iconv_t
@@ -129,10 +148,16 @@ static struct
     { "UTF-32BE", ENCODING_UTF32BE },
     { "UTF32LE", ENCODING_UTF32LE },
     { "UTF-32LE", ENCODING_UTF32LE },
-    { "UCS2", ENCODING_UCS2 },
-    { "UCS-2", ENCODING_UCS2 },
-    { "UCS4", ENCODING_UCS4 },
-    { "UCS-4", ENCODING_UCS4 },
+    { "UCS2", ENCODING_UCS2BE },
+    { "UCS-2", ENCODING_UCS2BE },
+    { "UCS-2LE", ENCODING_UCS2LE },
+    { "UCS-2BE", ENCODING_UCS2BE },
+    { "UCS-2-INTERNAL", ENCODING_UCS2NATIVE },
+    { "UCS4", ENCODING_UCS4BE },
+    { "UCS-4", ENCODING_UCS4BE },
+    { "UCS-4LE", ENCODING_UCS4LE },
+    { "UCS-4BE", ENCODING_UCS4BE },
+    { "UCS-4-INTERNAL", ENCODING_UCS4NATIVE },
 /* *INDENT-ON* */
 };
 
@@ -339,7 +364,7 @@ SDL_iconv(SDL_iconv_t cd,
                          */
                         ch = UNKNOWN_UNICODE;
                     } else {
-                        if (p[0] == 0xFC) {
+                        if (p[0] == 0xFC && srclen > 1 && (p[1] & 0xFC) == 0x80) {
                             overlong = SDL_TRUE;
                         }
                         ch = (Uint32) (p[0] & 0x01);
@@ -352,7 +377,7 @@ SDL_iconv(SDL_iconv_t cd,
                          */
                         ch = UNKNOWN_UNICODE;
                     } else {
-                        if (p[0] == 0xF8) {
+                        if (p[0] == 0xF8 && srclen > 1 && (p[1] & 0xF8) == 0x80) {
                             overlong = SDL_TRUE;
                         }
                         ch = (Uint32) (p[0] & 0x03);
@@ -365,7 +390,7 @@ SDL_iconv(SDL_iconv_t cd,
                          */
                         ch = UNKNOWN_UNICODE;
                     } else {
-                        if (p[0] == 0xF0) {
+                        if (p[0] == 0xF0 && srclen > 1 && (p[1] & 0xF0) == 0x80) {
                             overlong = SDL_TRUE;
                         }
                         ch = (Uint32) (p[0] & 0x07);
@@ -378,7 +403,7 @@ SDL_iconv(SDL_iconv_t cd,
                          */
                         ch = UNKNOWN_UNICODE;
                     } else {
-                        if (p[0] == 0xE0) {
+                        if (p[0] == 0xE0 && srclen > 1 && (p[1] & 0xE0) == 0x80) {
                             overlong = SDL_TRUE;
                         }
                         ch = (Uint32) (p[0] & 0x0F);
@@ -519,6 +544,29 @@ SDL_iconv(SDL_iconv_t cd,
                       (Uint32) (W2 & 0x3FF)) + 0x10000;
             }
             break;
+        case ENCODING_UCS2LE:
+            {
+                Uint8 *p = (Uint8 *) src;
+                if (srclen < 2) {
+                    return SDL_ICONV_EINVAL;
+                }
+                ch = ((Uint32) p[1] << 8) | (Uint32) p[0];
+                src += 2;
+                srclen -= 2;
+            }
+            break;
+        case ENCODING_UCS2BE:
+            {
+                Uint8 *p = (Uint8 *) src;
+                if (srclen < 2) {
+                    return SDL_ICONV_EINVAL;
+                }
+                ch = ((Uint32) p[0] << 8) | (Uint32) p[1];
+                src += 2;
+                srclen -= 2;
+            }
+            break;
+        case ENCODING_UCS4BE:
         case ENCODING_UTF32BE:
             {
                 Uint8 *p = (Uint8 *) src;
@@ -532,6 +580,7 @@ SDL_iconv(SDL_iconv_t cd,
                 srclen -= 4;
             }
             break;
+        case ENCODING_UCS4LE:
         case ENCODING_UTF32LE:
             {
                 Uint8 *p = (Uint8 *) src;
@@ -541,28 +590,6 @@ SDL_iconv(SDL_iconv_t cd,
                 ch = ((Uint32) p[3] << 24) |
                     ((Uint32) p[2] << 16) |
                     ((Uint32) p[1] << 8) | (Uint32) p[0];
-                src += 4;
-                srclen -= 4;
-            }
-            break;
-        case ENCODING_UCS2:
-            {
-                Uint16 *p = (Uint16 *) src;
-                if (srclen < 2) {
-                    return SDL_ICONV_EINVAL;
-                }
-                ch = *p;
-                src += 2;
-                srclen -= 2;
-            }
-            break;
-        case ENCODING_UCS4:
-            {
-                Uint32 *p = (Uint32 *) src;
-                if (srclen < 4) {
-                    return SDL_ICONV_EINVAL;
-                }
-                ch = *p;
                 src += 4;
                 srclen -= 4;
             }
@@ -729,12 +756,46 @@ SDL_iconv(SDL_iconv_t cd,
                 }
             }
             break;
-        case ENCODING_UTF32BE:
+        case ENCODING_UCS2BE:
             {
                 Uint8 *p = (Uint8 *) dst;
-                if (ch > 0x10FFFF) {
+                if (ch > 0xFFFF) {
                     ch = UNKNOWN_UNICODE;
                 }
+                if (dstlen < 2) {
+                    return SDL_ICONV_E2BIG;
+                }
+                p[0] = (Uint8) (ch >> 8);
+                p[1] = (Uint8) ch;
+                dst += 2;
+                dstlen -= 2;
+            }
+            break;
+        case ENCODING_UCS2LE:
+            {
+                Uint8 *p = (Uint8 *) dst;
+                if (ch > 0xFFFF) {
+                    ch = UNKNOWN_UNICODE;
+                }
+                if (dstlen < 2) {
+                    return SDL_ICONV_E2BIG;
+                }
+                p[1] = (Uint8) (ch >> 8);
+                p[0] = (Uint8) ch;
+                dst += 2;
+                dstlen -= 2;
+            }
+            break;
+        case ENCODING_UTF32BE:
+            if (ch > 0x10FFFF) {
+                ch = UNKNOWN_UNICODE;
+            }
+        case ENCODING_UCS4BE:
+            if (ch > 0x7FFFFFFF) {
+                ch = UNKNOWN_UNICODE;
+            }
+            {
+                Uint8 *p = (Uint8 *) dst;
                 if (dstlen < 4) {
                     return SDL_ICONV_E2BIG;
                 }
@@ -747,11 +808,15 @@ SDL_iconv(SDL_iconv_t cd,
             }
             break;
         case ENCODING_UTF32LE:
+            if (ch > 0x10FFFF) {
+                ch = UNKNOWN_UNICODE;
+            }
+        case ENCODING_UCS4LE:
+            if (ch > 0x7FFFFFFF) {
+                ch = UNKNOWN_UNICODE;
+            }
             {
                 Uint8 *p = (Uint8 *) dst;
-                if (ch > 0x10FFFF) {
-                    ch = UNKNOWN_UNICODE;
-                }
                 if (dstlen < 4) {
                     return SDL_ICONV_E2BIG;
                 }
@@ -759,34 +824,6 @@ SDL_iconv(SDL_iconv_t cd,
                 p[2] = (Uint8) (ch >> 16);
                 p[1] = (Uint8) (ch >> 8);
                 p[0] = (Uint8) ch;
-                dst += 4;
-                dstlen -= 4;
-            }
-            break;
-        case ENCODING_UCS2:
-            {
-                Uint16 *p = (Uint16 *) dst;
-                if (ch > 0xFFFF) {
-                    ch = UNKNOWN_UNICODE;
-                }
-                if (dstlen < 2) {
-                    return SDL_ICONV_E2BIG;
-                }
-                *p = (Uint16) ch;
-                dst += 2;
-                dstlen -= 2;
-            }
-            break;
-        case ENCODING_UCS4:
-            {
-                Uint32 *p = (Uint32 *) dst;
-                if (ch > 0x7FFFFFFF) {
-                    ch = UNKNOWN_UNICODE;
-                }
-                if (dstlen < 4) {
-                    return SDL_ICONV_E2BIG;
-                }
-                *p = ch;
                 dst += 4;
                 dstlen -= 4;
             }
@@ -806,7 +843,7 @@ SDL_iconv(SDL_iconv_t cd,
 int
 SDL_iconv_close(SDL_iconv_t cd)
 {
-    if (cd && cd != (SDL_iconv_t) - 1) {
+    if (cd != (SDL_iconv_t)-1) {
         SDL_free(cd);
     }
     return 0;

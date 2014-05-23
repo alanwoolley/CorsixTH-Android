@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "./SDL_internal.h"
 
 /* Simple error handling in SDL */
 
@@ -32,12 +31,12 @@
 #if SDL_THREADS_DISABLED
 /* The default (non-thread-safe) global error variable */
 static SDL_error SDL_global_error;
-#define SDL_GetErrBuf()	(&SDL_global_error)
+#define SDL_GetErrBuf() (&SDL_global_error)
 #else
 extern SDL_error *SDL_GetErrBuf(void);
 #endif /* SDL_THREADS_DISABLED */
 
-#define SDL_ERRBUFIZE	1024
+#define SDL_ERRBUFIZE   1024
 
 /* Private functions */
 
@@ -50,11 +49,14 @@ SDL_LookupString(const char *key)
 
 /* Public functions */
 
-void
+int
 SDL_SetError(const char *fmt, ...)
 {
     va_list ap;
     SDL_error *error;
+
+    /* Ignore call if invalid format pointer was passed */
+    if (fmt == NULL) return -1;
 
     /* Copy in the key, mark error as valid */
     error = SDL_GetErrBuf();
@@ -110,6 +112,8 @@ SDL_SetError(const char *fmt, ...)
 
     /* If we are in debug mode, print out an error message */
     SDL_LogError(SDL_LOG_CATEGORY_ERROR, "%s", SDL_GetError());
+
+    return -1;
 }
 
 /* This function has a bit more overhead than most error functions
@@ -214,28 +218,22 @@ SDL_ClearError(void)
 }
 
 /* Very common errors go here */
-void
+int
 SDL_Error(SDL_errorcode code)
 {
     switch (code) {
     case SDL_ENOMEM:
-        SDL_SetError("Out of memory");
-        break;
+        return SDL_SetError("Out of memory");
     case SDL_EFREAD:
-        SDL_SetError("Error reading from datastream");
-        break;
+        return SDL_SetError("Error reading from datastream");
     case SDL_EFWRITE:
-        SDL_SetError("Error writing to datastream");
-        break;
+        return SDL_SetError("Error writing to datastream");
     case SDL_EFSEEK:
-        SDL_SetError("Error seeking in datastream");
-        break;
+        return SDL_SetError("Error seeking in datastream");
     case SDL_UNSUPPORTED:
-        SDL_SetError("That operation is not supported");
-        break;
+        return SDL_SetError("That operation is not supported");
     default:
-        SDL_SetError("Unknown SDL error");
-        break;
+        return SDL_SetError("Unknown SDL error");
     }
 }
 

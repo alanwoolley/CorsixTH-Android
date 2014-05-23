@@ -1,27 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
-
-    This file written by Ryan C. Gordon (icculus@icculus.org)
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_AUDIO_DRIVER_DISK
 
 /* Output raw audio data to a file. */
 
@@ -35,9 +34,6 @@
 #include "../SDL_audiomem.h"
 #include "../SDL_audio_c.h"
 #include "SDL_diskaudio.h"
-
-/* The tag name used by DISK audio */
-#define DISKAUD_DRIVER_NAME         "disk"
 
 /* environment variables and defaults. */
 #define DISKENVR_OUTFILE         "SDL_DISKAUDIOFILE"
@@ -92,10 +88,8 @@ static void
 DISKAUD_CloseDevice(_THIS)
 {
     if (this->hidden != NULL) {
-        if (this->hidden->mixbuf != NULL) {
-            SDL_FreeAudioMem(this->hidden->mixbuf);
-            this->hidden->mixbuf = NULL;
-        }
+        SDL_FreeAudioMem(this->hidden->mixbuf);
+        this->hidden->mixbuf = NULL;
         if (this->hidden->output != NULL) {
             SDL_RWclose(this->hidden->output);
             this->hidden->output = NULL;
@@ -114,29 +108,28 @@ DISKAUD_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc(sizeof(*this->hidden));
     if (this->hidden == NULL) {
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden, 0, sizeof(*this->hidden));
+
+    this->hidden->mixlen = this->spec.size;
+    this->hidden->write_delay =
+        (envr) ? SDL_atoi(envr) : DISKDEFAULT_WRITEDELAY;
 
     /* Open the audio device */
     this->hidden->output = SDL_RWFromFile(fname, "wb");
     if (this->hidden->output == NULL) {
         DISKAUD_CloseDevice(this);
-        return 0;
+        return -1;
     }
 
     /* Allocate mixing buffer */
     this->hidden->mixbuf = (Uint8 *) SDL_AllocAudioMem(this->hidden->mixlen);
     if (this->hidden->mixbuf == NULL) {
         DISKAUD_CloseDevice(this);
-        return 0;
+        return -1;
     }
     SDL_memset(this->hidden->mixbuf, this->spec.silence, this->spec.size);
-
-    this->hidden->mixlen = this->spec.size;
-    this->hidden->write_delay =
-        (envr) ? SDL_atoi(envr) : DISKDEFAULT_WRITEDELAY;
 
 #if HAVE_STDIO_H
     fprintf(stderr,
@@ -145,7 +138,7 @@ DISKAUD_OpenDevice(_THIS, const char *devname, int iscapture)
 #endif
 
     /* We're ready to rock and roll. :-) */
-    return 1;
+    return 0;
 }
 
 static int
@@ -162,7 +155,9 @@ DISKAUD_Init(SDL_AudioDriverImpl * impl)
 }
 
 AudioBootStrap DISKAUD_bootstrap = {
-    DISKAUD_DRIVER_NAME, "direct-to-disk audio", DISKAUD_Init, 1
+    "disk", "direct-to-disk audio", DISKAUD_Init, 1
 };
+
+#endif /* SDL_AUDIO_DRIVER_DISK */
 
 /* vi: set ts=4 sw=4 expandtab: */

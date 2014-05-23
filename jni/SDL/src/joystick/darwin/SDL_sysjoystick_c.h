@@ -1,55 +1,40 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifndef SDL_JOYSTICK_IOKIT_H
 
-
 #include <IOKit/hid/IOHIDLib.h>
-#include <IOKit/hid/IOHIDKeys.h>
-
 
 struct recElement
 {
-    IOHIDElementCookie cookie;  /* unique value which identifies element, will NOT change */
-    long usagePage, usage;      /* HID usage */
-    long min;                   /* reported min value possible */
-    long max;                   /* reported max value possible */
-#if 0
-    /* TODO: maybe should handle the following stuff somehow? */
-
-    long scaledMin;             /* reported scaled min value possible */
-    long scaledMax;             /* reported scaled max value possible */
-    long size;                  /* size in bits of data return from element */
-    Boolean relative;           /* are reports relative to last report (deltas) */
-    Boolean wrapping;           /* does element wrap around (one value higher than max is min) */
-    Boolean nonLinear;          /* are the values reported non-linear relative to element movement */
-    Boolean preferredState;     /* does element have a preferred state (such as a button) */
-    Boolean nullState;          /* does element have null state */
-#endif                          /* 0 */
+    IOHIDElementRef elementRef;
+    IOHIDElementCookie cookie;
+    uint32_t usagePage, usage;      /* HID usage */
+    SInt32 min;                   /* reported min value possible */
+    SInt32 max;                   /* reported max value possible */
 
     /* runtime variables used for auto-calibration */
-    long minReport;             /* min returned value */
-    long maxReport;             /* max returned value */
+    SInt32 minReport;             /* min returned value */
+    SInt32 maxReport;             /* max returned value */
 
     struct recElement *pNext;   /* next element in list */
 };
@@ -57,17 +42,17 @@ typedef struct recElement recElement;
 
 struct joystick_hwdata
 {
+    IOHIDDeviceRef deviceRef;   /* HIDManager device handle */
     io_service_t ffservice;     /* Interface for force feedback, 0 = no ff */
-    IOHIDDeviceInterface **interface;   /* interface to device, NULL = no interface */
 
     char product[256];          /* name of product */
-    long usage;                 /* usage page from IOUSBHID Parser.h which defines general usage */
-    long usagePage;             /* usage within above page from IOUSBHID Parser.h which defines specific usage */
+    uint32_t usage;                 /* usage page from IOUSBHID Parser.h which defines general usage */
+    uint32_t usagePage;             /* usage within above page from IOUSBHID Parser.h which defines specific usage */
 
-    long axes;                  /* number of axis (calculated, not reported by device) */
-    long buttons;               /* number of buttons (calculated, not reported by device) */
-    long hats;                  /* number of hat switches (calculated, not reported by device) */
-    long elements;              /* number of total elements (shouldbe total of above) (calculated, not reported by device) */
+    int axes;                  /* number of axis (calculated, not reported by device) */
+    int buttons;               /* number of buttons (calculated, not reported by device) */
+    int hats;                  /* number of hat switches (calculated, not reported by device) */
+    int elements;              /* number of total elements (should be total of above) (calculated, not reported by device) */
 
     recElement *firstAxis;
     recElement *firstButton;
@@ -75,6 +60,10 @@ struct joystick_hwdata
 
     int removed;
     int uncentered;
+
+    int instance_id;
+    SDL_JoystickGUID guid;
+    Uint8 send_open_event;      /* 1 if we need to send an Added event for this device */
 
     struct joystick_hwdata *pNext;      /* next device */
 };

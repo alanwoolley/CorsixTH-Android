@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /* Allow access to a raw mixing buffer */
 
@@ -46,7 +45,6 @@ static SDL_AudioDevice *open_devices[16];
  */
 extern AudioBootStrap BSD_AUDIO_bootstrap;
 extern AudioBootStrap DSP_bootstrap;
-extern AudioBootStrap DMA_bootstrap;
 extern AudioBootStrap ALSA_bootstrap;
 extern AudioBootStrap PULSEAUDIO_bootstrap;
 extern AudioBootStrap QSAAUDIO_bootstrap;
@@ -54,12 +52,12 @@ extern AudioBootStrap SUNAUDIO_bootstrap;
 extern AudioBootStrap ARTS_bootstrap;
 extern AudioBootStrap ESD_bootstrap;
 extern AudioBootStrap NAS_bootstrap;
+extern AudioBootStrap XAUDIO2_bootstrap;
 extern AudioBootStrap DSOUND_bootstrap;
-extern AudioBootStrap WINWAVEOUT_bootstrap;
+extern AudioBootStrap WINMM_bootstrap;
 extern AudioBootStrap PAUDIO_bootstrap;
-extern AudioBootStrap BEOSAUDIO_bootstrap;
+extern AudioBootStrap HAIKUAUDIO_bootstrap;
 extern AudioBootStrap COREAUDIO_bootstrap;
-extern AudioBootStrap COREAUDIOIPHONE_bootstrap;
 extern AudioBootStrap SNDMGR_bootstrap;
 extern AudioBootStrap DISKAUD_bootstrap;
 extern AudioBootStrap DUMMYAUD_bootstrap;
@@ -68,7 +66,8 @@ extern AudioBootStrap DART_bootstrap;
 extern AudioBootStrap NDSAUD_bootstrap;
 extern AudioBootStrap FUSIONSOUND_bootstrap;
 extern AudioBootStrap ANDROIDAUD_bootstrap;
-
+extern AudioBootStrap PSPAUD_bootstrap;
+extern AudioBootStrap SNDIO_bootstrap;
 
 /* Available audio drivers */
 static const AudioBootStrap *const bootstrap[] = {
@@ -78,12 +77,14 @@ static const AudioBootStrap *const bootstrap[] = {
 #if SDL_AUDIO_DRIVER_ALSA
     &ALSA_bootstrap,
 #endif
+#if SDL_AUDIO_DRIVER_SNDIO
+    &SNDIO_bootstrap,
+#endif
 #if SDL_AUDIO_DRIVER_BSD
     &BSD_AUDIO_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_OSS
     &DSP_bootstrap,
-    &DMA_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_QSA
     &QSAAUDIO_bootstrap,
@@ -100,23 +101,23 @@ static const AudioBootStrap *const bootstrap[] = {
 #if SDL_AUDIO_DRIVER_NAS
     &NAS_bootstrap,
 #endif
+#if SDL_AUDIO_DRIVER_XAUDIO2
+    &XAUDIO2_bootstrap,
+#endif
 #if SDL_AUDIO_DRIVER_DSOUND
     &DSOUND_bootstrap,
 #endif
-#if SDL_AUDIO_DRIVER_WINWAVEOUT
-    &WINWAVEOUT_bootstrap,
+#if SDL_AUDIO_DRIVER_WINMM
+    &WINMM_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_PAUDIO
     &PAUDIO_bootstrap,
 #endif
-#if SDL_AUDIO_DRIVER_BEOSAUDIO
-    &BEOSAUDIO_bootstrap,
+#if SDL_AUDIO_DRIVER_HAIKU
+    &HAIKUAUDIO_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_COREAUDIO
     &COREAUDIO_bootstrap,
-#endif
-#if SDL_AUDIO_DRIVER_COREAUDIOIPHONE
-    &COREAUDIOIPHONE_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_DISK
     &DISKAUD_bootstrap,
@@ -124,14 +125,14 @@ static const AudioBootStrap *const bootstrap[] = {
 #if SDL_AUDIO_DRIVER_DUMMY
     &DUMMYAUD_bootstrap,
 #endif
-#if SDL_AUDIO_DRIVER_NDS
-    &NDSAUD_bootstrap,
-#endif
 #if SDL_AUDIO_DRIVER_FUSIONSOUND
     &FUSIONSOUND_bootstrap,
 #endif
 #if SDL_AUDIO_DRIVER_ANDROID
     &ANDROIDAUD_bootstrap,
+#endif
+#if SDL_AUDIO_DRIVER_PSP
+    &PSPAUD_bootstrap,
 #endif
     NULL
 };
@@ -150,10 +151,9 @@ get_audio_device(SDL_AudioDeviceID id)
 
 
 /* stubs for audio drivers that don't need a specific entry point... */
-static int
-SDL_AudioDetectDevices_Default(int iscapture)
-{
-    return -1;
+static void
+SDL_AudioDetectDevices_Default(int iscapture, SDL_AddAudioDevice addfn)
+{                               /* no-op. */
 }
 
 static void
@@ -195,14 +195,7 @@ SDL_AudioDeinitialize_Default(void)
 static int
 SDL_AudioOpenDevice_Default(_THIS, const char *devname, int iscapture)
 {
-    return 0;
-}
-
-static const char *
-SDL_AudioGetDeviceName_Default(int index, int iscapture)
-{
-    SDL_SetError("No such device");
-    return NULL;
+    return -1;
 }
 
 static void
@@ -211,7 +204,7 @@ SDL_AudioLockDevice_Default(SDL_AudioDevice * device)
     if (device->thread && (SDL_ThreadID() == device->threadid)) {
         return;
     }
-    SDL_mutexP(device->mixer_lock);
+    SDL_LockMutex(device->mixer_lock);
 }
 
 static void
@@ -220,7 +213,7 @@ SDL_AudioUnlockDevice_Default(SDL_AudioDevice * device)
     if (device->thread && (SDL_ThreadID() == device->threadid)) {
         return;
     }
-    SDL_mutexV(device->mixer_lock);
+    SDL_UnlockMutex(device->mixer_lock);
 }
 
 
@@ -237,7 +230,6 @@ finalize_audio_entry_points(void)
             current_audio.impl.x = SDL_Audio##x##_Default; \
         }
     FILL_STUB(DetectDevices);
-    FILL_STUB(GetDeviceName);
     FILL_STUB(OpenDevice);
     FILL_STUB(ThreadInit);
     FILL_STUB(WaitDevice);
@@ -308,9 +300,7 @@ SDL_StreamInit(SDL_AudioStreamer * stream, int max_len, Uint8 silence)
 static void
 SDL_StreamDeinit(SDL_AudioStreamer * stream)
 {
-    if (stream->buffer != NULL) {
-        SDL_free(stream->buffer);
-    }
+    SDL_free(stream->buffer);
 }
 
 #if defined(ANDROID)
@@ -326,12 +316,13 @@ SDL_RunAudio(void *devicep)
     int stream_len;
     void *udata;
     void (SDLCALL * fill) (void *userdata, Uint8 * stream, int len);
-    int silence;
     Uint32 delay;
-
     /* For streaming when the buffer sizes don't match up */
     Uint8 *istream;
     int istream_len = 0;
+
+    /* The audio mixing is always a high priority thread */
+    SDL_SetThreadPriority(SDL_THREAD_PRIORITY_HIGH);
 
     /* Perform any thread setup */
     device->threadid = SDL_ThreadID();
@@ -345,12 +336,6 @@ SDL_RunAudio(void *devicep)
     device->use_streamer = 0;
 
     if (device->convert.needed) {
-        if (device->convert.src_format == AUDIO_U8) {
-            silence = 0x80;
-        } else {
-            silence = 0;
-        }
-
 #if 0                           /* !!! FIXME: I took len_div out of the structure. Use rate_incr instead? */
         /* If the result of the conversion alters the length, i.e. resampling is being used, use the streamer */
         if (device->convert.len_mult != 1 || device->convert.len_div != 1) {
@@ -373,11 +358,8 @@ SDL_RunAudio(void *devicep)
                 device->convert.len_mult;
         }
 #endif
-
-        /* stream_len = device->convert.len; */
-        stream_len = device->spec.size;
+        stream_len = device->convert.len;
     } else {
-        silence = device->spec.silence;
         stream_len = device->spec.size;
     }
 
@@ -425,9 +407,9 @@ SDL_RunAudio(void *devicep)
                 }
 
                 /* Read from the callback into the _input_ stream */
-                SDL_mutexP(device->mixer_lock);
+                SDL_LockMutex(device->mixer_lock);
                 (*fill) (udata, istream, istream_len);
-                SDL_mutexV(device->mixer_lock);
+                SDL_UnlockMutex(device->mixer_lock);
 
                 /* Convert the audio if necessary and write to the streamer */
                 if (device->convert.needed) {
@@ -435,7 +417,7 @@ SDL_RunAudio(void *devicep)
                     if (istream == NULL) {
                         istream = device->fake_stream;
                     }
-                    /*SDL_memcpy(istream, device->convert.buf, device->convert.len_cvt); */
+                    /* SDL_memcpy(istream, device->convert.buf, device->convert.len_cvt); */
                     SDL_StreamWrite(&device->streamer, device->convert.buf,
                                     device->convert.len_cvt);
                 } else {
@@ -475,14 +457,10 @@ SDL_RunAudio(void *devicep)
         }
     } else {
         /* Otherwise, do not use the streamer. This is the old code. */
+        const int silence = (int) device->spec.silence;
 
         /* Loop, filling the audio buffers */
         while (device->enabled) {
-
-            if (device->paused) {
-                SDL_Delay(delay);
-                continue;
-            }
 
             /* Fill the current buffer with sound */
             if (device->convert.needed) {
@@ -498,9 +476,13 @@ SDL_RunAudio(void *devicep)
                 }
             }
 
-            SDL_mutexP(device->mixer_lock);
-            (*fill) (udata, stream, stream_len);
-            SDL_mutexV(device->mixer_lock);
+            SDL_LockMutex(device->mixer_lock);
+            if (device->paused) {
+                SDL_memset(stream, silence, stream_len);
+            } else {
+                (*fill) (udata, stream, stream_len);
+            }
+            SDL_UnlockMutex(device->mixer_lock);
 
             /* Convert the audio if necessary */
             if (device->convert.needed) {
@@ -598,8 +580,8 @@ SDL_AudioInit(const char *driver_name)
     for (i = 0; (!initialized) && (bootstrap[i]); ++i) {
         /* make sure we should even try this driver before doing so... */
         const AudioBootStrap *backend = bootstrap[i];
-        if (((driver_name) && (SDL_strcasecmp(backend->name, driver_name))) ||
-            ((!driver_name) && (backend->demand_only))) {
+        if ((driver_name && (SDL_strncasecmp(backend->name, driver_name, SDL_strlen(driver_name)) != 0)) ||
+            (!driver_name && backend->demand_only)) {
             continue;
         }
 
@@ -638,13 +620,62 @@ SDL_GetCurrentAudioDriver()
     return current_audio.name;
 }
 
+static void
+free_device_list(char ***devices, int *devCount)
+{
+    int i = *devCount;
+    if ((i > 0) && (*devices != NULL)) {
+        while (i--) {
+            SDL_free((*devices)[i]);
+        }
+    }
+
+    SDL_free(*devices);
+
+    *devices = NULL;
+    *devCount = 0;
+}
+
+static
+void SDL_AddCaptureAudioDevice(const char *_name)
+{
+    char *name = NULL;
+    void *ptr = SDL_realloc(current_audio.inputDevices,
+                          (current_audio.inputDeviceCount+1) * sizeof(char*));
+    if (ptr == NULL) {
+        return;  /* oh well. */
+    }
+
+    current_audio.inputDevices = (char **) ptr;
+    name = SDL_strdup(_name);  /* if this returns NULL, that's okay. */
+    current_audio.inputDevices[current_audio.inputDeviceCount++] = name;
+}
+
+static
+void SDL_AddOutputAudioDevice(const char *_name)
+{
+    char *name = NULL;
+    void *ptr = SDL_realloc(current_audio.outputDevices,
+                          (current_audio.outputDeviceCount+1) * sizeof(char*));
+    if (ptr == NULL) {
+        return;  /* oh well. */
+    }
+
+    current_audio.outputDevices = (char **) ptr;
+    name = SDL_strdup(_name);  /* if this returns NULL, that's okay. */
+    current_audio.outputDevices[current_audio.outputDeviceCount++] = name;
+}
+
 
 int
 SDL_GetNumAudioDevices(int iscapture)
 {
+    int retval = 0;
+
     if (!SDL_WasInit(SDL_INIT_AUDIO)) {
         return -1;
     }
+
     if ((iscapture) && (!current_audio.impl.HasCaptureSupport)) {
         return 0;
     }
@@ -657,7 +688,19 @@ SDL_GetNumAudioDevices(int iscapture)
         return 1;
     }
 
-    return current_audio.impl.DetectDevices(iscapture);
+    if (iscapture) {
+        free_device_list(&current_audio.inputDevices,
+                         &current_audio.inputDeviceCount);
+        current_audio.impl.DetectDevices(iscapture, SDL_AddCaptureAudioDevice);
+        retval = current_audio.inputDeviceCount;
+    } else {
+        free_device_list(&current_audio.outputDevices,
+                         &current_audio.outputDeviceCount);
+        current_audio.impl.DetectDevices(iscapture, SDL_AddOutputAudioDevice);
+        retval = current_audio.outputDeviceCount;
+    }
+
+    return retval;
 }
 
 
@@ -675,19 +718,38 @@ SDL_GetAudioDeviceName(int index, int iscapture)
     }
 
     if (index < 0) {
-        SDL_SetError("No such device");
-        return NULL;
+        goto no_such_device;
     }
 
     if ((iscapture) && (current_audio.impl.OnlyHasDefaultInputDevice)) {
+        if (index > 0) {
+            goto no_such_device;
+        }
         return DEFAULT_INPUT_DEVNAME;
     }
 
     if ((!iscapture) && (current_audio.impl.OnlyHasDefaultOutputDevice)) {
+        if (index > 0) {
+            goto no_such_device;
+        }
         return DEFAULT_OUTPUT_DEVNAME;
     }
 
-    return current_audio.impl.GetDeviceName(index, iscapture);
+    if (iscapture) {
+        if (index >= current_audio.inputDeviceCount) {
+            goto no_such_device;
+        }
+        return current_audio.inputDevices[index];
+    } else {
+        if (index >= current_audio.outputDeviceCount) {
+            goto no_such_device;
+        }
+        return current_audio.outputDevices[index];
+    }
+
+no_such_device:
+    SDL_SetError("No such device");
+    return NULL;
 }
 
 
@@ -701,9 +763,7 @@ close_audio_device(SDL_AudioDevice * device)
     if (device->mixer_lock != NULL) {
         SDL_DestroyMutex(device->mixer_lock);
     }
-    if (device->fake_stream != NULL) {
-        SDL_FreeAudioMem(device->fake_stream);
-    }
+    SDL_FreeAudioMem(device->fake_stream);
     if (device->convert.needed) {
         SDL_FreeAudioMem(device->convert.buf);
     }
@@ -877,7 +937,12 @@ open_audio_device(const char *devname, int iscapture,
         }
     }
 
-    if (!current_audio.impl.OpenDevice(device, devname, iscapture)) {
+    /* force a device detection if we haven't done one yet. */
+    if ( ((iscapture) && (current_audio.inputDevices == NULL)) ||
+         ((!iscapture) && (current_audio.outputDevices == NULL)) )
+        SDL_GetNumAudioDevices(iscapture);
+
+    if (current_audio.impl.OpenDevice(device, devname, iscapture) < 0) {
         close_audio_device(device);
         return 0;
     }
@@ -889,12 +954,6 @@ open_audio_device(const char *devname, int iscapture,
         close_audio_device(device);
         SDL_OutOfMemory();
         return 0;
-    }
-
-    /* If the audio driver changes the buffer size, accept it */
-    if (device->spec.samples != obtained->samples) {
-        obtained->samples = device->spec.samples;
-        SDL_CalculateAudioSpec(obtained);
     }
 
     /* See if we need to do any conversion */
@@ -920,6 +979,16 @@ open_audio_device(const char *devname, int iscapture,
             build_cvt = SDL_TRUE;
         }
     }
+
+    /* If the audio driver changes the buffer size, accept it.
+       This needs to be done after the format is modified above,
+       otherwise it might not have the correct buffer size.
+     */
+    if (device->spec.samples != obtained->samples) {
+        obtained->samples = device->spec.samples;
+        SDL_CalculateAudioSpec(obtained);
+    }
+
     if (build_cvt) {
         /* Build an audio conversion block */
         if (SDL_BuildAudioCVT(&device->convert,
@@ -931,7 +1000,7 @@ open_audio_device(const char *devname, int iscapture,
             return 0;
         }
         if (device->convert.needed) {
-            device->convert.len = (int) (((double) obtained->size) /
+            device->convert.len = (int) (((double) device->spec.size) /
                                          device->convert.len_ratio);
 
             device->convert.buf =
@@ -962,12 +1031,18 @@ open_audio_device(const char *devname, int iscapture,
     /* Start the audio thread if necessary */
     if (!current_audio.impl.ProvidesOwnCallbackThread) {
         /* Start the audio thread */
+        char name[64];
+        SDL_snprintf(name, sizeof (name), "SDLAudioDev%d", (int) (id + 1));
 /* !!! FIXME: this is nasty. */
-#if (defined(__WIN32__) && !defined(_WIN32_WCE)) && !defined(HAVE_LIBC)
+#if defined(__WIN32__) && !defined(HAVE_LIBC)
 #undef SDL_CreateThread
-        device->thread = SDL_CreateThread(SDL_RunAudio, device, NULL, NULL);
+#if SDL_DYNAMIC_API
+        device->thread = SDL_CreateThread_REAL(SDL_RunAudio, name, device, NULL, NULL);
 #else
-        device->thread = SDL_CreateThread(SDL_RunAudio, device);
+        device->thread = SDL_CreateThread(SDL_RunAudio, name, device, NULL, NULL);
+#endif
+#else
+        device->thread = SDL_CreateThread(SDL_RunAudio, name, device);
 #endif
         if (device->thread == NULL) {
             SDL_CloseAudioDevice(id + 1);
@@ -1004,12 +1079,8 @@ SDL_OpenAudio(SDL_AudioSpec * desired, SDL_AudioSpec * obtained)
     } else {
         id = open_audio_device(NULL, 0, desired, desired, 0, 1);
     }
-    if (id > 1) {               /* this should never happen in theory... */
-        SDL_CloseAudioDevice(id);
-        SDL_SetError("Internal error"); /* MUST be Device ID #1! */
-        return (-1);
-    }
 
+    SDL_assert((id == 0) || (id == 1));
     return ((id == 0) ? -1 : 0);
 }
 
@@ -1049,7 +1120,9 @@ SDL_PauseAudioDevice(SDL_AudioDeviceID devid, int pause_on)
 {
     SDL_AudioDevice *device = get_audio_device(devid);
     if (device) {
+        current_audio.impl.LockDevice(device);
         device->paused = pause_on;
+        current_audio.impl.UnlockDevice(device);
     }
 }
 
@@ -1112,12 +1185,23 @@ void
 SDL_AudioQuit(void)
 {
     SDL_AudioDeviceID i;
+
+    if (!current_audio.name) {  /* not initialized?! */
+        return;
+    }
+
     for (i = 0; i < SDL_arraysize(open_devices); i++) {
-        SDL_CloseAudioDevice(i);
+        if (open_devices[i] != NULL) {
+            SDL_CloseAudioDevice(i+1);
+        }
     }
 
     /* Free the driver data */
     current_audio.impl.Deinitialize();
+    free_device_list(&current_audio.outputDevices,
+                     &current_audio.outputDeviceCount);
+    free_device_list(&current_audio.inputDevices,
+                     &current_audio.inputDeviceCount);
     SDL_memset(&current_audio, '\0', sizeof(current_audio));
     SDL_memset(open_devices, '\0', sizeof(open_devices));
 }

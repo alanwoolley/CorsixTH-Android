@@ -1,161 +1,160 @@
-/*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+ /*
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
+#include "../../SDL_internal.h"
 
-#import "SDL_uikitview.h"
+#if SDL_VIDEO_DRIVER_UIKIT
+
+#include "SDL_uikitview.h"
 
 #include "../../events/SDL_keyboard_c.h"
 #include "../../events/SDL_mouse_c.h"
 #include "../../events/SDL_touch_c.h"
 
 #if SDL_IPHONE_KEYBOARD
-#import "keyinfotable.h"
-#import "SDL_uikitappdelegate.h"
-#import "SDL_uikitwindow.h"
+#include "keyinfotable.h"
 #endif
+#include "SDL_uikitappdelegate.h"
+#include "SDL_uikitmodes.h"
+#include "SDL_uikitwindow.h"
+
+void _uikit_keyboard_init() ;
 
 @implementation SDL_uikitview
 
-- (void)dealloc {
+- (void)dealloc
+{
     [super dealloc];
 }
 
-- (id)initWithFrame:(CGRect)frame {
-
+- (id)initWithFrame:(CGRect)frame
+{
     self = [super initWithFrame: frame];
-    
+
 #if SDL_IPHONE_KEYBOARD
     [self initializeKeyboard];
-#endif    
+#endif
 
-#ifdef FIXED_MULTITOUCH
     self.multipleTouchEnabled = YES;
 
-    SDL_Touch touch;
-    touch.id = 0; //TODO: Should be -1?
-
-    //touch.driverdata = SDL_malloc(sizeof(EventTouchData));
-    //EventTouchData* data = (EventTouchData*)(touch.driverdata);
-    
-    touch.x_min = 0;
-    touch.x_max = frame.size.width;
-    touch.native_xres = touch.x_max - touch.x_min;
-    touch.y_min = 0;
-    touch.y_max = frame.size.height;
-    touch.native_yres = touch.y_max - touch.y_min;
-    touch.pressure_min = 0;
-    touch.pressure_max = 1;
-    touch.native_pressureres = touch.pressure_max - touch.pressure_min;
-
-
-    touchId = SDL_AddTouch(&touch, "IPHONE SCREEN");
-#endif
+    touchId = 1;
+    SDL_AddTouch(touchId, "");
 
     return self;
 
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (CGPoint)touchLocation:(UITouch *)touch shouldNormalize:(BOOL)normalize
+{
+    CGPoint point = [touch locationInView: self];
 
+    /* Get the display scale and apply that to the input coordinates */
+    SDL_Window *window = self->viewcontroller.window;
+    SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
+    SDL_DisplayModeData *displaymodedata = (SDL_DisplayModeData *) display->current_mode.driverdata;
+
+    if (normalize) {
+        CGRect bounds = [self bounds];
+        point.x /= bounds.size.width;
+        point.y /= bounds.size.height;
+    } else {
+        point.x *= displaymodedata->scale;
+        point.y *= displaymodedata->scale;
+    }
+    return point;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
     NSEnumerator *enumerator = [touches objectEnumerator];
     UITouch *touch = (UITouch*)[enumerator nextObject];
 
-    if (touch) {
-        CGPoint locationInView = [touch locationInView: self];
-            
-        /* send moved event */
-        SDL_SendMouseMotion(NULL, 0, locationInView.x, locationInView.y);
+    while (touch) {
+        if (!leftFingerDown) {
+            CGPoint locationInView = [self touchLocation:touch shouldNormalize:NO];
 
-        /* send mouse down event */
-        SDL_SendMouseButton(NULL, SDL_PRESSED, SDL_BUTTON_LEFT);
-    }
+            /* send moved event */
+            SDL_SendMouseMotion(NULL, SDL_TOUCH_MOUSEID, 0, locationInView.x, locationInView.y);
 
-#ifdef FIXED_MULTITOUCH
-    while(touch) {
-      CGPoint locationInView = [touch locationInView: self];
+            /* send mouse down event */
+            SDL_SendMouseButton(NULL, SDL_TOUCH_MOUSEID, SDL_PRESSED, SDL_BUTTON_LEFT);
 
-
-#ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
-      //FIXME: TODO: Using touch as the fingerId is potentially dangerous
-      //It is also much more efficient than storing the UITouch pointer
-      //and comparing it to the incoming event.
-      SDL_SendFingerDown(touchId,(long)touch,
-                 SDL_TRUE,locationInView.x,locationInView.y,
-                 1);
-#else
-      int i;
-      for(i = 0;i < MAX_SIMULTANEOUS_TOUCHES;i++) {
-        if(finger[i] == NULL) {
-          finger[i] = touch;
-          SDL_SendFingerDown(touchId,i,
-                 SDL_TRUE,locationInView.x,locationInView.y,
-                 1);
-          break;
+            leftFingerDown = touch;
         }
-      }
-#endif
 
-      touch = (UITouch*)[enumerator nextObject]; 
-    }
+        CGPoint locationInView = [self touchLocation:touch shouldNormalize:YES];
+#ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
+        /* FIXME: TODO: Using touch as the fingerId is potentially dangerous
+         * It is also much more efficient than storing the UITouch pointer
+         * and comparing it to the incoming event.
+         */
+        SDL_SendTouch(touchId, (SDL_FingerID)((size_t)touch),
+                      SDL_TRUE, locationInView.x, locationInView.y, 1.0f);
+#else
+        int i;
+        for(i = 0; i < MAX_SIMULTANEOUS_TOUCHES; i++) {
+            if (finger[i] == NULL) {
+                finger[i] = touch;
+                SDL_SendTouch(touchId, i,
+                              SDL_TRUE, locationInView.x, locationInView.y, 1.0f);
+                break;
+            }
+        }
 #endif
+        touch = (UITouch*)[enumerator nextObject];
+    }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
     NSEnumerator *enumerator = [touches objectEnumerator];
     UITouch *touch = (UITouch*)[enumerator nextObject];
-    
-    if (touch) {
-        /* send mouse up */
-        SDL_SendMouseButton(NULL, SDL_RELEASED, SDL_BUTTON_LEFT);
-    }
 
-#ifdef FIXED_MULTITOUCH
     while(touch) {
-      CGPoint locationInView = [touch locationInView: self];
-      
-
-#ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
-      SDL_SendFingerDown(touchId,(long)touch,
-                 SDL_FALSE,locationInView.x,locationInView.y,
-                 1);
-#else
-      int i;
-      for(i = 0;i < MAX_SIMULTANEOUS_TOUCHES;i++) {
-        if(finger[i] == touch) {
-          SDL_SendFingerDown(touchId,i,
-                 SDL_FALSE,locationInView.x,locationInView.y,
-                 1);
-          finger[i] = NULL;
-          break;
+        if (touch == leftFingerDown) {
+            /* send mouse up */
+            SDL_SendMouseButton(NULL, SDL_TOUCH_MOUSEID, SDL_RELEASED, SDL_BUTTON_LEFT);
+            leftFingerDown = nil;
         }
-      }
-#endif
 
-      touch = (UITouch*)[enumerator nextObject]; 
-    }
+        CGPoint locationInView = [self touchLocation:touch shouldNormalize:YES];
+#ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
+        SDL_SendTouch(touchId, (long)touch,
+                      SDL_FALSE, locationInView.x, locationInView.y, 1.0f);
+#else
+        int i;
+        for (i = 0; i < MAX_SIMULTANEOUS_TOUCHES; i++) {
+            if (finger[i] == touch) {
+                SDL_SendTouch(touchId, i,
+                              SDL_FALSE, locationInView.x, locationInView.y, 1.0f);
+                finger[i] = NULL;
+                break;
+            }
+        }
 #endif
+        touch = (UITouch*)[enumerator nextObject];
+    }
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
     /*
         this can happen if the user puts more than 5 touches on the screen
         at once, or perhaps in other circumstances.  Usually (it seems)
@@ -164,42 +163,35 @@
     [self touchesEnded: touches withEvent: event];
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
     NSEnumerator *enumerator = [touches objectEnumerator];
     UITouch *touch = (UITouch*)[enumerator nextObject];
-    
-    if (touch) {
-        CGPoint locationInView = [touch locationInView: self];
 
-        /* send moved event */
-        SDL_SendMouseMotion(NULL, 0, locationInView.x, locationInView.y);
-    }
+    while (touch) {
+        if (touch == leftFingerDown) {
+            CGPoint locationInView = [self touchLocation:touch shouldNormalize:NO];
 
-#ifdef FIXED_MULTITOUCH
-    while(touch) {
-      CGPoint locationInView = [touch locationInView: self];
-      
-
-#ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
-      SDL_SendTouchMotion(touchId,(long)touch,
-                  SDL_FALSE,locationInView.x,locationInView.y,
-                  1);
-#else
-      int i;
-      for(i = 0;i < MAX_SIMULTANEOUS_TOUCHES;i++) {
-        if(finger[i] == touch) {
-          SDL_SendTouchMotion(touchId,i,
-                  SDL_FALSE,locationInView.x,locationInView.y,
-                  1);
-          break;
+            /* send moved event */
+            SDL_SendMouseMotion(NULL, SDL_TOUCH_MOUSEID, 0, locationInView.x, locationInView.y);
         }
-      }
-#endif
 
-      touch = (UITouch*)[enumerator nextObject]; 
-    }
+        CGPoint locationInView = [self touchLocation:touch shouldNormalize:YES];
+#ifdef IPHONE_TOUCH_EFFICIENT_DANGEROUS
+        SDL_SendTouchMotion(touchId, (long)touch,
+                            locationInView.x, locationInView.y, 1.0f);
+#else
+        int i;
+        for (i = 0; i < MAX_SIMULTANEOUS_TOUCHES; i++) {
+            if (finger[i] == touch) {
+                SDL_SendTouchMotion(touchId, i,
+                                    locationInView.x, locationInView.y, 1.0f);
+                break;
+            }
+        }
 #endif
+        touch = (UITouch*)[enumerator nextObject];
+    }
 }
 
 /*
@@ -207,19 +199,23 @@
 */
 #if SDL_IPHONE_KEYBOARD
 
+@synthesize textInputRect = textInputRect;
+@synthesize keyboardHeight = keyboardHeight;
+
 /* Is the iPhone virtual keyboard visible onscreen? */
-- (BOOL)keyboardVisible {
+- (BOOL)keyboardVisible
+{
     return keyboardVisible;
 }
 
 /* Set ourselves up as a UITextFieldDelegate */
-- (void)initializeKeyboard {
-        
+- (void)initializeKeyboard
+{
     textField = [[UITextField alloc] initWithFrame: CGRectZero];
     textField.delegate = self;
     /* placeholder so there is something to delete! */
-    textField.text = @" ";    
-    
+    textField.text = @" ";
+
     /* set UITextInputTrait properties, mostly to defaults */
     textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -227,46 +223,50 @@
     textField.keyboardAppearance = UIKeyboardAppearanceDefault;
     textField.keyboardType = UIKeyboardTypeDefault;
     textField.returnKeyType = UIReturnKeyDefault;
-    textField.secureTextEntry = NO;    
-    
+    textField.secureTextEntry = NO;
+
     textField.hidden = YES;
     keyboardVisible = NO;
     /* add the UITextField (hidden) to our view */
     [self addSubview: textField];
     [textField release];
+    
+    _uikit_keyboard_init();
 }
 
 /* reveal onscreen virtual keyboard */
-- (void)showKeyboard {
+- (void)showKeyboard
+{
     keyboardVisible = YES;
     [textField becomeFirstResponder];
 }
 
 /* hide onscreen virtual keyboard */
-- (void)hideKeyboard {
+- (void)hideKeyboard
+{
     keyboardVisible = NO;
     [textField resignFirstResponder];
 }
 
 /* UITextFieldDelegate method.  Invoked when user types something. */
-- (BOOL)textField:(UITextField *)_textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    
+- (BOOL)textField:(UITextField *)_textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
     if ([string length] == 0) {
         /* it wants to replace text with nothing, ie a delete */
-        SDL_SendKeyboardKey(SDL_PRESSED, SDL_SCANCODE_DELETE);
-        SDL_SendKeyboardKey(SDL_RELEASED, SDL_SCANCODE_DELETE);
+        SDL_SendKeyboardKey(SDL_PRESSED, SDL_SCANCODE_BACKSPACE);
+        SDL_SendKeyboardKey(SDL_RELEASED, SDL_SCANCODE_BACKSPACE);
     }
     else {
         /* go through all the characters in the string we've been sent
            and convert them to key presses */
         int i;
-        for (i=0; i<[string length]; i++) {
-            
+        for (i = 0; i < [string length]; i++) {
+
             unichar c = [string characterAtIndex: i];
-            
+
             Uint16 mod = 0;
             SDL_Scancode code;
-            
+
             if (c < 127) {
                 /* figure out the SDL_Scancode and SDL_keymod for this unichar */
                 code = unicharToUIKeyInfoTable[c].code;
@@ -277,7 +277,7 @@
                 code = SDL_SCANCODE_UNKNOWN;
                 mod = 0;
             }
-            
+
             if (mod & KMOD_SHIFT) {
                 /* If character uses shift, press shift down */
                 SDL_SendKeyboardKey(SDL_PRESSED, SDL_SCANCODE_LSHIFT);
@@ -288,7 +288,7 @@
             if (mod & KMOD_SHIFT) {
                 /* If character uses shift, press shift back up */
                 SDL_SendKeyboardKey(SDL_RELEASED, SDL_SCANCODE_LSHIFT);
-            }            
+            }
         }
         SDL_SendKeyboardText([string UTF8String]);
     }
@@ -296,9 +296,11 @@
 }
 
 /* Terminates the editing session */
-- (BOOL)textFieldShouldReturn:(UITextField*)_textField {
+- (BOOL)textFieldShouldReturn:(UITextField*)_textField
+{
     SDL_SendKeyboardKey(SDL_PRESSED, SDL_SCANCODE_RETURN);
-    [self hideKeyboard];
+    SDL_SendKeyboardKey(SDL_RELEASED, SDL_SCANCODE_RETURN);
+    SDL_StopTextInput();
     return YES;
 }
 
@@ -309,125 +311,153 @@
 /* iPhone keyboard addition functions */
 #if SDL_IPHONE_KEYBOARD
 
-int SDL_iPhoneKeyboardShow(SDL_Window * window) {
-    
-    SDL_WindowData *data;
-    SDL_uikitview *view;
-    
-    if (NULL == window) {
+static SDL_uikitview * getWindowView(SDL_Window * window)
+{
+    if (window == NULL) {
         SDL_SetError("Window does not exist");
-        return -1;
+        return nil;
     }
-    
-    data = (SDL_WindowData *)window->driverdata;
-    view = data->view;
-    
-    if (nil == view) {
+
+    SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
+    SDL_uikitview *view = data != NULL ? data->view : nil;
+
+    if (view == nil) {
         SDL_SetError("Window has no view");
-        return -1;
     }
-    else {
+
+    return view;
+}
+
+SDL_bool UIKit_HasScreenKeyboardSupport(_THIS)
+{
+    return SDL_TRUE;
+}
+
+void UIKit_ShowScreenKeyboard(_THIS, SDL_Window *window)
+{
+    SDL_uikitview *view = getWindowView(window);
+    if (view != nil) {
         [view showKeyboard];
-        return 0;
     }
 }
 
-int SDL_iPhoneKeyboardHide(SDL_Window * window) {
-    
-    SDL_WindowData *data;
-    SDL_uikitview *view;
-    
-    if (NULL == window) {
-        SDL_SetError("Window does not exist");
-        return -1;
-    }    
-    
-    data = (SDL_WindowData *)window->driverdata;
-    view = data->view;
-    
-    if (NULL == view) {
-        SDL_SetError("Window has no view");
-        return -1;
-    }
-    else {
+void UIKit_HideScreenKeyboard(_THIS, SDL_Window *window)
+{
+    SDL_uikitview *view = getWindowView(window);
+    if (view != nil) {
         [view hideKeyboard];
-        return 0;
     }
 }
 
-SDL_bool SDL_iPhoneKeyboardIsShown(SDL_Window * window) {
-    
-    SDL_WindowData *data;
-    SDL_uikitview *view;
-    
-    if (NULL == window) {
-        SDL_SetError("Window does not exist");
-        return -1;
-    }    
-    
-    data = (SDL_WindowData *)window->driverdata;
-    view = data->view;
-    
-    if (NULL == view) {
-        SDL_SetError("Window has no view");
+SDL_bool UIKit_IsScreenKeyboardShown(_THIS, SDL_Window *window)
+{
+    SDL_uikitview *view = getWindowView(window);
+    if (view == nil) {
         return 0;
     }
-    else {
-        return view.keyboardVisible;
-    }
+
+    return view.keyboardVisible;
 }
 
-int SDL_iPhoneKeyboardToggle(SDL_Window * window) {
+
+void _uikit_keyboard_update() {
+    SDL_Window *window = SDL_GetFocusWindow();
+    if (!window) { return; }
+    SDL_WindowData *data = (SDL_WindowData *)window->driverdata;
+    if (!data) { return; }
+    SDL_uikitview *view = data->view;
+    if (!view) { return; }
     
-    SDL_WindowData *data;
-    SDL_uikitview *view;
-    
-    if (NULL == window) {
-        SDL_SetError("Window does not exist");
-        return -1;
-    }    
-    
-    data = (SDL_WindowData *)window->driverdata;
-    view = data->view;
-    
-    if (NULL == view) {
-        SDL_SetError("Window has no view");
-        return -1;
-    }
-    else {
-        if (SDL_iPhoneKeyboardIsShown(window)) {
-            SDL_iPhoneKeyboardHide(window);
+    SDL_Rect r = view.textInputRect;
+    int height = view.keyboardHeight;
+    int offsetx = 0;
+    int offsety = 0;
+    if (height) {
+        int sw,sh;
+        SDL_GetWindowSize(window,&sw,&sh);
+        int bottom = (r.y + r.h);
+        int kbottom = sh - height;
+        if (kbottom < bottom) {
+            offsety = kbottom-bottom;
         }
-        else {
-            SDL_iPhoneKeyboardShow(window);
-        }
-        return 0;
     }
+    UIInterfaceOrientation ui_orient = [[UIApplication sharedApplication] statusBarOrientation];
+    if (ui_orient == UIInterfaceOrientationLandscapeLeft) {
+        int tmp = offsetx; offsetx = offsety; offsety = tmp;
+    }
+    if (ui_orient == UIInterfaceOrientationLandscapeRight) {
+        offsety = -offsety;
+        int tmp = offsetx; offsetx = offsety; offsety = tmp;
+    }
+    if (ui_orient == UIInterfaceOrientationPortraitUpsideDown) {
+        offsety = -offsety;
+    }
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
+        float scale = [UIScreen mainScreen].scale;
+        offsetx /= scale;
+        offsety /= scale;
+    }
+    view.frame = CGRectMake(offsetx,offsety,view.frame.size.width,view.frame.size.height);
 }
 
-#else
-
-/* stubs, used if compiled without keyboard support */
-
-int SDL_iPhoneKeyboardShow(SDL_Window * window) {
-    SDL_SetError("Not compiled with keyboard support");
-    return -1;
+void _uikit_keyboard_set_height(int height) {
+    SDL_uikitview *view = getWindowView(SDL_GetFocusWindow());
+    if (view == nil) {
+        return ;
+    }
+    
+    view.keyboardHeight = height;
+    _uikit_keyboard_update();
 }
 
-int SDL_iPhoneKeyboardHide(SDL_Window * window) {
-    SDL_SetError("Not compiled with keyboard support");
-    return -1;
+void _uikit_keyboard_init() {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    NSOperationQueue *queue = [NSOperationQueue mainQueue];
+    [center addObserverForName:UIKeyboardWillShowNotification
+                        object:nil
+                         queue:queue
+                    usingBlock:^(NSNotification *notification) {
+                        int height = 0;
+                        CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+                        height = keyboardSize.height;
+                        UIInterfaceOrientation ui_orient = [[UIApplication sharedApplication] statusBarOrientation];
+                        if (ui_orient == UIInterfaceOrientationLandscapeRight || ui_orient == UIInterfaceOrientationLandscapeLeft) {
+                            height = keyboardSize.width;
+                        }
+                        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
+                            height *= [UIScreen mainScreen].scale;
+                        }
+                        _uikit_keyboard_set_height(height);
+                    }
+     ];
+    [center addObserverForName:UIKeyboardDidHideNotification
+                        object:nil
+                         queue:queue
+                    usingBlock:^(NSNotification *notification) {
+                        _uikit_keyboard_set_height(0);
+                    }
+     ];
 }
 
-SDL_bool SDL_iPhoneKeyboardIsShown(SDL_Window * window) {
-    return 0;
+void
+UIKit_SetTextInputRect(_THIS, SDL_Rect *rect)
+{
+    if (!rect) {
+        SDL_InvalidParamError("rect");
+        return;
+    }
+    
+    SDL_uikitview *view = getWindowView(SDL_GetFocusWindow());
+    if (view == nil) {
+        return ;
+    }
+
+    view.textInputRect = *rect;
 }
 
-int SDL_iPhoneKeyboardToggle(SDL_Window * window) {
-    SDL_SetError("Not compiled with keyboard support");
-    return -1;
-}
 
 #endif /* SDL_IPHONE_KEYBOARD */
+
+#endif /* SDL_VIDEO_DRIVER_UIKIT */
 
 /* vi: set ts=4 sw=4 expandtab: */

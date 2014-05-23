@@ -1,40 +1,45 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
+
+#if defined(__WIN32__)
+#include "../core/windows/SDL_windows.h"
+#endif
 
 #include "SDL_stdinc.h"
 
-#ifndef HAVE_GETENV
-
-#if defined(__WIN32__) && !defined(_WIN32_WCE)
-
-#include "../core/windows/SDL_windows.h"
-
+#if defined(__WIN32__) && (!defined(HAVE_SETENV) || !defined(HAVE_GETENV))
 /* Note this isn't thread-safe! */
-
 static char *SDL_envmem = NULL; /* Ugh, memory leak */
 static size_t SDL_envmemlen = 0;
+#endif
 
 /* Put a variable into the environment */
+#if defined(HAVE_SETENV)
+int
+SDL_setenv(const char *name, const char *value, int overwrite)
+{
+    return setenv(name, value, overwrite);
+}
+#elif defined(__WIN32__)
 int
 SDL_setenv(const char *name, const char *value, int overwrite)
 {
@@ -50,35 +55,34 @@ SDL_setenv(const char *name, const char *value, int overwrite)
     }
     return 0;
 }
-
-/* Retrieve a variable named "name" from the environment */
-char *
-SDL_getenv(const char *name)
+/* We have a real environment table, but no real setenv? Fake it w/ putenv. */
+#elif (defined(HAVE_GETENV) && defined(HAVE_PUTENV) && !defined(HAVE_SETENV))
+int
+SDL_setenv(const char *name, const char *value, int overwrite)
 {
-    size_t bufferlen;
+    size_t len;
+    char *new_variable;
 
-    bufferlen =
-        GetEnvironmentVariableA(name, SDL_envmem, (DWORD) SDL_envmemlen);
-    if (bufferlen == 0) {
-        return NULL;
-    }
-    if (bufferlen > SDL_envmemlen) {
-        char *newmem = (char *) SDL_realloc(SDL_envmem, bufferlen);
-        if (newmem == NULL) {
-            return NULL;
+    if (getenv(name) != NULL) {
+        if (overwrite) {
+            unsetenv(name);
+        } else {
+            return 0;  /* leave the existing one there. */
         }
-        SDL_envmem = newmem;
-        SDL_envmemlen = bufferlen;
-        GetEnvironmentVariableA(name, SDL_envmem, (DWORD) SDL_envmemlen);
     }
-    return SDL_envmem;
+
+    /* This leaks. Sorry. Get a better OS so we don't have to do this. */
+    len = SDL_strlen(name) + SDL_strlen(value) + 2;
+    new_variable = (char *) SDL_malloc(len);
+    if (!new_variable) {
+        return (-1);
+    }
+
+    SDL_snprintf(new_variable, len, "%s=%s", name, value);
+    return putenv(new_variable);
 }
-
 #else /* roll our own */
-
 static char **SDL_env = (char **) 0;
-
-/* Put a variable into the environment */
 int
 SDL_setenv(const char *name, const char *value, int overwrite)
 {
@@ -141,8 +145,38 @@ SDL_setenv(const char *name, const char *value, int overwrite)
     }
     return (added ? 0 : -1);
 }
+#endif
 
 /* Retrieve a variable named "name" from the environment */
+#if defined(HAVE_GETENV)
+char *
+SDL_getenv(const char *name)
+{
+    return getenv(name);
+}
+#elif defined(__WIN32__)
+char *
+SDL_getenv(const char *name)
+{
+    size_t bufferlen;
+
+    bufferlen =
+        GetEnvironmentVariableA(name, SDL_envmem, (DWORD) SDL_envmemlen);
+    if (bufferlen == 0) {
+        return NULL;
+    }
+    if (bufferlen > SDL_envmemlen) {
+        char *newmem = (char *) SDL_realloc(SDL_envmem, bufferlen);
+        if (newmem == NULL) {
+            return NULL;
+        }
+        SDL_envmem = newmem;
+        SDL_envmemlen = bufferlen;
+        GetEnvironmentVariableA(name, SDL_envmem, (DWORD) SDL_envmemlen);
+    }
+    return SDL_envmem;
+}
+#else
 char *
 SDL_getenv(const char *name)
 {
@@ -160,38 +194,6 @@ SDL_getenv(const char *name)
         }
     }
     return value;
-}
-
-#endif /* __WIN32__ */
-
-#endif /* !HAVE_GETENV */
-
-
-/* We have a real environment table, but no real setenv? Fake it w/ putenv. */
-#if (defined(HAVE_GETENV) && defined(HAVE_PUTENV) && !defined(HAVE_SETENV))
-int
-SDL_setenv(const char *name, const char *value, int overwrite)
-{
-    size_t len;
-    char *new_variable;
-
-    if (getenv(name) != NULL) {
-        if (overwrite) {
-            unsetenv(name);
-        } else {
-            return 0;  /* leave the existing one there. */
-        }
-    }
-
-    /* This leaks. Sorry. Get a better OS so we don't have to do this. */
-    len = SDL_strlen(name) + SDL_strlen(value) + 2;
-    new_variable = (char *) SDL_malloc(len);
-    if (!new_variable) {
-        return (-1);
-    }
-
-    SDL_snprintf(new_variable, len, "%s=%s", name, value);
-    return putenv(new_variable);
 }
 #endif
 

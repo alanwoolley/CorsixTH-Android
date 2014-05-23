@@ -1,25 +1,10 @@
 /*
-
     TiMidity -- Experimental MIDI to WAVE converter
     Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-   common.c
-
-   */
+    it under the terms of the Perl Artistic License, available in COPYING.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,6 +108,9 @@ FILE *open_file(const char *name, int decompress, int noise_mode)
 #ifdef DEFAULT_PATH2
     add_to_pathlist(DEFAULT_PATH2);
 #endif
+#ifdef DEFAULT_PATH3
+    add_to_pathlist(DEFAULT_PATH3);
+#endif
   }
 
   /* First try the given name */
@@ -187,6 +175,8 @@ void close_file(FILE *fp)
   if (pclose(fp)) /* Any better ideas? */
 #endif
     fclose(fp);
+
+  strncpy(current_filename, "MIDI file", PATH_MAX - 1);
 }
 
 /* This is meant for skipping a few bytes in a file or fifo. */
