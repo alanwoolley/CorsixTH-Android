@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.hardware.Sensor;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -29,6 +30,9 @@ import android.os.PowerManager.WakeLock;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.util.Log;
+import android.view.InputDevice;
+import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +45,10 @@ import com.immersion.uhl.Launcher;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,39 +74,48 @@ public class SDLActivity extends CTHActivity {
     public static boolean mExitCalledFromJava;
 
     // Main components
-    public static SDLActivity mSingleton;
-    public static SDLSurface mSurface;
-    protected static View mTextEdit;
-    protected static ViewGroup mLayout;
-    //protected static SDLJoystickHandler mJoystickHandler;
+    public static    SDLActivity        mSingleton;
+    public static    SDLSurface         mSurface;
+    protected static View               mTextEdit;
+    protected static ViewGroup          mLayout;
+    protected static SDLJoystickHandler mJoystickHandler;
 
     // This is what SDL runs in. It invokes SDL_main(), eventually
-    private static Thread mSDLThread;
+    protected static Thread     mSDLThread;
     // EGL private objects
-    private static EGLContext mEGLContext;
-    private static EGLSurface mEGLSurface;
-    private static EGLDisplay mEGLDisplay;
-    private static EGLConfig mEGLConfig;
-    private static int mGLMajor, mGLMinor;
+    private static   EGLContext mEGLContext;
+    private static   EGLSurface mEGLSurface;
+    private static   EGLDisplay mEGLDisplay;
+    private static   EGLConfig  mEGLConfig;
+    private static   int        mGLMajor, mGLMinor;
     // Audio
-    private static Thread mAudioThread;
-    private static AudioTrack mAudioTrack;
-    private static Object audioBuffer;
+    private static Thread         mAudioThread;
+    private static AudioTrack     mAudioTrack;
+    private static Object         audioBuffer;
     // Handler for the messages
-    public CommandHandler commandHandler;
+    public         CommandHandler commandHandler;
     // Menu Drawer
     DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private int currentVersion;
+    private int      currentVersion;
     private WakeLock wake;
     private boolean hasGameLoaded = false;
+
     // Vibration launcher
     private Launcher mHapticLauncher;
 
     // C functions we call
     public static native void nativeInit(Configuration config, String toLoad);
 
+    public static native void nativeLowMemory();
+
     public static native void nativeQuit();
+
+    public static native void nativePause();
+
+    public static native void nativeResume();
+
+    public static native void nativeFlipBuffers();
 
     public static native void onNativeResize(int x, int y, int format);
 
@@ -111,9 +127,29 @@ public class SDLActivity extends CTHActivity {
                                             int action, float x, float y, float p, int pc, int gestureTriggered,
                                             int controlsMode);
 
+    public static native int nativeAddJoystick(int device_id, String name,
+                                               int is_accelerometer, int nbuttons,
+                                               int naxes, int nhats, int nballs);
+
+    public static native int nativeRemoveJoystick(int device_id);
+
+    public static native int onNativePadDown(int device_id, int keycode);
+
+    public static native int onNativePadUp(int device_id, int keycode);
+
+    public static native void onNativeJoy(int device_id, int axis,
+                                          float value);
+
+    public static native void onNativeHat(int device_id, int hat_id,
+                                          int x, int y);
+
     public static native void onNativeAccel(float x, float y, float z);
 
     public static native void onNativeHover(float x, float y);
+
+    public static native void onNativeSurfaceChanged();
+
+    public static native void onNativeSurfaceDestroyed();
 
     public static native void onSpenButton();
 
@@ -142,7 +178,7 @@ public class SDLActivity extends CTHActivity {
         mSurface = null;
         mTextEdit = null;
         mLayout = null;
-        // mJoystickHandler = null;
+        mJoystickHandler = null;
         mSDLThread = null;
         mAudioTrack = null;
         mExitCalledFromJava = false;
@@ -281,7 +317,8 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static void flipBuffers() {
-        flipEGL();
+
+        SDLActivity.nativeFlipBuffers();
     }
 
     // EGL buffer flip
@@ -327,62 +364,39 @@ public class SDLActivity extends CTHActivity {
         mSingleton.commandHandler.sendMessage(msg);
     }
 
-    public static Object audioInit(int sampleRate, boolean is16Bit,
-                                   boolean isStereo, int desiredFrames) {
-        // int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
-        int channelConfig = isStereo ? AudioFormat.CHANNEL_OUT_STEREO
-                : AudioFormat.CHANNEL_OUT_MONO;
-        int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT
-                : AudioFormat.ENCODING_PCM_8BIT;
+    // Audio
+    public static int audioInit(int sampleRate, boolean is16Bit, boolean isStereo, int desiredFrames) {
+        int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
+        int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
-        Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " "
-                + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, "
-                + desiredFrames + " frames buffer");
+        Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
 
         // Let the user pick a larger buffer if they really want -- but ye
         // gods they probably shouldn't, the minimums are horrifyingly high
         // latency already
-        desiredFrames = Math.max(desiredFrames,
-                (AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat)
-                        + frameSize - 1)
-                        / frameSize
-        );
+        desiredFrames = Math.max(desiredFrames, (AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat) + frameSize - 1) / frameSize);
 
         if (mAudioTrack == null) {
             mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
-                    channelConfig, audioFormat, desiredFrames * frameSize,
-                    AudioTrack.MODE_STREAM);
+                    channelConfig, audioFormat, desiredFrames * frameSize, AudioTrack.MODE_STREAM);
+
+            // Instantiating AudioTrack can "succeed" without an exception and the track may still be invalid
+            // Ref: https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/media/java/android/media/AudioTrack.java
+            // Ref: http://developer.android.com/reference/android/media/AudioTrack.html#getState()
 
             if (mAudioTrack.getState() != AudioTrack.STATE_INITIALIZED) {
                 Log.e("SDL", "Failed during initialization of Audio Track");
                 mAudioTrack = null;
                 return -1;
             }
+
+            mAudioTrack.play();
         }
 
+        Log.v("SDL", "SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + (mAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
 
-        Log.v(
-                "SDL",
-                "SDL audio: got "
-                        + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono")
-                        + " "
-                        + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit"
-                        : "8-bit") + " " + (mAudioTrack.getSampleRate() / 1000f)
-                        + "kHz, " + desiredFrames + " frames buffer"
-        );
-
-        // TODO - change this to SDL2 way. I think in SDL2 it's handled in it's own thread on
-        // the native side, rather than in the JVM.
-
-        audioStartThread();
-
-        if (is16Bit) {
-            audioBuffer = new short[desiredFrames * (isStereo ? 2 : 1)];
-        } else {
-            audioBuffer = new byte[desiredFrames * (isStereo ? 2 : 1)];
-        }
-        return audioBuffer;
+        return 0;
     }
 
     public static void audioStartThread() {
@@ -441,24 +455,13 @@ public class SDLActivity extends CTHActivity {
     // Send a message from the SDLMain thread
 
     public static void audioQuit() {
-        // TODO - change this to SDL2 style
-        if (mAudioThread != null) {
-            try {
-                mAudioThread.join();
-            } catch (Exception e) {
-                Log.v(SDLActivity.class.getSimpleName(),
-                        "Problem stopping audio thread: " + e);
-                BugSenseHandler.sendException(e);
-            }
-            mAudioThread = null;
-
-        }
-
         if (mAudioTrack != null) {
             mAudioTrack.stop();
             mAudioTrack = null;
         }
     }
+
+
 
     public static void toggleScrolling(boolean scrolling) {
         Log.d(SDLActivity.class.getSimpleName(), "Scrolling Java call: "
@@ -622,6 +625,9 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
+    public Surface getNativeSurface() {
+        return mSurface.getHolder().getSurface();
+    }
     void loadApplication() {
 
         // Load the libraries
@@ -630,6 +636,7 @@ public class SDLActivity extends CTHActivity {
         System.loadLibrary("SDL2_mixer");
         System.loadLibrary("ffmpeg");
         System.loadLibrary("appmain");
+
 
         try {
             app.configuration.writeToFile();
@@ -699,6 +706,15 @@ public class SDLActivity extends CTHActivity {
             }
 
         });
+
+
+        if(Build.VERSION.SDK_INT >= 12) {
+            mJoystickHandler = new SDLJoystickHandler_API12();
+        }
+        else {
+            mJoystickHandler = new SDLJoystickHandler();
+        }
+
         SurfaceHolder holder = mSurface.getHolder();
         holder.setFixedSize(app.configuration.getDisplayWidth(),
                 app.configuration.getDisplayHeight());
@@ -761,9 +777,9 @@ public class SDLActivity extends CTHActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mSDLThread = new Thread(new SDLMain(app.configuration, loadPath),
-                                "SDLThread");
-                        mSDLThread.start();
+                      //  mSDLThread = new Thread(new SDLMain(app.configuration, loadPath),
+                      //          "SDLThread");
+                      //  mSDLThread.start();
                     }
 
                 });
@@ -771,9 +787,9 @@ public class SDLActivity extends CTHActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mSDLThread = new Thread(new SDLMain(app.configuration, ""),
-                                "SDLThread");
-                        mSDLThread.start();
+                      //  mSDLThread = new Thread(new SDLMain(app.configuration, ""),
+                      //          "SDLThread");
+                      //  mSDLThread.start();
                     }
 
                 });
@@ -781,8 +797,8 @@ public class SDLActivity extends CTHActivity {
 
             } else {
 
-                mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
-                mSDLThread.start();
+                //mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
+               // mSDLThread.start();
             }
 
         }
@@ -877,6 +893,65 @@ public class SDLActivity extends CTHActivity {
         }
 
     }
+
+    // Input
+
+    /**
+     * @return an array which may be empty but is never null.
+     */
+    public static int[] inputGetInputDeviceIds(int sources) {
+        int[] ids = InputDevice.getDeviceIds();
+        int[] filtered = new int[ids.length];
+        int used = 0;
+        for (int i = 0; i < ids.length; ++i) {
+            InputDevice device = InputDevice.getDevice(ids[i]);
+            if ((device != null) && ((device.getSources() & sources) != 0)) {
+                filtered[used++] = device.getId();
+            }
+        }
+        return Arrays.copyOf(filtered, used);
+    }
+
+    // Joystick glue code, just a series of stubs that redirect to the SDLJoystickHandler instance
+    public static boolean handleJoystickMotionEvent(MotionEvent event) {
+        return mJoystickHandler.handleMotionEvent(event);
+    }
+
+    public static void pollInputDevices() {
+        if (SDLActivity.mSDLThread != null) {
+            mJoystickHandler.pollInputDevices();
+        }
+    }
+
+    /** Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
+     *  is the first to be called, mIsSurfaceReady should still be set
+     *  to 'true' during the call to onPause (in a usual scenario).
+     */
+    public static void handlePause() {
+        if (!SDLActivity.mIsPaused && SDLActivity.mIsSurfaceReady) {
+            SDLActivity.mIsPaused = true;
+            SDLActivity.nativePause();
+            mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+        }
+    }
+
+    /** Called by onResume or surfaceCreated. An actual resume should be done only when the surface is ready.
+     * Note: Some Android variants may send multiple surfaceChanged events, so we don't need to resume
+     * every time we get one of those events, only if it comes after surfaceDestroyed
+     */
+    public static void handleResume() {
+        if (SDLActivity.mIsPaused && SDLActivity.mIsSurfaceReady && SDLActivity.mHasFocus) {
+            SDLActivity.mIsPaused = false;
+            SDLActivity.nativeResume();
+            mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+        }
+    }
+
+    /* The native thread has finished */
+    public static void handleNativeExit() {
+        SDLActivity.mSDLThread = null;
+        mSingleton.finish();
+    }
 }
 
 /**
@@ -898,5 +973,152 @@ class SDLMain implements Runnable {
         SDLActivity.nativeInit(config, toLoad);
 
         Log.v(LOG_TAG, "SDL thread terminated");
+    }
+}
+
+/* A null joystick handler for API level < 12 devices (the accelerometer is handled separately) */
+class SDLJoystickHandler {
+
+    public boolean handleMotionEvent(MotionEvent event) {
+        return false;
+    }
+
+    public void pollInputDevices() {
+    }
+}
+
+/* Actual joystick functionality available for API >= 12 devices */
+class SDLJoystickHandler_API12 extends SDLJoystickHandler {
+
+    class SDLJoystick {
+        public int                                device_id;
+        public String                             name;
+        public ArrayList<InputDevice.MotionRange> axes;
+        public ArrayList<InputDevice.MotionRange> hats;
+    }
+
+    class RangeComparator implements Comparator<InputDevice.MotionRange> {
+        @Override
+        public int compare(InputDevice.MotionRange arg0, InputDevice.MotionRange arg1) {
+            return arg0.getAxis() - arg1.getAxis();
+        }
+    }
+
+    private ArrayList<SDLJoystick> mJoysticks;
+
+    public SDLJoystickHandler_API12() {
+
+        mJoysticks = new ArrayList<SDLJoystick>();
+    }
+
+    @Override
+    public void pollInputDevices() {
+        int[] deviceIds = InputDevice.getDeviceIds();
+        // It helps processing the device ids in reverse order
+        // For example, in the case of the XBox 360 wireless dongle,
+        // so the first controller seen by SDL matches what the receiver
+        // considers to be the first controller
+
+        for (int i = deviceIds.length - 1; i > -1; i--) {
+            SDLJoystick joystick = getJoystick(deviceIds[i]);
+            if (joystick == null) {
+                joystick = new SDLJoystick();
+                InputDevice joystickDevice = InputDevice.getDevice(deviceIds[i]);
+                if ((joystickDevice.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+                    joystick.device_id = deviceIds[i];
+                    joystick.name = joystickDevice.getName();
+                    joystick.axes = new ArrayList<InputDevice.MotionRange>();
+                    joystick.hats = new ArrayList<InputDevice.MotionRange>();
+
+                    List<InputDevice.MotionRange> ranges = joystickDevice.getMotionRanges();
+                    Collections.sort(ranges, new RangeComparator());
+                    for (InputDevice.MotionRange range : ranges) {
+                        if ((range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+                            if (range.getAxis() == MotionEvent.AXIS_HAT_X ||
+                                    range.getAxis() == MotionEvent.AXIS_HAT_Y) {
+                                joystick.hats.add(range);
+                            } else {
+                                joystick.axes.add(range);
+                            }
+                        }
+                    }
+
+                    mJoysticks.add(joystick);
+                    SDLActivity.nativeAddJoystick(joystick.device_id, joystick.name, 0, -1,
+                            joystick.axes.size(), joystick.hats.size() / 2, 0);
+                }
+            }
+        }
+
+        /* Check removed devices */
+        ArrayList<Integer> removedDevices = new ArrayList<Integer>();
+        for (int i = 0; i < mJoysticks.size(); i++) {
+            int device_id = mJoysticks.get(i).device_id;
+            int j;
+            for (j = 0; j < deviceIds.length; j++) {
+                if (device_id == deviceIds[j]) break;
+            }
+            if (j == deviceIds.length) {
+                removedDevices.add(device_id);
+            }
+        }
+
+        for (int i = 0; i < removedDevices.size(); i++) {
+            int device_id = removedDevices.get(i);
+            SDLActivity.nativeRemoveJoystick(device_id);
+            for (int j = 0; j < mJoysticks.size(); j++) {
+                if (mJoysticks.get(j).device_id == device_id) {
+                    mJoysticks.remove(j);
+                    break;
+                }
+            }
+        }
+    }
+
+    protected SDLJoystick getJoystick(int device_id) {
+        for (int i = 0; i < mJoysticks.size(); i++) {
+            if (mJoysticks.get(i).device_id == device_id) {
+                return mJoysticks.get(i);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean handleMotionEvent(MotionEvent event) {
+        if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) != 0) {
+            int actionPointerIndex = event.getActionIndex();
+            int action = event.getActionMasked();
+            switch (action) {
+                case MotionEvent.ACTION_MOVE:
+                    SDLJoystick joystick = getJoystick(event.getDeviceId());
+                    if (joystick != null) {
+                        for (int i = 0; i < joystick.axes.size(); i++) {
+                            InputDevice.MotionRange range = joystick.axes.get(i);
+                            /* Normalize the value to -1...1 */
+                            float value = (event.getAxisValue(range.getAxis(), actionPointerIndex) - range.getMin()) / range.getRange() * 2.0f - 1.0f;
+                            SDLActivity.onNativeJoy(joystick.device_id, i, value);
+                        }
+                        for (int i = 0; i < joystick.hats.size(); i += 2) {
+                            int hatX = Math.round(event.getAxisValue(joystick.hats.get(i).getAxis(), actionPointerIndex));
+                            int hatY = Math.round(event.getAxisValue(joystick.hats.get(i + 1).getAxis(), actionPointerIndex));
+                            SDLActivity.onNativeHat(joystick.device_id, i / 2, hatX, hatY);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return true;
+    }
+}
+
+class SDLGenericMotionListener_API12 implements View.OnGenericMotionListener {
+    // Generic Motion (mouse hover, joystick...) events go here
+    // We only have joysticks yet
+    @Override
+    public boolean onGenericMotion(View v, MotionEvent event) {
+        return SDLActivity.handleJoystickMotionEvent(event);
     }
 }

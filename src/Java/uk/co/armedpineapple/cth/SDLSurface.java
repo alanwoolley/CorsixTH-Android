@@ -69,9 +69,9 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         getHolder().addCallback(this);
         this.width = width;
         this.height = height;
-        // setFocusable(true);
-        // setFocusableInTouchMode(true);
-        // requestFocus();
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        requestFocus();
         setOnKeyListener(this);
         setOnTouchListener(this);
 
@@ -109,9 +109,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	}
 
-    public Surface getNativeSurface() {
-        return getHolder().getSurface();
-    }
+
 
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
@@ -124,8 +122,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.v(LOG_TAG, "surfaceCreated()");
-
-		SDLActivity.createEGLSurface();
+        holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
 		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 		if (context.app.configuration.getSpen()) {
@@ -138,20 +135,20 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.v(LOG_TAG, "surfaceDestroyed()");
 
-		// Send a quit message to the application
-		// SDLActivity.nativePause();
-		SDLActivity.nativeQuit();
-
-		// enableSensor(Sensor.TYPE_ACCELEROMETER, false);
+        // Call this *before* setting mIsSurfaceReady to 'false'
+        SDLActivity.handlePause();
+        SDLActivity.mIsSurfaceReady = false;
+        SDLActivity.onNativeSurfaceDestroyed();
 
 	}
 
-	// Called when the surface is resized
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		Log.d(LOG_TAG, "surfaceChanged()");
+    // Called when the surface is resized
+    @Override
+    public void surfaceChanged(SurfaceHolder holder,
+                               int format, int width, int height) {
+        Log.v("SDL", "surfaceChanged()");
 
-		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
+        int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
             case PixelFormat.A_8:
                 Log.v("SDL", "pixel format A_8");
@@ -196,16 +193,42 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 break;
         }
 
-		SDLActivity.onNativeResize(width, height, sdlFormat);
+       // this.width = width;
+        //this.height = height;
+        SDLActivity.onNativeResize(width, height, sdlFormat);
+        Log.v("SDL", "Window size:" + width + "x"+height);
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         SDLActivity.mIsSurfaceReady = true;
-        //SDLActivity.onNativeSurfaceChanged();
+        SDLActivity.onNativeSurfaceChanged();
 
-        // TODO - more SDL2 stuff here
-		context.startApp();
 
-	}
+        if (SDLActivity.mSDLThread == null) {
+            // This is the entry point to the C app.
+            // Start up the C app thread and enable sensor input for the first time
+            Log.d(LOG_TAG, "Starting up SDLThread");
+            SDLActivity.mSDLThread = new Thread(new SDLMain(context.app.configuration, ""), "SDLThread");
+            enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+            SDLActivity.mSDLThread.start();
+
+            // Set up a listener thread to catch when the native thread ends
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    try {
+                        SDLActivity.mSDLThread.join();
+                    }
+                    catch(Exception e){}
+                    finally{
+                        // Native thread has finished
+                        if (! SDLActivity.mExitCalledFromJava) {
+                            SDLActivity.handleNativeExit();
+                        }
+                    }
+                }
+            }).start();
+        }
+    }
 
 	// unused
 	public void onDraw(Canvas canvas) {
