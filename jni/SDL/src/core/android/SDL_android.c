@@ -115,19 +115,26 @@ void SDL_Android_Init(JNIEnv* mEnv, jclass cls)
     Android_JNI_SetupThread();
 
     mActivityClass = (jclass)((*mEnv)->NewGlobalRef(mEnv, cls));
-
+    __android_log_print(ANDROID_LOG_DEBUG, "SDL", "loading getNativeSurface()");
     midGetNativeSurface = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "getNativeSurface","()Landroid/view/Surface;");
+    __android_log_print(ANDROID_LOG_DEBUG,"SDL",  "loading flipBuffers()");
     midFlipBuffers = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "flipBuffers","()V");
+
+    __android_log_print(ANDROID_LOG_DEBUG, "SDL", "loading audioInit()");
     midAudioInit = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "audioInit", "(IZZI)I");
+    __android_log_print(ANDROID_LOG_DEBUG, "SDL", "loading audioWriteShortBuffer()");
     midAudioWriteShortBuffer = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "audioWriteShortBuffer", "([S)V");
+    __android_log_print(ANDROID_LOG_DEBUG, "SDL", "loading audioWriteByteBuffer()");
     midAudioWriteByteBuffer = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "audioWriteByteBuffer", "([B)V");
+    __android_log_print(ANDROID_LOG_DEBUG, "SDL", "loading audioQuit()");
     midAudioQuit = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "audioQuit", "()V");
+   __android_log_print(ANDROID_LOG_DEBUG, "SDL", "loading pollInputDevices()");
     midPollInputDevices = (*mEnv)->GetStaticMethodID(mEnv, mActivityClass,
                                 "pollInputDevices", "()V");
 

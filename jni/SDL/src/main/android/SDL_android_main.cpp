@@ -2,6 +2,7 @@
     SDL_android_main.c, placed in the public domain by Sam Lantinga  3/13/14
 */
 #include "../../SDL_internal.h"
+#include <android/log.h>
 
 #ifdef __ANDROID__
 
@@ -16,18 +17,26 @@
 static JavaVM* jvm;
 
 /* Called before SDL_main() to initialize JNI bindings in SDL library */
-extern void SDL_Android_Init(JNIEnv* env, jclass cls);
+extern "C" void SDL_Android_Init(JNIEnv* env, jclass cls);
+
+// Library init
+extern "C" jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+	jvm = vm;
+	return JNI_VERSION_1_4;
+}
 
 /* Start up the SDL app */
 //void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(JNIEnv* env, jclass cls, jobject obj)
-void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(
+extern "C" void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(
 		JNIEnv* env, jclass cls, jobject configuration,
 		jstring jni_loadgame_path) {
 
-    const char* loadgame_path = (*env)->GetStringUTFChars(env, jni_loadgame_path, 0);
-
     /* This interface could expand with ABI negotiation, calbacks, etc. */
     SDL_Android_Init(env, cls);
+
+
+    const char* loadgame_path = env->GetStringUTFChars(jni_loadgame_path, 0);
+
 
     SDL_SetMainReady();
 
@@ -44,7 +53,7 @@ void Java_uk_co_armedpineapple_cth_SDLActivity_nativeInit(
 		argv[1] = loadstr;
 		argc = 2;
 	}
-
+    __android_log_print(ANDROID_LOG_INFO, "SDL", "Calling SDL_main");
     status = SDL_main(argc, argv, jvm, configuration);
 
     /* Do not issue an exit or the whole application will terminate instead of just the SDL thread */
