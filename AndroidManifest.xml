@@ -51,7 +51,6 @@
 
     <application
         android:name="uk.co.armedpineapple.cth.CTHApplication"
-        android:allowBackup="false"
         android:backupAgent="CTHBackupAgent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -78,9 +77,7 @@
             android:excludeFromRecents="true"
             android:theme="@style/Dialogs"></activity>
 
-        <meta-data
-            android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIK7gHgEjLsrbjQPJG59q7eqc8_4n1hkvK1zaoXw" />
+
     </application>
 
 </manifest>

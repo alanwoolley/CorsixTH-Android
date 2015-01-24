@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
@@ -14,14 +14,15 @@ import org.apache.tools.ant.taskdefs.condition.Os
 repositories {
     mavenCentral();
     maven {
-        url "http://www.bugsense.com/gradle/"
+        url "https://mint.splunk.com/gradle/"
     }
+
 }
 dependencies {
-    compile 'com.android.support:support-v4:19+'
-    compile 'com.bugsense.trace:bugsense:3.6'
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.splunk.mint:mint:4.0.8'
     compile 'commons-io:commons-io:2.4'
-    compile 'com.google.android.gms:play-services:4+'
+    compile 'com.google.android.gms:play-services:4.4.52'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.4.0'
 
     compile fileTree(dir: 'jars', include: '*.jar')
@@ -30,7 +31,7 @@ dependencies {
 android {
 
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 9
@@ -77,7 +78,7 @@ android {
 
         jnidebug.initWith(buildTypes.debug)
         jnidebug {
-            jniDebugBuild true
+            jniDebuggable true
         }
     }
 
@@ -132,14 +133,8 @@ task createGameZip(type: Zip) {
 }
 
 
-task ndkBuild(type: Exec) {
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-      commandLine 'ndk-build.cmd', '-j'
-    } else {
-      commandLine 'ndk-build', '-j'
-    }
-}
+
 tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn ndkBuild, createGameZip
+    compileTask -> compileTask.dependsOn createGameZip
 }
 

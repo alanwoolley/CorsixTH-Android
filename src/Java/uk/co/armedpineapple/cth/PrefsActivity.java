@@ -25,7 +25,7 @@ import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 
@@ -344,7 +344,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
                 } else if (result.getError() != null) {
                     Exception e = result.getError();
-                    BugSenseHandler.sendException(e);
+                    Mint.logException(e);
                     Toast errorToast = Toast.makeText(PrefsActivity.this,
                             R.string.download_timidity_error, Toast.LENGTH_LONG);
 
@@ -383,7 +383,7 @@ public class PrefsActivity extends PreferenceActivity implements
                         R.string.download_timidity_error, Toast.LENGTH_LONG);
 
                 if (result.getError() != null) {
-                    BugSenseHandler.sendException(result.getError());
+                    Mint.logException(result.getError());
                     dialog.hide();
                     errorToast.show();
                 } else {

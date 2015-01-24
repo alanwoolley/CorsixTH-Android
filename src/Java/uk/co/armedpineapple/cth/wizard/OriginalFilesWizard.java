@@ -23,7 +23,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 
@@ -258,7 +258,7 @@ public class OriginalFilesWizard extends WizardView {
 					Log.d(LOG_TAG, "Extracted TH demo: " + customLocation);
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
-					BugSenseHandler.sendException(e);
+					Mint.logException(e);
 					DialogFactory.createFromException(result.getError(),
 							ctx.getString(R.string.download_demo_error), ctx, false).show();
 					downloadDemoRadio.setChecked(false);
@@ -292,7 +292,7 @@ public class OriginalFilesWizard extends WizardView {
 				super.onPostExecute(result);
 
 				if (result.getError() != null) {
-					BugSenseHandler.sendException(result.getError());
+					Mint.logException(result.getError());
 					automaticRadio.setChecked(true);
 					dialog.hide();
 

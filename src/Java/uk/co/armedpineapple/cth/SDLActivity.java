@@ -6,7 +6,37 @@
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.cth;
 
-import com.immersion.uhl.Launcher;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.os.Vibrator;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+
+import com.splunk.mint.Mint;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -21,29 +51,10 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
-import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
-import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.Files.FileDetails;
+import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
-
-import com.bugsense.trace.BugSenseHandler;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.*;
-import android.content.*;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.view.*;
-import android.widget.FrameLayout;
-import android.widget.ListView;
-import android.os.*;
-import android.os.PowerManager.WakeLock;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.util.Log;
-import android.media.*;
 
 public class SDLActivity extends CTHActivity {
 
@@ -72,8 +83,10 @@ public class SDLActivity extends CTHActivity {
     private int      currentVersion;
     private WakeLock wake;
     private boolean hasGameLoaded = false;
-    // Vibration launcher
-    private Launcher mHapticLauncher;
+
+    // Vibration
+    private Vibrator mVibratorService;
+
 
     // C functions we call
     public static native void nativeInit(Configuration config, String toLoad);
@@ -371,7 +384,7 @@ public class SDLActivity extends CTHActivity {
             } catch (Exception e) {
                 Log.v(SDLActivity.class.getSimpleName(),
                         "Problem stopping audio thread: " + e);
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
             }
             mAudioThread = null;
 
@@ -421,7 +434,7 @@ public class SDLActivity extends CTHActivity {
                         0).versionCode);
 
             } catch (NameNotFoundException e) {
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
             }
 
             // Check to see if the game files have been copied yet, or whether the
@@ -488,7 +501,7 @@ public class SDLActivity extends CTHActivity {
                 Exception error;
                 if ((error = result.getError()) != null) {
                     Log.d(LOG_TAG, "Error copying files.");
-                    BugSenseHandler.sendException(error);
+                    Mint.logException(error);
                 }
 
                 Editor edit = preferences.edit();
@@ -524,7 +537,7 @@ public class SDLActivity extends CTHActivity {
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
-                            BugSenseHandler.sendException(result.getError());
+                            Mint.logException(result.getError());
 
                         }
                     }
@@ -554,7 +567,7 @@ public class SDLActivity extends CTHActivity {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Couldn't write to configuration file");
-            BugSenseHandler.sendException(e);
+            Mint.logException(e);
         }
 
         File f = new File(app.configuration.getSaveGamesPath());
@@ -581,7 +594,7 @@ public class SDLActivity extends CTHActivity {
         setContentView(mainLayout);
 
         if (app.configuration.getHaptic()) {
-            mHapticLauncher = new Launcher(this);
+            mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
@@ -725,10 +738,7 @@ public class SDLActivity extends CTHActivity {
             wake.release();
         }
 
-        if (mHapticLauncher != null) {
-            mHapticLauncher.stop();
-        }
-
+        stopVibration();
     }
 
     protected void onResume() {
@@ -769,9 +779,6 @@ public class SDLActivity extends CTHActivity {
         // that the GC can get rid of them.
         commandHandler.cleanUp();
 
-        // Delete the reference to the haptic launcher - we can recreate it later if needed
-        stopVibration();
-        mHapticLauncher = null;
 
         // Call LUA GC
         // TODO - this is buggy.
@@ -780,18 +787,31 @@ public class SDLActivity extends CTHActivity {
     }
 
     public void playVibration(int vibrationCode) {
-        if (app.configuration.getHaptic()) {
-            if (mHapticLauncher == null)
-                mHapticLauncher = new Launcher(this);
+        if (app.configuration.getHaptic() && app.hasVibration) {
+
+            if (mVibratorService == null)
+                mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             if (app.hasVibration) {
-                mHapticLauncher.play(vibrationCode);
+
+                switch (vibrationCode) {
+                    case CommandHandler.VIBRATION_SHORT_CLICK:
+                    case CommandHandler.VIBRATION_LONG_CLICK:
+                        mVibratorService.vibrate(100);
+                        break;
+                    case CommandHandler.VIBRATION_EXPLOSION:
+                        mVibratorService.vibrate(3000);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }
 
     public void stopVibration() {
-        if (mHapticLauncher != null && app.hasVibration && app.configuration.getHaptic()) {
-            mHapticLauncher.stop();
+        if (mVibratorService != null && app.hasVibration && app.configuration.getHaptic()) {
+            mVibratorService.cancel();
             commandHandler.playingEarthquake = false;
         }
 

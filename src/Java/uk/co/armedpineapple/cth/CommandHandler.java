@@ -13,8 +13,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
-import com.immersion.uhl.Launcher;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +24,9 @@ import uk.co.armedpineapple.cth.dialogs.SaveDialog;
 
 public class CommandHandler extends Handler {
 
-    private static final int VIBRATION_SHORT_CLICK = 1;
-    private static final int VIBRATION_LONG_CLICK  = 2;
-    private static final int VIBRATION_EXPLOSION   = 3;
+    public static final int VIBRATION_SHORT_CLICK = 1;
+    public static final int VIBRATION_LONG_CLICK  = 2;
+    public static final int VIBRATION_EXPLOSION   = 3;
     private final SDLActivity    activityContext;
     // Dialogs
     private       SaveDialog     saveDialog;
@@ -106,7 +105,7 @@ public class CommandHandler extends Handler {
                     loadDialog.refreshSaves(activityContext);
                     loadDialog.show();
                 } catch (IOException e) {
-                    BugSenseHandler.sendException(e);
+                    Mint.logException(e);
 
                     Toast.makeText(activityContext, "Problem loading load dialog",
                             Toast.LENGTH_SHORT).show();
@@ -123,7 +122,7 @@ public class CommandHandler extends Handler {
                     saveDialog.refreshSaves(activityContext);
                     saveDialog.show();
                 } catch (IOException e) {
-                    BugSenseHandler.sendException(e);
+                    Mint.logException(e);
                     Toast.makeText(activityContext, "Problem loading save dialog",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -151,24 +150,7 @@ public class CommandHandler extends Handler {
                 Integer vibrationCode = (Integer) msg.obj;
                 Log.d("CommandHandler", "Vibrating: " + vibrationCode);
                 if (app.configuration.getHaptic()) {
-                    switch (vibrationCode) {
-                        case VIBRATION_SHORT_CLICK:
-                            if (!playingEarthquake) {
-                                activityContext.playVibration(Launcher.SHARP_CLICK_33);
-                            }
-                            break;
-                        case VIBRATION_LONG_CLICK:
-                            if (!playingEarthquake) {
-                                activityContext.playVibration(Launcher.BOUNCE_100);
-                            }
-                            break;
-                        case VIBRATION_EXPLOSION:
-                            if (app.configuration.getHapticEarthquakes()) {
-                                activityContext.playVibration(Launcher.TEXTURE9);
-                                playingEarthquake = true;
-                            }
-                            break;
-                    }
+                     activityContext.playVibration(vibrationCode);
                 }
                 break;
             case STOP_VIBRATION:
