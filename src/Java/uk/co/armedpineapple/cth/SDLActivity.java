@@ -507,9 +507,33 @@ public class SDLActivity extends CTHActivity {
                 Editor edit = preferences.edit();
                 edit.putBoolean("scripts_copied", true);
                 edit.putInt("last_version", currentVersion);
-                edit.commit();
+                edit.apply();
                 dialog.hide();
                 loadApplication();
+            }
+
+        };
+
+        AsyncTask<String, Void, AsyncTaskResult<File>> fontCopyTask = new AsyncTask<String, Void, AsyncTaskResult<File>>() {
+
+            @Override
+            protected AsyncTaskResult<File> doInBackground(String... params) {
+
+                try {
+                    Files.copyAsset(SDLActivity.this, params[0], params[1]);
+                } catch (IOException e) {
+                    return new AsyncTaskResult<File>(e);
+                }
+                return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0]));
+            }
+
+            @Override
+            protected void onPostExecute(AsyncTaskResult<File> result) {
+                super.onPostExecute(result);
+                File f;
+                if ((f = result.getResult()) == null) {
+                    Mint.logException(result.getError());
+                }
             }
 
         };
@@ -545,9 +569,12 @@ public class SDLActivity extends CTHActivity {
                 };
 
         if (Files.canAccessExternalStorage()) {
-
             copyTask
                     .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
+
+            // Copy fallback font asset
+            fontCopyTask.execute("DroidSansFallbackFull.ttf", getFilesDir().getAbsolutePath());
+
         } else {
             DialogFactory.createExternalStorageWarningDialog(this, true).show();
         }
@@ -557,7 +584,7 @@ public class SDLActivity extends CTHActivity {
 
         // Load the libraries
         System.loadLibrary("SDL");
-	System.loadLibrary("LUA");
+        System.loadLibrary("LUA");
         System.loadLibrary("SDL_mixer");
         System.loadLibrary("ffmpeg");
         System.loadLibrary("appmain");
@@ -672,11 +699,11 @@ public class SDLActivity extends CTHActivity {
                 saves = Files.listFilesInDirectory(
                         app.configuration.getSaveGamesPath(), new FilenameFilter() {
 
-                    @Override
-                    public boolean accept(File dir, String filename) {
-                        return filename.toLowerCase(Locale.US).endsWith(".sav");
-                    }
-                });
+                            @Override
+                            public boolean accept(File dir, String filename) {
+                                return filename.toLowerCase(Locale.US).endsWith(".sav");
+                            }
+                        });
             } catch (IOException e) {
             }
 
