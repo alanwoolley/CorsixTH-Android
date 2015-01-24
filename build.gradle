@@ -7,7 +7,7 @@ buildscript {
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -30,12 +30,12 @@ dependencies {
 
 android {
 
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
 
     Properties signingProperties = new Properties()
