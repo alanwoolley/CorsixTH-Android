@@ -17,10 +17,11 @@ repositories {
     maven {
         url "http://mint.splunk.com/gradle/"
     }
+
 }
 dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.splunk.mint:mint:4.0.3'
+    compile 'com.splunk.mint:mint:4.0.8'
     compile 'commons-io:commons-io:2.4'
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
@@ -134,13 +135,7 @@ task createGameZip(type: Zip) {
 }
 
 
-task ndkBuild(type: Exec) {
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        commandLine 'ndk-build.cmd', '-j'
-    } else {
-        commandLine 'ndk-build', '-j'
-    }
-}
+
 tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn createGameZip
 }
