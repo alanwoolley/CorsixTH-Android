@@ -13,6 +13,10 @@ import android.os.Build;
 
 public class Network {
 
+    private Network() {
+
+    }
+
 	/**
 	 * Checks if there is an active network connection
 	 * 

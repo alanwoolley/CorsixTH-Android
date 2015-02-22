@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.AppTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+    <style name="Theme.AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <style name="Theme.WizardTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+    <style name="Theme.WizardTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/altbackground</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <color name="background">#000000</color>
@@ -22,7 +26,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="Theme_Dialog_Translucent" parent="@android:style/Theme.Dialog">
+    <style name="Theme_Dialog_Translucent" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@color/transparent</item>
     </style>
 
@@ -38,7 +42,7 @@
     <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
     </style>
 
-    <style name="Dialogs" parent="@android:style/Theme.Dialog">
+    <style name="Dialogs" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowFullscreen">true</item>
     </style>
 

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.AppTheme" parent="@android:style/Theme.Holo.NoActionBar.Fullscreen">
+    <style name="Theme.AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <style name="Theme.WizardTheme" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
+    <style name="Theme.WizardTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/altbackground</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
     </style>
 
-    <style name="Dialogs" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
+    <style name="Dialogs" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowFullscreen">true</item>
     </style>
 

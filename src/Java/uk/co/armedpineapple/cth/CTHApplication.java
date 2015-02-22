@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +63,7 @@ public class CTHApplication extends android.app.Application {
     private void setupBugsense() {
         if (properties.containsKey("bugsense.key") && BuildConfig.USE_BUGSENSE) {
             Log.d(LOG_TAG, "Setting up bugsense");
-            BugSenseHandler.initAndStartSession(this,
+            Mint.initAndStartSession(this,
                     (String) properties.get("bugsense.key"));
         }
     }

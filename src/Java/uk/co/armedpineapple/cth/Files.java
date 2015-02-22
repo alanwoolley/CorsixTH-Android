@@ -14,7 +14,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -263,7 +263,7 @@ public class Files {
             } catch (IOException e) {
                 Log.e(LOG_TAG,
                         "I/O Exception whilst listing files", e);
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
                 return new AsyncTaskResult<ArrayList<String>>(e);
 
             }
@@ -627,7 +627,7 @@ public class Files {
                 }
 
             } catch (IOException e) {
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
                 return new AsyncTaskResult<String>(e);
             }
 

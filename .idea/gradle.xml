@@ -12,7 +12,6 @@
         </option>
       </GradleProjectSettings>
     </option>
-    <option name="gradleVmOptions" value="-Xmx2048m" />
   </component>
 </project>
 

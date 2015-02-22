@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 import com.immersion.uhl.Launcher;
 
 import java.io.File;
@@ -106,7 +106,7 @@ public class CommandHandler extends Handler {
                     loadDialog.refreshSaves(activityContext);
                     loadDialog.show();
                 } catch (IOException e) {
-                    BugSenseHandler.sendException(e);
+                    Mint.logException(e);
 
                     Toast.makeText(activityContext, "Problem loading load dialog",
                             Toast.LENGTH_SHORT).show();
@@ -123,7 +123,7 @@ public class CommandHandler extends Handler {
                     saveDialog.refreshSaves(activityContext);
                     saveDialog.show();
                 } catch (IOException e) {
-                    BugSenseHandler.sendException(e);
+                    Mint.logException(e);
                     Toast.makeText(activityContext, "Problem loading save dialog",
                             Toast.LENGTH_SHORT).show();
                 }

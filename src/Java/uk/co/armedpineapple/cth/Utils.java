@@ -6,6 +6,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class Utils {
+
+    private Utils() {
+
+    }
+
 	/**
 	 * Checks if Google Play Services is installed and ready to be used
 	 * 

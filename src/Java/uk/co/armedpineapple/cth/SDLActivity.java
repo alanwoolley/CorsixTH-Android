@@ -27,7 +27,7 @@ import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.*;
@@ -371,7 +371,7 @@ public class SDLActivity extends CTHActivity {
             } catch (Exception e) {
                 Log.v(SDLActivity.class.getSimpleName(),
                         "Problem stopping audio thread: " + e);
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
             }
             mAudioThread = null;
 
@@ -421,7 +421,7 @@ public class SDLActivity extends CTHActivity {
                         0).versionCode);
 
             } catch (NameNotFoundException e) {
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
             }
 
             // Check to see if the game files have been copied yet, or whether the
@@ -461,6 +461,7 @@ public class SDLActivity extends CTHActivity {
     }
 
     private void installFiles(final SharedPreferences preferences) {
+        Log.d(LOG_TAG, "Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
         final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
                 + "/scripts/", this) {
@@ -488,7 +489,7 @@ public class SDLActivity extends CTHActivity {
                 Exception error;
                 if ((error = result.getError()) != null) {
                     Log.d(LOG_TAG, "Error copying files.");
-                    BugSenseHandler.sendException(error);
+                    Mint.logException(error);
                 }
 
                 Editor edit = preferences.edit();
@@ -524,7 +525,8 @@ public class SDLActivity extends CTHActivity {
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
-                            BugSenseHandler.sendException(result.getError());
+                            Log.w(LOG_TAG, "Unable to copy files successfully", result.getError());
+                            Mint.logException(result.getError());
 
                         }
                     }
@@ -532,10 +534,11 @@ public class SDLActivity extends CTHActivity {
                 };
 
         if (Files.canAccessExternalStorage()) {
-
+            Log.d(LOG_TAG, "Starting copy task");
             copyTask
                     .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
         } else {
+            Log.w(LOG_TAG, "Wasn't able to access external storage when copying files");
             DialogFactory.createExternalStorageWarningDialog(this, true).show();
         }
     }
@@ -554,7 +557,7 @@ public class SDLActivity extends CTHActivity {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Couldn't write to configuration file");
-            BugSenseHandler.sendException(e);
+            Mint.logException(e);
         }
 
         File f = new File(app.configuration.getSaveGamesPath());
