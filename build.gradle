@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.1.0'
     }
 }
 
@@ -19,10 +19,10 @@ repositories {
     }
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.splunk.mint:mint:4.0.3'
     compile 'commons-io:commons-io:2.4'
-    compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
     compile fileTree(dir: 'jars', include: '*.jar')
 }
@@ -30,7 +30,7 @@ dependencies {
 android {
 
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 15
