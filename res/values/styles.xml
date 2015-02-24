@@ -32,11 +32,9 @@
 
     <style name="FilesFontBig" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">22sp</item>
-        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small">
-        <item name="android:textColor">#FFFFFF</item>
     </style>
 
     <style name="MenuFont" parent="@android:style/TextAppearance.Medium">

@@ -23,11 +23,9 @@
     </style>
 
     <style name="FilesFontBig" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
 
     <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small">
-        <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
 
 </resources>
