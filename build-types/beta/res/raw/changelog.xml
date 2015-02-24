@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
-    <changelogversion changeDate="15/2/2014" versionName="0.7.1-beta">
-        <changelogtext>[b]New![/b] Ability to load autosaves</changelogtext>
-        <changelogtext>Misc. visual improvements</changelogtext>
-        <changelogtext>Updated Dutch and Finnish translations (thanks PatrikSelin and mrtnptrs)</changelogtext>
-    </changelogversion>
-    <changelogversion changeDate="30/1/2014" versionName="0.7.1-beta1">
-        <changelogtext>Fix regressions in 0.7
-        </changelogtext>
+    <changelogversion changeDate="24/2/2015" versionName="0.8-alpha1">
+        <changelogtext>Applied the lollipop theme</changelogtext>
+        <changelogtext>Fixed earthquake crash when vibration was disabled</changelogtext>
+        <changelogtext>Updated translations</changelogtext>
     </changelogversion>
 
 </changelog>
