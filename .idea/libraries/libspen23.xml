@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="libspen23">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/jars/libspen23.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
