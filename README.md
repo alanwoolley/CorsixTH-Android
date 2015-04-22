@@ -1,3 +1,5 @@
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/corsixth-for-android/localized.png)](http://translate.armedpineapple.co.uk/project/corsixth-for-android) [![Build Status](https://travis-ci.org/alanwoolley/CorsixTH-Android.svg?branch=master)](https://travis-ci.org/alanwoolley/CorsixTH-Android)
+
 This is a port of CorsixTH (https://github.com/CorsixTH/CorsixTH) to Android.
 
 You will need either a copy of the original Theme Hospital game or a demo of Theme Hospital in order to use this port. The demo can be automatically downloaded from within the app.
