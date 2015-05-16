@@ -7,7 +7,6 @@
 package uk.co.armedpineapple.cth;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,11 +37,7 @@ import android.widget.ListView;
 import com.splunk.mint.Mint;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -51,7 +46,6 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
-import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
@@ -474,6 +468,7 @@ public class SDLActivity extends CTHActivity {
     }
 
     private void installFiles(final SharedPreferences preferences) {
+        Log.d(LOG_TAG, "Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
         final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
                 + "/scripts/", this) {
@@ -561,6 +556,7 @@ public class SDLActivity extends CTHActivity {
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
+                            Log.w(LOG_TAG, "Unable to copy files successfully", result.getError());
                             Mint.logException(result.getError());
 
                         }
@@ -569,6 +565,7 @@ public class SDLActivity extends CTHActivity {
                 };
 
         if (Files.canAccessExternalStorage()) {
+            Log.d(LOG_TAG, "Starting copy task");
             copyTask
                     .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
 
@@ -576,6 +573,7 @@ public class SDLActivity extends CTHActivity {
             fontCopyTask.execute("DroidSansFallbackFull.ttf", getFilesDir().getAbsolutePath());
 
         } else {
+            Log.w(LOG_TAG, "Wasn't able to access external storage when copying files");
             DialogFactory.createExternalStorageWarningDialog(this, true).show();
         }
     }
@@ -692,59 +690,9 @@ public class SDLActivity extends CTHActivity {
     public void startApp() {
         // Start up the C app thread
 
-        if (mSDLThread == null) {
+        mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
+        mSDLThread.start();
 
-            List<FileDetails> saves = null;
-            try {
-                saves = Files.listFilesInDirectory(
-                        app.configuration.getSaveGamesPath(), new FilenameFilter() {
-
-                            @Override
-                            public boolean accept(File dir, String filename) {
-                                return filename.toLowerCase(Locale.US).endsWith(".sav");
-                            }
-                        });
-            } catch (IOException e) {
-            }
-
-            if (saves != null && saves.size() > 0) {
-                Collections.sort(saves, Collections.reverseOrder());
-
-                final String loadPath = saves.get(0).getFileName();
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.load_last_save);
-                builder.setCancelable(false);
-                builder.setPositiveButton(R.string.yes, new Dialog.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        mSDLThread = new Thread(new SDLMain(app.configuration, loadPath),
-                                "SDLThread");
-                        mSDLThread.start();
-                    }
-
-                });
-                builder.setNegativeButton(R.string.no, new Dialog.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mSDLThread = new Thread(new SDLMain(app.configuration, ""),
-                                "SDLThread");
-                        mSDLThread.start();
-                    }
-
-                });
-                builder.create().show();
-
-            } else {
-
-                mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
-                mSDLThread.start();
-            }
-
-        }
     }
 
     // Events
@@ -841,7 +789,6 @@ public class SDLActivity extends CTHActivity {
             mVibratorService.cancel();
             commandHandler.playingEarthquake = false;
         }
-
     }
 }
 

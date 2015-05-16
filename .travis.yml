@@ -14,15 +14,16 @@ before_install:
   - export PATH=$GRADLE_HOME/bin:$PATH
   - chmod +x gradlew
   # newest Android SDK 22.3
-  - wget http://dl.google.com/android/android-sdk_r22.3-linux.tgz
-  - tar -zxf android-sdk_r22.3-linux.tgz
+  - wget http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz -O sdk.tgz
+  - tar -zxf sdk.tgz
   - export ANDROID_HOME=`pwd`/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
   # newest Android NDK
-  - if [ `uname -m` = x86_64]; then wget http://dl.google.com/android/ndk/android-ndk-r9c-linux-x86_64.tar.bz2 -O ndk.tgz; else wget http://dl.google.com/android/ndk/android-ndk-r9c-linux-x86.tar.bz2 -O ndk.tgz; fi
-  - tar -xf ndk.tgz
-  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r9c
+  - if [ `uname -m` = x86_64]; then wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86_64.bin -O ndk.bin; else wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86.bin -O ndk.bin; fi
+  - chmod +x ndk.bin
+  - ./ndk.bin > /dev/null
+  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r10d
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK_HOME}
   # manually set sdk.dir variable, according to local paths
   - echo "sdk.dir=$ANDROID_HOME" > local.properties
-  - echo yes | android update sdk -a -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-19,build-tools-19.0.3,extra-google-google_play_services,extra-google-m2repository --force --no-ui
+  - echo yes | android update sdk -a -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-21,build-tools-21.1.2,extra-google-google_play_services,extra-google-m2repository --force --no-ui

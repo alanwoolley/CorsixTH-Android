@@ -5,12 +5,6 @@
  */
 package uk.co.armedpineapple.cth;
 
-import com.samsung.spen.lib.input.SPenEventLibrary;
-import uk.co.armedpineapple.cth.gestures.LongPressGesture;
-import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
-import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
-import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -27,6 +21,13 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+
+import com.samsung.spen.lib.input.SPenEventLibrary;
+
+import uk.co.armedpineapple.cth.gestures.LongPressGesture;
+import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
+import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
+import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
 /**
  * SDLSurface. This is what we draw on, so we need to know when it's created in
@@ -59,14 +60,15 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @SuppressLint("NewApi")
     public SDLSurface(final SDLActivity context, int width, int height) {
         super(context);
-        SPenEventLibrary sPenEventLibrary = new SPenEventLibrary();
         this.context = context;
-        getHolder().addCallback(this);
         this.width = width;
         this.height = height;
-        // setFocusable(true);
-        // setFocusableInTouchMode(true);
-        // requestFocus();
+
+
+        SPenEventLibrary sPenEventLibrary = new SPenEventLibrary();
+
+        getHolder().addCallback(this);
+
         setOnKeyListener(this);
         setOnTouchListener(this);
         moveGestureDetector = new TwoFingerGestureDetector(context,

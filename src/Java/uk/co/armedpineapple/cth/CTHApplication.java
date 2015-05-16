@@ -52,7 +52,7 @@ public class CTHApplication extends android.app.Application {
             InputStream inputStream = getAssets().open(APPLICATION_PROPERTIES_FILE);
             Log.d(LOG_TAG, "Loading properties");
             properties.load(inputStream);
-            setupBugsense();
+            setupMint();
 
         } catch (IOException e) {
             Log.i(LOG_TAG, "No properties file found");
@@ -60,9 +60,13 @@ public class CTHApplication extends android.app.Application {
 
     }
 
-    private void setupBugsense() {
+    private void setupMint() {
         if (properties.containsKey("bugsense.key") && BuildConfig.USE_BUGSENSE) {
             Log.d(LOG_TAG, "Setting up bugsense");
+
+            // Mint's network statistics is buggy. Disable
+            Mint.disableNetworkMonitoring();
+
             Mint.initAndStartSession(this,
                     (String) properties.get("bugsense.key"));
         }

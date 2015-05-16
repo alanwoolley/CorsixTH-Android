@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import uk.co.armedpineapple.cth.Files.FileDetails;
+import uk.co.armedpineapple.cth.FileDetails;
 import uk.co.armedpineapple.cth.R;
 
 public class FilesAdapter extends BaseAdapter {
