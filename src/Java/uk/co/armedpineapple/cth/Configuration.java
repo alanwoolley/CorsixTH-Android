@@ -126,7 +126,7 @@ public class Configuration {
         editor.putString("controlsmode_pref", String.valueOf(controlsMode));
         editor.putBoolean("autowage_pref", autoWageGrant);
 
-        editor.commit();
+        editor.apply();
 
     }
 

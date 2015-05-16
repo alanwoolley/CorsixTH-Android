@@ -162,7 +162,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
                                 Editor editor = preferences.edit();
                                 editor.putBoolean("wizard_run", false);
-                                editor.commit();
+                                editor.apply();
 
                             }
 

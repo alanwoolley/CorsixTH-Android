@@ -14,10 +14,11 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Closeables;
 import com.splunk.mint.Mint;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.CountingOutputStream;
 
 import java.io.BufferedInputStream;
@@ -27,11 +28,13 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -74,8 +77,7 @@ public class Files {
      * @return true if file exists
      */
     public static Boolean doesFileExist(String filename) {
-        File f = new File(filename);
-        return f.exists();
+        return new File(filename).exists();
     }
 
     /**
@@ -137,8 +139,6 @@ public class Files {
      * @return true if all the files are found
      */
     private static Boolean doFilesExist(String[] files, String directory) {
-        // Log.d(LOG_TAG, "Checking directory: " +
-        // directory);
 
         if (directory == null) {
             return false;
@@ -151,7 +151,7 @@ public class Files {
 
         // As soon as a file is not found in the directory, fail.
         for (String file : files) {
-            File f = new File(directory + "/" + file);
+            File f = new File(directory + File.separator + file);
             if (!f.exists()) {
                 return false;
             }
@@ -184,24 +184,17 @@ public class Files {
      */
     public static List<FileDetails> listFilesInDirectory(String directory,
                                                          FilenameFilter filter) throws IOException {
-        // Log.d(LOG_TAG, "Looking for files in: " +
-        // directory);
 
         File f = new File(directory);
 
         if (!f.exists() || !f.isDirectory()) {
-            return new ArrayList<FileDetails>();
+            return Collections.emptyList();
         }
 
-        List<FileDetails> files = new ArrayList<FileDetails>();
+        List<FileDetails> files = new ArrayList<>();
         if (f.isDirectory()) {
-            // Log.d(LOG_TAG, "Directory " + directory
-            // + " looks ok");
 
             String[] filesArray = f.list(filter);
-
-            // Log.d(LOG_TAG, "Found: " + filesArray.length
-            // + " files");
 
             for (String fileName : filesArray) {
 
@@ -230,124 +223,18 @@ public class Files {
      */
     public static String readTextFromResource(Context ctx, int resource)
             throws IOException {
-        // TODO Probably a much nicer way to do this, with buffers.
-        InputStream inputStream = ctx.getResources().openRawResource(resource);
-        String r = IOUtils.toString(inputStream);
-        inputStream.close();
-        return r;
 
-    }
+        InputStream inputStream = null;
+        try {
+            inputStream = ctx.getResources().openRawResource(resource);
+            String r = CharStreams.toString(new InputStreamReader(inputStream));
+            return r;
+        } finally {
+            if (inputStream != null) inputStream.close();
 
-    /**
-     * {@link AsyncTask} for discovering all the assets included in the
-     * application
-     */
-    static class DiscoverAssetsTask extends
-            AsyncTask<Void, Void, AsyncTaskResult<ArrayList<String>>> {
-
-        ArrayList<String> paths;
-        final Context ctx;
-        final String  path;
-
-        DiscoverAssetsTask(Context ctx, String path) {
-            this.ctx = ctx;
-            this.path = path;
-        }
-
-        @Override
-        protected AsyncTaskResult<ArrayList<String>> doInBackground(Void... params) {
-
-            paths = new ArrayList<String>();
-            try {
-                paths = listAssets(ctx, path);
-            } catch (IOException e) {
-                Log.e(LOG_TAG,
-                        "I/O Exception whilst listing files", e);
-                Mint.logException(e);
-                return new AsyncTaskResult<ArrayList<String>>(e);
-
-            }
-            return new AsyncTaskResult<ArrayList<String>>(paths);
-        }
-
-    }
-
-    /**
-     * {@link AsyncTask}syncTask for copying assets
-     */
-    static class CopyAssetsTask extends
-            AsyncTask<ArrayList<String>, Integer, AsyncTaskResult<Void>> {
-        WakeLock copyLock;
-        final Context ctx;
-        final String  root;
-        String message;
-
-        CopyAssetsTask(Context ctx, String root) {
-            this.ctx = ctx;
-            this.root = root;
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            PowerManager pm = (PowerManager) ctx
-                    .getSystemService(Context.POWER_SERVICE);
-            copyLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "copying");
-            copyLock.acquire();
-        }
-
-        @Override
-        protected AsyncTaskResult<Void> doInBackground(ArrayList<String>... params) {
-            int max = params[0].size();
-            for (int i = 0; i < max; i++) {
-                try {
-                    copyAsset(ctx, params[0].get(i), root);
-                } catch (IOException e) {
-                    return new AsyncTaskResult<Void>(e);
-                }
-                publishProgress(i + 1, max);
-            }
-            return new AsyncTaskResult<Void>((Void) null);
-        }
-
-        @Override
-        protected void onPostExecute(AsyncTaskResult<Void> result) {
-            copyLock.release();
         }
     }
 
-    /**
-     * Produces a list of assets in a directory
-     *
-     * @param ctx  a activityContext
-     * @param path path to search in
-     * @return a list of files
-     * @throws IOException if the path doesn't exist, or asset can't be accessed
-     */
-    public static ArrayList<String> listAssets(Context ctx, String path)
-            throws IOException {
-        ArrayList<String> assets = new ArrayList<String>();
-        listAssetsInternal(ctx, path, assets);
-        return assets;
-    }
-
-    private static void listAssetsInternal(Context ctx, String path,
-                                           ArrayList<String> paths) throws IOException {
-        AssetManager assetManager = ctx.getAssets();
-        String assets[];
-
-        assets = assetManager.list(path);
-
-        if (assets.length == 0) {
-            paths.add(path);
-
-        } else {
-            for (String asset : assets) {
-                listAssetsInternal(ctx, path + "/" + asset, paths);
-            }
-        }
-
-    }
 
     /**
      * Copies an assets
@@ -360,6 +247,7 @@ public class Files {
     public static void copyAsset(Context ctx, String assetFilename,
                                  String destination) throws IOException {
         InputStream in = null;
+        FileOutputStream out = null;
 
         try {
             AssetManager assetManager = ctx.getAssets();
@@ -376,12 +264,13 @@ public class Files {
             Log.i(LOG_TAG, "Copying file [" + assetFilename
                     + "] to [" + newFileName + "]");
 
-            FileUtils.copyInputStreamToFile(in, newFile);
+            out = new FileOutputStream(newFile);
+            ByteStreams.copy(in, out);
+
 
         } finally {
-            if (in != null) {
-                in.close();
-            }
+            if (in != null) in.close();
+            if (out != null) out.close();
         }
 
     }
@@ -391,12 +280,12 @@ public class Files {
 
         @Override
         protected AsyncTaskResult<String> doInBackground(Void... arg0) {
-            return new AsyncTaskResult<String>(findGameFiles());
+            return new AsyncTaskResult<>(findGameFiles());
         }
 
         private String findGameFiles() {
             String result;
-            List<String> searchPaths = new ArrayList<String>(
+            List<String> searchPaths = new ArrayList<>(
                     Arrays.asList(SearchRoot));
             String sdcard = trimPath(Environment.getExternalStorageDirectory()
                     .getAbsolutePath());
@@ -500,6 +389,9 @@ public class Files {
         protected AsyncTaskResult<File> doInBackground(String... url) {
             URL downloadUrl;
             URLConnection ucon;
+            InputStream input = null;
+            FileOutputStream fos = null;
+            CountingOutputStream cos = null;
 
             try {
                 downloadUrl = new URL(url[0]);
@@ -516,9 +408,9 @@ public class Files {
 
                 final int fileSize = ucon.getContentLength();
 
-                InputStream input = new BufferedInputStream(downloadUrl.openStream());
-                FileOutputStream fos = new FileOutputStream(file);
-                CountingOutputStream cos = new CountingOutputStream(fos) {
+                input = new BufferedInputStream(downloadUrl.openStream());
+                fos = new FileOutputStream(file);
+                cos = new CountingOutputStream(fos) {
 
                     int total = 0;
 
@@ -530,23 +422,20 @@ public class Files {
 
                 };
 
-                IOUtils.copy(input, cos);
-
-                input.close();
-                fos.close();
-                cos.close();
+                ByteStreams.copy(input, cos);
 
                 Log.d(LOG_TAG,
                         "Downloaded file to: " + file.getAbsolutePath());
 
-                return new AsyncTaskResult<File>(file);
+                return new AsyncTaskResult<>(file);
 
             } catch (MalformedURLException e) {
-                return new AsyncTaskResult<File>(e);
+                return new AsyncTaskResult<>(e);
             } catch (IOException e) {
-                return new AsyncTaskResult<File>(e);
+                return new AsyncTaskResult<>(e);
+            } finally {
+                Closeables.closeQuietly(input);
             }
-
         }
 
     }
@@ -610,66 +499,29 @@ public class Files {
                         }
                     } else {
 
-                        InputStream zin = zf.getInputStream(ze);
+                        InputStream zin = null;
+                        FileOutputStream fout = null;
+                        try {
+                            zin = zf.getInputStream(ze);
+                            fout = new FileOutputStream(unzipTo + ze.getName());
+                            ByteStreams.copy(zin, fout);
+                        } finally {
+                            Closeables.closeQuietly(zin);
 
-                        FileOutputStream fout = new FileOutputStream(unzipTo + ze.getName());
-
-                        IOUtils.copy(zin, fout);
-
-                        zin.close();
-                        fout.close();
+                        }
 
                     }
 
                     count++;
                     publishProgress(count, entryCount);
-
                 }
 
             } catch (IOException e) {
                 Mint.logException(e);
-                return new AsyncTaskResult<String>(e);
+                return new AsyncTaskResult<>(e);
             }
 
-            return new AsyncTaskResult<String>(unzipTo);
-
-        }
-    }
-
-    public static class FileDetails implements Comparable<FileDetails> {
-
-        private final Date   lastModified;
-        private final String fileName;
-
-
-        private final String directory;
-
-        public FileDetails(String filename, String directory, Date lastModified) {
-            this.fileName = filename;
-            this.lastModified = lastModified;
-            this.directory = directory;
-        }
-
-
-        public String getDirectory() {
-            return directory;
-        }
-
-        public Date getLastModified() {
-            return lastModified;
-        }
-
-        public String getFileName() {
-            return fileName;
-        }
-
-        @Override
-        public int compareTo(FileDetails another) {
-            if (lastModified.equals(another.getLastModified())) {
-                return 0;
-            }
-
-            return lastModified.after(another.getLastModified()) ? 1 : -1;
+            return new AsyncTaskResult<>(unzipTo);
 
         }
     }

@@ -27,7 +27,7 @@ public class CTHBackupAgent extends BackupAgentHelper {
 		Editor editor = p.edit();
 		editor.putBoolean("wizard_run", true);
 		editor.putInt("last_version", 0);
-		editor.commit();
+		editor.apply();
 
 	}
 

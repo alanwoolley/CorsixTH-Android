@@ -56,7 +56,7 @@ public class CommandHandler extends Handler {
                 Editor editor = prefs.edit();
                 editor.putInt("last_version", 0);
                 editor.putBoolean("wizard_run", false);
-                editor.commit();
+                editor.apply();
                 Dialog errorDialog = DialogFactory.createErrorDialog(activityContext);
 
                 errorDialog.show();

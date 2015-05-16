@@ -3,14 +3,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.0'
+        classpath 'com.android.tools.build:gradle:1.2.2'
     }
 }
 
 apply plugin: 'com.android.application'
-
-
-import org.apache.tools.ant.taskdefs.condition.Os
 
 repositories {
     mavenCentral();
@@ -20,22 +17,25 @@ repositories {
 
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.splunk.mint:mint:4.0.8'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.splunk.mint:mint:4.2'
     compile 'commons-io:commons-io:2.4'
-    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.google.android.gms:play-services:7.3.0'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
+    compile 'com.android.support:multidex:1.0.0'
     compile fileTree(dir: 'jars', include: '*.jar')
 }
 
 android {
 
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
+
+        multiDexEnabled true
     }
 
     Properties signingProperties = new Properties()

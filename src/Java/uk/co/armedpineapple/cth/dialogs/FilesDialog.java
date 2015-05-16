@@ -24,7 +24,7 @@ import java.util.Locale;
 
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Files;
-import uk.co.armedpineapple.cth.Files.FileDetails;
+import uk.co.armedpineapple.cth.FileDetails;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 
