@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Vibrator;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.splunk.mint.Mint;
@@ -81,4 +82,9 @@ public class CTHApplication extends android.app.Application {
         return properties;
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

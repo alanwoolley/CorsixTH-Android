@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
-    android:versionCode="160"
-    android:versionName="0.8">
+    android:versionCode="162"
+    android:versionName="0.8-hotfix_dex">
 
 
     <!--
