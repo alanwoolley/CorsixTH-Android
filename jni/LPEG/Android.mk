@@ -1,0 +1,16 @@
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := LPEG
+
+LOCAL_CFLAGS := -I$(LOCAL_PATH) -DHAVE_ALLOCA_H
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../LUA
+
+LOCAL_SRC_FILES := $(notdir $(wildcard $(LOCAL_PATH)/*.c))
+
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
+
+include $(BUILD_STATIC_LIBRARY)
+
