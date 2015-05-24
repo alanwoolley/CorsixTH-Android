@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
-    android:versionCode="140"
-    android:versionName="0.7.1">
+    android:versionCode="162"
+    android:versionName="0.8-hotfix_dex">
 
 
     <!--
@@ -51,7 +51,6 @@
 
     <application
         android:name="uk.co.armedpineapple.cth.CTHApplication"
-        android:allowBackup="false"
         android:backupAgent="CTHBackupAgent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -62,7 +61,7 @@
             android:immersive="true"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape"></activity>
+            android:screenOrientation="sensorLandscape"/>
         <activity
             android:name="uk.co.armedpineapple.cth.wizard.WizardActivity"
             android:screenOrientation="sensorLandscape"
@@ -76,11 +75,9 @@
         <activity
             android:name="uk.co.armedpineapple.cth.PrefsActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/Dialogs"></activity>
+            android:theme="@style/Dialogs"/>
 
-        <meta-data
-            android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIK7gHgEjLsrbjQPJG59q7eqc8_4n1hkvK1zaoXw" />
+
     </application>
 
 </manifest>

@@ -32,7 +32,7 @@ public class Configuration {
     // Defaults
     public final static  int    MINIMUM_WIDTH        = 640;
     public final static  int    MINIMUM_HEIGHT       = 480;
-    public final static  String DEFAULT_UNICODE_PATH = "/system/fonts/DroidSansFallback.ttf";
+    public final static  String DEFAULT_UNICODE_PATH = "/system/fonts/NotoSerif-Regular.ttf";
     public final static  String HEADER               = "---- CorsixTH configuration file ----------------------------------------------\n"
             + "-- Lines starting with two dashes (like this one) are ignored.\n"
             + "-- Text settings should have their values between double square braces, e.g.\n"
@@ -126,7 +126,7 @@ public class Configuration {
         editor.putString("controlsmode_pref", String.valueOf(controlsMode));
         editor.putBoolean("autowage_pref", autoWageGrant);
 
-        editor.commit();
+        editor.apply();
 
     }
 
@@ -291,7 +291,16 @@ public class Configuration {
 
         sbuilder.append("debug = ").append(String.valueOf(debug)).append("\n");
         sbuilder.append("track_fps = false\n");
-        sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
+
+        File fallbackFont = new File(ctx.getFilesDir() + File.separator + "DroidSansFallbackFull.ttf");
+        if (fallbackFont.exists()) {
+            sbuilder.append("unicode_font = [[" + fallbackFont.getAbsolutePath() + "]]\n");
+        } else {
+            sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
+
+            Log.w(LOG_TAG, "Couldn't find fallback font");
+        }
+
         sbuilder.append("savegames = [[").append(saveGamesPath).append("]]\n");
 
         sbuilder.append("free_build_mode = false\n");

@@ -43,14 +43,10 @@ import com.bugsense.trace.BugSenseHandler;
 import com.immersion.uhl.Launcher;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -101,8 +97,9 @@ public class SDLActivity extends CTHActivity {
     private WakeLock wake;
     private boolean hasGameLoaded = false;
 
-    // Vibration launcher
-    private Launcher mHapticLauncher;
+    // Vibration
+    private Vibrator mVibratorService;
+
 
     // C functions we call
     public static native void nativeInit(Configuration config, String toLoad);
@@ -506,7 +503,7 @@ public class SDLActivity extends CTHActivity {
                         0).versionCode);
 
             } catch (NameNotFoundException e) {
-                BugSenseHandler.sendException(e);
+                Mint.logException(e);
             }
 
             // Check to see if the game files have been copied yet, or whether the
@@ -546,6 +543,7 @@ public class SDLActivity extends CTHActivity {
     }
 
     private void installFiles(final SharedPreferences preferences) {
+        Log.d(LOG_TAG, "Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
         final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
                 + "/scripts/", this) {
@@ -573,15 +571,39 @@ public class SDLActivity extends CTHActivity {
                 Exception error;
                 if ((error = result.getError()) != null) {
                     Log.d(LOG_TAG, "Error copying files.");
-                    BugSenseHandler.sendException(error);
+                    Mint.logException(error);
                 }
 
                 Editor edit = preferences.edit();
                 edit.putBoolean("scripts_copied", true);
                 edit.putInt("last_version", currentVersion);
-                edit.commit();
+                edit.apply();
                 dialog.hide();
                 loadApplication();
+            }
+
+        };
+
+        AsyncTask<String, Void, AsyncTaskResult<File>> fontCopyTask = new AsyncTask<String, Void, AsyncTaskResult<File>>() {
+
+            @Override
+            protected AsyncTaskResult<File> doInBackground(String... params) {
+
+                try {
+                    Files.copyAsset(SDLActivity.this, params[0], params[1]);
+                } catch (IOException e) {
+                    return new AsyncTaskResult<File>(e);
+                }
+                return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0]));
+            }
+
+            @Override
+            protected void onPostExecute(AsyncTaskResult<File> result) {
+                super.onPostExecute(result);
+                File f;
+                if ((f = result.getResult()) == null) {
+                    Mint.logException(result.getError());
+                }
             }
 
         };
@@ -609,7 +631,8 @@ public class SDLActivity extends CTHActivity {
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
-                            BugSenseHandler.sendException(result.getError());
+                            Log.w(LOG_TAG, "Unable to copy files successfully", result.getError());
+                            Mint.logException(result.getError());
 
                         }
                     }
@@ -617,10 +640,15 @@ public class SDLActivity extends CTHActivity {
                 };
 
         if (Files.canAccessExternalStorage()) {
-
+            Log.d(LOG_TAG, "Starting copy task");
             copyTask
                     .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
+
+            // Copy fallback font asset
+            fontCopyTask.execute("DroidSansFallbackFull.ttf", getFilesDir().getAbsolutePath());
+
         } else {
+            Log.w(LOG_TAG, "Wasn't able to access external storage when copying files");
             DialogFactory.createExternalStorageWarningDialog(this, true).show();
         }
     }
@@ -643,7 +671,7 @@ public class SDLActivity extends CTHActivity {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Couldn't write to configuration file");
-            BugSenseHandler.sendException(e);
+            Mint.logException(e);
         }
 
         File f = new File(app.configuration.getSaveGamesPath());
@@ -667,7 +695,7 @@ public class SDLActivity extends CTHActivity {
         setContentView(mainLayout);
 
         if (app.configuration.getHaptic()) {
-            mHapticLauncher = new Launcher(this);
+            mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
@@ -748,60 +776,10 @@ public class SDLActivity extends CTHActivity {
     public void startApp() {
         // Start up the C app thread
 
-        if (mSDLThread == null) {
-
-            List<FileDetails> saves = null;
-            try {
-                saves = Files.listFilesInDirectory(
-                        app.configuration.getSaveGamesPath(), new FilenameFilter() {
-
-                            @Override
-                            public boolean accept(File dir, String filename) {
-                                return filename.toLowerCase(Locale.US).endsWith(".sav");
-                            }
-                        }
                 );
-            } catch (IOException e) {
-            }
-
-            if (saves != null && saves.size() > 0) {
-                Collections.sort(saves, Collections.reverseOrder());
-
-                final String loadPath = saves.get(0).getFileName();
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.load_last_save);
-                builder.setCancelable(false);
-                builder.setPositiveButton(R.string.yes, new Dialog.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                      //  mSDLThread = new Thread(new SDLMain(app.configuration, loadPath),
-                      //          "SDLThread");
-                      //  mSDLThread.start();
-                    }
-
-                });
-                builder.setNegativeButton(R.string.no, new Dialog.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                      //  mSDLThread = new Thread(new SDLMain(app.configuration, ""),
-                      //          "SDLThread");
-                      //  mSDLThread.start();
-                    }
-
-                });
-                builder.create().show();
-
-            } else {
-
                 //mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
                // mSDLThread.start();
-            }
 
-        }
     }
 
     // Events
@@ -822,10 +800,7 @@ public class SDLActivity extends CTHActivity {
             wake.release();
         }
 
-        if (mHapticLauncher != null) {
-            mHapticLauncher.stop();
-        }
-
+        stopVibration();
     }
 
     protected void onResume() {
@@ -866,9 +841,6 @@ public class SDLActivity extends CTHActivity {
         // that the GC can get rid of them.
         commandHandler.cleanUp();
 
-        // Delete the reference to the haptic launcher - we can recreate it later if needed
-        stopVibration();
-        mHapticLauncher = null;
 
         // Call LUA GC
         // TODO - this is buggy.
@@ -877,21 +849,33 @@ public class SDLActivity extends CTHActivity {
     }
 
     public void playVibration(int vibrationCode) {
-        if (app.configuration.getHaptic()) {
-            if (mHapticLauncher == null)
-                mHapticLauncher = new Launcher(this);
+        if (app.configuration.getHaptic() && app.hasVibration) {
+
+            if (mVibratorService == null)
+                mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             if (app.hasVibration) {
-                mHapticLauncher.play(vibrationCode);
+
+                switch (vibrationCode) {
+                    case CommandHandler.VIBRATION_SHORT_CLICK:
+                    case CommandHandler.VIBRATION_LONG_CLICK:
+                        mVibratorService.vibrate(100);
+                        break;
+                    case CommandHandler.VIBRATION_EXPLOSION:
+                        mVibratorService.vibrate(3000);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }
 
     public void stopVibration() {
-        if (mHapticLauncher != null && app.hasVibration && app.configuration.getHaptic()) {
-            mHapticLauncher.stop();
+        if (mVibratorService != null && app.hasVibration && app.configuration.getHaptic()) {
+            mVibratorService.cancel();
             commandHandler.playingEarthquake = false;
         }
-
     }
 
     // Input

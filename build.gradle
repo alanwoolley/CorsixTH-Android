@@ -3,62 +3,63 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:1.2.2'
     }
 }
 
-apply plugin: 'android'
-
-import org.apache.tools.ant.taskdefs.condition.Os
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral();
     maven {
-        url "http://www.bugsense.com/gradle/"
+        url "http://mint.splunk.com/gradle/"
     }
+
 }
 dependencies {
-    compile 'com.android.support:support-v4:19+'
-    compile 'com.bugsense.trace:bugsense:3.6'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.splunk.mint:mint:4.2'
     compile 'commons-io:commons-io:2.4'
-    compile 'com.google.android.gms:play-services:4+'
-    compile 'com.github.gabrielemariotti.changeloglib:library:1.4.0'
-
+    compile 'com.google.android.gms:play-services:7.3.0'
+    compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
+    compile 'com.android.support:multidex:1.0.0'
     compile fileTree(dir: 'jars', include: '*.jar')
 }
 
 android {
 
-    compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 12
-        targetSdkVersion 19
+        minSdkVersion 15
+        targetSdkVersion 22
+
+        multiDexEnabled true
     }
 
     Properties signingProperties = new Properties()
-  
+
     if (file("signing.properties").exists()) {
-      signingProperties.load(new FileInputStream(file("signing.properties")))
-      signingConfigs {
-          release {
-              storeFile file(signingProperties['signing.release.storeFile'])
-              storePassword signingProperties['signing.release.storePassword']
-              keyAlias signingProperties['signing.release.keyAlias']
-              keyPassword signingProperties['signing.release.keyPassword']
-          }
-       }
-       
-       buildTypes {
-        release {
-          signingConfig signingConfigs.release
+        signingProperties.load(new FileInputStream(file("signing.properties")))
+        signingConfigs {
+            release {
+                storeFile file(signingProperties['signing.release.storeFile'])
+                storePassword signingProperties['signing.release.storePassword']
+                keyAlias signingProperties['signing.release.keyAlias']
+                keyPassword signingProperties['signing.release.keyPassword']
+            }
         }
-        
-        beta {
-          signingConfig signingConfigs.release
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+
+            beta {
+                signingConfig signingConfigs.release
+            }
         }
-       }
     }
 
     buildTypes {
@@ -77,7 +78,7 @@ android {
 
         jnidebug.initWith(buildTypes.debug)
         jnidebug {
-            jniDebugBuild true
+            jniDebuggable true
         }
     }
 
@@ -112,6 +113,8 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+    dexOptions {
+    }
 }
 
 // Create ZIP of CorsixTH Lua files
@@ -132,14 +135,8 @@ task createGameZip(type: Zip) {
 }
 
 
-task ndkBuild(type: Exec) {
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-      commandLine 'ndk-build.cmd', '-j'
-    } else {
-      commandLine 'ndk-build', '-j'
-    }
-}
+
 tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn ndkBuild, createGameZip
+    compileTask -> compileTask.dependsOn createGameZip
 }
 

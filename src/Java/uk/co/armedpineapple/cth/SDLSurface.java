@@ -32,6 +32,13 @@ import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
 import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
 import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
+import com.samsung.spen.lib.input.SPenEventLibrary;
+
+import uk.co.armedpineapple.cth.gestures.LongPressGesture;
+import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
+import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
+import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
+
 /**
  * SDLSurface. This is what we draw on, so we need to know when it's created in
  * order to do anything useful.
@@ -64,14 +71,15 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @SuppressLint("NewApi")
     public SDLSurface(final SDLActivity context, int width, int height) {
         super(context);
-        SPenEventLibrary sPenEventLibrary = new SPenEventLibrary();
         this.context = context;
-        getHolder().addCallback(this);
         this.width = width;
         this.height = height;
-        setFocusable(true);
-        setFocusableInTouchMode(true);
-        requestFocus();
+        // setFocusable(true);
+        // setFocusableInTouchMode(true);
+        // requestFocus();
+
+        getHolder().addCallback(this);
+
         setOnKeyListener(this);
         setOnTouchListener(this);
 

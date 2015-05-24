@@ -10,9 +10,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Vibrator;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
-import com.bugsense.trace.BugSenseHandler;
+import com.splunk.mint.Mint;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +53,7 @@ public class CTHApplication extends android.app.Application {
             InputStream inputStream = getAssets().open(APPLICATION_PROPERTIES_FILE);
             Log.d(LOG_TAG, "Loading properties");
             properties.load(inputStream);
-            setupBugsense();
+            setupMint();
 
         } catch (IOException e) {
             Log.i(LOG_TAG, "No properties file found");
@@ -60,10 +61,14 @@ public class CTHApplication extends android.app.Application {
 
     }
 
-    private void setupBugsense() {
+    private void setupMint() {
         if (properties.containsKey("bugsense.key") && BuildConfig.USE_BUGSENSE) {
             Log.d(LOG_TAG, "Setting up bugsense");
-            BugSenseHandler.initAndStartSession(this,
+
+            // Mint's network statistics is buggy. Disable
+            Mint.disableNetworkMonitoring();
+
+            Mint.initAndStartSession(this,
                     (String) properties.get("bugsense.key"));
         }
     }
@@ -77,4 +82,9 @@ public class CTHApplication extends android.app.Application {
         return properties;
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }

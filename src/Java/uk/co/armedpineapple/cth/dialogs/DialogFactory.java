@@ -27,6 +27,10 @@ import uk.co.armedpineapple.cth.SDLActivity;
 
 public class DialogFactory {
 
+    private DialogFactory() {
+
+    }
+
     public static Dialog createAboutDialog(final SDLActivity ctx) {
         final Dialog d = new Dialog(ctx);
 
