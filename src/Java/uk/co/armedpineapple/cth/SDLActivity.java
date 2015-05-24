@@ -339,7 +339,8 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
-    public static void setActivityTitle(String title) {
+    public static boolean setActivityTitle(String title) {
+        return true;
     }
 
     public static void sendCommand(Command command, Object data) {
@@ -653,7 +654,8 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
-    public Surface getNativeSurface() {
+
+    public static Surface getNativeSurface() {
         return mSurface.getHolder().getSurface();
     }
     void loadApplication() {
