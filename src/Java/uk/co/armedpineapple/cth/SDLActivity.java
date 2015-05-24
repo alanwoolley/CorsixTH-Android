@@ -7,7 +7,6 @@
 package uk.co.armedpineapple.cth;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,6 +26,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.os.Vibrator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.util.Log;
@@ -39,14 +39,15 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.bugsense.trace.BugSenseHandler;
-import com.immersion.uhl.Launcher;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -55,7 +56,6 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
-import uk.co.armedpineapple.cth.Files.FileDetails;
 import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
@@ -776,7 +776,7 @@ public class SDLActivity extends CTHActivity {
     public void startApp() {
         // Start up the C app thread
 
-                );
+
                 //mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
                // mSDLThread.start();
 
