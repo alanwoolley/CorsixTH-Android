@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 
 import java.io.File;
@@ -22,7 +21,8 @@ import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 @SuppressWarnings("nls")
 public class Configuration {
 
-    private static final String LOG_TAG              = "Config";
+    private static Reporting.Logger Log = Reporting.getLogger("Config");
+
     public final static  int    RESOLUTION_DEFAULT   = 1;
     public final static  int    RESOLUTION_NATIVE    = 2;
     public final static  int    RESOLUTION_CUSTOM    = 3;
@@ -84,7 +84,7 @@ public class Configuration {
     public static Configuration loadFromPreferences(Context ctx,
                                                     SharedPreferences preferences) throws StorageUnavailableException {
         Configuration config = new Configuration(ctx, preferences);
-        Log.d(LOG_TAG, "Loading configuration");
+        Log.d( "Loading configuration");
 
         config.refresh();
         config.gameSpeed = 0;
@@ -96,8 +96,7 @@ public class Configuration {
      * Saves the configuration to a SharedPreferences object
      */
     public void saveToPreferences() {
-        Log.d(LOG_TAG, "Saving Configuration");
-        Log.d(LOG_TAG, this.toString());
+        Log.d("Saving Configuration");
         Editor editor = preferences.edit();
         editor.putString("originalfiles_pref", originalFilesPath);
         editor.putString("gamescripts_pref", cthPath);
@@ -206,7 +205,7 @@ public class Configuration {
 
                 displayWidth = (int) (nativeWidth * ratio);
                 displayHeight = (int) (nativeHeight * ratio);
-                Log.d(LOG_TAG, "Adjusted resolution is: " + displayWidth + " x "
+                Log.d("Adjusted resolution is: " + displayWidth + " x "
                         + displayHeight);
                 break;
 
@@ -253,7 +252,8 @@ public class Configuration {
 
             reader.close();
         } catch (IOException e) {
-            Log.d(LOG_TAG, "Couldn't read config file.");
+            Reporting.report(e);
+            Log.d("Couldn't read config file.");
         }
 
         StringBuilder sbuilder = new StringBuilder();
@@ -298,7 +298,7 @@ public class Configuration {
         } else {
             sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
 
-            Log.w(LOG_TAG, "Couldn't find fallback font");
+            Log.w("Couldn't find fallback font");
         }
 
         sbuilder.append("savegames = [[").append(saveGamesPath).append("]]\n");

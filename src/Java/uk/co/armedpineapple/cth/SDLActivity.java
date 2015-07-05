@@ -39,7 +39,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +61,8 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 public class SDLActivity extends CTHActivity {
 
-    public static final String LOG_TAG = "SDLActivity";
+    public static final Reporting.Logger Log = Reporting.getLogger("SDLActivity");
+
     private static final String ENGINE_ZIP_FILE = "game.zip";
 
     // Keep track of the paused state
@@ -191,7 +191,7 @@ public class SDLActivity extends CTHActivity {
     // EGL functions
     public static boolean initEGL(int majorVersion, int minorVersion) {
         if (SDLActivity.mEGLDisplay == null) {
-            Log.v(SDLActivity.class.getSimpleName(), "Starting up OpenGL ES "
+            Log.v("Starting up OpenGL ES "
                     + majorVersion + "." + minorVersion);
 
             try {
@@ -218,7 +218,7 @@ public class SDLActivity extends CTHActivity {
                 int[] num_config = new int[1];
                 if (!egl.eglChooseConfig(dpy, configSpec, configs, 1, num_config)
                         || num_config[0] == 0) {
-                    Log.e(SDLActivity.class.getSimpleName(), "No EGL config available");
+                    Log.e("No EGL config available");
                     return false;
                 }
                 EGLConfig config = configs[0];
@@ -230,10 +230,7 @@ public class SDLActivity extends CTHActivity {
 
                 SDLActivity.createEGLSurface();
             } catch (Exception e) {
-                Log.v("SDL", e + "");
-                for (StackTraceElement s : e.getStackTrace()) {
-                    Log.v("SDL", s.toString());
-                }
+                Reporting.report(e);
             }
         } else
             SDLActivity.createEGLSurface();
@@ -243,7 +240,7 @@ public class SDLActivity extends CTHActivity {
 
     @Override
     protected void onDestroy() {
-        Log.v("SDL", "onDestroy()");
+        Log.v("onDestroy()");
         // Send a quit message to the application
         SDLActivity.mExitCalledFromJava = true;
         SDLActivity.nativeQuit();
@@ -253,7 +250,8 @@ public class SDLActivity extends CTHActivity {
             try {
                 SDLActivity.mSDLThread.join();
             } catch (Exception e) {
-                Log.v("SDL", "Problem stopping thread: " + e);
+                Log.w("Problem stopping thread");
+                Reporting.report(e);
             }
             SDLActivity.mSDLThread = null;
 
@@ -273,7 +271,7 @@ public class SDLActivity extends CTHActivity {
         SDLActivity.mEGLContext = egl.eglCreateContext(SDLActivity.mEGLDisplay,
                 SDLActivity.mEGLConfig, EGL10.EGL_NO_CONTEXT, contextAttrs);
         if (SDLActivity.mEGLContext == EGL10.EGL_NO_CONTEXT) {
-            Log.e("SDL", "Couldn't create activityContext");
+            Log.e("Couldn't create activityContext");
             return false;
         }
         return true;
@@ -285,21 +283,21 @@ public class SDLActivity extends CTHActivity {
             if (SDLActivity.mEGLContext == null)
                 createEGLContext();
 
-            Log.v("SDL", "Creating new EGL Surface");
+            Log.v("Creating new EGL Surface");
             EGLSurface surface = egl.eglCreateWindowSurface(SDLActivity.mEGLDisplay,
                     SDLActivity.mEGLConfig, SDLActivity.mSurface, null);
             if (surface == EGL10.EGL_NO_SURFACE) {
-                Log.e("SDL", "Couldn't create surface");
+                Log.e("Couldn't create surface");
                 return false;
             }
 
             if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface,
                     SDLActivity.mEGLContext)) {
-                Log.e("SDL", "Old EGL Context doesnt work, trying with a new one");
+                Log.e("Old EGL Context doesnt work, trying with a new one");
                 createEGLContext();
                 if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface,
                         SDLActivity.mEGLContext)) {
-                    Log.e("SDL", "Failed making EGL Context current");
+                    Log.e("Failed making EGL Context current");
                     return false;
                 }
             }
@@ -332,10 +330,7 @@ public class SDLActivity extends CTHActivity {
             egl.eglSwapBuffers(SDLActivity.mEGLDisplay, SDLActivity.mEGLSurface);
 
         } catch (Exception e) {
-            Log.v("SDL", "flipEGL(): " + e);
-            for (StackTraceElement s : e.getStackTrace()) {
-                Log.v("SDL", s.toString());
-            }
+            Reporting.report(e);
         }
     }
 
@@ -368,7 +363,7 @@ public class SDLActivity extends CTHActivity {
         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
-        Log.v("SDL", "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+        Log.v("SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
 
         // Let the user pick a larger buffer if they really want -- but ye
         // gods they probably shouldn't, the minimums are horrifyingly high
@@ -384,7 +379,7 @@ public class SDLActivity extends CTHActivity {
             // Ref: http://developer.android.com/reference/android/media/AudioTrack.html#getState()
 
             if (mAudioTrack.getState() != AudioTrack.STATE_INITIALIZED) {
-                Log.e("SDL", "Failed during initialization of Audio Track");
+                Log.e("Failed during initialization of Audio Track");
                 mAudioTrack = null;
                 return -1;
             }
@@ -392,7 +387,7 @@ public class SDLActivity extends CTHActivity {
             mAudioTrack.play();
         }
 
-        Log.v("SDL", "SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + (mAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+        Log.v("SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + (mAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
 
         return 0;
     }
@@ -422,7 +417,7 @@ public class SDLActivity extends CTHActivity {
                     // Nom nom
                 }
             } else {
-                Log.w(SDLActivity.class.getSimpleName(),
+                Log.w(
                         "SDL audio: error return from write(short)");
                 return;
             }
@@ -443,7 +438,7 @@ public class SDLActivity extends CTHActivity {
                     // Nom nom
                 }
             } else {
-                Log.w(SDLActivity.class.getSimpleName(),
+                Log.w(
                         "SDL audio: error return from write(byte)");
                 return;
             }
@@ -462,7 +457,7 @@ public class SDLActivity extends CTHActivity {
 
 
     public static void toggleScrolling(boolean scrolling) {
-        Log.d(SDLActivity.class.getSimpleName(), "Scrolling Java call: "
+        Log.d("Scrolling Java call: "
                 + scrolling);
         mSurface.setScrolling(scrolling);
     }
@@ -488,7 +483,7 @@ public class SDLActivity extends CTHActivity {
                     app.configuration = Configuration.loadFromPreferences(this,
                             preferences);
                 } catch (StorageUnavailableException e) {
-                    Log.e(LOG_TAG, "Can't get storage.");
+                    Log.e("Can't get storage.");
 
                     // Create an alert dialog warning that external storage isn't
                     // mounted. The application will have to exit at this point.
@@ -504,7 +499,7 @@ public class SDLActivity extends CTHActivity {
                         0).versionCode);
 
             } catch (NameNotFoundException e) {
-                Mint.logException(e);
+                Reporting.report(e);
             }
 
             // Check to see if the game files have been copied yet, or whether the
@@ -512,7 +507,8 @@ public class SDLActivity extends CTHActivity {
             if (!preferences.getBoolean("scripts_copied", false)
                     || preferences.getInt("last_version", 0) < currentVersion) {
 
-                Log.d(LOG_TAG, "This is a new installation");
+                Log.d("This is a new installation");
+                Reporting.setBool("new_installation", true);
 
                 // Show the recent changes dialog
                 Dialog recentChangesDialog = DialogFactory
@@ -527,14 +523,18 @@ public class SDLActivity extends CTHActivity {
                 });
                 recentChangesDialog.show();
 
-            } else {
+            } else if (BuildConfig.ALWAYS_UPGRADE) {
+                // For the debug variants, we always want to copy new files
+                installFiles(preferences);
+            }  else {
 
-                // Continue to load the application otherwise
-                loadApplication();
-            }
+                    // Continue to load the application otherwise
+                    loadApplication();
+                }
+
 
         } else {
-            Log.e(LOG_TAG, "Can't get storage.");
+            Log.e("Can't get storage.");
 
             // Create an alert dialog warning that external storage isn't
             // mounted. The application will have to exit at this point.
@@ -544,7 +544,7 @@ public class SDLActivity extends CTHActivity {
     }
 
     private void installFiles(final SharedPreferences preferences) {
-        Log.d(LOG_TAG, "Installing files");
+        Log.d("Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
         final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
                 + "/scripts/", this) {
@@ -571,8 +571,7 @@ public class SDLActivity extends CTHActivity {
                 super.onPostExecute(result);
                 Exception error;
                 if ((error = result.getError()) != null) {
-                    Log.d(LOG_TAG, "Error copying files.");
-                    Mint.logException(error);
+                    Reporting.reportWithToast(SDLActivity.this, "Error copying files", error);
                 }
 
                 Editor edit = preferences.edit();
@@ -603,7 +602,8 @@ public class SDLActivity extends CTHActivity {
                 super.onPostExecute(result);
                 File f;
                 if ((f = result.getResult()) == null) {
-                    Mint.logException(result.getError());
+                    // TODO
+
                 }
             }
 
@@ -632,16 +632,14 @@ public class SDLActivity extends CTHActivity {
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
-                            Log.w(LOG_TAG, "Unable to copy files successfully", result.getError());
-                            Mint.logException(result.getError());
-
+                            Reporting.reportWithToast(SDLActivity.this, "Unable to copy files", result.getError());
                         }
                     }
 
                 };
 
         if (Files.canAccessExternalStorage()) {
-            Log.d(LOG_TAG, "Starting copy task");
+            Log.d("Starting copy task");
             copyTask
                     .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
 
@@ -649,7 +647,7 @@ public class SDLActivity extends CTHActivity {
             fontCopyTask.execute("DroidSansFallbackFull.ttf", getFilesDir().getAbsolutePath());
 
         } else {
-            Log.w(LOG_TAG, "Wasn't able to access external storage when copying files");
+            Log.w("Wasn't able to access external storage when copying files");
             DialogFactory.createExternalStorageWarningDialog(this, true).show();
         }
     }
@@ -671,9 +669,7 @@ public class SDLActivity extends CTHActivity {
         try {
             app.configuration.writeToFile();
         } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(LOG_TAG, "Couldn't write to configuration file");
-            Mint.logException(e);
+            Reporting.reportWithToast(SDLActivity.this, "Could not write to configuration file", e);
         }
 
         File f = new File(app.configuration.getSaveGamesPath());
@@ -787,7 +783,7 @@ public class SDLActivity extends CTHActivity {
     // Events
     protected void onPause() {
         super.onPause();
-        Log.d(LOG_TAG, "onPause()");
+        Log.v("onPause()");
 
         // Attempt to autosave.
         if (hasGameLoaded) {
@@ -798,7 +794,7 @@ public class SDLActivity extends CTHActivity {
         }
 
         if (wake != null && wake.isHeld()) {
-            Log.d(LOG_TAG, "Releasing wakelock");
+            Log.d("Releasing wakelock");
             wake.release();
         }
 
@@ -807,10 +803,10 @@ public class SDLActivity extends CTHActivity {
 
     protected void onResume() {
         super.onResume();
-        Log.d(LOG_TAG, "onResume()");
+        Log.v("onResume()");
 
         if (app.configuration != null && app.configuration.getKeepScreenOn()) {
-            Log.d(LOG_TAG, "Getting wakelock");
+            Log.d("Getting wakelock");
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                     "Keep Screen On Wakelock");
@@ -832,7 +828,7 @@ public class SDLActivity extends CTHActivity {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        Log.w(LOG_TAG, "Low memory detected. Going to try and tighten our belt!");
+        Log.w("Low memory detected. Going to try and tighten our belt!");
 
         if (hasGameLoaded) {
             // Attempt to save first
@@ -944,7 +940,10 @@ public class SDLActivity extends CTHActivity {
  * Simple nativeInit() runnable
  */
 class SDLMain implements Runnable {
-    private static final String LOG_TAG = "SDLMain";
+
+    private static final Reporting.Logger Log = Reporting.getLogger("SDLMain");
+
+
     private final Configuration config;
     private final String toLoad;
 
@@ -952,13 +951,14 @@ class SDLMain implements Runnable {
         this.config = config;
         this.toLoad = toLoad;
 
+
     }
 
     public void run() {
         // Runs SDL_main()
         SDLActivity.nativeInit(config, toLoad);
 
-        Log.v(LOG_TAG, "SDL thread terminated");
+        Log.d("SDL thread terminated");
     }
 }
 

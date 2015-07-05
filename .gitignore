@@ -50,4 +50,6 @@ signing.properties
 # c9 IDE
 .c9revisions
 
+fabric.properties
+
 

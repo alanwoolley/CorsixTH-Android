@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -18,11 +17,12 @@ import java.io.IOException;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.SDLActivity;
 
 public class SaveDialog extends FilesDialog {
 
-    private static final String LOG_TAG = "SaveDialog";
+    private static final Reporting.Logger Log = Reporting.getLogger("SaveDialog");
     private AlertDialog newSaveDialog;
     private final ListView filesList;
 
@@ -54,7 +54,7 @@ public class SaveDialog extends FilesDialog {
 
     @Override
     public void onSelectedFile(String directory, String file) {
-        Log.d(LOG_TAG, "Saving: " + file);
+        Log.d("Saving: " + file);
 
         // Reset the game speed - we don't want to save when the game is paused!
         SDLActivity.cthGameSpeed(ctx.app.configuration.getGameSpeed());

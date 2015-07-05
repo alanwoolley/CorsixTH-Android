@@ -6,16 +6,16 @@
 package uk.co.armedpineapple.cth.gestures;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 
 import uk.co.armedpineapple.cth.CTHApplication;
+import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.SDLActivity;
 
 public class LongPressGesture implements OnGestureListener {
 
-    private static final String LOG_TAG = "LongPressGesture";
+    private static final Reporting.Logger Log = Reporting.getLogger("LongPressGesture");
 
     private final CTHApplication appCtx;
 
@@ -38,7 +38,7 @@ public class LongPressGesture implements OnGestureListener {
 
     @Override
     public void onLongPress(MotionEvent event) {
-        Log.d(LOG_TAG, "Detected long press");
+        Log.v("Detected long press");
 
 		final int touchDevId = event.getDeviceId();
 		final int pointerCount = event.getPointerCount();

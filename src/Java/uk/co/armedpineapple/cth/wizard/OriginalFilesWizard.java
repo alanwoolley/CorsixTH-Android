@@ -16,14 +16,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.splunk.mint.Mint;
 
 import java.io.File;
 
@@ -36,11 +34,12 @@ import uk.co.armedpineapple.cth.Files.FindFilesTask;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.Network;
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 public class OriginalFilesWizard extends WizardView {
 
-    private static final String LOG_TAG = "OriginalFilesWizard";
+    private static final Reporting.Logger Log = Reporting.getLogger("OriginalFilesWizard");
 
     private RadioGroup  originalFilesRadioGroup;
     private RadioButton automaticRadio;
@@ -255,13 +254,11 @@ public class OriginalFilesWizard extends WizardView {
 
 				if (result.getResult() != null) {
 					customLocation = result.getResult() + "HOSP";
-					Log.d(LOG_TAG, "Extracted TH demo: " + customLocation);
+					Log.d("Extracted TH demo: " + customLocation);
 				} else if (result.getError() != null) {
 					Exception e = result.getError();
-					Mint.logException(e);
-					DialogFactory.createFromException(result.getError(),
-							ctx.getString(R.string.download_demo_error), ctx, false).show();
-					downloadDemoRadio.setChecked(false);
+                    Reporting.reportWithToast(ctx, ctx.getString(R.string.download_demo_error), e);
+                    downloadDemoRadio.setChecked(false);
 				}
 			}
 
@@ -292,7 +289,6 @@ public class OriginalFilesWizard extends WizardView {
 				super.onPostExecute(result);
 
 				if (result.getError() != null) {
-					Mint.logException(result.getError());
 					automaticRadio.setChecked(true);
 					dialog.hide();
 

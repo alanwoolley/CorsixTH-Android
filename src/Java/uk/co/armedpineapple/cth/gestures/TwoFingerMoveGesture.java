@@ -6,15 +6,15 @@
 package uk.co.armedpineapple.cth.gestures;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import uk.co.armedpineapple.cth.CTHApplication;
+import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.SDLActivity;
 
 public class TwoFingerMoveGesture implements
 		TwoFingerGestureDetector.OnTwoFingerGestureListener {
 
-	private static final String	LOG_TAG	= "TwoFingerMove";
+	private static final Reporting.Logger Log = Reporting.getLogger("TwoFingerMove");
 
     private float								prevX, prevY, originX, originY;
 
@@ -55,7 +55,7 @@ public class TwoFingerMoveGesture implements
 
 	@Override
 	public boolean onTwoFingerBegin(TwoFingerGestureDetector detector) {
-		Log.d(LOG_TAG, "Move gesture - BEGIN");
+		Log.v("Move gesture - BEGIN");
 		first = true;
 		float[] coords = SDLActivity.mSurface.translateCoords(detector.getFocusX(),
 				detector.getFocusY());
@@ -68,7 +68,7 @@ public class TwoFingerMoveGesture implements
 
 	@Override
 	public void onTwoFingerEnd(TwoFingerGestureDetector detector) {
-		Log.d(LOG_TAG, "Move gesture - END");
+		Log.v("Move gesture - END");
 
 		if (!first) {
 

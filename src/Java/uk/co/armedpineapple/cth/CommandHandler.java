@@ -9,11 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-
-import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +20,8 @@ import uk.co.armedpineapple.cth.dialogs.LoadDialog;
 import uk.co.armedpineapple.cth.dialogs.SaveDialog;
 
 public class CommandHandler extends Handler {
+
+    private Reporting.Logger Log = Reporting.getLogger("CommandHandler");
 
     public static final int VIBRATION_SHORT_CLICK = 1;
     public static final int VIBRATION_LONG_CLICK  = 2;
@@ -105,11 +104,7 @@ public class CommandHandler extends Handler {
                     loadDialog.refreshSaves(activityContext);
                     loadDialog.show();
                 } catch (IOException e) {
-                    Mint.logException(e);
-
-                    Toast.makeText(activityContext, "Problem loading load dialog",
-                            Toast.LENGTH_SHORT).show();
-
+                    Reporting.reportWithToast(activityContext, "Problem loading load dialog", e);
                 }
                 break;
 
@@ -122,9 +117,7 @@ public class CommandHandler extends Handler {
                     saveDialog.refreshSaves(activityContext);
                     saveDialog.show();
                 } catch (IOException e) {
-                    Mint.logException(e);
-                    Toast.makeText(activityContext, "Problem loading save dialog",
-                            Toast.LENGTH_SHORT).show();
+                    Reporting.reportWithToast(activityContext, "Problem loading save dialog", e);
                 }
 
                 break;
@@ -148,7 +141,7 @@ public class CommandHandler extends Handler {
             case START_VIBRATION:
 
                 Integer vibrationCode = (Integer) msg.obj;
-                Log.d("CommandHandler", "Vibrating: " + vibrationCode);
+                Log.d("Vibrating: " + vibrationCode);
                 if (app.configuration.getHaptic()) {
                      activityContext.playVibration(vibrationCode);
                 }

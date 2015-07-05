@@ -14,7 +14,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -48,7 +47,7 @@ import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-    public static final String LOG_TAG = "SDLSurface";
+    public static final Reporting.Logger Log = Reporting.getLogger("SDLSurface");
 
     private static final int GESTURE_LONGPRESS = 1;
     private static final int GESTURE_MOVE      = 2;
@@ -98,7 +97,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
                 @Override
                 public boolean onGenericMotion(View v, MotionEvent event) {
-                    Log.d(LOG_TAG, event.toString());
+                    Log.v(event.toString());
                     if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
                         int actionPointerIndex = event.getActionIndex();
                         float[] coords = translateCoords(event.getX(actionPointerIndex),
@@ -123,25 +122,26 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
 
 		super.onWindowFocusChanged(hasWindowFocus);
-		Log.d(LOG_TAG, "focus changed");
+		Log.d("focus changed");
 		context.hideSystemUi();
 	}
 
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.v(LOG_TAG, "surfaceCreated()");
+		Log.v("surfaceCreated()");
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
 		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 		if (context.app.configuration.getSpen()) {
-			Log.d(LOG_TAG, "S Pen support enabled");
+			Log.d("S Pen support enabled");
+            Reporting.setBool("spen", true);
 			SamsungSPenUtils.registerListeners();
 		}
 	}
 
 	// Called when we lose the surface
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Log.v(LOG_TAG, "surfaceDestroyed()");
+		Log.v("surfaceDestroyed()");
 
         // Call this *before* setting mIsSurfaceReady to 'false'
         SDLActivity.handlePause();
@@ -154,57 +154,57 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void surfaceChanged(SurfaceHolder holder,
                                int format, int width, int height) {
-        Log.v("SDL", "surfaceChanged()");
+        Log.v("surfaceChanged()");
 
         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
             case PixelFormat.A_8:
-                Log.v("SDL", "pixel format A_8");
+                Log.v("pixel format A_8");
                 break;
             case PixelFormat.LA_88:
-                Log.v("SDL", "pixel format LA_88");
+                Log.v("pixel format LA_88");
                 break;
             case PixelFormat.L_8:
-                Log.v("SDL", "pixel format L_8");
+                Log.v("pixel format L_8");
                 break;
             case PixelFormat.RGBA_4444:
-                Log.v("SDL", "pixel format RGBA_4444");
+                Log.v("pixel format RGBA_4444");
                 sdlFormat = 0x15421002; // SDL_PIXELFORMAT_RGBA4444
                 break;
             case PixelFormat.RGBA_5551:
-                Log.v("SDL", "pixel format RGBA_5551");
+                Log.v("pixel format RGBA_5551");
                 sdlFormat = 0x15441002; // SDL_PIXELFORMAT_RGBA5551
                 break;
             case PixelFormat.RGBA_8888:
-                Log.v("SDL", "pixel format RGBA_8888");
+                Log.v("pixel format RGBA_8888");
                 sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
                 break;
             case PixelFormat.RGBX_8888:
-                Log.v("SDL", "pixel format RGBX_8888");
+                Log.v("pixel format RGBX_8888");
                 sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
                 break;
             case PixelFormat.RGB_332:
-                Log.v("SDL", "pixel format RGB_332");
+                Log.v("pixel format RGB_332");
                 sdlFormat = 0x14110801; // SDL_PIXELFORMAT_RGB332
                 break;
             case PixelFormat.RGB_565:
-                Log.v("SDL", "pixel format RGB_565");
+                Log.v("pixel format RGB_565");
                 sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
                 break;
             case PixelFormat.RGB_888:
-                Log.v("SDL", "pixel format RGB_888");
+                Log.v("pixel format RGB_888");
                 // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
                 sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
                 break;
             default:
-                Log.v("SDL", "pixel format unknown " + format);
+                Log.v("pixel format unknown " + format);
                 break;
         }
 
        // this.width = width;
         //this.height = height;
         SDLActivity.onNativeResize(width, height, sdlFormat);
-        Log.v("SDL", "Window size:" + width + "x"+height);
+        Log.v("Window size:" + width + "x"+height);
 
         // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
         SDLActivity.mIsSurfaceReady = true;
@@ -214,7 +214,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         if (SDLActivity.mSDLThread == null) {
             // This is the entry point to the C app.
             // Start up the C app thread and enable sensor input for the first time
-            Log.d(LOG_TAG, "Starting up SDLThread");
+            Log.d("Starting up SDLThread");
             SDLActivity.mSDLThread = new Thread(new SDLMain(context.app.configuration, ""), "SDLThread");
             enableSensor(Sensor.TYPE_ACCELEROMETER, true);
             SDLActivity.mSDLThread.start();
@@ -226,7 +226,9 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     try {
                         SDLActivity.mSDLThread.join();
                     }
-                    catch(Exception e){}
+                    catch(Exception e){
+                        Reporting.report(e);
+                    }
                     finally{
                         // Native thread has finished
                         if (! SDLActivity.mExitCalledFromJava) {

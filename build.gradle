@@ -1,29 +1,32 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.2'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 repositories {
     mavenCentral();
-    maven {
-        url "http://mint.splunk.com/gradle/"
-    }
+    maven { url 'https://maven.fabric.io/public' }
 
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.splunk.mint:mint:4.2'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'commons-io:commons-io:2.4'
-    compile 'com.google.android.gms:play-services:7.3.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
     compile 'com.android.support:multidex:1.0.0'
     compile fileTree(dir: 'jars', include: '*.jar')
+    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+        transitive = true;
+    }
 }
 
 android {
@@ -64,15 +67,17 @@ android {
 
     buildTypes {
         release {
-            buildConfigField "boolean", "USE_BUGSENSE", "true"
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+
         }
 
         beta {
-            buildConfigField "boolean", "USE_BUGSENSE", "true"
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
         }
 
         debug {
-            buildConfigField "boolean", "USE_BUGSENSE", "false"
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "true"
+            ext.enableCrashlytics = false
         }
 
 

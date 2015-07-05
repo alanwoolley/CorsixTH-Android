@@ -77,7 +77,6 @@
             android:excludeFromRecents="true"
             android:theme="@style/Dialogs"/>
 
-
     </application>
 
 </manifest>

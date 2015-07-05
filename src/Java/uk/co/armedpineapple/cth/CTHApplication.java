@@ -11,15 +11,17 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.multidex.MultiDex;
-import android.util.Log;
 
-import com.splunk.mint.Mint;
+import com.crashlytics.android.Crashlytics;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 public class CTHApplication extends android.app.Application {
+
+    private static final Reporting.Logger Log = Reporting.getLogger("CorsixTH Application");
 
     public static final  String PREFERENCES_KEY             = "cthprefs";
     private static final String APPLICATION_PROPERTIES_FILE = "application.properties";
@@ -33,6 +35,7 @@ public class CTHApplication extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         Vibrator vib = ((Vibrator) getSystemService(VIBRATOR_SERVICE));
         if (Build.VERSION.SDK_INT >= 11) {
             hasVibration = vib.hasVibrator();
@@ -41,36 +44,16 @@ public class CTHApplication extends android.app.Application {
         }
         preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
 
-		/*
-         * BugSense helps to discover bugs by reporting unhandled exceptions. If you
-		 * want to use this, create a file called application.properties in the
-		 * assets folder and insert the line:
-		 * 
-		 * bugsense.key=<your API key>
-		 */
 
         try {
             InputStream inputStream = getAssets().open(APPLICATION_PROPERTIES_FILE);
-            Log.d(LOG_TAG, "Loading properties");
+            Log.d("Loading properties");
             properties.load(inputStream);
-            setupMint();
 
         } catch (IOException e) {
-            Log.i(LOG_TAG, "No properties file found");
+            Log.i("No properties file found");
         }
 
-    }
-
-    private void setupMint() {
-        if (properties.containsKey("bugsense.key") && BuildConfig.USE_BUGSENSE) {
-            Log.d(LOG_TAG, "Setting up bugsense");
-
-            // Mint's network statistics is buggy. Disable
-            Mint.disableNetworkMonitoring();
-
-            Mint.initAndStartSession(this,
-                    (String) properties.get("bugsense.key"));
-        }
     }
 
     public SharedPreferences getPreferences() {

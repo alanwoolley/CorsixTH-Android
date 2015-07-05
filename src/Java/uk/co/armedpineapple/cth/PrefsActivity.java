@@ -25,8 +25,6 @@ import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
-import com.splunk.mint.Mint;
-
 import java.io.File;
 
 import uk.co.armedpineapple.cth.Files.DownloadFileTask;
@@ -36,7 +34,7 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 public class PrefsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String LOG_TAG = "Settings";
+    private static final Reporting.Logger Log = Reporting.getLogger("Settings");
 
     private CTHApplication    application;
     private SharedPreferences preferences;
@@ -94,8 +92,8 @@ public class PrefsActivity extends PreferenceActivity implements
                     @Override
                     public boolean onPreferenceChange(Preference preference,
                                                       Object newValue) {
-                        Log.d(LOG_TAG, "Res mode: " + newValue);
                         updateResolutionPrefsDisplay((String) newValue);
+                        Log.d("Res mode: " + newValue);
                         return true;
                     }
                 });
@@ -202,10 +200,10 @@ public class PrefsActivity extends PreferenceActivity implements
         getPreferenceManager().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
 
-        Log.d(LOG_TAG, "Refreshing configuration");
+        Log.d("Refreshing configuration");
 
         if (displayRestartMessage) {
-            Log.d(LOG_TAG, "app requires restarting");
+            Log.d("app requires restarting");
             Toast.makeText(this, R.string.dialog_require_restart, Toast.LENGTH_LONG)
                     .show();
         }
@@ -219,7 +217,7 @@ public class PrefsActivity extends PreferenceActivity implements
     protected void onResume() {
         super.onResume();
         displayRestartMessage = false;
-        Log.d(LOG_TAG, "onResume()");
+        Log.d("onResume()");
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
@@ -334,7 +332,7 @@ public class PrefsActivity extends PreferenceActivity implements
                 dialog.hide();
 
                 if (result.getResult() != null) {
-                    Log.d(LOG_TAG, "Downloaded and extracted Timidity successfully");
+                    Log.d("Downloaded and extracted Timidity successfully");
 
                     Editor editor = preferences.edit();
                     editor.putBoolean("music_pref", true);
@@ -344,11 +342,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
                 } else if (result.getError() != null) {
                     Exception e = result.getError();
-                    Mint.logException(e);
-                    Toast errorToast = Toast.makeText(PrefsActivity.this,
-                            R.string.download_timidity_error, Toast.LENGTH_LONG);
-
-                    errorToast.show();
+                    Reporting.reportWithToast(PrefsActivity.this, getString(R.string.download_timidity_error), e);
                 }
             }
 
@@ -383,7 +377,6 @@ public class PrefsActivity extends PreferenceActivity implements
                         R.string.download_timidity_error, Toast.LENGTH_LONG);
 
                 if (result.getError() != null) {
-                    Mint.logException(result.getError());
                     dialog.hide();
                     errorToast.show();
                 } else {

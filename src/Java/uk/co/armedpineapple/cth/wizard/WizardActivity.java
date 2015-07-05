@@ -8,7 +8,6 @@ package uk.co.armedpineapple.cth.wizard;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,12 +20,13 @@ import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
 import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.SDLActivity;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 public class WizardActivity extends CTHActivity {
 
-	private static final String				LOG_TAG	= "Wizard";
+	private static final Reporting.Logger Log = Reporting.getLogger("Wizard");
 
 	private ViewFlipper								flipper;
 	private Button										previousButton;
@@ -36,7 +36,7 @@ public class WizardActivity extends CTHActivity {
 		super.onCreate(savedInstanceState);
 
 		if (!Files.canAccessExternalStorage()) {
-			Log.e(LOG_TAG, "Can't get storage.");
+			Log.e("Can't get storage.");
 
 			// Show dialog and end
 			DialogFactory.createExternalStorageWarningDialog(this, true).show();
@@ -48,14 +48,14 @@ public class WizardActivity extends CTHActivity {
 		boolean alreadyRun = preferences.getBoolean("wizard_run", false);
 		if (alreadyRun) {
 			if (Files.hasDataFiles(preferences.getString("originalfiles_pref", ""))) {
-				Log.d(LOG_TAG, "Wizard isn't going to run.");
+				Log.d("Wizard isn't going to run.");
 				finish();
 				startActivity(new Intent(this, SDLActivity.class));
 				return;
 			}
 		}
 
-		Log.d(LOG_TAG, "Wizard is going to run.");
+		Log.d("Wizard is going to run.");
 		setContentView(R.layout.wizard);
 		flipper = (ViewFlipper) findViewById(R.id.flipper);
 		previousButton = (Button) findViewById(R.id.leftbutton);
@@ -66,7 +66,7 @@ public class WizardActivity extends CTHActivity {
 				app.configuration = Configuration
 						.loadFromPreferences(this, preferences);
 			} catch (StorageUnavailableException e) {
-				Log.e(LOG_TAG, "Can't get storage.");
+				Log.e("Can't get storage.");
 
 				// Show dialog and end
 				DialogFactory.createExternalStorageWarningDialog(this, true).show();
@@ -132,6 +132,7 @@ public class WizardActivity extends CTHActivity {
 					}
 
 				} catch (ConfigurationException e) {
+					Reporting.report(e);
 					// Couldn't save the configuration. Don't change the view.
 					return;
 				}

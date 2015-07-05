@@ -6,7 +6,6 @@
 package uk.co.armedpineapple.cth.dialogs;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -18,11 +17,12 @@ import java.io.IOException;
 
 import uk.co.armedpineapple.cth.CommandHandler.Command;
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.SDLActivity;
 
 public class LoadDialog extends FilesDialog {
 
-    private static final String LOG_TAG   = "LoadDialog";
+    private static final Reporting.Logger Log  = Reporting.getLogger("LoadDialog");
     private static final String AUTOSAVES = "autosaves";
     private final LinearLayout tabsView;
     private final TabHost      tabHost;
@@ -57,7 +57,7 @@ public class LoadDialog extends FilesDialog {
 
     @Override
     public void onSelectedFile(String directory, String file) {
-        Log.d(LOG_TAG, "Loading: " + file);
+        Log.d("Loading: " + file);
         if (directory.endsWith(File.separator + AUTOSAVES)) {
             SDLActivity.cthLoadGame(AUTOSAVES + File.separator + file);
         }
