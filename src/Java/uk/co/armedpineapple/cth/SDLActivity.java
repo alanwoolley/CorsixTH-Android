@@ -7,6 +7,7 @@
 package uk.co.armedpineapple.cth;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -69,6 +70,13 @@ public class SDLActivity extends CTHActivity {
     public static boolean mIsPaused, mIsSurfaceReady, mHasFocus;
     public static boolean mExitCalledFromJava;
 
+    /** If shared libraries (e.g. SDL or the native application) could not be loaded. */
+    public static boolean mBrokenLibraries;
+
+    // If we want to separate mouse and touch events.
+    //  This is only toggled in native code when a hint is set!
+    public static boolean mSeparateMouseAndTouch = true;
+
     // Main components
     public static    SDLActivity        mSingleton;
     public static    SDLSurface         mSurface;
@@ -100,9 +108,18 @@ public class SDLActivity extends CTHActivity {
     // Vibration
     private Vibrator mVibratorService;
 
+    /**
+     * This method is called by SDL before starting the native application thread.
+     * It can be overridden to provide the arguments after the application name.
+     * The default implementation returns an empty array. It never returns null.
+     * @return arguments for the native application.
+     */
+    protected String[] getArguments() {
+        return new String[0];
+    }
 
     // C functions we call
-    public static native void nativeInit(Configuration config, String toLoad);
+    public static native void nativeInit(Object arguments, Configuration config);
 
     public static native void nativeLowMemory();
 
@@ -120,9 +137,12 @@ public class SDLActivity extends CTHActivity {
 
     public static native void onNativeKeyUp(int keycode);
 
+    public static native void onNativeKeyboardFocusLost();
+
+    public static native void onNativeMouse(int button, int action, float x, float y);
+
     public static native void onNativeTouch(int touchDevId, int pointerFingerId,
-                                            int action, float x, float y, float p, int pc, int gestureTriggered,
-                                            int controlsMode);
+                                            int action, float x, float y, float p);
 
     public static native int nativeAddJoystick(int device_id, String name,
                                                int is_accelerometer, int nbuttons,
@@ -150,7 +170,8 @@ public class SDLActivity extends CTHActivity {
 
     public static native void onSpenButton();
 
-    public static native void onNativeLowMemory();
+    public static native String nativeGetHint(String name);
+
 
     public static native void nativeRunAudioThread();
 
@@ -241,6 +262,14 @@ public class SDLActivity extends CTHActivity {
     @Override
     protected void onDestroy() {
         Log.v("onDestroy()");
+
+        if (SDLActivity.mBrokenLibraries) {
+            super.onDestroy();
+            // Reset everything in case the user re opens the app
+            SDLActivity.initialize();
+            return;
+        }
+
         // Send a quit message to the application
         SDLActivity.mExitCalledFromJava = true;
         SDLActivity.nativeQuit();
@@ -255,7 +284,7 @@ public class SDLActivity extends CTHActivity {
             }
             SDLActivity.mSDLThread = null;
 
-            //Log.v("SDL", "Finished waiting for SDL thread");
+            Log.v("Finished waiting for SDL thread");
         }
 
         super.onDestroy();
@@ -339,22 +368,29 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static void sendCommand(Command command, Object data) {
-        sendCommand(command.ordinal(), data);
+        mSingleton.sendCommand(command.ordinal(), data);
     }
 
     public static void sendCommand(int cmd, int data) {
-        sendCommand(cmd, Integer.valueOf(data));
+        mSingleton.sendCommand(cmd, Integer.valueOf(data));
     }
 
     public static void sendCommand(int cmd) {
-        sendCommand(cmd, null);
+        mSingleton.sendCommand(cmd, null);
     }
 
-    public static void sendCommand(int cmd, Object data) {
+    boolean sendCommand(int cmd, Object data) {
         Message msg = mSingleton.commandHandler.obtainMessage();
         msg.arg1 = cmd;
         msg.obj = data;
-        mSingleton.commandHandler.sendMessage(msg);
+        return commandHandler.sendMessage(msg);
+    }
+
+    /**
+     * This method is called by SDL using JNI.
+     */
+    public static boolean sendMessage(int command, int param) {
+        return mSingleton.sendCommand(command, Integer.valueOf(param));
     }
 
     // Audio
@@ -456,14 +492,18 @@ public class SDLActivity extends CTHActivity {
 
 
 
-    public static void toggleScrolling(boolean scrolling) {
+    /*public static void toggleScrolling(boolean scrolling) {
         Log.d("Scrolling Java call: "
                 + scrolling);
         mSurface.setScrolling(scrolling);
-    }
+    }*/
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.v("Device: " + android.os.Build.DEVICE);
+        Log.v("Model: " + android.os.Build.MODEL);
+        Log.v("onCreate(): " + mSingleton);
 
         SDLActivity.initialize();
         // So we can call stuff from static callbacks
@@ -658,12 +698,47 @@ public class SDLActivity extends CTHActivity {
     }
     void loadApplication() {
 
-        // Load the libraries
-        System.loadLibrary("SDL2");
-        System.loadLibrary("LUA");
-        System.loadLibrary("SDL2_mixer");
-        System.loadLibrary("ffmpeg");
-        System.loadLibrary("appmain");
+        // Load shared libraries
+        String errorMsgBrokenLib = "";
+        try {
+            // Load the libraries
+            System.loadLibrary("SDL2");
+            System.loadLibrary("LUA");
+            System.loadLibrary("SDL2_mixer");
+            System.loadLibrary("ffmpeg");
+            System.loadLibrary("appmain");
+        } catch(UnsatisfiedLinkError e) {
+            System.err.println(e.getMessage());
+            mBrokenLibraries = true;
+            errorMsgBrokenLib = e.getMessage();
+        } catch(Exception e) {
+            System.err.println(e.getMessage());
+            mBrokenLibraries = true;
+            errorMsgBrokenLib = e.getMessage();
+        }
+
+        if (mBrokenLibraries)
+        {
+            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+            dlgAlert.setMessage("An error occurred while trying to start the application. Please try again and/or reinstall."
+                    + System.getProperty("line.separator")
+                    + System.getProperty("line.separator")
+                    + "Error: " + errorMsgBrokenLib);
+            dlgAlert.setTitle("SDL Error");
+            dlgAlert.setPositiveButton("Exit",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,int id) {
+                            // if this button is clicked, close current activity
+                            SDLActivity.mSingleton.finish();
+                        }
+                    });
+            dlgAlert.setCancelable(false);
+            dlgAlert.create().show();
+
+            return;
+        }
+
 
 
         try {
@@ -840,9 +915,11 @@ public class SDLActivity extends CTHActivity {
         commandHandler.cleanUp();
 
 
-        // Call LUA GC
-        // TODO - this is buggy.
-        // onNativeLowMemory();
+        if (SDLActivity.mBrokenLibraries) {
+            return;
+        }
+
+        SDLActivity.nativeLowMemory();
 
     }
 
@@ -929,6 +1006,22 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.v("onWindowFocusChanged(): " + hasFocus);
+
+        if (SDLActivity.mBrokenLibraries) {
+            return;
+        }
+
+        SDLActivity.mHasFocus = hasFocus;
+        if (hasFocus) {
+            SDLActivity.handleResume();
+        }
+    }
+
+
     /* The native thread has finished */
     public static void handleNativeExit() {
         SDLActivity.mSDLThread = null;
@@ -956,7 +1049,7 @@ class SDLMain implements Runnable {
 
     public void run() {
         // Runs SDL_main()
-        SDLActivity.nativeInit(config, toLoad);
+        SDLActivity.nativeInit(new String[] {"--load",toLoad}, config);
 
         Log.d("SDL thread terminated");
     }

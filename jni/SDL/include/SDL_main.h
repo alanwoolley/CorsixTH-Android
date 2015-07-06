@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -23,8 +23,8 @@
 #define _SDL_main_h
 
 #include "SDL_stdinc.h"
-#include <jni.h>
 
+#include "jni.h"
 /**
  *  \file SDL_main.h
  *
@@ -68,6 +68,15 @@
  */
 #define SDL_MAIN_NEEDED
 
+#elif defined(__NACL__)
+/* On NACL we use ppapi_simple to set up the application helper code,
+   then wait for the first PSE_INSTANCE_DIDCHANGEVIEW event before 
+   starting the user main function.
+   All user code is run in a separate thread by ppapi_simple, thus 
+   allowing for blocking io to take place via nacl_io
+*/
+#define SDL_MAIN_NEEDED
+
 #endif
 #endif /* SDL_MAIN_HANDLED */
 
@@ -99,7 +108,7 @@
 /**
  *  The prototype for the application's main() function
  */
-extern C_LINKAGE int SDL_main(int argc, char *argv[], JavaVM* jvm, jobject configuration);
+extern C_LINKAGE int SDL_main(int argc, char *argv[], JavaVM* vm, jobject configuration);
 
 
 #include "begin_code.h"
@@ -134,14 +143,11 @@ extern DECLSPEC void SDLCALL SDL_UnregisterApp(void);
  *  \brief Initializes and launches an SDL/WinRT application.
  *
  *  \param mainFunction The SDL app's C-style main().
- *  \param xamlBackgroundPanel An optional, XAML-based, background panel.
- *     For Non-XAML apps, this value must be set to NULL.  For XAML apps,
- *     pass in a pointer to a SwapChainBackgroundPanel, casted to an
- *     IInspectable (via reinterpret_cast).
- *  \ret 0 on success, -1 on failure.  On failure, use SDL_GetError to retrieve more
+ *  \param reserved Reserved for future use; should be NULL
+ *  \return 0 on success, -1 on failure.  On failure, use SDL_GetError to retrieve more
  *      information on the failure.
  */
-extern DECLSPEC int SDLCALL SDL_WinRTRunApp(int (*mainFunction)(int, char **), void * xamlBackgroundPanel);
+extern DECLSPEC int SDLCALL SDL_WinRTRunApp(int (*mainFunction)(int, char **), void * reserved);
 
 #endif /* __WINRT__ */
 

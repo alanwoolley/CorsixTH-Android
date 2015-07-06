@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2014 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -48,6 +48,7 @@ static int RPI_ShowCursor(SDL_Cursor * cursor);
 static void RPI_MoveCursor(SDL_Cursor * cursor);
 static void RPI_FreeCursor(SDL_Cursor * cursor);
 static void RPI_WarpMouse(SDL_Window * window, int x, int y);
+static void RPI_WarpMouseGlobal(int x, int y);
 
 static SDL_Cursor *
 RPI_CreateDefaultCursor(void)
@@ -211,6 +212,13 @@ RPI_FreeCursor(SDL_Cursor * cursor)
 static void
 RPI_WarpMouse(SDL_Window * window, int x, int y)
 {
+    RPI_WarpMouseGlobal(x, y);
+}
+
+/* Warp the mouse to (x,y) */
+static void
+RPI_WarpMouseGlobal(int x, int y)
+{
     RPI_CursorData *curdata;
     DISPMANX_UPDATE_HANDLE_T update;
     int ret;
@@ -254,6 +262,7 @@ RPI_InitMouse(_THIS)
     mouse->MoveCursor = RPI_MoveCursor;
     mouse->FreeCursor = RPI_FreeCursor;
     mouse->WarpMouse = RPI_WarpMouse;
+    mouse->WarpMouseGlobal = RPI_WarpMouseGlobal;
 
     SDL_SetDefaultCursor(RPI_CreateDefaultCursor());
 }
