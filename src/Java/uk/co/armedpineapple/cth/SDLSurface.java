@@ -275,6 +275,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int mouseButton;
         int i = -1;
         float x,y,p;
+        float[] coords;
 
         // !!! FIXME: dump this SDK check after 2.0.4 ships and require API14.
         if (event.getSource() == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
@@ -293,8 +294,14 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 case MotionEvent.ACTION_MOVE:
                     for (i = 0; i < pointerCount; i++) {
                         pointerFingerId = event.getPointerId(i);
-                        x = event.getX(i) / width;
-                        y = event.getY(i) / height;
+
+                        //x = event.getX(i) / width;
+                        //y = event.getY(i) / height;
+
+                        coords = translateCoords(event.getX(i), event.getY(i));
+                        x = coords[0];
+                        y = coords[1];
+
                         p = event.getPressure(i);
                         if (p > 1.0f) {
                             // may be larger than 1.0f on some devices
@@ -317,8 +324,13 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     }
 
                     pointerFingerId = event.getPointerId(i);
-                    x = event.getX(i) / width;
-                    y = event.getY(i) / height;
+                    //x = event.getX(i) / width;
+                    //y = event.getY(i) / height;
+
+                    coords = translateCoords(event.getX(i), event.getY(i));
+                    x = coords[0];
+                    y = coords[1];
+
                     p = event.getPressure(i);
                     if (p > 1.0f) {
                         // may be larger than 1.0f on some devices
@@ -331,8 +343,14 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                 case MotionEvent.ACTION_CANCEL:
                     for (i = 0; i < pointerCount; i++) {
                         pointerFingerId = event.getPointerId(i);
-                        x = event.getX(i) / width;
-                        y = event.getY(i) / height;
+
+                        //x = event.getX(i) / width;
+                        //y = event.getY(i) / height;
+
+                        coords = translateCoords(event.getX(i), event.getY(i));
+                        x = coords[0];
+                        y = coords[1];
+
                         p = event.getPressure(i);
                         if (p > 1.0f) {
                             // may be larger than 1.0f on some devices

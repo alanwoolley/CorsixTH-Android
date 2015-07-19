@@ -50,7 +50,7 @@ static void Android_GetWindowCoordinates(float x, float y,
     *window_y = (int)(y * window_h);
 }
 
-static volatile SDL_bool separate_mouse_and_touch = SDL_FALSE;
+static volatile SDL_bool separate_mouse_and_touch = SDL_TRUE;
 
 static void
 SeparateEventsHintWatcher(void *userdata, const char *name,
@@ -72,6 +72,8 @@ void Android_InitTouch(void)
 
     SDL_AddHintCallback(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH,
                         SeparateEventsHintWatcher, NULL);
+
+    separate_mouse_and_touch = SDL_TRUE;
 
     if (0 < number) {
         for (i = 0; i < number; ++i) {

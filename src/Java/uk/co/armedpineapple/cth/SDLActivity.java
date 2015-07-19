@@ -75,7 +75,7 @@ public class SDLActivity extends CTHActivity {
 
     // If we want to separate mouse and touch events.
     //  This is only toggled in native code when a hint is set!
-    public static boolean mSeparateMouseAndTouch = true;
+    public static boolean mSeparateMouseAndTouch = false;
 
     // Main components
     public static    SDLActivity        mSingleton;
@@ -705,8 +705,14 @@ public class SDLActivity extends CTHActivity {
             System.loadLibrary("SDL2");
             System.loadLibrary("LUA");
             System.loadLibrary("SDL2_mixer");
-            System.loadLibrary("ffmpeg");
+            //System.loadLibrary("ffmpeg");
             System.loadLibrary("appmain");
+//            System.loadLibrary("avcodec");
+//            System.loadLibrary("avfilter");
+//            System.loadLibrary("avformat");
+//            System.loadLibrary("avutil");
+//            System.loadLibrary("swresample");
+//            System.loadLibrary("swscale");
         } catch(UnsatisfiedLinkError e) {
             System.err.println(e.getMessage());
             mBrokenLibraries = true;
