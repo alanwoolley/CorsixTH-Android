@@ -139,6 +139,11 @@ android {
     }
     dexOptions {
     }
+
+    lintOptions {
+        abortOnError false
+    }
+    
 }
 
 // Create ZIP of CorsixTH Lua files
