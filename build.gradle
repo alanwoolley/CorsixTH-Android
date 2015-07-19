@@ -9,8 +9,11 @@ buildscript {
     }
 }
 
+project.ext.version = "0.9.0"
+
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply from: 'versioning.gradle'
 
 repositories {
     mavenCentral();
@@ -39,6 +42,10 @@ android {
         targetSdkVersion 22
 
         multiDexEnabled true
+
+        versionName project.ext.version
+        versionCode buildVersionCode()
+
     }
 
     Properties signingProperties = new Properties()
@@ -75,11 +82,16 @@ android {
     buildTypes {
         release {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-
         }
 
         beta {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+            versionNameSuffix "-BETA"
+        }
+
+        alpha {
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+            versionNameSuffix "-ALPHA"
         }
 
         debug {
