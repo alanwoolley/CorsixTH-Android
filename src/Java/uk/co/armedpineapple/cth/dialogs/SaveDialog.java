@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -37,7 +38,7 @@ public class SaveDialog extends FilesDialog {
         final EditText editTextBox = new EditText(context);
         Builder builder = new Builder(context);
         builder.setMessage(R.string.save_game_dialog_message);
-        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("Save", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -49,6 +50,14 @@ public class SaveDialog extends FilesDialog {
 
         builder.setView(editTextBox);
         newSaveDialog = builder.create();
+
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newSaveDialog.show();
+
+            }
+        });
 
     }
 
@@ -71,14 +80,9 @@ public class SaveDialog extends FilesDialog {
 
     }
 
-    @Override
-    public void onNewClicked() {
-        newSaveDialog.show();
-
-    }
 
     @Override
     public void refreshSaves(Context ctx) throws IOException {
-        updateSaves(ctx,filesList,path, true);
+        updateSaves(ctx,filesList,path);
     }
 }

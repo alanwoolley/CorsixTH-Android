@@ -7,6 +7,7 @@
 package uk.co.armedpineapple.cth;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -37,6 +38,9 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -1032,6 +1036,26 @@ public class SDLActivity extends CTHActivity {
     public static void handleNativeExit() {
         SDLActivity.mSDLThread = null;
         mSingleton.finish();
+    }
+
+    public void hideTextEdit() {
+        if (mTextEdit != null) {
+            mTextEdit.setVisibility(View.GONE);
+
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mTextEdit.getWindowToken(), 0);
+        }
+    }
+
+    public void setScreenOn(boolean on) {
+        Window window = getWindow();
+        if (window != null) {
+            if (on) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+        }
     }
 }
 

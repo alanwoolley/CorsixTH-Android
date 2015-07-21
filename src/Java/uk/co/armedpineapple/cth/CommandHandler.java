@@ -70,14 +70,14 @@ public class CommandHandler extends Handler {
                 break;
 
             case HIDE_KEYBOARD:
-                mgr = (InputMethodManager) activityContext
+               /* mgr = (InputMethodManager) activityContext
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.hideSoftInputFromWindow(SDLActivity.mSurface.getWindowToken(), 0);
+                mgr.hideSoftInputFromWindow(SDLActivity.mSurface.getWindowToken(), 0); */
                 break;
             case SHOW_KEYBOARD:
-                mgr = (InputMethodManager) activityContext
+                /* mgr = (InputMethodManager) activityContext
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.showSoftInput(SDLActivity.mSurface, InputMethodManager.SHOW_FORCED);
+                mgr.showSoftInput(SDLActivity.mSurface, InputMethodManager.SHOW_FORCED); */
                 break;
             case QUICK_LOAD:
                 if (Files.doesFileExist(activityContext.app.configuration.getSaveGamesPath()
@@ -150,6 +150,17 @@ public class CommandHandler extends Handler {
                 activityContext.stopVibration();
                 playingEarthquake = false;
                 break;
+            case CHANGE_TITLE:
+                // Do nothing
+                break;
+            case UNUSED:
+                // Do nothing
+                break;
+            case TEXTEDIT_HIDE:
+                activityContext.hideTextEdit();
+                break;
+            case SET_KEEP_SCREEN_ON:
+                activityContext.setScreenOn((Integer) msg.obj != 0);
             default:
                 break;
         }
@@ -158,6 +169,11 @@ public class CommandHandler extends Handler {
     // Commands that can be sent from the game
     public enum Command {
         SHOW_MENU,
+        CHANGE_TITLE,
+        UNUSED,
+        TEXTEDIT_HIDE,
+        UNUSED2,
+        SET_KEEP_SCREEN_ON,
         SHOW_LOAD_DIALOG,
         SHOW_SAVE_DIALOG,
         RESTART_GAME,

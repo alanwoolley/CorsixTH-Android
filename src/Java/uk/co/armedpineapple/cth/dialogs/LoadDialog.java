@@ -6,6 +6,7 @@
 package uk.co.armedpineapple.cth.dialogs;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -52,25 +53,27 @@ public class LoadDialog extends FilesDialog {
         userSavesList = (ListView) findViewById(R.id.user_files);
         autoSavesList = (ListView) findViewById(R.id.autosave_files);
 
-
+        findViewById(R.id.fab).setVisibility(View.GONE);
     }
 
     @Override
     public void onSelectedFile(String directory, String file) {
+        SDLActivity.sendCommand(Command.HIDE_MENU, null);
+
         Log.d("Loading: " + file);
         if (directory.endsWith(File.separator + AUTOSAVES)) {
             SDLActivity.cthLoadGame(AUTOSAVES + File.separator + file);
         }
         SDLActivity.cthLoadGame(file);
 
-        SDLActivity.sendCommand(Command.HIDE_MENU, null);
+
         dismiss();
     }
 
     @Override
     public void refreshSaves(Context ctx) throws IOException {
-        updateSaves(ctx, userSavesList, path, false);
-        updateSaves(ctx, autoSavesList, path + File.separator + AUTOSAVES, false);
+        updateSaves(ctx, userSavesList, path);
+        updateSaves(ctx, autoSavesList, path + File.separator + AUTOSAVES);
     }
 
 

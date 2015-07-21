@@ -47,20 +47,10 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
         setContentView(layout);
 
-        Button cancelButton = (Button) findViewById(R.id.dismissDialogButton);
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
-        getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
-    public void updateSaves(final Context ctx, ListView savesList, String directory,
-                            boolean hasNewButton) throws IOException {
+    public void updateSaves(final Context ctx, ListView savesList, String directory) throws IOException {
 
         List<FileDetails> saves = Files.listFilesInDirectory(directory, new FilenameFilter() {
 
@@ -85,7 +75,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
         Collections.sort(saves, Collections.reverseOrder());
 
         // Update the adapter
-        FilesAdapter arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);
+        FilesAdapter arrayAdapter = new FilesAdapter(ctx, saves);
         savesList.setAdapter(arrayAdapter);
         savesList.setOnItemClickListener(this);
     }
@@ -95,21 +85,14 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
                             long id) {
 
         FilesAdapter adapter = (FilesAdapter) parent.getAdapter();
-        if (adapter.hasNewButton() && position == 0) {
-            onNewClicked();
-        } else {
-            FileDetails clicked = (FileDetails) adapter.getItem(
-                    adapter.hasNewButton() ? position - 1 : position);
-            onSelectedFile(clicked.getDirectory(), clicked.getFileName());
-        }
+
+        FileDetails clicked = (FileDetails) adapter.getItem(position);
+        onSelectedFile(clicked.getDirectory(), clicked.getFileName());
+
     }
 
     public abstract void onSelectedFile(String directory, String filename);
 
     public abstract void refreshSaves(Context ctx) throws IOException;
-
-    public void onNewClicked() {
-
-    }
 
 }

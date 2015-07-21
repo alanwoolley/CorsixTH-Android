@@ -1,31 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
     <ScrollView
         android:id="@+id/aboutScroller"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/dismissDialogButton"
+        android:layout_above="@+id/LinearLayout1"
         android:layout_alignParentLeft="true"
         android:fillViewport="true"
-        android:scrollbars="vertical" >
+        android:scrollbars="vertical">
 
         <TextView
             android:id="@+id/aboutTextView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
     </ScrollView>
 
-    <Button
-        android:id="@+id/dismissDialogButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/ok" />
+        android:layout_alignParentLeft="true"
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal"
+        android:paddingLeft="2dip"
+        android:paddingRight="2dip"
+        android:paddingTop="0dip">
 
+        <Button
+            android:id="@+id/dismissDialogButton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/ok"/>
+
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/View1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_above="@+id/LinearLayout1"
+        android:layout_alignParentLeft="true"
+        android:background="?android:attr/dividerHorizontal"/>
 
 
 </RelativeLayout>
