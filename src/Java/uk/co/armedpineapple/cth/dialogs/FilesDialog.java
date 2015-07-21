@@ -7,6 +7,7 @@ package uk.co.armedpineapple.cth.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -28,7 +29,7 @@ import uk.co.armedpineapple.cth.FileDetails;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
 
-public abstract class FilesDialog extends Dialog implements OnItemClickListener {
+public abstract class FilesDialog extends Dialog {
 
     protected CTHActivity ctx;
     protected String      path;
@@ -47,10 +48,12 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
         setContentView(layout);
 
+
+
         getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
-    public void updateSaves(final Context ctx, ListView savesList, String directory) throws IOException {
+    public void updateSaves(final Context ctx, RecyclerView savesList, String directory) throws IOException {
 
         List<FileDetails> saves = Files.listFilesInDirectory(directory, new FilenameFilter() {
 
@@ -74,12 +77,14 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
         Collections.sort(saves, Collections.reverseOrder());
 
-        // Update the adapter
-        FilesAdapter arrayAdapter = new FilesAdapter(ctx, saves);
-        savesList.setAdapter(arrayAdapter);
-        savesList.setOnItemClickListener(this);
-    }
 
+        // Update the adapter
+        FilesAdapter arrayAdapter = new FilesAdapter(saves);
+        savesList.setAdapter(arrayAdapter);
+        savesList.setHasFixedSize(true);
+
+    }
+/*
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
@@ -89,7 +94,7 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
         FileDetails clicked = (FileDetails) adapter.getItem(position);
         onSelectedFile(clicked.getDirectory(), clicked.getFileName());
 
-    }
+    } */
 
     public abstract void onSelectedFile(String directory, String filename);
 

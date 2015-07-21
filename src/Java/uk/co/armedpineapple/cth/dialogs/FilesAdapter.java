@@ -1,11 +1,9 @@
 package uk.co.armedpineapple.cth.dialogs;
 
-import android.content.Context;
-import android.text.format.DateFormat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,63 +12,57 @@ import java.util.List;
 import uk.co.armedpineapple.cth.FileDetails;
 import uk.co.armedpineapple.cth.R;
 
-public class FilesAdapter extends BaseAdapter {
+public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHolder> {
 
-    private final Context context;
     private final List<FileDetails> items;
 
-    public FilesAdapter(Context context, List<FileDetails> items) {
-        this.context = context;
+    public FilesAdapter(List<FileDetails> items) {
         this.items = items;
     }
 
+
     @Override
-    public int getCount() {
+    public FilesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_card, parent, false);
+        FilesViewHolder vh = new FilesViewHolder(v);
+        return vh;
+    }
+
+
+    @Override
+    public void onBindViewHolder(FilesViewHolder holder, int position) {
+
+        FileDetails details = items.get(position);
+        holder.name.setText(details.getFileName());
+        holder.level.setText("Level " + position);
+        holder.money.setText("Money: $2323453");
+        holder.rep.setText("Rep: 542");
+
+    }
+
+    @Override
+    public int getItemCount() {
         return items.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return items.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public static class FilesViewHolder extends RecyclerView.ViewHolder {
+       // CardView cv;
+        TextView rep;
+        TextView money;
+        TextView name;
+        TextView level;
+        ImageView image;
 
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        View view;
-
-        if (convertView != null) {
-            // If we have a view we can use already, use it
-            view = convertView;
-        } else {
-            // Otherwise, create a new one
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.files_list_item, parent, false);
+        FilesViewHolder(View itemView) {
+            super(itemView);
+            //cv = (CardView)itemView.findViewById(R.id.savecard);
+            rep = (TextView)itemView.findViewById(R.id.saverep);
+            money = (TextView)itemView.findViewById(R.id.savemoney);
+            name = (TextView)itemView.findViewById(R.id.savename);
+            level = (TextView)itemView.findViewById(R.id.savelevel);
+            image = (ImageView)itemView.findViewById(R.id.saveimage);
         }
-
-        TextView largeText = (TextView) view.findViewById(R.id.saveGameLargeText);
-        TextView smallText = (TextView) view.findViewById(R.id.saveGameSmallText);
-
-
-
-        smallText.setVisibility(View.VISIBLE);
-
-        FileDetails item = (FileDetails) getItem(position);
-        String fileName = item.getFileName();
-
-        // Show the file name, minus the extension
-        largeText.setText(fileName.substring(0, fileName.length() - 4));
-
-        smallText.setText(DateFormat.getDateFormat(context).format(
-                item.getLastModified()));
-        return view;
     }
 
 }

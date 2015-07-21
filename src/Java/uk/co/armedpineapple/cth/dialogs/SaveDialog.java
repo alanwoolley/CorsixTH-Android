@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -25,14 +27,18 @@ public class SaveDialog extends FilesDialog {
 
     private static final Reporting.Logger Log = Reporting.getLogger("SaveDialog");
     private AlertDialog newSaveDialog;
-    private final ListView filesList;
+    private final RecyclerView filesList;
 
     public SaveDialog(SDLActivity context, final String path) {
         super(context, path, R.layout.files_dialog, R.string.save_game_dialog_title);
 
 
         FrameLayout flayout = (FrameLayout) findViewById(R.id.files_frame);
-        filesList = (ListView) getLayoutInflater().inflate(R.layout.files_list, null);
+        filesList = (RecyclerView) getLayoutInflater().inflate(R.layout.files_list, null);
+
+        LinearLayoutManager llm = new LinearLayoutManager(context);
+        filesList.setLayoutManager(llm);
+
         flayout.addView(filesList);
 
         final EditText editTextBox = new EditText(context);

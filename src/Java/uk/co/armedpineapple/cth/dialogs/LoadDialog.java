@@ -6,6 +6,8 @@
 package uk.co.armedpineapple.cth.dialogs;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -27,8 +29,8 @@ public class LoadDialog extends FilesDialog {
     private static final String AUTOSAVES = "autosaves";
     private final LinearLayout tabsView;
     private final TabHost      tabHost;
-    private       ListView     userSavesList;
-    private       ListView     autoSavesList;
+    private       RecyclerView userSavesList;
+    private       RecyclerView     autoSavesList;
 
     public LoadDialog(SDLActivity context, String path) {
         super(context, path, R.layout.files_dialog, R.string.load_game_dialog_title);
@@ -50,8 +52,15 @@ public class LoadDialog extends FilesDialog {
         tabHost.addTab(autoSavesSpec);
         tabHost.setCurrentTab(0);
 
-        userSavesList = (ListView) findViewById(R.id.user_files);
-        autoSavesList = (ListView) findViewById(R.id.autosave_files);
+        userSavesList = (RecyclerView) findViewById(R.id.user_files);
+        autoSavesList = (RecyclerView) findViewById(R.id.autosave_files);
+
+        LinearLayoutManager llm = new LinearLayoutManager(context);
+        userSavesList.setLayoutManager(llm);
+
+        LinearLayoutManager llmb = new LinearLayoutManager(context);
+        autoSavesList.setLayoutManager(llmb);
+
 
         findViewById(R.id.fab).setVisibility(View.GONE);
     }
