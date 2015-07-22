@@ -79,7 +79,13 @@ public abstract class FilesDialog extends Dialog {
 
 
         // Update the adapter
-        FilesAdapter arrayAdapter = new FilesAdapter(saves);
+        FilesAdapter arrayAdapter = new FilesAdapter(saves, new FilesAdapter.FilesClickListener() {
+            @Override
+            public void onItemClick(FileDetails details) {
+                onSelectedFile(path, details.getFileName());
+            }
+        });
+
         savesList.setAdapter(arrayAdapter);
         savesList.setHasFixedSize(true);
 

@@ -15,9 +15,11 @@ import uk.co.armedpineapple.cth.R;
 public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHolder> {
 
     private final List<FileDetails> items;
+    private final FilesClickListener listener;
 
-    public FilesAdapter(List<FileDetails> items) {
+    public FilesAdapter(List<FileDetails> items, FilesClickListener listener ) {
         this.items = items;
+        this.listener = listener;
     }
 
 
@@ -32,11 +34,19 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
     @Override
     public void onBindViewHolder(FilesViewHolder holder, int position) {
 
-        FileDetails details = items.get(position);
-        holder.name.setText(details.getFileName());
+        final FileDetails details = items.get(position);
+        holder.name.setText(details.getFileName().replace(".sav",""));
         holder.level.setText("Level " + position);
         holder.money.setText("Money: $2323453");
         holder.rep.setText("Rep: 542");
+        holder.details = details;
+
+        holder.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemClick(details);
+            }
+        });
 
     }
 
@@ -46,23 +56,36 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
     }
 
     public static class FilesViewHolder extends RecyclerView.ViewHolder {
-       // CardView cv;
+
         TextView rep;
         TextView money;
         TextView name;
         TextView level;
         ImageView image;
+        FileDetails details;
+
 
 
         FilesViewHolder(View itemView) {
             super(itemView);
-            //cv = (CardView)itemView.findViewById(R.id.savecard);
+
             rep = (TextView)itemView.findViewById(R.id.saverep);
             money = (TextView)itemView.findViewById(R.id.savemoney);
             name = (TextView)itemView.findViewById(R.id.savename);
             level = (TextView)itemView.findViewById(R.id.savelevel);
             image = (ImageView)itemView.findViewById(R.id.saveimage);
+
+
         }
+
+        void setListener(View.OnClickListener clickListener) {
+            itemView.setOnClickListener(clickListener);
+        }
+
+    }
+
+    public interface FilesClickListener {
+        void onItemClick(FileDetails details);
     }
 
 }

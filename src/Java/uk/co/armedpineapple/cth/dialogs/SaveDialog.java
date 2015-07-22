@@ -61,7 +61,6 @@ public class SaveDialog extends FilesDialog {
             @Override
             public void onClick(View view) {
                 newSaveDialog.show();
-
             }
         });
 
