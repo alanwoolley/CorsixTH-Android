@@ -38,7 +38,7 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
         holder.name.setText(details.getFileName().replace(".sav",""));
         holder.level.setText("Level " + position);
         holder.money.setText("Money: $2323453");
-        holder.rep.setText("Rep: 542");
+        holder.rep.setText("Reputation: 542");
         holder.details = details;
 
         holder.setListener(new View.OnClickListener() {

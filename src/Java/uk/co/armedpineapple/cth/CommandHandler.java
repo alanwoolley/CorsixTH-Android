@@ -161,6 +161,10 @@ public class CommandHandler extends Handler {
                 break;
             case SET_KEEP_SCREEN_ON:
                 activityContext.setScreenOn((Integer) msg.obj != 0);
+                break;
+            case GAME_SAVE_UPDATED:
+                Log.d("Game save updated");
+                break;
             default:
                 break;
         }
@@ -188,7 +192,8 @@ public class CommandHandler extends Handler {
         GAME_LOAD_ERROR,
         HIDE_MENU,
         START_VIBRATION,
-        STOP_VIBRATION
+        STOP_VIBRATION,
+        GAME_SAVE_UPDATED,
     }
 
 }

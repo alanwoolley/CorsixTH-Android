@@ -371,6 +371,10 @@ public class SDLActivity extends CTHActivity {
         return true;
     }
 
+    public static void sendCommandObject(int cmd, Object data) {
+        mSingleton.sendCommand(cmd, data);
+    }
+
     public static void sendCommand(Command command, Object data) {
         mSingleton.sendCommand(command.ordinal(), data);
     }

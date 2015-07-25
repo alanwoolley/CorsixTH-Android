@@ -90,17 +90,6 @@ public abstract class FilesDialog extends Dialog {
         savesList.setHasFixedSize(true);
 
     }
-/*
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-
-        FilesAdapter adapter = (FilesAdapter) parent.getAdapter();
-
-        FileDetails clicked = (FileDetails) adapter.getItem(position);
-        onSelectedFile(clicked.getDirectory(), clicked.getFileName());
-
-    } */
 
     public abstract void onSelectedFile(String directory, String filename);
 
