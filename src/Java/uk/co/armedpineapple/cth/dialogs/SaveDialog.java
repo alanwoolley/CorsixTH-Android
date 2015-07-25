@@ -76,9 +76,6 @@ public class SaveDialog extends FilesDialog {
         // Save the game
         SDLActivity.cthSaveGame(file);
 
-        // Pause game
-        SDLActivity.cthGameSpeed(0);
-
         SDLActivity.sendCommand(Command.HIDE_MENU, null);
 
         dismiss();

@@ -19,11 +19,11 @@
                 android:layout_width="152dp"
                 android:layout_height="152dp"
                 android:id="@+id/saveimage"
-                android:src="@drawable/cth"
                 android:adjustViewBounds="false"
                 android:layout_alignParentTop="false"
                 android:layout_alignParentEnd="true"
-                android:scaleType="center"/>
+                android:scaleType="centerCrop"
+                />
 
             <TextView
                 android:layout_width="wrap_content"

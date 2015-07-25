@@ -19,7 +19,6 @@ public class PersistenceHelper extends OrmLiteSqliteOpenHelper{
     private static final String DATABASE_NAME = "CorsixTH";
     private static final int DATABASE_VERSION = 1;
 
-    private Dao<SaveData, Long> saveDataDao;
 
     public PersistenceHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

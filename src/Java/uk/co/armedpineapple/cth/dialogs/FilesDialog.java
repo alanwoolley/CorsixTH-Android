@@ -28,6 +28,7 @@ import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.FileDetails;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
+import uk.co.armedpineapple.cth.persistence.PersistenceHelper;
 
 public abstract class FilesDialog extends Dialog {
 
@@ -84,7 +85,7 @@ public abstract class FilesDialog extends Dialog {
             public void onItemClick(FileDetails details) {
                 onSelectedFile(path, details.getFileName());
             }
-        });
+        }, new PersistenceHelper(ctx));
 
         savesList.setAdapter(arrayAdapter);
         savesList.setHasFixedSize(true);

@@ -1,5 +1,8 @@
 package uk.co.armedpineapple.cth.dialogs;
 
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,19 +10,34 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.j256.ormlite.dao.Dao;
+
+import java.io.File;
+import java.sql.SQLException;
 import java.util.List;
 
 import uk.co.armedpineapple.cth.FileDetails;
+import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.R;
+import uk.co.armedpineapple.cth.Reporting;
+import uk.co.armedpineapple.cth.persistence.PersistenceHelper;
+import uk.co.armedpineapple.cth.persistence.SaveData;
 
 public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHolder> {
 
     private final List<FileDetails> items;
     private final FilesClickListener listener;
+    private Dao<SaveData, String> dao;
 
-    public FilesAdapter(List<FileDetails> items, FilesClickListener listener ) {
+    public FilesAdapter(List<FileDetails> items, FilesClickListener listener, PersistenceHelper persistence ) {
         this.items = items;
         this.listener = listener;
+
+        try {
+            this.dao = persistence.getDao(SaveData.class);
+        } catch (SQLException e) {
+           Reporting.report(e);
+        }
     }
 
 
@@ -33,13 +51,42 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
 
     @Override
     public void onBindViewHolder(FilesViewHolder holder, int position) {
-
         final FileDetails details = items.get(position);
         holder.name.setText(details.getFileName().replace(".sav",""));
-        holder.level.setText("Level " + position);
-        holder.money.setText("Money: $2323453");
-        holder.rep.setText("Reputation: 542");
         holder.details = details;
+
+        if (holder.saveData == null) {
+            String longPath = details.getDirectory() + File.separator + details.getFileName();
+            try {
+                SaveData saveData = dao.queryForId(longPath);
+                if (saveData != null) {
+                    holder.saveData = saveData;
+                }
+            } catch (SQLException e) {
+                Reporting.report(e);
+            }
+        }
+
+        if (holder.saveData != null) {
+            holder.level.setVisibility(View.VISIBLE);
+            holder.rep.setVisibility(View.VISIBLE);
+            holder.money.setVisibility(View.VISIBLE);
+            holder.level.setText(holder.saveData.levelName);
+            holder.rep.setText(String.valueOf(holder.saveData.rep));
+            holder.money.setText(String.valueOf(holder.saveData.money));
+
+            if (Files.doesFileExist(holder.saveData.screenshotPath)) {
+                holder.image.setImageBitmap(BitmapFactory.decodeFile(holder.saveData.screenshotPath));
+            } else {
+                holder.image.setVisibility(View.INVISIBLE);
+            }
+
+        } else {
+            holder.level.setVisibility(View.GONE);
+            holder.rep.setVisibility(View.GONE);
+            holder.money.setVisibility(View.GONE);
+            holder.image.setVisibility(View.INVISIBLE);
+        }
 
         holder.setListener(new View.OnClickListener() {
             @Override
@@ -63,6 +110,7 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
         TextView level;
         ImageView image;
         FileDetails details;
+        SaveData saveData;
 
 
 

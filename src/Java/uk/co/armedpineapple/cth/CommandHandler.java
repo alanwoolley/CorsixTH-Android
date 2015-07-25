@@ -12,12 +12,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
+
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 import uk.co.armedpineapple.cth.dialogs.LoadDialog;
 import uk.co.armedpineapple.cth.dialogs.SaveDialog;
+import uk.co.armedpineapple.cth.persistence.PersistenceHelper;
+import uk.co.armedpineapple.cth.persistence.SaveData;
 
 public class CommandHandler extends Handler {
 
@@ -34,11 +39,14 @@ public class CommandHandler extends Handler {
     private final CTHApplication app;
     public        boolean        playingEarthquake;
 
+    private PersistenceHelper persistence;
+
 
     public CommandHandler(SDLActivity context) {
         super();
         this.activityContext = context;
-        app = context.app;
+        this.app = context.app;
+        this.persistence = new PersistenceHelper(context);
     }
 
     public void cleanUp() {
@@ -164,6 +172,21 @@ public class CommandHandler extends Handler {
                 break;
             case GAME_SAVE_UPDATED:
                 Log.d("Game save updated");
+                SaveData data = (SaveData) msg.obj;
+
+                try {
+                    Dao<SaveData, String> dao = persistence.getDao(SaveData.class);
+                    // This doesn't work for some reason
+                    //Dao.CreateOrUpdateStatus status = dao.createOrUpdate(data);
+                    //Log.d("Saved game entries changed: " + status.getNumLinesChanged() + ". Created? " + status.isCreated() + ". Updated? " + status.isUpdated());
+                    // So delete and recreate
+                    dao.delete(data);
+                    dao.create(data);
+
+                } catch (SQLException e) {
+                    Reporting.report(e);
+                }
+
                 break;
             default:
                 break;

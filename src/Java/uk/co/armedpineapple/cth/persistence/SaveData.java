@@ -10,22 +10,22 @@ import java.util.Date;
 public class SaveData {
 
     @DatabaseField(id=true)
-    private String saveName;
+    public String saveName;
 
     @DatabaseField
-    private String screenshotPath;
+    public String screenshotPath;
 
     @DatabaseField
-    private int rep;
+    public int rep;
 
     @DatabaseField
-    private long money;
+    public long money;
 
     @DatabaseField
-    private String levelName;
+    public String levelName;
 
     @DatabaseField(version = true, dataType = DataType.DATE_LONG)
-    private Date lastModified;
+    public Date lastModified;
 
 
 }
