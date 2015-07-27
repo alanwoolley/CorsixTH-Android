@@ -23,6 +23,6 @@ before_install:
   - ./ndk.bin > /dev/null
   - export ANDROID_NDK_HOME=`pwd`/android-ndk-r10e
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK_HOME}
-  - cd ${TRAVIS_BUILD_DIR}/App
+  - cd ${TRAVIS_BUILD_DIR}
   - ndk-build -j 
 
