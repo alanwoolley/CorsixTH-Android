@@ -26,5 +26,4 @@ before_install:
   - cd ${TRAVIS_BUILD_DIR}
   - ndk-build -j 
 
-install:
-  - ./gradlew assembleDev
+script: ./gradlew assembleDev
