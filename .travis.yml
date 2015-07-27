@@ -1,17 +1,17 @@
 language: android
 sudo: false
 addons:
-	apt:
-		packages:
-			-	libgd2-xpm
-			-	ia32-libs
-			-	ia32-libs-multiarch
+  apt:
+    packages:
+      - libgd2-xpm
+      - ia32-libs
+      - ia32-libs-multiarch
 
 android:
-	components:
-		- platform-tools
-		-	tools
-		-	build-tools-22.0.1
+  components:
+    - platform-tools
+    - tools
+    - build-tools-22.0.1
     - android-22
     - extra-google-m2repository
     - extra-android-m2repository
