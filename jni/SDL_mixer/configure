@@ -906,7 +906,7 @@ enable_music_midi
 enable_music_midi_timidity
 enable_music_midi_native
 enable_music_midi_fluidsynth
-enable_music_fluidsynth_shared
+enable_music_midi_fluidsynth_shared
 enable_music_ogg
 enable_music_ogg_tremor
 enable_music_ogg_shared
@@ -11071,7 +11071,7 @@ case "$host" in
         EXE=".exe"
         if test "$build" != "$host"; then # cross-compiling
             # Default cross-compile location
-            ac_default_prefix=/usr/local/cross-tools/i386-mingw32
+            ac_default_prefix=/usr/local/cross-tools/$host
         else
             # Look for the location of the tools and install there
             if test "$BUILD_PREFIX" != ""; then
@@ -11148,7 +11148,7 @@ find_lib()
     else
         host_lib_path="/usr/$base_libdir /usr/local/$base_libdir"
     fi
-    for path in $gcc_bin_path $gcc_lib_path $env_lib_path $host_lib_path; do
+    for path in $env_lib_path $gcc_bin_path $gcc_lib_path $host_lib_path; do
         lib=`ls -- $path/$1 2>/dev/null | sed -e '/\.so\..*\./d' -e 's,.*/,,' | sort | tail -1`
         if test x$lib != x; then
             echo $lib
@@ -11817,8 +11817,8 @@ fi
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-                            ac_fn_c_check_header_mongrel "$LINENO" "modplug.h" "ac_cv_header_modplug_h" "$ac_includes_default"
-if test "x$ac_cv_header_modplug_h" = xyes; then :
+                            ac_fn_c_check_header_mongrel "$LINENO" "libmodplug/modplug.h" "ac_cv_header_libmodplug_modplug_h" "$ac_includes_default"
+if test "x$ac_cv_header_libmodplug_modplug_h" = xyes; then :
   have_libmodplug_hdr=yes
 fi
 
@@ -11870,8 +11870,8 @@ fi
 
 
 elif test $pkg_failed = untried; then
-	            ac_fn_c_check_header_mongrel "$LINENO" "modplug.h" "ac_cv_header_modplug_h" "$ac_includes_default"
-if test "x$ac_cv_header_modplug_h" = xyes; then :
+	            ac_fn_c_check_header_mongrel "$LINENO" "libmodplug/modplug.h" "ac_cv_header_libmodplug_modplug_h" "$ac_includes_default"
+if test "x$ac_cv_header_libmodplug_modplug_h" = xyes; then :
   have_libmodplug_hdr=yes
 fi
 
@@ -12161,9 +12161,9 @@ else
   enable_music_midi_fluidsynth=yes
 fi
 
-    # Check whether --enable-music-fluidsynth-shared was given.
-if test "${enable_music_fluidsynth_shared+set}" = set; then :
-  enableval=$enable_music_fluidsynth_shared;
+    # Check whether --enable-music-midi-fluidsynth-shared was given.
+if test "${enable_music_midi_fluidsynth_shared+set}" = set; then :
+  enableval=$enable_music_midi_fluidsynth_shared;
 else
   enable_music_midi_fluidsynth_shared=yes
 fi
