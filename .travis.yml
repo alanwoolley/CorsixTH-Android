@@ -1,29 +1,28 @@
-language: java
-jdk: oraclejdk7
+language: android
+sudo: false
+addons:
+	apt:
+		packages:
+			-	libgd2-xpm
+			-	ia32-libs
+			-	ia32-libs-multiarch
+
+android:
+	components:
+		- platform-tools
+		-	tools
+		-	build-tools-22.0.1
+    - android-22
+    - extra-google-m2repository
+    - extra-android-m2repository
 
 before_install:
-  # required libs for android build tools
-  - sudo apt-get update
-  - sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
-  # for gradle output style
-  - export TERM=dumb
-  # newer version of gradle
-  - wget http://services.gradle.org/distributions/gradle-1.10-bin.zip
-  - unzip -qq gradle-1.10-bin.zip
-  - export GRADLE_HOME=$PWD/gradle-1.10
-  - export PATH=$GRADLE_HOME/bin:$PATH
-  - chmod +x gradlew
-  # newest Android SDK 22.3
-  - wget http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz -O sdk.tgz
-  - tar -zxf sdk.tgz
-  - export ANDROID_HOME=`pwd`/android-sdk-linux
-  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
   # newest Android NDK
-  - if [ `uname -m` = x86_64]; then wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86_64.bin -O ndk.bin; else wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86.bin -O ndk.bin; fi
+  - if [ `uname -m` = x86_64]; then wget http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin -O ndk.bin; else wget http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86.bin -O ndk.bin; fi
   - chmod +x ndk.bin
   - ./ndk.bin > /dev/null
-  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r10d
+  - export ANDROID_NDK_HOME=`pwd`/android-ndk-r10e
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK_HOME}
-  # manually set sdk.dir variable, according to local paths
-  - echo "sdk.dir=$ANDROID_HOME" > local.properties
-  - echo yes | android update sdk -a -t tools,platform-tools,extra-android-support,extra-android-m2repository,android-21,build-tools-21.1.2,extra-google-google_play_services,extra-google-m2repository --force --no-ui
+  - cd ${TRAVIS_BUILD_DIR}/App
+  - ndk-build -j 
+
