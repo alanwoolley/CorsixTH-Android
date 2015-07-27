@@ -72,6 +72,7 @@ android {
     productFlavors {
         dev {
             minSdkVersion 21
+	    ext.enableCrashlytics = false
         }
 
         prod {
