@@ -11,7 +11,7 @@ MODPLUG_LIBRARY_PATH := external/libmodplug-0.8.8.4
 
 # Enable this if you want to support loading MOD music via mikmod
 # The library path should be a relative path to this directory.
-SUPPORT_MOD_MIKMOD ?= true
+SUPPORT_MOD_MIKMOD ?= false
 MIKMOD_LIBRARY_PATH := external/libmikmod-3.1.12
 
 # Enable this if you want to support loading MP3 music via SMPEG
