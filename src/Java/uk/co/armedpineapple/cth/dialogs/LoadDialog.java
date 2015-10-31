@@ -26,7 +26,7 @@ import uk.co.armedpineapple.cth.SDLActivity;
 public class LoadDialog extends FilesDialog {
 
     private static final Reporting.Logger Log  = Reporting.getLogger("LoadDialog");
-    private static final String AUTOSAVES = "autosaves";
+    private static final String AUTOSAVES = "Autosaves";
     private final LinearLayout tabsView;
     private final TabHost      tabHost;
     private       RecyclerView userSavesList;
