@@ -7,6 +7,7 @@ package uk.co.armedpineapple.cth.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -27,8 +28,9 @@ import uk.co.armedpineapple.cth.Files;
 import uk.co.armedpineapple.cth.FileDetails;
 import uk.co.armedpineapple.cth.R;
 import uk.co.armedpineapple.cth.SDLActivity;
+import uk.co.armedpineapple.cth.persistence.PersistenceHelper;
 
-public abstract class FilesDialog extends Dialog implements OnItemClickListener {
+public abstract class FilesDialog extends Dialog {
 
     protected CTHActivity ctx;
     protected String      path;
@@ -47,20 +49,12 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
         setContentView(layout);
 
-        Button cancelButton = (Button) findViewById(R.id.dismissDialogButton);
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
 
-        getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
-    public void updateSaves(final Context ctx, ListView savesList, String directory,
-                            boolean hasNewButton) throws IOException {
+    public void updateSaves(final Context ctx, RecyclerView savesList, String directory) throws IOException {
 
         List<FileDetails> saves = Files.listFilesInDirectory(directory, new FilenameFilter() {
 
@@ -84,32 +78,22 @@ public abstract class FilesDialog extends Dialog implements OnItemClickListener 
 
         Collections.sort(saves, Collections.reverseOrder());
 
+
         // Update the adapter
-        FilesAdapter arrayAdapter = new FilesAdapter(ctx, saves, hasNewButton);
+        FilesAdapter arrayAdapter = new FilesAdapter(saves, new FilesAdapter.FilesClickListener() {
+            @Override
+            public void onItemClick(FileDetails details) {
+                onSelectedFile(path, details.getFileName());
+            }
+        }, new PersistenceHelper(ctx));
+
         savesList.setAdapter(arrayAdapter);
-        savesList.setOnItemClickListener(this);
-    }
+        savesList.setHasFixedSize(true);
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-
-        FilesAdapter adapter = (FilesAdapter) parent.getAdapter();
-        if (adapter.hasNewButton() && position == 0) {
-            onNewClicked();
-        } else {
-            FileDetails clicked = (FileDetails) adapter.getItem(
-                    adapter.hasNewButton() ? position - 1 : position);
-            onSelectedFile(clicked.getDirectory(), clicked.getFileName());
-        }
     }
 
     public abstract void onSelectedFile(String directory, String filename);
 
     public abstract void refreshSaves(Context ctx) throws IOException;
-
-    public void onNewClicked() {
-
-    }
 
 }

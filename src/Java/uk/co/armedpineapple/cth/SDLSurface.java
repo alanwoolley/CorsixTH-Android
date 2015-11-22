@@ -7,6 +7,7 @@ package uk.co.armedpineapple.cth;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -23,6 +24,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
@@ -436,5 +442,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		}
 		this.scrolling = scrolling;
 	}*/
+
 
 }

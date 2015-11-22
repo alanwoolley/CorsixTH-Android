@@ -327,11 +327,29 @@ public class Configuration {
         sbuilder.append("controls_mode = ").append(String.valueOf(controlsMode)).append("\n");
         sbuilder.append("scrolling_momentum = 0.9\n");
         sbuilder.append("zoom_speed = 80\n");
+        sbuilder.append("shift_scroll_speed = 4\n");
+
 
         // Aliens
         sbuilder.append("alien_dna_only_by_emergency = true\n");
         sbuilder.append("alien_dna_must_stand = true\n");
         sbuilder.append("alien_dna_can_knock_on_doors = false\n");
+
+        // Debugger
+
+        sbuilder.append("idehost = nil\n");
+        sbuilder.append("ideport = nil\n");
+        sbuilder.append("idekey = nil\n");
+        sbuilder.append("transport = nil\n");
+        sbuilder.append("platform = nil\n");
+        sbuilder.append("workingdir = nil\n");
+
+        // Graphics
+        sbuilder.append("use_new_graphics = false\n");
+        sbuilder.append("new_graphics_folder = nil\n");
+
+
+
 
         FileWriter writer = new FileWriter(configFileName, false);
         writer.write(sbuilder.toString());

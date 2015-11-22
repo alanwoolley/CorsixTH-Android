@@ -76,6 +76,7 @@ public class Files {
      * @return true if file exists
      */
     public static Boolean doesFileExist(String filename) {
+        if (filename == null) { return false; }
         return new File(filename).exists();
     }
 

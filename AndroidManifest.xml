@@ -76,6 +76,9 @@
             android:excludeFromRecents="true"
             android:theme="@style/Dialogs"/>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="2c3cb65ca0b9c283a9fbd6d82f19f1a951dd2b20" />
     </application>
 
 </manifest>

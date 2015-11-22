@@ -5,6 +5,8 @@
       <root url="jar://$PROJECT_DIR$/build/intermediates/exploded-aar/com.github.gabrielemariotti.changeloglib/library/1.5.2/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.gabrielemariotti.changeloglib/library/1.5.2/cf852c36bf338a3200898d3873a317594cb1978e/library-1.5.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

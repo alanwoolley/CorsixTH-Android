@@ -6,6 +6,9 @@
 package uk.co.armedpineapple.cth.dialogs;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -23,11 +26,11 @@ import uk.co.armedpineapple.cth.SDLActivity;
 public class LoadDialog extends FilesDialog {
 
     private static final Reporting.Logger Log  = Reporting.getLogger("LoadDialog");
-    private static final String AUTOSAVES = "autosaves";
+    private static final String AUTOSAVES = "Autosaves";
     private final LinearLayout tabsView;
     private final TabHost      tabHost;
-    private       ListView     userSavesList;
-    private       ListView     autoSavesList;
+    private       RecyclerView userSavesList;
+    private       RecyclerView     autoSavesList;
 
     public LoadDialog(SDLActivity context, String path) {
         super(context, path, R.layout.files_dialog, R.string.load_game_dialog_title);
@@ -49,28 +52,37 @@ public class LoadDialog extends FilesDialog {
         tabHost.addTab(autoSavesSpec);
         tabHost.setCurrentTab(0);
 
-        userSavesList = (ListView) findViewById(R.id.user_files);
-        autoSavesList = (ListView) findViewById(R.id.autosave_files);
+        userSavesList = (RecyclerView) findViewById(R.id.user_files);
+        autoSavesList = (RecyclerView) findViewById(R.id.autosave_files);
+
+        LinearLayoutManager llm = new LinearLayoutManager(context);
+        userSavesList.setLayoutManager(llm);
+
+        LinearLayoutManager llmb = new LinearLayoutManager(context);
+        autoSavesList.setLayoutManager(llmb);
 
 
+        findViewById(R.id.fab).setVisibility(View.GONE);
     }
 
     @Override
     public void onSelectedFile(String directory, String file) {
+        SDLActivity.sendCommand(Command.HIDE_MENU, null);
+
         Log.d("Loading: " + file);
         if (directory.endsWith(File.separator + AUTOSAVES)) {
             SDLActivity.cthLoadGame(AUTOSAVES + File.separator + file);
         }
         SDLActivity.cthLoadGame(file);
 
-        SDLActivity.sendCommand(Command.HIDE_MENU, null);
+
         dismiss();
     }
 
     @Override
     public void refreshSaves(Context ctx) throws IOException {
-        updateSaves(ctx, userSavesList, path, false);
-        updateSaves(ctx, autoSavesList, path + File.separator + AUTOSAVES, false);
+        updateSaves(ctx, userSavesList, path);
+        updateSaves(ctx, autoSavesList, path + File.separator + AUTOSAVES);
     }
 
 
