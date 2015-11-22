@@ -32,7 +32,7 @@ dependencies {
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
     compile 'com.android.support:multidex:1.0.0'
     compile fileTree(dir: 'jars', include: '*.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
         transitive = true;
     }
 }

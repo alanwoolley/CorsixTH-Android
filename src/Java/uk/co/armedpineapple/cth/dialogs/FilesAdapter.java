@@ -1,5 +1,6 @@
 package uk.co.armedpineapple.cth.dialogs;
 
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -71,9 +72,10 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.FilesViewHol
             holder.level.setVisibility(View.VISIBLE);
             holder.rep.setVisibility(View.VISIBLE);
             holder.money.setVisibility(View.VISIBLE);
-            holder.level.setText(holder.saveData.levelName);
-            holder.rep.setText(String.valueOf(holder.saveData.rep));
-            holder.money.setText(String.valueOf(holder.saveData.money));
+            Resources res = holder.itemView.getResources();
+            holder.level.setText(res.getString(R.string.save_level_text, holder.saveData.levelName));
+            holder.rep.setText(res.getString(R.string.save_rep_text, holder.saveData.rep));
+            holder.money.setText(res.getString(R.string.save_balance_text, holder.saveData.money));
 
             if (Files.doesFileExist(holder.saveData.screenshotPath)) {
                 holder.image.setImageBitmap(BitmapFactory.decodeFile(holder.saveData.screenshotPath));

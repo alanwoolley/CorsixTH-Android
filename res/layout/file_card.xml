@@ -33,7 +33,7 @@
                 android:layout_alignTop="@+id/saveimage"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="8dp"
-                android:textSize="24sp"
+                android:textSize="@dimen/file_card_header"
                 android:layout_toStartOf="@+id/saveimage"
                 android:ellipsize="end"
                 android:singleLine="true"
@@ -46,7 +46,7 @@
                 android:id="@+id/savelevel"
                 android:layout_below="@+id/savename"
                 android:layout_alignStart="@+id/savename"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/file_card_subtitle"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,7 +55,8 @@
                 android:text="Money"
                 android:id="@+id/savemoney"
                 android:layout_alignBottom="@+id/saveimage"
-                android:layout_alignStart="@+id/savelevel"/>
+                android:layout_alignStart="@+id/savelevel"
+                android:textSize="@dimen/file_card_extra" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,7 +65,8 @@
                 android:text="Reputation"
                 android:id="@+id/saverep"
                 android:layout_above="@+id/savemoney"
-                android:layout_alignStart="@+id/savemoney"/>
+                android:layout_alignStart="@+id/savemoney"
+                android:textSize="@dimen/file_card_extra" />
 
         </RelativeLayout>
 
