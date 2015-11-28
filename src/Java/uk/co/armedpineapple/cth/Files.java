@@ -360,6 +360,7 @@ public class Files {
      */
     public static class DownloadFileTask extends
             AsyncTask<String, Integer, AsyncTaskResult<File>> {
+        public static final int CONNECT_TIMEOUT = 30000;
         final String  downloadTo;
         final Context ctx;
         WakeLock downloadLock;
@@ -400,6 +401,7 @@ public class Files {
                 file.getParentFile().mkdirs();
 
                 ucon = downloadUrl.openConnection();
+                ucon.setConnectTimeout(CONNECT_TIMEOUT);
                 ucon.connect();
 
                 if (ucon.getContentType() == null) {
@@ -408,7 +410,7 @@ public class Files {
 
                 final int fileSize = ucon.getContentLength();
 
-                input = new BufferedInputStream(downloadUrl.openStream());
+                input = new BufferedInputStream(ucon.getInputStream());
                 fos = new FileOutputStream(file);
                 cos = new CountingOutputStream(fos) {
 
