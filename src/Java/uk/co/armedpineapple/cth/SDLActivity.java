@@ -31,8 +31,10 @@ import android.os.PowerManager.WakeLock;
 import android.os.Vibrator;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
+import android.text.InputType;
 import android.util.Log;
 import android.view.InputDevice;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -40,7 +42,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -773,13 +779,13 @@ public class SDLActivity extends CTHActivity {
                 app.configuration.getDisplayHeight());
         mSurface.setZOrderOnTop(false);
 
-        DrawerLayout mainLayout = (DrawerLayout) getLayoutInflater().inflate(
+        mLayout = (DrawerLayout) getLayoutInflater().inflate(
                 R.layout.game, null);
-        FrameLayout gameFrame = ((FrameLayout) mainLayout
+        FrameLayout gameFrame = ((FrameLayout) mLayout
                 .findViewById(R.id.game_frame));
 
         gameFrame.addView(mSurface);
-        setContentView(mainLayout);
+        setContentView(mLayout);
 
         if (app.configuration.getHaptic()) {
             mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -841,11 +847,11 @@ public class SDLActivity extends CTHActivity {
     }
 
     @SuppressLint("NewApi")
-    public void hideSystemUi() {
+    public static void hideSystemUi() {
         if (Build.VERSION.SDK_INT >= 19) {
 
             // Hide the navigation buttons if supported
-            getWindow().getDecorView().setSystemUiVisibility(
+            mSingleton.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -854,7 +860,7 @@ public class SDLActivity extends CTHActivity {
         } else if (Build.VERSION.SDK_INT >= 11) {
 
             // Use low profile mode if supported
-            getWindow().getDecorView().setSystemUiVisibility(
+            mSingleton.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
         }
@@ -1061,6 +1067,53 @@ public class SDLActivity extends CTHActivity {
             }
         }
     }
+
+    public static Context getContext() {
+        return mSingleton;
+    }
+
+    public static boolean showTextInput(int x, int y, int w, int h) {
+        // Transfer the task to the main thread as a Runnable
+        return mSingleton.commandHandler.post(new ShowTextInputTask(x, y, w, h));
+    }
+
+    static class ShowTextInputTask implements Runnable {
+        /*
+         * This is used to regulate the pan&scan method to have some offset from
+        * the bottom edge of the input region and the top edge of an input
+         * method (soft keyboard)
+        */
+        static final int HEIGHT_PADDING = 15;
+
+        public int x, y, w, h;
+
+        public ShowTextInputTask(int x, int y, int w, int h) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+        }
+
+        @Override
+        public void run() {
+            DrawerLayout.LayoutParams params = new DrawerLayout.LayoutParams(w,h);
+
+            if (mTextEdit == null) {
+                mTextEdit = new DummyEdit(getContext());
+
+                mLayout.addView(mTextEdit, params);
+            } else {
+                mTextEdit.setLayoutParams(params);
+            }
+
+            mTextEdit.setVisibility(View.VISIBLE);
+            mTextEdit.requestFocus();
+
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(mTextEdit, 0);
+        }
+    }
+
 }
 
 /**
@@ -1225,6 +1278,8 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
         }
         return true;
     }
+
+
 }
 
 class SDLGenericMotionListener_API12 implements View.OnGenericMotionListener {
@@ -1233,5 +1288,137 @@ class SDLGenericMotionListener_API12 implements View.OnGenericMotionListener {
     @Override
     public boolean onGenericMotion(View v, MotionEvent event) {
         return SDLActivity.handleJoystickMotionEvent(event);
+    }
+}
+
+/* This is a fake invisible editor view that receives the input and defines the
+          * pan&scan region
+          */
+class DummyEdit extends View implements View.OnKeyListener {
+    InputConnection ic;
+
+    public DummyEdit(Context context) {
+        super(context);
+        setFocusableInTouchMode(true);
+        setFocusable(true);
+        setOnKeyListener(this);
+    }
+
+    @Override
+    public boolean onCheckIsTextEditor() {
+        return true;
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+        // This handles the hardware keyboard input
+        if (event.isPrintingKey()) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                ic.commitText(String.valueOf((char) event.getUnicodeChar()), 1);
+            }
+            return true;
+        }
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            SDLActivity.onNativeKeyDown(keyCode);
+            return true;
+        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+            SDLActivity.onNativeKeyUp(keyCode);
+            return true;
+        }
+
+        return false;
+    }
+
+    //
+    @Override
+    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+        // As seen on StackOverflow: http://stackoverflow.com/questions/7634346/keyboard-hide-event
+        // FIXME: Discussion at http://bugzilla.libsdl.org/show_bug.cgi?id=1639
+        // FIXME: This is not a 100% effective solution to the problem of detecting if the keyboard is showing or not
+        // FIXME: A more effective solution would be to change our Layout from AbsoluteLayout to Relative or Linear
+        // FIXME: And determine the keyboard presence doing this: http://stackoverflow.com/questions/2150078/how-to-check-visibility-of-software-keyboard-in-android
+        // FIXME: An even more effective way would be if Android provided this out of the box, but where would the fun be in that :)
+        if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (SDLActivity.mTextEdit != null && SDLActivity.mTextEdit.getVisibility() == View.VISIBLE) {
+                SDLActivity.onNativeKeyboardFocusLost();
+                SDLActivity.hideSystemUi();
+            }
+        }
+        return super.onKeyPreIme(keyCode, event);
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        ic = new SDLInputConnection(this, true);
+
+        outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+        outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI
+                | 33554432 /* API 11: EditorInfo.IME_FLAG_NO_FULLSCREEN */;
+
+        return ic;
+    }
+}
+
+class SDLInputConnection extends BaseInputConnection {
+
+    public SDLInputConnection(View targetView, boolean fullEditor) {
+        super(targetView, fullEditor);
+
+    }
+
+    @Override
+    public boolean sendKeyEvent(KeyEvent event) {
+
+                 /*
+            * This handles the keycodes from soft keyboard (and IME-translated
+            * input from hardkeyboard)
+            */
+        int keyCode = event.getKeyCode();
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.isPrintingKey()) {
+                commitText(String.valueOf((char) event.getUnicodeChar()), 1);
+            }
+            SDLActivity.onNativeKeyDown(keyCode);
+            return true;
+        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+
+            SDLActivity.onNativeKeyUp(keyCode);
+            return true;
+        }
+        return super.sendKeyEvent(event);
+    }
+
+    @Override
+    public boolean commitText(CharSequence text, int newCursorPosition) {
+
+        nativeCommitText(text.toString(), newCursorPosition);
+
+        return super.commitText(text, newCursorPosition);
+    }
+
+    @Override
+    public boolean setComposingText(CharSequence text, int newCursorPosition) {
+
+        nativeSetComposingText(text.toString(), newCursorPosition);
+
+        return super.setComposingText(text, newCursorPosition);
+    }
+
+    public native void nativeCommitText(String text, int newCursorPosition);
+
+    public native void nativeSetComposingText(String text, int newCursorPosition);
+
+    @Override
+    public boolean deleteSurroundingText(int beforeLength, int afterLength) {
+        // Workaround to capture backspace key. Ref: http://stackoverflow.com/questions/14560344/android-backspace-in-webview-baseinputconnection
+        if (beforeLength == 1 && afterLength == 0) {
+            // backspace
+            return super.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+                    && super.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+        }
+
+        return super.deleteSurroundingText(beforeLength, afterLength);
     }
 }

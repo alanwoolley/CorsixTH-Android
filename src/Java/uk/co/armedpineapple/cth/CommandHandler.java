@@ -83,9 +83,7 @@ public class CommandHandler extends Handler {
                 mgr.hideSoftInputFromWindow(SDLActivity.mSurface.getWindowToken(), 0); */
                 break;
             case SHOW_KEYBOARD:
-                /* mgr = (InputMethodManager) activityContext
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.showSoftInput(SDLActivity.mSurface, InputMethodManager.SHOW_FORCED); */
+                new SDLActivity.ShowTextInputTask(0,0,0,0).run();
                 break;
             case QUICK_LOAD:
                 if (Files.doesFileExist(activityContext.app.configuration.getSaveGamesPath()
