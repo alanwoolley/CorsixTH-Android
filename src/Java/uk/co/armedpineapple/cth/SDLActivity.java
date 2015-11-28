@@ -847,11 +847,11 @@ public class SDLActivity extends CTHActivity {
     }
 
     @SuppressLint("NewApi")
-    public void hideSystemUi() {
+    public static void hideSystemUi() {
         if (Build.VERSION.SDK_INT >= 19) {
 
             // Hide the navigation buttons if supported
-            getWindow().getDecorView().setSystemUiVisibility(
+            mSingleton.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -860,7 +860,7 @@ public class SDLActivity extends CTHActivity {
         } else if (Build.VERSION.SDK_INT >= 11) {
 
             // Use low profile mode if supported
-            getWindow().getDecorView().setSystemUiVisibility(
+            mSingleton.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LOW_PROFILE);
 
         }
@@ -1343,6 +1343,7 @@ class DummyEdit extends View implements View.OnKeyListener {
         if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
             if (SDLActivity.mTextEdit != null && SDLActivity.mTextEdit.getVisibility() == View.VISIBLE) {
                 SDLActivity.onNativeKeyboardFocusLost();
+                SDLActivity.hideSystemUi();
             }
         }
         return super.onKeyPreIme(keyCode, event);
