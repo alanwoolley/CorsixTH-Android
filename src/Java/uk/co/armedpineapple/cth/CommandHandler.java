@@ -186,6 +186,10 @@ public class CommandHandler extends Handler {
                 }
 
                 break;
+            case SHOW_JUKEBOX:
+                Log.d("Showing jukebox");
+                SDLActivity.cthShowJukebox();
+                break;
             default:
                 break;
         }
@@ -215,6 +219,7 @@ public class CommandHandler extends Handler {
         START_VIBRATION,
         STOP_VIBRATION,
         GAME_SAVE_UPDATED,
+        SHOW_JUKEBOX,
     }
 
 }

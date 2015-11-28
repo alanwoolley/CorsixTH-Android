@@ -27,8 +27,7 @@ local.properties
 proguard/
 
 # Android Studio
-.idea/workspace.xml
-.idea/tasks.xml
+.idea/
 .gradle
 /out
 /build
