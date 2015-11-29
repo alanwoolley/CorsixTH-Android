@@ -216,5 +216,12 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="extra_prefs"
+        android:title="@string/preferences_extras">
+        <Preference
+            android:key="alpha_pref"
+            android:title="@string/preferences_alpha_join"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

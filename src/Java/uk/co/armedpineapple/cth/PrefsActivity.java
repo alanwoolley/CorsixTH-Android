@@ -11,8 +11,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -177,6 +179,38 @@ public class PrefsActivity extends PreferenceActivity implements
                     }
 
                 });
+
+
+        if (CTHApplication.isTestingVersion()) {
+            findPreference("alpha_pref").setTitle(R.string.preferences_alpha_leave);
+            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_on);
+
+            findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    openTestingPage();
+                    return true;
+                }
+            });
+
+        } else {
+            findPreference("alpha_pref").setTitle(R.string.preferences_alpha_join);
+            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_off);
+
+            findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    DialogFactory.createTestingWarningDialog(PrefsActivity.this, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            openTestingPage();
+                        }
+                    }).show();
+
+                    return true;
+                }
+            });
+        }
 
         for (String s : requireRestart) {
             findPreference(s).setOnPreferenceClickListener(
@@ -421,6 +455,13 @@ public class PrefsActivity extends PreferenceActivity implements
             dft.execute(getString(R.string.timidity_url));
         }
 
+    }
+
+    void openTestingPage() {
+        String url = getResources().getString(R.string.testing_url);
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 
 }

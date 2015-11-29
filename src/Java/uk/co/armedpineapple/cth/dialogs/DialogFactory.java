@@ -31,6 +31,26 @@ public class DialogFactory {
 
     }
 
+    public static Dialog createTestingWarningDialog(final Context ctx, OnClickListener positive) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+
+        builder.setMessage(
+                        ctx.getResources().getString(R.string.preferences_alpha_warning_text))
+                .setCancelable(true);
+        builder.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+
+        });
+        builder.setPositiveButton(R.string.ok, positive);
+        builder.setTitle(R.string.warning);
+        return builder.create();
+
+    }
+
     public static Dialog createAboutDialog(final SDLActivity ctx) {
         final Dialog d = new Dialog(ctx);
 

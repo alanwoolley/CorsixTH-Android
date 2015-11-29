@@ -8,4 +8,5 @@
     <string name="game_guide_url" translatable="false">http://bit.ly/H8AS4u</string>
     <string name="gplus_url" translatable="false">http://bit.ly/1dcLjPq</string>
     <string name="facebook_url" translatable="false">http://on.fb.me/1gAMUmC</string>
+    <string name="testing_url" translatable="false">https://play.google.com/apps/testing/uk.co.armedpineapple.cth</string>
 </resources>
