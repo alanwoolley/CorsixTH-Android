@@ -222,6 +222,11 @@
         <Preference
             android:key="alpha_pref"
             android:title="@string/preferences_alpha_join"/>
+        <CheckBoxPreference
+            android:key="usage_pref"
+            android:title="@string/preferences_collect_usage"
+            android:summary="@string/preferences_collect_usage_summary"
+            android:defaultValue="true"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

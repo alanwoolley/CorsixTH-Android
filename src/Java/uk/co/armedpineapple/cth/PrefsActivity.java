@@ -46,7 +46,7 @@ public class PrefsActivity extends PreferenceActivity implements
      */
     private final String[] requireRestart = new String[]{"language_pref",
             "debug_pref", "movies_pref", "intromovie_pref", "resolution_pref",
-            "reswidth_pref", "resheight_pref", "music_pref", "autowage_pref"};
+            "reswidth_pref", "resheight_pref", "music_pref", "autowage_pref", "usage_pref"};
 
     private boolean displayRestartMessage;
 

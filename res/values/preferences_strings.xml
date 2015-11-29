@@ -87,4 +87,6 @@
     <string name="preferences_alpha_warning_header">Warning</string>
     <string name="preferences_alpha_warning_text">Testing versions are likely to have more bugs and unfinished features. It may not be possible to return to the stable version without losing saved games. After joining, you will need to update CorsixTH from the Play Store to get the latest version.</string>
 
+    <string name="preferences_collect_usage">Collect Anonymous Usage/Crash Data</string>
+    <string name="preferences_collect_usage_summary">Collect data to help track down bugs</string>
 </resources>

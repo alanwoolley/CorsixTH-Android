@@ -36,14 +36,15 @@ public class CTHApplication extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
+        preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+        Fabric.with(this, new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG || !preferences.getBoolean("usage_pref", true)).build()).build());
         Vibrator vib = ((Vibrator) getSystemService(VIBRATOR_SERVICE));
         if (Build.VERSION.SDK_INT >= 11) {
             hasVibration = vib.hasVibrator();
         } else {
             hasVibration = true;
         }
-        preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+
 
 
         try {
