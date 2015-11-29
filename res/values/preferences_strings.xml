@@ -89,4 +89,6 @@
 
     <string name="preferences_collect_usage">Collect Anonymous Usage/Crash Data</string>
     <string name="preferences_collect_usage_summary">Collect data to help track down bugs</string>
+
+    <string name="preferences_report_bug">Report bug or feedback</string>
 </resources>

@@ -28,7 +28,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import io.fabric.sdk.android.Fabric;
 import uk.co.armedpineapple.cth.Files.DownloadFileTask;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
@@ -40,6 +42,9 @@ public class PrefsActivity extends PreferenceActivity implements
 
     private CTHApplication    application;
     private SharedPreferences preferences;
+
+    private static final String BUG_FEEDBACK_DEST = "alan@armedpineapple.co.uk";
+    private static final String BUG_FEEDBACK_SUBJECT = "CorsixTH for Android Bug/Feedback";
 
     /**
      * Preferences that require the game to be restarted before they take effect *
@@ -211,6 +216,14 @@ public class PrefsActivity extends PreferenceActivity implements
                 }
             });
         }
+
+        findPreference("bug_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                doBugReport();
+                return true;
+            }
+        });
 
         for (String s : requireRestart) {
             findPreference(s).setOnPreferenceClickListener(
@@ -462,6 +475,35 @@ public class PrefsActivity extends PreferenceActivity implements
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
+    }
+
+    void doBugReport() {
+
+        Intent messageIntent = new Intent(Intent.ACTION_SEND_MULTIPLE, Uri.fromParts("mailto", BUG_FEEDBACK_DEST, null));
+
+        String aEmailList[] = { BUG_FEEDBACK_DEST };
+        messageIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
+
+        messageIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, BUG_FEEDBACK_SUBJECT);
+        messageIntent.setType("message/rfc822");
+
+        File cthLog = new File(application.configuration.getCthPath() + "/cthlog.txt");
+        File cthErrLog = new File(application.configuration.getCthPath() + "/ctherrlog.txt");
+
+        ArrayList<Uri> uris = new ArrayList<>();
+
+        if (cthLog.canRead() && cthLog.length() > 0) {
+            uris.add(Uri.fromFile(cthLog));
+        }
+        if (cthErrLog.canRead() && cthErrLog.length() > 0) {
+            uris.add(Uri.fromFile(cthErrLog));
+        }
+
+        if (uris.size() > 0) {
+            messageIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        }
+        
+        startActivity(Intent.createChooser(messageIntent, getResources().getString(R.string.send_feedback_email_chooser)));
     }
 
 }
