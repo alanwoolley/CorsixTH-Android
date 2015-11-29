@@ -167,10 +167,11 @@ typedef char int8;
 #if defined(__WIN32__) || defined(__OS2__)
 #define DEFAULT_PATH	"C:\\TIMIDITY"
 #else
-#define DEFAULT_PATH	"/etc/timidity"
-#define DEFAULT_PATH1	"/usr/share/timidity"
-#define DEFAULT_PATH2	"/usr/local/share/timidity"
-#define DEFAULT_PATH3	"/usr/local/lib/timidity"
+#define DEFAULT_PATH    "/sdcard/timidity"
+#define DEFAULT_PATH1	"/etc/timidity"
+#define DEFAULT_PATH2	"/usr/share/timidity"
+#define DEFAULT_PATH3	"/usr/local/share/timidity"
+#define DEFAULT_PATH4	"/usr/local/lib/timidity"
 #endif
 
 /* These affect general volume */
