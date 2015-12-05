@@ -23,24 +23,24 @@ public class Configuration {
 
     private static Reporting.Logger Log = Reporting.getLogger("Config");
 
-    public final static  int    RESOLUTION_DEFAULT   = 1;
-    public final static  int    RESOLUTION_NATIVE    = 2;
-    public final static  int    RESOLUTION_CUSTOM    = 3;
-    public final static  int    CONTROLS_NORMAL      = 1;
-    public final static  int    CONTROLS_DESKTOP     = 2;
-    public final static  int    CONTROLS_TOUCHPAD    = 3;
+    public final static int RESOLUTION_DEFAULT = 1;
+    public final static int RESOLUTION_NATIVE = 2;
+    public final static int RESOLUTION_CUSTOM = 3;
+    public final static int CONTROLS_NORMAL = 1;
+    public final static int CONTROLS_DESKTOP = 2;
+    public final static int CONTROLS_TOUCHPAD = 3;
     // Defaults
-    public final static  int    MINIMUM_WIDTH        = 640;
-    public final static  int    MINIMUM_HEIGHT       = 480;
-    public final static  String DEFAULT_UNICODE_PATH = "/system/fonts/NotoSerif-Regular.ttf";
-    public final static  String HEADER               = "---- CorsixTH configuration file ----------------------------------------------\n"
+    public final static int MINIMUM_WIDTH = 640;
+    public final static int MINIMUM_HEIGHT = 480;
+    public final static String DEFAULT_UNICODE_PATH = "/system/fonts/NotoSerif-Regular.ttf";
+    public final static String HEADER = "---- CorsixTH configuration file ----------------------------------------------\n"
             + "-- Lines starting with two dashes (like this one) are ignored.\n"
             + "-- Text settings should have their values between double square braces, e.g.\n"
             + "--  setting = [[value]]\n"
             + "-- Number settings should not have anything around their value, e.g.\n"
             + "--  setting = 42\n\n\n"
             + "---- If you wish to add any custom settings, please do so below. ---- \n\n";
-    public final static  String SEPARATOR            = "\n\n---- Do not edit below this line ----\n\n";
+    public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
     // TODO - do this properly
     private String originalFilesPath, cthPath, language;
     private boolean globalAudio, playMusic, playAnnouncements,
@@ -52,7 +52,7 @@ public class Configuration {
             nativeHeight;
     private String saveGamesPath = Files.getExtStoragePath()
             + "CTHsaves";
-    private final Context           ctx;
+    private final Context ctx;
     private final SharedPreferences preferences;
 
     private Configuration(Context ctx, SharedPreferences prefs) {
@@ -84,7 +84,7 @@ public class Configuration {
     public static Configuration loadFromPreferences(Context ctx,
                                                     SharedPreferences preferences) throws StorageUnavailableException {
         Configuration config = new Configuration(ctx, preferences);
-        Log.d( "Loading configuration");
+        Log.d("Loading configuration");
 
         config.refresh();
         config.gameSpeed = 0;
@@ -236,26 +236,24 @@ public class Configuration {
         File file = new File(configFileName);
         file.getParentFile().mkdirs();
         String[] split = null;
-        try {
-            FileReader reader = new FileReader(file);
+        if (file.exists()) {
+            try (FileReader reader = new FileReader(file)) {
 
-            StringBuilder b = new StringBuilder();
-            char[] buf = new char[1024];
+                StringBuilder b = new StringBuilder();
+                char[] buf = new char[1024];
 
-            while ((reader.read(buf)) != -1) {
-                b.append(buf);
+                while ((reader.read(buf)) != -1) {
+                    b.append(buf);
+                }
+
+                String original = b.toString();
+
+                split = original.split(SEPARATOR);
+
+            } catch (IOException e) {
+                Reporting.report("Couldn't read config file.", e);
             }
-
-            String original = b.toString();
-
-            split = original.split(SEPARATOR);
-
-            reader.close();
-        } catch (IOException e) {
-            Reporting.report(e);
-            Log.d("Couldn't read config file.");
         }
-
         StringBuilder sbuilder = new StringBuilder();
         if (split != null && split.length > 1 && split[0].length() > 0) {
             sbuilder.append(split[0]);
@@ -349,12 +347,9 @@ public class Configuration {
         sbuilder.append("new_graphics_folder = nil\n");
 
 
-
-
-        FileWriter writer = new FileWriter(configFileName, false);
-        writer.write(sbuilder.toString());
-        writer.close();
-
+        try (FileWriter writer = new FileWriter(configFileName, false)) {
+            writer.write(sbuilder.toString());
+        }
     }
 
     // Getters

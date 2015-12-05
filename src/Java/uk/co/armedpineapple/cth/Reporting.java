@@ -11,6 +11,7 @@ public class Reporting {
 
     public static void reportWithToast(Context ctx, String msg,  Exception e) {
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
+        Crashlytics.log(msg);
         report(e);
     }
 
@@ -20,6 +21,10 @@ public class Reporting {
 
     public static void report(Exception e) {
         Crashlytics.getInstance().core.logException(e);
+    }
+    public static void report(String log, Exception e) {
+        Crashlytics.log(log);
+        report(e);
     }
 
     public static void setBool(String key, boolean value) {
