@@ -76,7 +76,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= 14) {
+       /* if (Build.VERSION.SDK_INT >= 14) {
             setOnGenericMotionListener(new OnGenericMotionListener() {
 
                 @Override
@@ -97,7 +97,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
             });
         }
-
+*/
 	}
 
 

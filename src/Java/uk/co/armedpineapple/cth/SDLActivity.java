@@ -172,13 +172,11 @@ public class SDLActivity extends CTHActivity {
 
     public static native void onNativeAccel(float x, float y, float z);
 
-    public static native void onNativeHover(float x, float y);
+    //public static native void onNativeHover(float x, float y);
 
     public static native void onNativeSurfaceChanged();
 
     public static native void onNativeSurfaceDestroyed();
-
-    public static native void onSpenButton();
 
     public static native String nativeGetHint(String name);
 
