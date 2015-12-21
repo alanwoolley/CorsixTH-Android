@@ -76,31 +76,22 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-       /* if (Build.VERSION.SDK_INT >= 14) {
-            setOnGenericMotionListener(new OnGenericMotionListener() {
+        setOnGenericMotionListener(new OnGenericMotionListener() {
 
-                @Override
-                public boolean onGenericMotion(View v, MotionEvent event) {
-                    Log.v(event.toString());
-                    if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
-                        int actionPointerIndex = event.getActionIndex();
-                        float[] coords = translateCoords(event.getX(actionPointerIndex),
-                                event.getY(actionPointerIndex));
-                        SDLActivity.onNativeHover(coords[0], coords[1]);
-
-                        return true;
-                    }
-
-                    return false;
-
+            @Override
+            public boolean onGenericMotion(View v, MotionEvent event) {
+                if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
+                    int actionPointerIndex = event.getActionIndex();
+                    float[] coords = translateCoords(event.getX(actionPointerIndex),
+                            event.getY(actionPointerIndex));
+                    SDLActivity.onNativeMouse(0, MotionEvent.ACTION_HOVER_MOVE, coords[0], coords[1]);
+                    return true;
                 }
 
-            });
-        }
-*/
+                return false;
+            }
+        });
 	}
-
-
 
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
@@ -282,7 +273,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         int i = -1;
         float x,y,p;
         float[] coords;
-
+        Log.v("Touch event. Event: " + event);
         // !!! FIXME: dump this SDK check after 2.0.4 ships and require API14.
         if (event.getSource() == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
             if (Build.VERSION.SDK_INT < 14) {
@@ -294,6 +285,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     mouseButton = 1;    // oh well.
                 }
             }
+            Log.v("Mouse event. Action: " + action + ", button: " + mouseButton);
             SDLActivity.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0));
         } else {
             switch(action) {

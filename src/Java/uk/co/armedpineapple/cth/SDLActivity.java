@@ -85,7 +85,7 @@ public class SDLActivity extends CTHActivity {
 
     // If we want to separate mouse and touch events.
     //  This is only toggled in native code when a hint is set!
-    public static boolean mSeparateMouseAndTouch = false;
+    public static boolean mSeparateMouseAndTouch = true;
 
     // Main components
     public static    SDLActivity        mSingleton;
