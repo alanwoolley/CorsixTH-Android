@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog bulletedList="true">
 
+    <changelogversion changeDate="2015-12-21" versionName="0.9">
+        <changelogtext>Updated to CorsixTH 0.5</changelogtext>
+        <changelogtext>Better battery life and smoother gameplay</changelogtext>
+        <changelogtext>New and improved controls with pinch-to-zoom</changelogtext>
+        <changelogtext>Fixed black screen on some (mostly Samsung) devices</changelogtext>
+        <changelogtext>Visual improvements</changelogtext>
+        <changelogtext>New and updated translations</changelogtext>
+        <changelogtext>Misc bug fixes</changelogtext>
+    </changelogversion>
     <changelogversion changeDate="2015-05-16" versionName="0.8">
         <changelogtext>Updated to CorsixTH 0.40</changelogtext>
         <changelogtext>Applied the lollipop theme</changelogtext>

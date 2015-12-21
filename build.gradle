@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-project.ext.version = "0.9.0.1"
+project.ext.version = "0.9.0.2"
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
@@ -31,17 +31,15 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
     compile 'com.android.support:multidex:1.0.0'
-    compile fileTree(dir: 'jars', include: '*.jar')
+    compile fileTree(include: '*.jar', dir: 'jars')
     compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
         transitive = true;
     }
 }
 
 android {
-
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
@@ -52,9 +50,7 @@ android {
         versionCode buildVersionCode()
 
     }
-
     Properties signingProperties = new Properties()
-
     if (file("signing.properties").exists()) {
         signingProperties.load(new FileInputStream(file("signing.properties")))
         signingConfigs {
@@ -73,21 +69,19 @@ android {
             }
         }
     }
-
     productFlavors {
         dev {
             minSdkVersion 21
-            ext.enableCrashlytics = false
         }
 
         prod {
 
         }
     }
-
     buildTypes {
         release {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+            signingConfig signingConfigs.release
         }
 
         beta {
@@ -111,7 +105,6 @@ android {
             jniDebuggable true
         }
     }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -138,18 +131,15 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
     dexOptions {
     }
-
     lintOptions {
         abortOnError false
     }
-
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             output.outputFile = new File(
@@ -157,7 +147,6 @@ android {
                     "CTH-${variant.buildType.name}-${variant.versionName}.apk")
         }
     }
-
 }
 
 // Create ZIP of CorsixTH Lua files
