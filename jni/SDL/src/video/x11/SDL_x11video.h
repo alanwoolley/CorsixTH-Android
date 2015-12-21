@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifndef _SDL_x11video_h
 #define _SDL_x11video_h
@@ -35,11 +34,14 @@
 #if SDL_VIDEO_DRIVER_X11_XCURSOR
 #include <X11/Xcursor/Xcursor.h>
 #endif
+#if SDL_VIDEO_DRIVER_X11_XDBE
+#include <X11/extensions/Xdbe.h>
+#endif
 #if SDL_VIDEO_DRIVER_X11_XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif
-#if SDL_VIDEO_DRIVER_X11_XINPUT
-#include <X11/extensions/XInput.h>
+#if SDL_VIDEO_DRIVER_X11_XINPUT2
+#include <X11/extensions/XInput2.h>
 #endif
 #if SDL_VIDEO_DRIVER_X11_XRANDR
 #include <X11/extensions/Xrandr.h>
@@ -53,6 +55,9 @@
 #if SDL_VIDEO_DRIVER_X11_XVIDMODE
 #include <X11/extensions/xf86vmode.h>
 #endif
+
+#include "../../core/linux/SDL_dbus.h"
+#include "../../core/linux/SDL_ibus.h"
 
 #include "SDL_x11dyn.h"
 
@@ -70,6 +75,7 @@ typedef struct SDL_VideoData
 {
     Display *display;
     char *classname;
+    pid_t pid;
     XIM im;
     Uint32 screensaver_activity;
     int numwindows;
@@ -80,19 +86,36 @@ typedef struct SDL_VideoData
     SDL_bool net_wm;
 
     /* Useful atoms */
+    Atom WM_PROTOCOLS;
     Atom WM_DELETE_WINDOW;
     Atom _NET_WM_STATE;
     Atom _NET_WM_STATE_HIDDEN;
+    Atom _NET_WM_STATE_FOCUSED;
     Atom _NET_WM_STATE_MAXIMIZED_VERT;
     Atom _NET_WM_STATE_MAXIMIZED_HORZ;
     Atom _NET_WM_STATE_FULLSCREEN;
+    Atom _NET_WM_ALLOWED_ACTIONS;
+    Atom _NET_WM_ACTION_FULLSCREEN;
     Atom _NET_WM_NAME;
     Atom _NET_WM_ICON_NAME;
     Atom _NET_WM_ICON;
+    Atom _NET_WM_PING;
+    Atom _NET_ACTIVE_WINDOW;
     Atom UTF8_STRING;
+    Atom PRIMARY;
+    Atom XdndEnter;
+    Atom XdndPosition;
+    Atom XdndStatus;
+    Atom XdndTypeList;
+    Atom XdndActionCopy;
+    Atom XdndDrop;
+    Atom XdndFinished;
+    Atom XdndSelection;
 
     SDL_Scancode key_layout[256];
     SDL_bool selection_waiting;
+
+    Uint32 last_mode_change_deadline;
 } SDL_VideoData;
 
 extern SDL_bool X11_UseDirectColorVisuals(void);

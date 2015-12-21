@@ -216,5 +216,20 @@
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="extra_prefs"
+        android:title="@string/preferences_extras">
+        <Preference
+        android:key="alpha_pref"
+        android:title="@string/preferences_alpha_join"/>
+        <CheckBoxPreference
+            android:key="usage_pref"
+            android:title="@string/preferences_collect_usage"
+            android:summary="@string/preferences_collect_usage_summary"
+            android:defaultValue="true"/>
+        <Preference
+            android:key="bug_pref"
+            android:title="@string/preferences_report_bug"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

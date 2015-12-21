@@ -7,7 +7,10 @@ LOCAL_MODULE := LUA
 LOCAL_SRC_FILES := lapi.c \
 	lauxlib.c \
 	lbaselib.c \
+	lbitlib.c \
 	lcode.c \
+	lcorolib.c \
+	lctype.c \
 	ldblib.c \
 	ldebug.c \
 	ldo.c \
@@ -31,10 +34,12 @@ LOCAL_SRC_FILES := lapi.c \
 	ltablib.c \
 	ltm.c \
 	lundump.c \
+	lutf8lib.c \
 	lvm.c \
-	lzio.c 
+	lzio.c
 	
 LOCAL_CFLAGS := -DLUA_USE_LINUX
-LOCAL_ARM_MODE := arm
-	
+
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
+
 include $(BUILD_SHARED_LIBRARY)

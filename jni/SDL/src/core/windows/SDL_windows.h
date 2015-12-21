@@ -1,23 +1,22 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 /* This is an include file for windows.h with the SDL build settings */
@@ -25,28 +24,40 @@
 #ifndef _INCLUDED_WINDOWS_H
 #define _INCLUDED_WINDOWS_H
 
+#if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define STRICT
 #ifndef UNICODE
 #define UNICODE 1
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT  0x500   /* Need 0x410 for AlphaBlend() and 0x500 for EnumDisplayDevices() */
+#define _WIN32_WINNT  0x501   /* Need 0x410 for AlphaBlend() and 0x500 for EnumDisplayDevices(), 0x501 for raw input */
+#endif
 
 #include <windows.h>
 
-
 /* Routines to convert from UTF8 to native Windows text */
 #if UNICODE
-#define WIN_StringToUTF8(S) SDL_iconv_string("UTF-8", "UCS-2", (char *)(S), (SDL_wcslen(S)+1)*sizeof(WCHAR))
-#define WIN_UTF8ToString(S) (WCHAR *)SDL_iconv_string("UCS-2", "UTF-8", (char *)(S), SDL_strlen(S)+1)
+#define WIN_StringToUTF8(S) SDL_iconv_string("UTF-8", "UTF-16LE", (char *)(S), (SDL_wcslen(S)+1)*sizeof(WCHAR))
+#define WIN_UTF8ToString(S) (WCHAR *)SDL_iconv_string("UTF-16LE", "UTF-8", (char *)(S), SDL_strlen(S)+1)
 #else
+/* !!! FIXME: UTF8ToString() can just be a SDL_strdup() here. */
 #define WIN_StringToUTF8(S) SDL_iconv_string("UTF-8", "ASCII", (char *)(S), (SDL_strlen(S)+1))
 #define WIN_UTF8ToString(S) SDL_iconv_string("ASCII", "UTF-8", (char *)(S), SDL_strlen(S)+1)
 #endif
 
-/* Sets an error message based on GetLastError() */
-extern void WIN_SetError(const char *prefix);
+/* Sets an error message based on a given HRESULT */
+extern int WIN_SetErrorFromHRESULT(const char *prefix, HRESULT hr);
+
+/* Sets an error message based on GetLastError(). Always return -1. */
+extern int WIN_SetError(const char *prefix);
+
+/* Wrap up the oddities of CoInitialize() into a common function. */
+extern HRESULT WIN_CoInitialize(void);
+extern void WIN_CoUninitialize(void);
+
+/* Returns SDL_TRUE if we're running on Windows Vista and newer */
+extern BOOL WIN_IsWindowsVistaOrGreater();
 
 #endif /* _INCLUDED_WINDOWS_H */
 

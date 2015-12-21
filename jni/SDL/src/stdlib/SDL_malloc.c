@@ -1,31 +1,57 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+
+#if defined(__clang_analyzer__) && !defined(SDL_DISABLE_ANALYZE_MACROS)
+#define SDL_DISABLE_ANALYZE_MACROS 1
+#endif
+
+#include "../SDL_internal.h"
 
 /* This file contains portable memory management functions for SDL */
 
 #include "SDL_stdinc.h"
 
-#ifndef HAVE_MALLOC
+#if defined(HAVE_MALLOC)
+
+void *SDL_malloc(size_t size)
+{
+    return malloc(size);
+}
+
+void *SDL_calloc(size_t nmemb, size_t size)
+{
+    return calloc(nmemb, size);
+}
+
+void *SDL_realloc(void *ptr, size_t size)
+{
+    return realloc(ptr, size);
+}
+
+void SDL_free(void *ptr)
+{
+    free(ptr);
+}
+
+#else  /* the rest of this is a LOT of tapdancing to implement malloc. :) */
 
 #define LACKS_SYS_TYPES_H
 #define LACKS_STDIO_H
@@ -33,6 +59,7 @@
 #define LACKS_STRING_H
 #define LACKS_STDLIB_H
 #define ABORT
+#define USE_LOCKS 1
 
 /*
   This is a version (aka dlmalloc) of malloc/free/realloc written by
@@ -399,9 +426,9 @@ MALLINFO_FIELD_TYPE        default: size_t
   size_t. The value is used only if  HAVE_USR_INCLUDE_MALLOC_H is not set
 
 REALLOC_ZERO_BYTES_FREES    default: not defined
-  This should be set if a call to realloc with zero bytes should 
-  be the same as a call to free. Some people think it should. Otherwise, 
-  since this malloc returns a unique pointer for malloc(0), so does 
+  This should be set if a call to realloc with zero bytes should
+  be the same as a call to free. Some people think it should. Otherwise,
+  since this malloc returns a unique pointer for malloc(0), so does
   realloc(p, 0).
 
 LACKS_UNISTD_H, LACKS_FCNTL_H, LACKS_SYS_PARAM_H, LACKS_SYS_MMAN_H
@@ -609,12 +636,12 @@ DEFAULT_MMAP_THRESHOLD       default: 256K
 #define MALLINFO_FIELD_TYPE size_t
 #endif /* MALLINFO_FIELD_TYPE */
 
-#define memset	SDL_memset
-#define memcpy	SDL_memcpy
-#define malloc	SDL_malloc
-#define calloc	SDL_calloc
-#define realloc	SDL_realloc
-#define free	SDL_free
+#define memset  SDL_memset
+#define memcpy  SDL_memcpy
+#define malloc  SDL_malloc
+#define calloc  SDL_calloc
+#define realloc SDL_realloc
+#define free    SDL_free
 
 /*
   mallopt tuning options.  SVID/XPG defines four standard parameter
@@ -5229,7 +5256,7 @@ History:
     Trial version Fri Aug 28 13:14:29 1992  Doug Lea  (dl at g.oswego.edu)
       * Based loosely on libg++-1.2X malloc. (It retains some of the overall
          structure of old version,  but most details differ.)
- 
+
 */
 
 #endif /* !HAVE_MALLOC */

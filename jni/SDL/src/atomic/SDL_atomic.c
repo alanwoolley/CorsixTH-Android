@@ -1,35 +1,41 @@
 /*
-  SDL - Simple DirectMedia Layer
-  Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-  You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-  Sam Lantinga
-  slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_stdinc.h"
+#include "../SDL_internal.h"
 
 #include "SDL_atomic.h"
 
-/* Note that we undefine the atomic operations here, in case they are
-   defined as compiler intrinsics while building SDL but the library user
-   doesn't have that compiler.  That way we always have a working set of
-   atomic operations built into the library.
-*/
- 
-/* 
+#if defined(_MSC_VER) && (_MSC_VER >= 1500)
+#include <intrin.h>
+#define HAVE_MSC_ATOMICS 1
+#endif
+
+#if defined(__MACOSX__)  /* !!! FIXME: should we favor gcc atomics? */
+#include <libkern/OSAtomic.h>
+#endif
+
+#if !defined(HAVE_GCC_ATOMICS) && defined(__SOLARIS__)
+#include <atomic.h>
+#endif
+
+/*
   If any of the operations are not provided then we must emulate some
   of them. That means we need a nice implementation of spin locks
   that avoids the "one big lock" problem. We use a vector of spin
@@ -39,7 +45,7 @@
   To generate the index of the lock we first shift by 3 bits to get
   rid on the zero bits that result from 32 and 64 bit allignment of
   data. We then mask off all but 5 bits and use those 5 bits as an
-  index into the table. 
+  index into the table.
 
   Picking the lock this way insures that accesses to the same data at
   the same time will go to the same lock. OTOH, accesses to different
@@ -52,9 +58,14 @@
   Contributed by Bob Pendleton, bob@pendleton.com
 */
 
+#if !defined(HAVE_MSC_ATOMICS) && !defined(HAVE_GCC_ATOMICS) && !defined(__MACOSX__) && !defined(__SOLARIS__)
+#define EMULATE_CAS 1
+#endif
+
+#if EMULATE_CAS
 static SDL_SpinLock locks[32];
 
-static __inline__ void
+static SDL_INLINE void
 enterLock(void *a)
 {
     uintptr_t index = ((((uintptr_t)a) >> 3) & 0x1f);
@@ -62,17 +73,30 @@ enterLock(void *a)
     SDL_AtomicLock(&locks[index]);
 }
 
-static __inline__ void
+static SDL_INLINE void
 leaveLock(void *a)
 {
     uintptr_t index = ((((uintptr_t)a) >> 3) & 0x1f);
 
     SDL_AtomicUnlock(&locks[index]);
 }
+#endif
+
 
 SDL_bool
-SDL_AtomicCAS_(SDL_atomic_t *a, int oldval, int newval)
+SDL_AtomicCAS(SDL_atomic_t *a, int oldval, int newval)
 {
+#ifdef HAVE_MSC_ATOMICS
+    return (_InterlockedCompareExchange((long*)&a->value, (long)newval, (long)oldval) == (long)oldval);
+#elif defined(__MACOSX__)  /* !!! FIXME: should we favor gcc atomics? */
+    return (SDL_bool) OSAtomicCompareAndSwap32Barrier(oldval, newval, &a->value);
+#elif defined(HAVE_GCC_ATOMICS)
+    return (SDL_bool) __sync_bool_compare_and_swap(&a->value, oldval, newval);
+#elif defined(__SOLARIS__) && defined(_LP64)
+    return (SDL_bool) ((int) atomic_cas_64((volatile uint64_t*)&a->value, (uint64_t)oldval, (uint64_t)newval) == oldval);
+#elif defined(__SOLARIS__) && !defined(_LP64)
+    return (SDL_bool) ((int) atomic_cas_32((volatile uint32_t*)&a->value, (uint32_t)oldval, (uint32_t)newval) == oldval);
+#elif EMULATE_CAS
     SDL_bool retval = SDL_FALSE;
 
     enterLock(a);
@@ -83,11 +107,27 @@ SDL_AtomicCAS_(SDL_atomic_t *a, int oldval, int newval)
     leaveLock(a);
 
     return retval;
+#else
+    #error Please define your platform.
+#endif
 }
 
 SDL_bool
-SDL_AtomicCASPtr_(void **a, void *oldval, void *newval)
+SDL_AtomicCASPtr(void **a, void *oldval, void *newval)
 {
+#if defined(HAVE_MSC_ATOMICS) && (_M_IX86)
+    return (_InterlockedCompareExchange((long*)a, (long)newval, (long)oldval) == (long)oldval);
+#elif defined(HAVE_MSC_ATOMICS) && (!_M_IX86)
+    return (_InterlockedCompareExchangePointer(a, newval, oldval) == oldval);
+#elif defined(__MACOSX__) && defined(__LP64__)   /* !!! FIXME: should we favor gcc atomics? */
+    return (SDL_bool) OSAtomicCompareAndSwap64Barrier((int64_t)oldval, (int64_t)newval, (int64_t*) a);
+#elif defined(__MACOSX__) && !defined(__LP64__)  /* !!! FIXME: should we favor gcc atomics? */
+    return (SDL_bool) OSAtomicCompareAndSwap32Barrier((int32_t)oldval, (int32_t)newval, (int32_t*) a);
+#elif defined(HAVE_GCC_ATOMICS)
+    return __sync_bool_compare_and_swap(a, oldval, newval);
+#elif defined(__SOLARIS__)
+    return (SDL_bool) (atomic_cas_ptr(a, oldval, newval) == oldval);
+#elif EMULATE_CAS
     SDL_bool retval = SDL_FALSE;
 
     enterLock(a);
@@ -98,6 +138,109 @@ SDL_AtomicCASPtr_(void **a, void *oldval, void *newval)
     leaveLock(a);
 
     return retval;
+#else
+    #error Please define your platform.
+#endif
 }
+
+int
+SDL_AtomicSet(SDL_atomic_t *a, int v)
+{
+#ifdef HAVE_MSC_ATOMICS
+    return _InterlockedExchange((long*)&a->value, v);
+#elif defined(HAVE_GCC_ATOMICS)
+    return __sync_lock_test_and_set(&a->value, v);
+#elif defined(__SOLARIS__) && defined(_LP64)
+    return (int) atomic_swap_64((volatile uint64_t*)&a->value, (uint64_t)v);
+#elif defined(__SOLARIS__) && !defined(_LP64)
+    return (int) atomic_swap_32((volatile uint32_t*)&a->value, (uint32_t)v);
+#else
+    int value;
+    do {
+        value = a->value;
+    } while (!SDL_AtomicCAS(a, value, v));
+    return value;
+#endif
+}
+
+void*
+SDL_AtomicSetPtr(void **a, void *v)
+{
+#if defined(HAVE_MSC_ATOMICS) && (_M_IX86)
+    return (void *) _InterlockedExchange((long *)a, (long) v);
+#elif defined(HAVE_MSC_ATOMICS) && (!_M_IX86)
+    return _InterlockedExchangePointer(a, v);
+#elif defined(HAVE_GCC_ATOMICS)
+    return __sync_lock_test_and_set(a, v);
+#elif defined(__SOLARIS__)
+    return atomic_swap_ptr(a, v);
+#else
+    void *value;
+    do {
+        value = *a;
+    } while (!SDL_AtomicCASPtr(a, value, v));
+    return value;
+#endif
+}
+
+int
+SDL_AtomicAdd(SDL_atomic_t *a, int v)
+{
+#ifdef HAVE_MSC_ATOMICS
+    return _InterlockedExchangeAdd((long*)&a->value, v);
+#elif defined(HAVE_GCC_ATOMICS)
+    return __sync_fetch_and_add(&a->value, v);
+#elif defined(__SOLARIS__)
+    int pv = a->value;
+    membar_consumer();
+#if defined(_LP64)
+    atomic_add_64((volatile uint64_t*)&a->value, v);
+#elif !defined(_LP64)
+    atomic_add_32((volatile uint32_t*)&a->value, v);
+#endif
+    return pv;
+#else
+    int value;
+    do {
+        value = a->value;
+    } while (!SDL_AtomicCAS(a, value, (value + v)));
+    return value;
+#endif
+}
+
+int
+SDL_AtomicGet(SDL_atomic_t *a)
+{
+    int value;
+    do {
+        value = a->value;
+    } while (!SDL_AtomicCAS(a, value, value));
+    return value;
+}
+
+void *
+SDL_AtomicGetPtr(void **a)
+{
+    void *value;
+    do {
+        value = *a;
+    } while (!SDL_AtomicCASPtr(a, value, value));
+    return value;
+}
+
+#ifdef __thumb__
+#if defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_6J__) || defined(__ARM_ARCH_6K__) || defined(__ARM_ARCH_6T2__) || defined(__ARM_ARCH_6Z__) || defined(__ARM_ARCH_6ZK__)
+__asm__(
+"   .align 2\n"
+"   .globl _SDL_MemoryBarrierRelease\n"
+"   .globl _SDL_MemoryBarrierAcquire\n"
+"_SDL_MemoryBarrierRelease:\n"
+"_SDL_MemoryBarrierAcquire:\n"
+"   mov r0, #0\n"
+"   mcr p15, 0, r0, c7, c10, 5\n"
+"   bx lr\n"
+);
+#endif
+#endif
 
 /* vi: set ts=4 sw=4 expandtab: */

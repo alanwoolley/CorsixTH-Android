@@ -1,23 +1,22 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 #ifndef _SDL_timer_h
@@ -25,7 +24,7 @@
 
 /**
  *  \file SDL_timer.h
- *  
+ *
  *  Header for the SDL time management routines.
  */
 
@@ -35,17 +34,36 @@
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /**
  * \brief Get the number of milliseconds since the SDL library initialization.
- *  
+ *
  * \note This value wraps if the program runs for more than ~49 days.
  */
 extern DECLSPEC Uint32 SDLCALL SDL_GetTicks(void);
+
+/**
+ * \brief Compare SDL ticks values, and return true if A has passed B
+ *
+ * e.g. if you want to wait 100 ms, you could do this:
+ *  Uint32 timeout = SDL_GetTicks() + 100;
+ *  while (!SDL_TICKS_PASSED(SDL_GetTicks(), timeout)) {
+ *      ... do work until timeout has elapsed
+ *  }
+ */
+#define SDL_TICKS_PASSED(A, B)  ((Sint32)((B) - (A)) <= 0)
+
+/**
+ * \brief Get the current value of the high resolution counter
+ */
+extern DECLSPEC Uint64 SDLCALL SDL_GetPerformanceCounter(void);
+
+/**
+ * \brief Get the count per second of the high resolution counter
+ */
+extern DECLSPEC Uint64 SDLCALL SDL_GetPerformanceFrequency(void);
 
 /**
  * \brief Wait a specified number of milliseconds before returning.
@@ -54,7 +72,7 @@ extern DECLSPEC void SDLCALL SDL_Delay(Uint32 ms);
 
 /**
  *  Function prototype for the timer callback function.
- *  
+ *
  *  The callback function is passed the current timer interval and returns
  *  the next timer interval.  If the returned value is the same as the one
  *  passed in, the periodic alarm continues, otherwise a new alarm is
@@ -83,14 +101,12 @@ extern DECLSPEC SDL_TimerID SDLCALL SDL_AddTimer(Uint32 interval,
  *
  * \warning It is not safe to remove a timer multiple times.
  */
-extern DECLSPEC SDL_bool SDLCALL SDL_RemoveTimer(SDL_TimerID t);
+extern DECLSPEC SDL_bool SDLCALL SDL_RemoveTimer(SDL_TimerID id);
 
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 

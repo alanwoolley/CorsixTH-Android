@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog bulletedList="true">
+    <changelogversion changeDate="1970-01-01" versionName="alpha">
+        <changelogtext>This is an alpha version. For changelog, please see GitHub.</changelogtext>
+    </changelogversion>
+</changelog>

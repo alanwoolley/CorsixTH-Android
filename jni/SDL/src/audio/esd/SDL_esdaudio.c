@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_AUDIO_DRIVER_ESD
 
 /* Allow access to an ESD network stream mixing buffer */
 
@@ -39,11 +40,8 @@
 #include "SDL_name.h"
 #include "SDL_loadso.h"
 #else
-#define SDL_NAME(X)	X
+#define SDL_NAME(X) X
 #endif
-
-/* The tag name used by ESD audio */
-#define ESD_DRIVER_NAME		"esd"
 
 #ifdef SDL_AUDIO_DRIVER_ESD_DYNAMIC
 
@@ -125,20 +123,19 @@ ESD_WaitDevice(_THIS)
     /* Check to see if the thread-parent process is still alive */
     {
         static int cnt = 0;
-        /* Note that this only works with thread implementations 
+        /* Note that this only works with thread implementations
            that use a different process id for each thread.
          */
         /* Check every 10 loops */
         if (this->hidden->parent && (((++cnt) % 10) == 0)) {
             if (kill(this->hidden->parent, 0) < 0 && errno == ESRCH) {
-                this->enabled = 0;
+                SDL_OpenedAudioDeviceDisconnected(this);
             }
         }
     }
 
     /* Use timer for general audio synchronization */
-    ticks =
-        ((Sint32) (this->hidden->next_frame - SDL_GetTicks())) - FUDGE_TICKS;
+    ticks = ((Sint32) (this->hidden->next_frame - SDL_GetTicks())) - FUDGE_TICKS;
     if (ticks > 0) {
         SDL_Delay(ticks);
     }
@@ -164,7 +161,7 @@ ESD_PlayDevice(_THIS)
 
     /* If we couldn't write, assume fatal error for now */
     if (written < 0) {
-        this->enabled = 0;
+        SDL_OpenedAudioDeviceDisconnected(this);
     }
 }
 
@@ -178,10 +175,8 @@ static void
 ESD_CloseDevice(_THIS)
 {
     if (this->hidden != NULL) {
-        if (this->hidden->mixbuf != NULL) {
-            SDL_FreeAudioMem(this->hidden->mixbuf);
-            this->hidden->mixbuf = NULL;
-        }
+        SDL_FreeAudioMem(this->hidden->mixbuf);
+        this->hidden->mixbuf = NULL;
         if (this->hidden->audio_fd >= 0) {
             SDL_NAME(esd_close) (this->hidden->audio_fd);
             this->hidden->audio_fd = -1;
@@ -220,7 +215,7 @@ get_progname(void)
 
 
 static int
-ESD_OpenDevice(_THIS, const char *devname, int iscapture)
+ESD_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
 {
     esd_format_t format = (ESD_STREAM | ESD_PLAY);
     SDL_AudioFormat test_format = 0;
@@ -230,8 +225,7 @@ ESD_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc((sizeof *this->hidden));
     if (this->hidden == NULL) {
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden, 0, (sizeof *this->hidden));
     this->hidden->audio_fd = -1;
@@ -259,8 +253,7 @@ ESD_OpenDevice(_THIS, const char *devname, int iscapture)
 
     if (!found) {
         ESD_CloseDevice(this);
-        SDL_SetError("Couldn't find any hardware audio formats");
-        return 0;
+        return SDL_SetError("Couldn't find any hardware audio formats");
     }
 
     if (this->spec.channels == 1) {
@@ -279,8 +272,7 @@ ESD_OpenDevice(_THIS, const char *devname, int iscapture)
 
     if (this->hidden->audio_fd < 0) {
         ESD_CloseDevice(this);
-        SDL_SetError("Couldn't open ESD connection");
-        return 0;
+        return SDL_SetError("Couldn't open ESD connection");
     }
 
     /* Calculate the final parameters for this audio specification */
@@ -294,8 +286,7 @@ ESD_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->mixbuf = (Uint8 *) SDL_AllocAudioMem(this->hidden->mixlen);
     if (this->hidden->mixbuf == NULL) {
         ESD_CloseDevice(this);
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden->mixbuf, this->spec.silence, this->spec.size);
 
@@ -303,7 +294,7 @@ ESD_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->parent = getpid();
 
     /* We're ready to rock and roll. :-) */
-    return 1;
+    return 0;
 }
 
 static void
@@ -346,7 +337,9 @@ ESD_Init(SDL_AudioDriverImpl * impl)
 
 
 AudioBootStrap ESD_bootstrap = {
-    ESD_DRIVER_NAME, "Enlightened Sound Daemon", ESD_Init, 0
+    "esd", "Enlightened Sound Daemon", ESD_Init, 0
 };
+
+#endif /* SDL_AUDIO_DRIVER_ESD */
 
 /* vi: set ts=4 sw=4 expandtab: */

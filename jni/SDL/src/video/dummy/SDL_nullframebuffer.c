@@ -1,27 +1,29 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_VIDEO_DRIVER_DUMMY
 
 #include "../SDL_sysvideo.h"
+#include "SDL_nullframebuffer_c.h"
 
 
 #define DUMMY_SURFACE   "_SDL_DummySurface"
@@ -36,9 +38,7 @@ int SDL_DUMMY_CreateWindowFramebuffer(_THIS, SDL_Window * window, Uint32 * forma
 
     /* Free the old framebuffer surface */
     surface = (SDL_Surface *) SDL_GetWindowData(window, DUMMY_SURFACE);
-    if (surface) {
-        SDL_FreeSurface(surface);
-    }
+    SDL_FreeSurface(surface);
 
     /* Create a new one */
     SDL_PixelFormatEnumToMasks(surface_format, &bpp, &Rmask, &Gmask, &Bmask, &Amask);
@@ -56,15 +56,14 @@ int SDL_DUMMY_CreateWindowFramebuffer(_THIS, SDL_Window * window, Uint32 * forma
     return 0;
 }
 
-int SDL_DUMMY_UpdateWindowFramebuffer(_THIS, SDL_Window * window, SDL_Rect * rects, int numrects)
+int SDL_DUMMY_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rect * rects, int numrects)
 {
     static int frame_number;
     SDL_Surface *surface;
 
     surface = (SDL_Surface *) SDL_GetWindowData(window, DUMMY_SURFACE);
     if (!surface) {
-        SDL_SetError("Couldn't find dummy surface for window");
-        return -1;
+        return SDL_SetError("Couldn't find dummy surface for window");
     }
 
     /* Send the data to the display */
@@ -82,9 +81,9 @@ void SDL_DUMMY_DestroyWindowFramebuffer(_THIS, SDL_Window * window)
     SDL_Surface *surface;
 
     surface = (SDL_Surface *) SDL_SetWindowData(window, DUMMY_SURFACE, NULL);
-    if (surface) {
-        SDL_FreeSurface(surface);
-    }
+    SDL_FreeSurface(surface);
 }
+
+#endif /* SDL_VIDEO_DRIVER_DUMMY */
 
 /* vi: set ts=4 sw=4 expandtab: */

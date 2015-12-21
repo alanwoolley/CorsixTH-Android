@@ -1,29 +1,22 @@
 /*
-    SDL_main.c, placed in the public domain by Sam Lantinga  4/13/98
+    SDL_windows_main.c, placed in the public domain by Sam Lantinga  4/13/98
 
     The WinMain function -- calls your program's main() function
 */
+#include "SDL_config.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifdef __WIN32__
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+/* Include this so we define UNICODE properly */
+#include "../../core/windows/SDL_windows.h"
 
 /* Include the SDL main definition header */
 #include "SDL.h"
 #include "SDL_main.h"
 
 #ifdef main
-# ifndef _WIN32_WCE_EMULATION
 #  undef main
-# endif /* _WIN32_WCE_EMULATION */
 #endif /* main */
-
-#if defined(_WIN32_WCE) && _WIN32_WCE < 300
-/* seems to be undefined in Win CE although in online help */
-#define isspace(a) (((CHAR)a == ' ') || ((CHAR)a == '\t'))
-#endif /* _WIN32_WCE < 300 */
 
 static void
 UnEscapeQuotes(char *arg)
@@ -31,7 +24,7 @@ UnEscapeQuotes(char *arg)
     char *last = NULL;
 
     while (*arg) {
-        if (*arg == '"' && *last == '\\') {
+        if (*arg == '"' && (last != NULL && *last == '\\')) {
             char *c_curr = arg;
             char *c_last = last;
 
@@ -58,7 +51,7 @@ ParseCommandLine(char *cmdline, char **argv)
     argc = last_argc = 0;
     for (bufp = cmdline; *bufp;) {
         /* Skip leading whitespace */
-        while (isspace(*bufp)) {
+        while (SDL_isspace(*bufp)) {
             ++bufp;
         }
         /* Skip over argument */
@@ -84,7 +77,7 @@ ParseCommandLine(char *cmdline, char **argv)
                 ++argc;
             }
             /* Skip over word */
-            while (*bufp && !isspace(*bufp)) {
+            while (*bufp && !SDL_isspace(*bufp)) {
                 ++bufp;
             }
         }
@@ -107,85 +100,82 @@ ParseCommandLine(char *cmdline, char **argv)
     return (argc);
 }
 
-/* Show an error message */
-static void
-ShowError(const char *title, const char *message)
-{
-/* If USE_MESSAGEBOX is defined, you need to link with user32.lib */
-#ifdef USE_MESSAGEBOX
-    MessageBox(NULL, message, title, MB_ICONEXCLAMATION | MB_OK);
-#else
-    fprintf(stderr, "%s: %s\n", title, message);
-#endif
-}
-
 /* Pop up an out of memory message, returns to Windows */
 static BOOL
 OutOfMemory(void)
 {
-    ShowError("Fatal Error", "Out of memory - aborting");
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", "Out of memory - aborting", NULL);
     return FALSE;
 }
 
-#if defined(_MSC_VER) && !defined(_WIN32_WCE)
-/* The VC++ compiler needs main defined */
-#define console_main main
+#if defined(_MSC_VER)
+/* The VC++ compiler needs main/wmain defined */
+# define console_ansi_main main
+# if UNICODE
+#  define console_wmain wmain
+# endif
 #endif
 
-/* This is where execution begins [console apps] */
-int
-console_main(int argc, char *argv[])
+/* WinMain, main, and wmain eventually call into here. */
+static int
+main_utf8(int argc, char *argv[])
 {
-    int status;
+    SDL_SetMainReady();
 
     /* Run the application main() code */
-    status = SDL_main(argc, argv);
-
-    /* Exit cleanly, calling atexit() functions */
-    exit(status);
-
-    /* Hush little compiler, don't you cry... */
-    return 0;
+    return SDL_main(argc, argv);
 }
+
+/* This is where execution begins [console apps, ansi] */
+int
+console_ansi_main(int argc, char *argv[])
+{
+    /* !!! FIXME: are these in the system codepage? We need to convert to UTF-8. */
+    return main_utf8(argc, argv);
+}
+
+
+#if UNICODE
+/* This is where execution begins [console apps, unicode] */
+int
+console_wmain(int argc, wchar_t *wargv[], wchar_t *wenvp)
+{
+    int retval = 0;
+    char **argv = SDL_stack_alloc(char*, argc);
+    int i;
+
+    for (i = 0; i < argc; ++i) {
+        argv[i] = WIN_StringToUTF8(wargv[i]);
+    }
+
+    retval = main_utf8(argc, argv);
+
+    /* !!! FIXME: we are leaking all the elements of argv we allocated. */
+    SDL_stack_free(argv);
+
+    return retval;
+}
+#endif
 
 /* This is where execution begins [windowed apps] */
 int WINAPI
-WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPTSTR szCmdLine, int sw)
+WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 {
     char **argv;
     int argc;
     char *cmdline;
-#ifdef _WIN32_WCE
-    wchar_t *bufp;
-    int nLen;
-#else
-    char *bufp;
-    size_t nLen;
-#endif
 
-#ifdef _WIN32_WCE
-    nLen = wcslen(szCmdLine) + 128 + 1;
-    bufp = SDL_stack_alloc(wchar_t, nLen * 2);
-    wcscpy(bufp, TEXT("\""));
-    GetModuleFileName(NULL, bufp + 1, 128 - 3);
-    wcscpy(bufp + wcslen(bufp), TEXT("\" "));
-    wcsncpy(bufp + wcslen(bufp), szCmdLine, nLen - wcslen(bufp));
-    nLen = wcslen(bufp) + 1;
-    cmdline = SDL_stack_alloc(char, nLen);
-    if (cmdline == NULL) {
-        return OutOfMemory();
-    }
-    WideCharToMultiByte(CP_ACP, 0, bufp, -1, cmdline, nLen, NULL, NULL);
-#else
     /* Grab the command line */
-    bufp = GetCommandLine();
-    nLen = SDL_strlen(bufp) + 1;
-    cmdline = SDL_stack_alloc(char, nLen);
+    TCHAR *text = GetCommandLine();
+#if UNICODE
+    cmdline = WIN_StringToUTF8(text);
+#else
+    /* !!! FIXME: are these in the system codepage? We need to convert to UTF-8. */
+    cmdline = SDL_strdup(text);
+#endif
     if (cmdline == NULL) {
         return OutOfMemory();
     }
-    SDL_strlcpy(cmdline, bufp, nLen);
-#endif
 
     /* Parse it into argv and argc */
     argc = ParseCommandLine(cmdline, NULL);
@@ -196,10 +186,16 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPTSTR szCmdLine, int sw)
     ParseCommandLine(cmdline, argv);
 
     /* Run the main program */
-    console_main(argc, argv);
+    main_utf8(argc, argv);
+
+    SDL_stack_free(argv);
+
+    SDL_free(cmdline);
 
     /* Hush little compiler, don't you cry... */
     return 0;
 }
+
+#endif /* __WIN32__ */
 
 /* vi: set ts=4 sw=4 expandtab: */

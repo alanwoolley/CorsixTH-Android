@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 
 import java.io.File;
@@ -22,25 +21,26 @@ import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 @SuppressWarnings("nls")
 public class Configuration {
 
-    private static final String LOG_TAG              = "Config";
-    public final static  int    RESOLUTION_DEFAULT   = 1;
-    public final static  int    RESOLUTION_NATIVE    = 2;
-    public final static  int    RESOLUTION_CUSTOM    = 3;
-    public final static  int    CONTROLS_NORMAL      = 1;
-    public final static  int    CONTROLS_DESKTOP     = 2;
-    public final static  int    CONTROLS_TOUCHPAD    = 3;
+    private static Reporting.Logger Log = Reporting.getLogger("Config");
+
+    public final static int RESOLUTION_DEFAULT = 1;
+    public final static int RESOLUTION_NATIVE = 2;
+    public final static int RESOLUTION_CUSTOM = 3;
+    public final static int CONTROLS_NORMAL = 1;
+    public final static int CONTROLS_DESKTOP = 2;
+    public final static int CONTROLS_TOUCHPAD = 3;
     // Defaults
-    public final static  int    MINIMUM_WIDTH        = 640;
-    public final static  int    MINIMUM_HEIGHT       = 480;
-    public final static  String DEFAULT_UNICODE_PATH = "/system/fonts/NotoSerif-Regular.ttf";
-    public final static  String HEADER               = "---- CorsixTH configuration file ----------------------------------------------\n"
+    public final static int MINIMUM_WIDTH = 640;
+    public final static int MINIMUM_HEIGHT = 480;
+    public final static String DEFAULT_UNICODE_PATH = "/system/fonts/NotoSerif-Regular.ttf";
+    public final static String HEADER = "---- CorsixTH configuration file ----------------------------------------------\n"
             + "-- Lines starting with two dashes (like this one) are ignored.\n"
             + "-- Text settings should have their values between double square braces, e.g.\n"
             + "--  setting = [[value]]\n"
             + "-- Number settings should not have anything around their value, e.g.\n"
             + "--  setting = 42\n\n\n"
             + "---- If you wish to add any custom settings, please do so below. ---- \n\n";
-    public final static  String SEPARATOR            = "\n\n---- Do not edit below this line ----\n\n";
+    public final static String SEPARATOR = "\n\n---- Do not edit below this line ----\n\n";
     // TODO - do this properly
     private String originalFilesPath, cthPath, language;
     private boolean globalAudio, playMusic, playAnnouncements,
@@ -52,7 +52,7 @@ public class Configuration {
             nativeHeight;
     private String saveGamesPath = Files.getExtStoragePath()
             + "CTHsaves";
-    private final Context           ctx;
+    private final Context ctx;
     private final SharedPreferences preferences;
 
     private Configuration(Context ctx, SharedPreferences prefs) {
@@ -84,7 +84,7 @@ public class Configuration {
     public static Configuration loadFromPreferences(Context ctx,
                                                     SharedPreferences preferences) throws StorageUnavailableException {
         Configuration config = new Configuration(ctx, preferences);
-        Log.d(LOG_TAG, "Loading configuration");
+        Log.d("Loading configuration");
 
         config.refresh();
         config.gameSpeed = 0;
@@ -96,8 +96,7 @@ public class Configuration {
      * Saves the configuration to a SharedPreferences object
      */
     public void saveToPreferences() {
-        Log.d(LOG_TAG, "Saving Configuration");
-        Log.d(LOG_TAG, this.toString());
+        Log.d("Saving Configuration");
         Editor editor = preferences.edit();
         editor.putString("originalfiles_pref", originalFilesPath);
         editor.putString("gamescripts_pref", cthPath);
@@ -206,7 +205,7 @@ public class Configuration {
 
                 displayWidth = (int) (nativeWidth * ratio);
                 displayHeight = (int) (nativeHeight * ratio);
-                Log.d(LOG_TAG, "Adjusted resolution is: " + displayWidth + " x "
+                Log.d("Adjusted resolution is: " + displayWidth + " x "
                         + displayHeight);
                 break;
 
@@ -237,25 +236,24 @@ public class Configuration {
         File file = new File(configFileName);
         file.getParentFile().mkdirs();
         String[] split = null;
-        try {
-            FileReader reader = new FileReader(file);
+        if (file.exists()) {
+            try (FileReader reader = new FileReader(file)) {
 
-            StringBuilder b = new StringBuilder();
-            char[] buf = new char[1024];
+                StringBuilder b = new StringBuilder();
+                char[] buf = new char[1024];
 
-            while ((reader.read(buf)) != -1) {
-                b.append(buf);
+                while ((reader.read(buf)) != -1) {
+                    b.append(buf);
+                }
+
+                String original = b.toString();
+
+                split = original.split(SEPARATOR);
+
+            } catch (IOException e) {
+                Reporting.report("Couldn't read config file.", e);
             }
-
-            String original = b.toString();
-
-            split = original.split(SEPARATOR);
-
-            reader.close();
-        } catch (IOException e) {
-            Log.d(LOG_TAG, "Couldn't read config file.");
         }
-
         StringBuilder sbuilder = new StringBuilder();
         if (split != null && split.length > 1 && split[0].length() > 0) {
             sbuilder.append(split[0]);
@@ -298,7 +296,7 @@ public class Configuration {
         } else {
             sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
 
-            Log.w(LOG_TAG, "Couldn't find fallback font");
+            Log.w("Couldn't find fallback font");
         }
 
         sbuilder.append("savegames = [[").append(saveGamesPath).append("]]\n");
@@ -327,16 +325,31 @@ public class Configuration {
         sbuilder.append("controls_mode = ").append(String.valueOf(controlsMode)).append("\n");
         sbuilder.append("scrolling_momentum = 0.9\n");
         sbuilder.append("zoom_speed = 80\n");
+        sbuilder.append("shift_scroll_speed = 4\n");
+
 
         // Aliens
         sbuilder.append("alien_dna_only_by_emergency = true\n");
         sbuilder.append("alien_dna_must_stand = true\n");
         sbuilder.append("alien_dna_can_knock_on_doors = false\n");
 
-        FileWriter writer = new FileWriter(configFileName, false);
-        writer.write(sbuilder.toString());
-        writer.close();
+        // Debugger
 
+        sbuilder.append("idehost = nil\n");
+        sbuilder.append("ideport = nil\n");
+        sbuilder.append("idekey = nil\n");
+        sbuilder.append("transport = nil\n");
+        sbuilder.append("platform = nil\n");
+        sbuilder.append("workingdir = nil\n");
+
+        // Graphics
+        sbuilder.append("use_new_graphics = false\n");
+        sbuilder.append("new_graphics_folder = nil\n");
+
+
+        try (FileWriter writer = new FileWriter(configFileName, false)) {
+            writer.write(sbuilder.toString());
+        }
     }
 
     // Getters

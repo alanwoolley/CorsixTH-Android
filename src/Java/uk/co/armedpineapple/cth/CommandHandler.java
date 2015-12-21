@@ -9,20 +9,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.splunk.mint.Mint;
+import com.j256.ormlite.dao.Dao;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 import uk.co.armedpineapple.cth.dialogs.LoadDialog;
 import uk.co.armedpineapple.cth.dialogs.SaveDialog;
+import uk.co.armedpineapple.cth.persistence.PersistenceHelper;
+import uk.co.armedpineapple.cth.persistence.SaveData;
 
 public class CommandHandler extends Handler {
+
+    private Reporting.Logger Log = Reporting.getLogger("CommandHandler");
 
     public static final int VIBRATION_SHORT_CLICK = 1;
     public static final int VIBRATION_LONG_CLICK  = 2;
@@ -35,11 +39,14 @@ public class CommandHandler extends Handler {
     private final CTHApplication app;
     public        boolean        playingEarthquake;
 
+    private PersistenceHelper persistence;
+
 
     public CommandHandler(SDLActivity context) {
         super();
         this.activityContext = context;
-        app = context.app;
+        this.app = context.app;
+        this.persistence = new PersistenceHelper(context);
     }
 
     public void cleanUp() {
@@ -71,14 +78,12 @@ public class CommandHandler extends Handler {
                 break;
 
             case HIDE_KEYBOARD:
-                mgr = (InputMethodManager) activityContext
+               /* mgr = (InputMethodManager) activityContext
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.hideSoftInputFromWindow(SDLActivity.mSurface.getWindowToken(), 0);
+                mgr.hideSoftInputFromWindow(SDLActivity.mSurface.getWindowToken(), 0); */
                 break;
             case SHOW_KEYBOARD:
-                mgr = (InputMethodManager) activityContext
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                mgr.showSoftInput(SDLActivity.mSurface, InputMethodManager.SHOW_FORCED);
+                new SDLActivity.ShowTextInputTask(0,0,0,0).run();
                 break;
             case QUICK_LOAD:
                 if (Files.doesFileExist(activityContext.app.configuration.getSaveGamesPath()
@@ -105,11 +110,7 @@ public class CommandHandler extends Handler {
                     loadDialog.refreshSaves(activityContext);
                     loadDialog.show();
                 } catch (IOException e) {
-                    Mint.logException(e);
-
-                    Toast.makeText(activityContext, "Problem loading load dialog",
-                            Toast.LENGTH_SHORT).show();
-
+                    Reporting.reportWithToast(activityContext, "Problem loading load dialog", e);
                 }
                 break;
 
@@ -122,9 +123,7 @@ public class CommandHandler extends Handler {
                     saveDialog.refreshSaves(activityContext);
                     saveDialog.show();
                 } catch (IOException e) {
-                    Mint.logException(e);
-                    Toast.makeText(activityContext, "Problem loading save dialog",
-                            Toast.LENGTH_SHORT).show();
+                    Reporting.reportWithToast(activityContext, "Problem loading save dialog", e);
                 }
 
                 break;
@@ -148,7 +147,7 @@ public class CommandHandler extends Handler {
             case START_VIBRATION:
 
                 Integer vibrationCode = (Integer) msg.obj;
-                Log.d("CommandHandler", "Vibrating: " + vibrationCode);
+                Log.d("Vibrating: " + vibrationCode);
                 if (app.configuration.getHaptic()) {
                      activityContext.playVibration(vibrationCode);
                 }
@@ -156,6 +155,40 @@ public class CommandHandler extends Handler {
             case STOP_VIBRATION:
                 activityContext.stopVibration();
                 playingEarthquake = false;
+                break;
+            case CHANGE_TITLE:
+                // Do nothing
+                break;
+            case UNUSED:
+                // Do nothing
+                break;
+            case TEXTEDIT_HIDE:
+                activityContext.hideTextEdit();
+                break;
+            case SET_KEEP_SCREEN_ON:
+                activityContext.setScreenOn((Integer) msg.obj != 0);
+                break;
+            case GAME_SAVE_UPDATED:
+                Log.d("Game save updated");
+                SaveData data = (SaveData) msg.obj;
+
+                try {
+                    Dao<SaveData, String> dao = persistence.getDao(SaveData.class);
+                    // This doesn't work for some reason
+                    //Dao.CreateOrUpdateStatus status = dao.createOrUpdate(data);
+                    //Log.d("Saved game entries changed: " + status.getNumLinesChanged() + ". Created? " + status.isCreated() + ". Updated? " + status.isUpdated());
+                    // So delete and recreate
+                    dao.delete(data);
+                    dao.create(data);
+
+                } catch (SQLException e) {
+                    Reporting.report(e);
+                }
+
+                break;
+            case SHOW_JUKEBOX:
+                Log.d("Showing jukebox");
+                SDLActivity.cthShowJukebox();
                 break;
             default:
                 break;
@@ -165,6 +198,11 @@ public class CommandHandler extends Handler {
     // Commands that can be sent from the game
     public enum Command {
         SHOW_MENU,
+        CHANGE_TITLE,
+        UNUSED,
+        TEXTEDIT_HIDE,
+        UNUSED2,
+        SET_KEEP_SCREEN_ON,
         SHOW_LOAD_DIALOG,
         SHOW_SAVE_DIALOG,
         RESTART_GAME,
@@ -179,7 +217,9 @@ public class CommandHandler extends Handler {
         GAME_LOAD_ERROR,
         HIDE_MENU,
         START_VIBRATION,
-        STOP_VIBRATION
+        STOP_VIBRATION,
+        GAME_SAVE_UPDATED,
+        SHOW_JUKEBOX,
     }
 
 }

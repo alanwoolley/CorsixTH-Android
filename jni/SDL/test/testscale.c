@@ -1,16 +1,30 @@
+/*
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely.
+*/
 /* Simple program:  Move N sprites around on the screen as fast as possible */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 
-#include "SDL.h"
-#include "common.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
+#include "SDL_test_common.h"
 
 #define WINDOW_WIDTH    640
 #define WINDOW_HEIGHT   480
 
-static CommonState *state;
+static SDLTest_CommonState *state;
 
 typedef struct {
     SDL_Window *window;
@@ -21,11 +35,14 @@ typedef struct {
     int scale_direction;
 } DrawState;
 
+DrawState *drawstates;
+int done;
+
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
 quit(int rc)
 {
-    CommonQuit(state);
+    SDLTest_CommonQuit(state);
     exit(rc);
 }
 
@@ -38,7 +55,7 @@ LoadTexture(SDL_Renderer *renderer, char *file, SDL_bool transparent)
     /* Load the sprite image */
     temp = SDL_LoadBMP(file);
     if (temp == NULL) {
-        fprintf(stderr, "Couldn't load %s: %s", file, SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s", file, SDL_GetError());
         return NULL;
     }
 
@@ -69,7 +86,7 @@ LoadTexture(SDL_Renderer *renderer, char *file, SDL_bool transparent)
     /* Create textures from the image */
     texture = SDL_CreateTextureFromSurface(renderer, temp);
     if (!texture) {
-        fprintf(stderr, "Couldn't create texture: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture: %s\n", SDL_GetError());
         SDL_FreeSurface(temp);
         return NULL;
     }
@@ -110,31 +127,54 @@ Draw(DrawState *s)
     SDL_RenderPresent(s->renderer);
 }
 
+void
+loop()
+{
+    int i;
+    SDL_Event event;
+
+    /* Check for events */
+    while (SDL_PollEvent(&event)) {
+        SDLTest_CommonEvent(state, &event, &done);
+    }
+    for (i = 0; i < state->num_windows; ++i) {
+        if (state->windows[i] == NULL)
+            continue;
+        Draw(&drawstates[i]);
+    }
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
+}
+
 int
 main(int argc, char *argv[])
 {
-    DrawState *drawstates;
-    int i, done;
-    SDL_Event event;
+    int i;
     int frames;
     Uint32 then, now;
 
+    /* Enable standard application logging */
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+
     /* Initialize test framework */
-    state = CommonCreateState(argv, SDL_INIT_VIDEO);
+    state = SDLTest_CommonCreateState(argv, SDL_INIT_VIDEO);
     if (!state) {
         return 1;
     }
     for (i = 1; i < argc;) {
         int consumed;
 
-        consumed = CommonArg(state, i);
+        consumed = SDLTest_CommonArg(state, i);
         if (consumed == 0) {
-            fprintf(stderr, "Usage: %s %s\n", argv[0], CommonUsage(state));
+            SDL_Log("Usage: %s %s\n", argv[0], SDLTest_CommonUsage(state));
             return 1;
         }
         i += consumed;
     }
-    if (!CommonInit(state)) {
+    if (!SDLTest_CommonInit(state)) {
         quit(2);
     }
 
@@ -158,22 +198,21 @@ main(int argc, char *argv[])
     frames = 0;
     then = SDL_GetTicks();
     done = 0;
+
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, 0, 1);
+#else
     while (!done) {
-        /* Check for events */
         ++frames;
-        while (SDL_PollEvent(&event)) {
-            CommonEvent(state, &event, &done);
-        }
-        for (i = 0; i < state->num_windows; ++i) {
-            Draw(&drawstates[i]);
-        }
+        loop();
     }
+#endif
 
     /* Print out some timing information */
     now = SDL_GetTicks();
     if (now > then) {
         double fps = ((double) frames * 1000) / (now - then);
-        printf("%2.2f frames per second\n", fps);
+        SDL_Log("%2.2f frames per second\n", fps);
     }
 
     SDL_stack_free(drawstates);

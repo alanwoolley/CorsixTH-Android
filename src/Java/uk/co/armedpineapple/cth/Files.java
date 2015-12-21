@@ -17,7 +17,6 @@ import android.util.Log;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
-import com.splunk.mint.Mint;
 
 import org.apache.commons.io.output.CountingOutputStream;
 
@@ -47,7 +46,7 @@ import java.util.zip.ZipFile;
 @SuppressWarnings("nls")
 public class Files {
 
-    private static final String LOG_TAG = "Files";
+    private static final Reporting.Logger Log = Reporting.getLogger("Files");
 
     // Look for these files when trying to work out if the original Theme
     // Hospital files are present
@@ -77,6 +76,7 @@ public class Files {
      * @return true if file exists
      */
     public static Boolean doesFileExist(String filename) {
+        if (filename == null) { return false; }
         return new File(filename).exists();
     }
 
@@ -207,7 +207,7 @@ public class Files {
         }
 
         // The directory doesn't exist
-        Log.d(LOG_TAG, "Directory " + directory
+        Log.d("Directory " + directory
                 + " doesn't exist");
         throw new FileNotFoundException();
 
@@ -261,7 +261,7 @@ public class Files {
                 dir.mkdirs();
             }
 
-            Log.i(LOG_TAG, "Copying file [" + assetFilename
+            Log.v("Copying file [" + assetFilename
                     + "] to [" + newFileName + "]");
 
             out = new FileOutputStream(newFile);
@@ -297,7 +297,7 @@ public class Files {
             // Search common locations first
             for (String root : searchPaths) {
                 if (isCancelled()) {
-                    Log.d(LOG_TAG, "Task cancelled");
+                    Log.d("Task cancelled");
                     return null;
                 }
                 for (String dir : SearchDirs) {
@@ -311,12 +311,12 @@ public class Files {
 
             for (String root : searchPaths) {
                 if (isCancelled()) {
-                    Log.d(LOG_TAG, "Task cancelled");
+                    Log.d("Task cancelled");
                     return null;
                 }
 
                 if ((result = findGameFilesInternal(root)) != null) {
-                    Log.d(LOG_TAG, "Found game files in: " + result);
+                    Log.d("Found game files in: " + result);
                     return result;
                 }
             }
@@ -339,7 +339,7 @@ public class Files {
                             if (f.isDirectory()) {
                                 if ((result = findGameFilesInternal(trimPath(f
                                         .getAbsolutePath()))) != null) {
-                                    Log.d(LOG_TAG, "Found game files in: "
+                                    Log.d("Found game files in: "
                                             + result);
                                     return result;
                                 }
@@ -348,7 +348,7 @@ public class Files {
                     }
                 }
             } else {
-                Log.d(LOG_TAG, "Task cancelled");
+                Log.d("Task cancelled");
             }
             return null;
         }
@@ -360,6 +360,7 @@ public class Files {
      */
     public static class DownloadFileTask extends
             AsyncTask<String, Integer, AsyncTaskResult<File>> {
+        public static final int CONNECT_TIMEOUT = 30000;
         final String  downloadTo;
         final Context ctx;
         WakeLock downloadLock;
@@ -400,6 +401,7 @@ public class Files {
                 file.getParentFile().mkdirs();
 
                 ucon = downloadUrl.openConnection();
+                ucon.setConnectTimeout(CONNECT_TIMEOUT);
                 ucon.connect();
 
                 if (ucon.getContentType() == null) {
@@ -408,7 +410,7 @@ public class Files {
 
                 final int fileSize = ucon.getContentLength();
 
-                input = new BufferedInputStream(downloadUrl.openStream());
+                input = new BufferedInputStream(ucon.getInputStream());
                 fos = new FileOutputStream(file);
                 cos = new CountingOutputStream(fos) {
 
@@ -424,8 +426,7 @@ public class Files {
 
                 ByteStreams.copy(input, cos);
 
-                Log.d(LOG_TAG,
-                        "Downloaded file to: " + file.getAbsolutePath());
+                Log.d("Downloaded file to: " + file.getAbsolutePath());
 
                 return new AsyncTaskResult<>(file);
 
@@ -485,7 +486,7 @@ public class Files {
 
                 while (entries.hasMoreElements()) {
                     ZipEntry ze = entries.nextElement();
-                    Log.v(LOG_TAG, "Unzipping " + ze.getName());
+                    Log.v("Unzipping " + ze.getName());
 
                     File f = new File(unzipTo + ze.getName());
                     if (!f.getParentFile().exists()) {
@@ -517,7 +518,6 @@ public class Files {
                 }
 
             } catch (IOException e) {
-                Mint.logException(e);
                 return new AsyncTaskResult<>(e);
             }
 

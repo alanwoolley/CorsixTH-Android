@@ -1,3 +1,14 @@
+/*
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely.
+*/
 
 /* Simple program:  draw as many random objects on the screen as possible */
 
@@ -5,12 +16,16 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "common.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
+#include "SDL_test_common.h"
 
 #define SWAP(typ,a,b) do{typ t=a;a=b;b=t;}while(0)
-#define NUM_OBJECTS	100
+#define NUM_OBJECTS 100
 
-static CommonState *state;
+static SDLTest_CommonState *state;
 static int num_objects;
 static SDL_bool cycle_color;
 static SDL_bool cycle_alpha;
@@ -18,6 +33,9 @@ static int cycle_direction = 1;
 static int current_alpha = 255;
 static int current_color = 255;
 static SDL_BlendMode blendMode = SDL_BLENDMODE_NONE;
+
+int mouse_begin_x = -1, mouse_begin_y = -1;
+int done;
 
 void
 DrawPoints(SDL_Renderer * renderer)
@@ -73,7 +91,7 @@ add_line(int x1, int y1, int x2, int y2)
     if ((x1 == x2) && (y1 == y2))
         return 0;
 
-    printf("adding line (%d, %d), (%d, %d)\n", x1, y1, x2, y2);
+    SDL_Log("adding line (%d, %d), (%d, %d)\n", x1, y1, x2, y2);
     lines[num_lines].x = x1;
     lines[num_lines].y = y1;
     lines[num_lines].w = x2;
@@ -87,7 +105,6 @@ void
 DrawLines(SDL_Renderer * renderer)
 {
     int i;
-    int x1, y1, x2, y2;
     SDL_Rect viewport;
 
     /* Query the sizes */
@@ -123,7 +140,7 @@ add_rect(int x1, int y1, int x2, int y2)
     if (y1 > y2)
         SWAP(int, y1, y2);
 
-    printf("adding rect (%d, %d), (%d, %d) [%dx%d]\n", x1, y1, x2, y2,
+    SDL_Log("adding rect (%d, %d), (%d, %d) [%dx%d]\n", x1, y1, x2, y2,
            x2 - x1, y2 - y1);
 
     rects[num_rects].x = x1;
@@ -181,26 +198,93 @@ DrawRectRectIntersections(SDL_Renderer * renderer)
         }
 }
 
+void
+loop()
+{
+    int i;
+    SDL_Event event;
+
+    /* Check for events */
+    while (SDL_PollEvent(&event)) {
+        SDLTest_CommonEvent(state, &event, &done);
+        switch (event.type) {
+        case SDL_MOUSEBUTTONDOWN:
+            mouse_begin_x = event.button.x;
+            mouse_begin_y = event.button.y;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            if (event.button.button == 3)
+                add_line(mouse_begin_x, mouse_begin_y, event.button.x,
+                         event.button.y);
+            if (event.button.button == 1)
+                add_rect(mouse_begin_x, mouse_begin_y, event.button.x,
+                         event.button.y);
+            break;
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym) {
+            case 'l':
+                if (event.key.keysym.mod & KMOD_SHIFT)
+                    num_lines = 0;
+                else
+                    add_line(rand() % 640, rand() % 480, rand() % 640,
+                             rand() % 480);
+                break;
+            case 'r':
+                if (event.key.keysym.mod & KMOD_SHIFT)
+                    num_rects = 0;
+                else
+                    add_rect(rand() % 640, rand() % 480, rand() % 640,
+                             rand() % 480);
+                break;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    for (i = 0; i < state->num_windows; ++i) {
+        SDL_Renderer *renderer = state->renderers[i];
+        if (state->windows[i] == NULL)
+            continue;
+        SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
+        SDL_RenderClear(renderer);
+
+        DrawRects(renderer);
+        DrawPoints(renderer);
+        DrawRectRectIntersections(renderer);
+        DrawLines(renderer);
+        DrawRectLineIntersections(renderer);
+
+        SDL_RenderPresent(renderer);
+    }
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
+}
+
 int
 main(int argc, char *argv[])
 {
-    int mouse_begin_x = -1, mouse_begin_y = -1;
-    int i, done;
-    SDL_Event event;
+    int i;
     Uint32 then, now, frames;
+
+    /* Enable standard application logging */
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Initialize parameters */
     num_objects = NUM_OBJECTS;
 
     /* Initialize test framework */
-    state = CommonCreateState(argv, SDL_INIT_VIDEO);
+    state = SDLTest_CommonCreateState(argv, SDL_INIT_VIDEO);
     if (!state) {
         return 1;
     }
     for (i = 1; i < argc;) {
         int consumed;
 
-        consumed = CommonArg(state, i);
+        consumed = SDLTest_CommonArg(state, i);
         if (consumed == 0) {
             consumed = -1;
             if (SDL_strcasecmp(argv[i], "--blend") == 0) {
@@ -231,14 +315,13 @@ main(int argc, char *argv[])
             }
         }
         if (consumed < 0) {
-            fprintf(stderr,
-                    "Usage: %s %s [--blend none|blend|add|mod] [--cyclecolor] [--cyclealpha]\n",
-                    argv[0], CommonUsage(state));
+            SDL_Log("Usage: %s %s [--blend none|blend|add|mod] [--cyclecolor] [--cyclealpha]\n",
+                    argv[0], SDLTest_CommonUsage(state));
             return 1;
         }
         i += consumed;
     }
-    if (!CommonInit(state)) {
+    if (!SDLTest_CommonInit(state)) {
         return 2;
     }
 
@@ -256,68 +339,23 @@ main(int argc, char *argv[])
     frames = 0;
     then = SDL_GetTicks();
     done = 0;
+
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, 0, 1);
+#else
     while (!done) {
-        /* Check for events */
         ++frames;
-        while (SDL_PollEvent(&event)) {
-            CommonEvent(state, &event, &done);
-            switch (event.type) {
-            case SDL_MOUSEBUTTONDOWN:
-                mouse_begin_x = event.button.x;
-                mouse_begin_y = event.button.y;
-                break;
-            case SDL_MOUSEBUTTONUP:
-                if (event.button.button == 3)
-                    add_line(mouse_begin_x, mouse_begin_y, event.button.x,
-                             event.button.y);
-                if (event.button.button == 1)
-                    add_rect(mouse_begin_x, mouse_begin_y, event.button.x,
-                             event.button.y);
-                break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                case 'l':
-                    if (event.key.keysym.mod & KMOD_SHIFT)
-                        num_lines = 0;
-                    else
-                        add_line(rand() % 640, rand() % 480, rand() % 640,
-                                 rand() % 480);
-                    break;
-                case 'r':
-                    if (event.key.keysym.mod & KMOD_SHIFT)
-                        num_rects = 0;
-                    else
-                        add_rect(rand() % 640, rand() % 480, rand() % 640,
-                                 rand() % 480);
-                    break;
-                }
-                break;
-            default:
-                break;
-            }
-        }
-        for (i = 0; i < state->num_windows; ++i) {
-            SDL_Renderer *renderer = state->renderers[i];
-            SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
-            SDL_RenderClear(renderer);
-
-            DrawRects(renderer);
-            DrawPoints(renderer);
-            DrawRectRectIntersections(renderer);
-            DrawLines(renderer);
-            DrawRectLineIntersections(renderer);
-
-            SDL_RenderPresent(renderer);
-        }
+        loop();
     }
+#endif
 
-    CommonQuit(state);
+    SDLTest_CommonQuit(state);
 
     /* Print out some timing information */
     now = SDL_GetTicks();
     if (now > then) {
         double fps = ((double) frames * 1000) / (now - then);
-        printf("%2.2f frames per second\n", fps);
+        SDL_Log("%2.2f frames per second\n", fps);
     }
     return 0;
 }

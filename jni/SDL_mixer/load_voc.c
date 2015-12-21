@@ -1,29 +1,31 @@
 /*
-    SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2009 Sam Lantinga
+  SDL_mixer:  An audio mixer library based on the SDL library
+  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 
-    This is the source needed to decode a Creative Labs VOC file into a
-    waveform. It's pretty straightforward once you get going. The only
-    externally-callable function is Mix_LoadVOC_RW(), which is meant to
-    act as identically to SDL_LoadWAV_RW() as possible.
+  This is the source needed to decode a Creative Labs VOC file into a
+  waveform. It's pretty straightforward once you get going. The only
+  externally-callable function is Mix_LoadVOC_RW(), which is meant to
+  act as identically to SDL_LoadWAV_RW() as possible.
 
-    This file by Ryan C. Gordon (icculus@icculus.org).
+  This file by Ryan C. Gordon (icculus@icculus.org).
 
-    Heavily borrowed from sox v12.17.1's voc.c.
+  Heavily borrowed from sox v12.17.1's voc.c.
         (http://www.freshmeat.net/projects/sox/)
 */
 
@@ -42,48 +44,48 @@
 
 /* Private data for VOC file */
 typedef struct vocstuff {
-	Uint32	rest;			/* bytes remaining in current block */
-	Uint32	rate;			/* rate code (byte) of this chunk */
-	int 	silent;		/* sound or silence? */
-	Uint32	srate;			/* rate code (byte) of silence */
-	Uint32	blockseek;		/* start of current output block */
-	Uint32	samples;		/* number of samples output */
-	Uint32	size;		/* word length of data */
-	Uint8 	channels;	/* number of sound channels */
-	int     has_extended;       /* Has an extended block been read? */
+    Uint32  rest;           /* bytes remaining in current block */
+    Uint32  rate;           /* rate code (byte) of this chunk */
+    int     silent;         /* sound or silence? */
+    Uint32  srate;          /* rate code (byte) of silence */
+    Uint32  blockseek;      /* start of current output block */
+    Uint32  samples;        /* number of samples output */
+    Uint32  size;           /* word length of data */
+    Uint8   channels;       /* number of sound channels */
+    int     has_extended;   /* Has an extended block been read? */
 } vs_t;
 
-/* Size field */ 
+/* Size field */
 /* SJB: note that the 1st 3 are sometimes used as sizeof(type) */
-#define	ST_SIZE_BYTE	1
-#define ST_SIZE_8BIT	1
-#define	ST_SIZE_WORD	2
-#define ST_SIZE_16BIT	2
-#define	ST_SIZE_DWORD	4
-#define ST_SIZE_32BIT	4
-#define	ST_SIZE_FLOAT	5
-#define ST_SIZE_DOUBLE	6
-#define ST_SIZE_IEEE	7	/* IEEE 80-bit floats. */
+#define ST_SIZE_BYTE    1
+#define ST_SIZE_8BIT    1
+#define ST_SIZE_WORD    2
+#define ST_SIZE_16BIT   2
+#define ST_SIZE_DWORD   4
+#define ST_SIZE_32BIT   4
+#define ST_SIZE_FLOAT   5
+#define ST_SIZE_DOUBLE  6
+#define ST_SIZE_IEEE    7   /* IEEE 80-bit floats. */
 
 /* Style field */
-#define ST_ENCODING_UNSIGNED	1 /* unsigned linear: Sound Blaster */
-#define ST_ENCODING_SIGN2	2 /* signed linear 2's comp: Mac */
-#define	ST_ENCODING_ULAW	3 /* U-law signed logs: US telephony, SPARC */
-#define ST_ENCODING_ALAW	4 /* A-law signed logs: non-US telephony */
-#define ST_ENCODING_ADPCM	5 /* Compressed PCM */
-#define ST_ENCODING_IMA_ADPCM	6 /* Compressed PCM */
-#define ST_ENCODING_GSM		7 /* GSM 6.10 33-byte frame lossy compression */
+#define ST_ENCODING_UNSIGNED    1 /* unsigned linear: Sound Blaster */
+#define ST_ENCODING_SIGN2       2 /* signed linear 2's comp: Mac */
+#define ST_ENCODING_ULAW        3 /* U-law signed logs: US telephony, SPARC */
+#define ST_ENCODING_ALAW        4 /* A-law signed logs: non-US telephony */
+#define ST_ENCODING_ADPCM       5 /* Compressed PCM */
+#define ST_ENCODING_IMA_ADPCM   6 /* Compressed PCM */
+#define ST_ENCODING_GSM         7 /* GSM 6.10 33-byte frame lossy compression */
 
-#define	VOC_TERM	0
-#define	VOC_DATA	1
-#define	VOC_CONT	2
-#define	VOC_SILENCE	3
-#define	VOC_MARKER	4
-#define	VOC_TEXT	5
-#define	VOC_LOOP	6
-#define	VOC_LOOPEND	7
+#define VOC_TERM        0
+#define VOC_DATA        1
+#define VOC_CONT        2
+#define VOC_SILENCE     3
+#define VOC_MARKER      4
+#define VOC_TEXT        5
+#define VOC_LOOP        6
+#define VOC_LOOPEND     7
 #define VOC_EXTENDED    8
-#define VOC_DATA_16	9
+#define VOC_DATA_16     9
 
 
 static int voc_check_header(SDL_RWops *src)
@@ -138,7 +140,7 @@ static int voc_get_block(SDL_RWops *src, vs_t *v, SDL_AudioSpec *spec)
 
         if (SDL_RWread(src, bits24, sizeof (bits24), 1) != 1)
             return 1;  /* assume that's the end of the file. */
-        
+
         /* Size is an 24-bit value. Ugh. */
         sblen = ( (bits24[0]) | (bits24[1] << 8) | (bits24[2] << 16) );
 
@@ -345,7 +347,7 @@ static int voc_read(SDL_RWops *src, vs_t *v, Uint8 *buf, SDL_AudioSpec *spec)
             silence = 0x00;
 
         /* Fill in silence */
-        memset(buf, silence, v->rest);
+        SDL_memset(buf, silence, v->rest);
         done = v->rest;
         v->rest = 0;
     }
@@ -393,7 +395,7 @@ SDL_AudioSpec *Mix_LoadVOC_RW (SDL_RWops *src, int freesrc,
     v.has_extended = 0;
     *audio_buf = NULL;
     *audio_len = 0;
-    memset(spec, '\0', sizeof (SDL_AudioSpec));
+    SDL_memset(spec, '\0', sizeof (SDL_AudioSpec));
 
     if (!voc_get_block(src, &v, spec))
         goto done;
@@ -409,7 +411,7 @@ SDL_AudioSpec *Mix_LoadVOC_RW (SDL_RWops *src, int freesrc,
         spec->channels = v.channels;
 
     *audio_len = v.rest;
-    *audio_buf = malloc(v.rest);
+    *audio_buf = SDL_malloc(v.rest);
     if (*audio_buf == NULL)
         goto done;
 
@@ -421,10 +423,10 @@ SDL_AudioSpec *Mix_LoadVOC_RW (SDL_RWops *src, int freesrc,
             goto done;
 
         *audio_len += v.rest;
-        ptr = realloc(*audio_buf, *audio_len);
+        ptr = SDL_realloc(*audio_buf, *audio_len);
         if (ptr == NULL)
         {
-            free(*audio_buf);
+            SDL_free(*audio_buf);
             *audio_buf = NULL;
             *audio_len = 0;
             goto done;
@@ -443,16 +445,13 @@ SDL_AudioSpec *Mix_LoadVOC_RW (SDL_RWops *src, int freesrc,
     *audio_len &= ~(samplesize-1);
 
 done:
-    if (src)
-    {
-        if (freesrc)
-            SDL_RWclose(src);
-        else
-            SDL_RWseek(src, 0, RW_SEEK_SET);
+    if (freesrc && src) {
+        SDL_RWclose(src);
     }
 
-    if ( was_error )
+    if (was_error) {
         spec = NULL;
+    }
 
     return(spec);
 } /* Mix_LoadVOC_RW */

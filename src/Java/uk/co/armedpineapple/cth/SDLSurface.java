@@ -7,6 +7,7 @@ package uk.co.armedpineapple.cth;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
@@ -14,19 +15,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
-import android.util.Log;
-import android.view.GestureDetector;
+import android.view.Display;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 
-import com.samsung.spen.lib.input.SPenEventLibrary;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import uk.co.armedpineapple.cth.gestures.LongPressGesture;
-import uk.co.armedpineapple.cth.gestures.TwoFingerGestureDetector;
-import uk.co.armedpineapple.cth.gestures.TwoFingerMoveGesture;
 import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
 /**
@@ -38,7 +41,7 @@ import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-    public static final String LOG_TAG = "SDLSurface";
+    public static final Reporting.Logger Log = Reporting.getLogger("SDLSurface");
 
     private static final int GESTURE_LONGPRESS = 1;
     private static final int GESTURE_MOVE      = 2;
@@ -49,10 +52,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public final int height;
 
     // Sensors
-    private static SensorManager mSensorManager;
-
-    private final GestureDetector          longPressGestureDetector;
-    private final TwoFingerGestureDetector moveGestureDetector;
+    protected static SensorManager mSensorManager;
+    protected static Display       mDisplay;
 
     private final SDLActivity context;
 
@@ -63,117 +64,156 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         this.context = context;
         this.width = width;
         this.height = height;
-
-
-        SPenEventLibrary sPenEventLibrary = new SPenEventLibrary();
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        requestFocus();
 
         getHolder().addCallback(this);
 
         setOnKeyListener(this);
         setOnTouchListener(this);
-        moveGestureDetector = new TwoFingerGestureDetector(context,
-                new TwoFingerMoveGesture(context));
-        longPressGestureDetector = new GestureDetector(context,
-                new LongPressGesture(context));
-        longPressGestureDetector.setIsLongpressEnabled(true);
 
-        if (Build.VERSION.SDK_INT >= 14) {
-            setOnGenericMotionListener(new OnGenericMotionListener() {
+        mDisplay = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-                @Override
-                public boolean onGenericMotion(View v, MotionEvent event) {
-                    Log.d(LOG_TAG, event.toString());
-                    if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
-                        int actionPointerIndex = event.getActionIndex();
-                        float[] coords = translateCoords(event.getX(actionPointerIndex),
-                                event.getY(actionPointerIndex));
-                        SDLActivity.onNativeHover(coords[0], coords[1]);
+        setOnGenericMotionListener(new OnGenericMotionListener() {
 
-                        return true;
-                    }
-
-                    return false;
-
+            @Override
+            public boolean onGenericMotion(View v, MotionEvent event) {
+                if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
+                    int actionPointerIndex = event.getActionIndex();
+                    float[] coords = translateCoords(event.getX(actionPointerIndex),
+                            event.getY(actionPointerIndex));
+                    SDLActivity.onNativeMouse(0, MotionEvent.ACTION_HOVER_MOVE, coords[0], coords[1]);
+                    return true;
                 }
 
-            });
-        }
-
+                return false;
+            }
+        });
 	}
 
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
 
 		super.onWindowFocusChanged(hasWindowFocus);
-		Log.d(LOG_TAG, "focus changed");
+		Log.d("focus changed");
 		context.hideSystemUi();
 	}
 
 	// Called when we have a valid drawing surface
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.v(LOG_TAG, "surfaceCreated()");
-
-		SDLActivity.createEGLSurface();
+		Log.v("surfaceCreated()");
+        holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
 		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 		if (context.app.configuration.getSpen()) {
-			Log.d(LOG_TAG, "S Pen support enabled");
+			Log.d("S Pen support enabled");
+            Reporting.setBool("spen", true);
 			SamsungSPenUtils.registerListeners();
 		}
 	}
 
 	// Called when we lose the surface
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Log.v(LOG_TAG, "surfaceDestroyed()");
+		Log.v("surfaceDestroyed()");
 
-		// Send a quit message to the application
-		// SDLActivity.nativePause();
-		SDLActivity.nativeQuit();
-
-		// enableSensor(Sensor.TYPE_ACCELEROMETER, false);
-
-	}
-
-	// Called when the surface is resized
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		Log.d(LOG_TAG, "surfaceChanged()");
-
-		int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
-		switch (format) {
-			case PixelFormat.A_8:
-				Log.v(LOG_TAG, "pixel format A_8");
-				break;
-			case PixelFormat.L_8:
-				Log.v(LOG_TAG, "pixel format L_8");
-				break;
-			case PixelFormat.RGBA_8888:
-				Log.v(LOG_TAG, "pixel format RGBA_8888");
-				sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
-				break;
-			case PixelFormat.RGBX_8888:
-				Log.v(LOG_TAG, "pixel format RGBX_8888");
-				sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
-				break;
-			case PixelFormat.RGB_565:
-				Log.v(LOG_TAG, "pixel format RGB_565");
-				sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
-				break;
-			case PixelFormat.RGB_888:
-				Log.v(LOG_TAG, "pixel format RGB_888");
-				// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-				sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
-				break;
-			default:
-				Log.v(LOG_TAG, "pixel format unknown " + format);
-				break;
-		}
-
-		SDLActivity.onNativeResize(width, height, 0x86462004);
-
-		context.startApp();
+        // Call this *before* setting mIsSurfaceReady to 'false'
+        SDLActivity.handlePause();
+        SDLActivity.mIsSurfaceReady = false;
+        SDLActivity.onNativeSurfaceDestroyed();
 
 	}
+
+    // Called when the surface is resized
+    @Override
+    public void surfaceChanged(SurfaceHolder holder,
+                               int format, int width, int height) {
+        Log.v("surfaceChanged()");
+
+        int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
+        switch (format) {
+            case PixelFormat.A_8:
+                Log.v("pixel format A_8");
+                break;
+            case PixelFormat.LA_88:
+                Log.v("pixel format LA_88");
+                break;
+            case PixelFormat.L_8:
+                Log.v("pixel format L_8");
+                break;
+            case PixelFormat.RGBA_4444:
+                Log.v("pixel format RGBA_4444");
+                sdlFormat = 0x15421002; // SDL_PIXELFORMAT_RGBA4444
+                break;
+            case PixelFormat.RGBA_5551:
+                Log.v("pixel format RGBA_5551");
+                sdlFormat = 0x15441002; // SDL_PIXELFORMAT_RGBA5551
+                break;
+            case PixelFormat.RGBA_8888:
+                Log.v("pixel format RGBA_8888");
+                sdlFormat = 0x16462004; // SDL_PIXELFORMAT_RGBA8888
+                break;
+            case PixelFormat.RGBX_8888:
+                Log.v("pixel format RGBX_8888");
+                sdlFormat = 0x16261804; // SDL_PIXELFORMAT_RGBX8888
+                break;
+            case PixelFormat.RGB_332:
+                Log.v("pixel format RGB_332");
+                sdlFormat = 0x14110801; // SDL_PIXELFORMAT_RGB332
+                break;
+            case PixelFormat.RGB_565:
+                Log.v("pixel format RGB_565");
+                sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565
+                break;
+            case PixelFormat.RGB_888:
+                Log.v("pixel format RGB_888");
+                // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
+                sdlFormat = 0x16161804; // SDL_PIXELFORMAT_RGB888
+                break;
+            default:
+                Log.v("pixel format unknown " + format);
+                break;
+        }
+
+       // this.width = width;
+        //this.height = height;
+        SDLActivity.onNativeResize(width, height, sdlFormat);
+        Log.v("Window size:" + width + "x"+height);
+
+        // Set mIsSurfaceReady to 'true' *before* making a call to handleResume
+        SDLActivity.mIsSurfaceReady = true;
+        SDLActivity.onNativeSurfaceChanged();
+
+
+        if (SDLActivity.mSDLThread == null) {
+            // This is the entry point to the C app.
+            // Start up the C app thread and enable sensor input for the first time
+            Log.d("Starting up SDLThread");
+            SDLActivity.mSDLThread = new Thread(new SDLMain(context.app.configuration, ""), "SDLThread");
+            enableSensor(Sensor.TYPE_ACCELEROMETER, true);
+            SDLActivity.mSDLThread.start();
+
+            // Set up a listener thread to catch when the native thread ends
+            new Thread(new Runnable(){
+                @Override
+                public void run(){
+                    try {
+                        SDLActivity.mSDLThread.join();
+                    }
+                    catch(Exception e){
+                        Reporting.report(e);
+                    }
+                    finally{
+                        // Native thread has finished
+                        if (! SDLActivity.mExitCalledFromJava) {
+                            SDLActivity.handleNativeExit();
+                        }
+                    }
+                }
+            }).start();
+        }
+    }
 
 	// unused
 	public void onDraw(Canvas canvas) {
@@ -181,28 +221,38 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
 	// Key events
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		switch (keyCode) {
-			case KeyEvent.KEYCODE_VOLUME_DOWN:
-				return false;
-			case KeyEvent.KEYCODE_VOLUME_UP:
-				return false;
-			case KeyEvent.KEYCODE_VOLUME_MUTE:
-				return false;
-			case KeyEvent.KEYCODE_MENU:
-				return false;
-			default:
-				break;
-		}
 
-		if (event.getAction() == KeyEvent.ACTION_DOWN) {
-			SDLActivity.onNativeKeyDown(keyCode);
-			return true;
-		} else if (event.getAction() == KeyEvent.ACTION_UP) {
-			SDLActivity.onNativeKeyUp(keyCode);
-			return true;
-		}
-		return false;
+    // Dispatch the different events depending on where they come from
+        // Some SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
+        // So, we try to process them as DPAD or GAMEPAD events first, if that fails we try them as KEYBOARD
 
+        if ( (event.getSource() & 0x00000401) != 0 || /* API 12: SOURCE_GAMEPAD */
+                (event.getSource() & InputDevice.SOURCE_DPAD) != 0 ) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (SDLActivity.onNativePadDown(event.getDeviceId(), keyCode) == 0) {
+                    return true;
+                }
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                if (SDLActivity.onNativePadUp(event.getDeviceId(), keyCode) == 0) {
+                    return true;
+                }
+            }
+        }
+
+        if( (event.getSource() & InputDevice.SOURCE_KEYBOARD) != 0) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                Log.v("key down: " + keyCode);
+                SDLActivity.onNativeKeyDown(keyCode);
+                return true;
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP) {
+                Log.v("key up: " + keyCode);
+                SDLActivity.onNativeKeyUp(keyCode);
+                return true;
+            }
+        }
+
+        return false;
 	}
 
 	/**
@@ -214,79 +264,107 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	@SuppressLint("NewApi")
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		int controlsMode = context.app.configuration.getControlsMode();
-		boolean spenEnabled = context.app.configuration.getSpen();
-		int actionPointerIndex = event.getActionIndex();
-		float[] coords = translateCoords(event.getX(actionPointerIndex),
-				event.getY(actionPointerIndex));
-		int action = event.getAction();
+        /* Ref: http://developer.android.com/training/gestures/multi.html */
+        final int touchDevId = event.getDeviceId();
+        final int pointerCount = event.getPointerCount();
+        int action = event.getActionMasked();
+        int pointerFingerId;
+        int mouseButton;
+        int i = -1;
+        float x,y,p;
+        float[] coords;
+        Log.v("Touch event. Event: " + event);
+        // !!! FIXME: dump this SDK check after 2.0.4 ships and require API14.
+        if (event.getSource() == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
+            if (Build.VERSION.SDK_INT < 14) {
+                mouseButton = 1;    // For Android==12 all mouse buttons are the left button
+            } else {
+                try {
+                    mouseButton = (Integer) event.getClass().getMethod("getButtonState").invoke(event);
+                } catch(Exception e) {
+                    mouseButton = 1;    // oh well.
+                }
+            }
+            Log.v("Mouse event. Action: " + action + ", button: " + mouseButton);
+            SDLActivity.onNativeMouse(mouseButton, action, event.getX(0), event.getY(0));
+        } else {
+            switch(action) {
+                case MotionEvent.ACTION_MOVE:
+                    for (i = 0; i < pointerCount; i++) {
+                        pointerFingerId = event.getPointerId(i);
 
-		// S Pen Stuff
-		if (scrolling && spenEnabled) {
-			if (action == MotionEvent.ACTION_DOWN) {
-				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_DOWN, coords[0],
-						coords[1], 0, 2, GESTURE_MOVE,
-						context.app.configuration.getControlsMode());
-				inMiddleOfScroll = true;
-			} else if (action == MotionEvent.ACTION_MOVE) {
-				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_MOVE, coords[0],
-						coords[1], 0, 2, GESTURE_MOVE,
-						context.app.configuration.getControlsMode());
-			} else if (action == MotionEvent.ACTION_UP) {
-				SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, coords[0],
-						coords[1], 0, 2, GESTURE_MOVE,
-						context.app.configuration.getControlsMode());
-				inMiddleOfScroll = false;
-			}
-			return true;
-		}
+                        //x = event.getX(i) / width;
+                        //y = event.getY(i) / height;
 
-		if (controlsMode == Configuration.CONTROLS_NORMAL) {
-			// Forward event to the gesture detector.
-			longPressGestureDetector.onTouchEvent(event);
+                        coords = translateCoords(event.getX(i), event.getY(i));
+                        x = coords[0];
+                        y = coords[1];
 
-			moveGestureDetector.onTouchEvent(event);
-		}
+                        p = event.getPressure(i);
+                        if (p > 1.0f) {
+                            // may be larger than 1.0f on some devices
+                            // see the documentation of getPressure(i)
+                            p = 1.0f;
+                        }
+                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
+                    }
+                    break;
 
-		if (controlsMode == Configuration.CONTROLS_DESKTOP
-				&& Build.VERSION.SDK_INT >= 14
-				&& event.getToolType(actionPointerIndex) != MotionEvent.TOOL_TYPE_FINGER) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_DOWN:
+                    // Primary pointer up/down, the index is always zero
+                    i = 0;
+                case MotionEvent.ACTION_POINTER_UP:
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    // Non primary pointer up/down
+                    if (i == -1) {
+                        i = event.getActionIndex();
+                    }
 
-			coords = translateCoords(event.getX(actionPointerIndex),
-					event.getY(actionPointerIndex));
+                    pointerFingerId = event.getPointerId(i);
+                    //x = event.getX(i) / width;
+                    //y = event.getY(i) / height;
 
-			SDLActivity.onNativeTouch(event.getDeviceId(), event.getButtonState(),
-					event.getAction(), coords[0], coords[1], 0, 0, 0,
-					context.app.configuration.getControlsMode());
-			return true;
-		}
+                    coords = translateCoords(event.getX(i), event.getY(i));
+                    x = coords[0];
+                    y = coords[1];
 
-		final int pointerCount = event.getPointerCount();
+                    p = event.getPressure(i);
+                    if (p > 1.0f) {
+                        // may be larger than 1.0f on some devices
+                        // see the documentation of getPressure(i)
+                        p = 1.0f;
+                    }
+                    SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action, x, y, p);
+                    break;
 
-		if (!moveGestureDetector.isInProgress() && pointerCount < 2) {
-			final int touchDevId = event.getDeviceId();
-			int pointerFingerId = event.getPointerId(actionPointerIndex);
-			float p = event.getPressure(actionPointerIndex);
+                case MotionEvent.ACTION_CANCEL:
+                    for (i = 0; i < pointerCount; i++) {
+                        pointerFingerId = event.getPointerId(i);
 
-			if (action == MotionEvent.ACTION_MOVE && pointerCount == 1) {
-				// TODO send motion to every pointer if its position has
-				// changed since prev event.
-				for (int i = 0; i < pointerCount; i++) {
-					pointerFingerId = event.getPointerId(i);
-					coords = translateCoords(event.getX(actionPointerIndex),
-							event.getY(actionPointerIndex));
-					p = event.getPressure(i);
-					SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
-							coords[0], coords[1], p, pointerCount, 0,
-							Configuration.CONTROLS_NORMAL);
-				}
-			} else {
-				SDLActivity.onNativeTouch(touchDevId, pointerFingerId, action,
-						coords[0], coords[1], p, pointerCount, 0,
-						Configuration.CONTROLS_NORMAL);
-			}
-		}
-		return true;
+                        //x = event.getX(i) / width;
+                        //y = event.getY(i) / height;
+
+                        coords = translateCoords(event.getX(i), event.getY(i));
+                        x = coords[0];
+                        y = coords[1];
+
+                        p = event.getPressure(i);
+                        if (p > 1.0f) {
+                            // may be larger than 1.0f on some devices
+                            // see the documentation of getPressure(i)
+                            p = 1.0f;
+                        }
+                        SDLActivity.onNativeTouch(touchDevId, pointerFingerId, MotionEvent.ACTION_UP, x, y, p);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return true;
 	}
 
 	/**
@@ -301,46 +379,61 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		return new float[] { newX, newY };
 	}
 
-	// Sensor events
-	public void enableSensor(int sensortype, boolean enabled) {
-		// TODO: This uses getDefaultSensor - what if we have >1 accels?
+    // Sensor events
+    public void enableSensor(int sensortype, boolean enabled) {
+        // TODO: This uses getDefaultSensor - what if we have >1 accels?
+        if (enabled) {
+            mSensorManager.registerListener(this,
+                    mSensorManager.getDefaultSensor(sensortype),
+                    SensorManager.SENSOR_DELAY_GAME, null);
+        } else {
+            mSensorManager.unregisterListener(this,
+                    mSensorManager.getDefaultSensor(sensortype));
+        }
+    }
 
-		if (enabled) {
-			if (mSensorManager == null) {
-				mSensorManager = (SensorManager) context
-						.getSystemService(Context.SENSOR_SERVICE);
-			}
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // TODO
+    }
 
-			mSensorManager.registerListener(this,
-					mSensorManager.getDefaultSensor(sensortype),
-					SensorManager.SENSOR_DELAY_GAME, null);
-		} else {
-			if (mSensorManager != null) {
-				mSensorManager.unregisterListener(this,
-						mSensorManager.getDefaultSensor(sensortype));
-			}
-		}
-	}
 
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO
-	}
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x, y;
+            switch (mDisplay.getRotation()) {
+                case Surface.ROTATION_90:
+                    x = -event.values[1];
+                    y = event.values[0];
+                    break;
+                case Surface.ROTATION_270:
+                    x = event.values[1];
+                    y = -event.values[0];
+                    break;
+                case Surface.ROTATION_180:
+                    x = -event.values[1];
+                    y = -event.values[0];
+                    break;
+                default:
+                    x = event.values[0];
+                    y = event.values[1];
+                    break;
+            }
+            SDLActivity.onNativeAccel(-x / SensorManager.GRAVITY_EARTH,
+                    y / SensorManager.GRAVITY_EARTH,
+                    event.values[2] / SensorManager.GRAVITY_EARTH - 1);
+        }
+    }
 
-	public void onSensorChanged(SensorEvent event) {
-		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			SDLActivity.onNativeAccel(event.values[0] / SensorManager.GRAVITY_EARTH,
-					event.values[1] / SensorManager.GRAVITY_EARTH, event.values[2]
-							/ SensorManager.GRAVITY_EARTH);
-		}
-	}
-
-	public void setScrolling(boolean scrolling) {
+    /*public void setScrolling(boolean scrolling) {
 		if (!scrolling && inMiddleOfScroll) {
 			SDLActivity.onNativeTouch(0, 0, MotionEvent.ACTION_UP, -1, -1, 0, 2, 2,
 					context.app.configuration.getControlsMode());
 			inMiddleOfScroll = false;
 		}
 		this.scrolling = scrolling;
-	}
+	}*/
+
 
 }

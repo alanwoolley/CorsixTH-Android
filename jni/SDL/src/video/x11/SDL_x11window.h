@@ -1,33 +1,50 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifndef _SDL_x11window_h
 #define _SDL_x11window_h
+
+/* We need to queue the focus in/out changes because they may occur during
+   video mode changes and we can respond to them by triggering more mode
+   changes.
+*/
+#define PENDING_FOCUS_TIME   200
+
+#if SDL_VIDEO_OPENGL_EGL   
+#include <EGL/egl.h>
+#endif
+
+typedef enum
+{
+    PENDING_FOCUS_NONE,
+    PENDING_FOCUS_IN,
+    PENDING_FOCUS_OUT
+} PendingFocusEnum;
 
 typedef struct
 {
     SDL_Window *window;
     Window xwindow;
+    Window fswindow;  /* used if we can't have the WM handle fullscreen. */
     Visual *visual;
     Colormap colormap;
 #ifndef NO_SHARED_MEMORY
@@ -39,8 +56,19 @@ typedef struct
     GC gc;
     XIC ic;
     SDL_bool created;
+    PendingFocusEnum pending_focus;
+    Uint32 pending_focus_time;
+    XConfigureEvent last_xconfigure;
     struct SDL_VideoData *videodata;
+    Atom xdnd_req;
+    Window xdnd_source;
+#if SDL_VIDEO_OPENGL_EGL  
+    EGLSurface egl_surface;
+#endif
 } SDL_WindowData;
+
+extern void X11_SetNetWMState(_THIS, Window xwindow, Uint32 flags);
+extern Uint32 X11_GetNetWMState(_THIS, Window xwindow);
 
 extern int X11_CreateWindow(_THIS, SDL_Window * window);
 extern int X11_CreateWindowFrom(_THIS, SDL_Window * window, const void *data);
@@ -48,6 +76,8 @@ extern char *X11_GetWindowTitle(_THIS, Window xwindow);
 extern void X11_SetWindowTitle(_THIS, SDL_Window * window);
 extern void X11_SetWindowIcon(_THIS, SDL_Window * window, SDL_Surface * icon);
 extern void X11_SetWindowPosition(_THIS, SDL_Window * window);
+extern void X11_SetWindowMinimumSize(_THIS, SDL_Window * window);
+extern void X11_SetWindowMaximumSize(_THIS, SDL_Window * window);
 extern void X11_SetWindowSize(_THIS, SDL_Window * window);
 extern void X11_ShowWindow(_THIS, SDL_Window * window);
 extern void X11_HideWindow(_THIS, SDL_Window * window);
@@ -55,12 +85,14 @@ extern void X11_RaiseWindow(_THIS, SDL_Window * window);
 extern void X11_MaximizeWindow(_THIS, SDL_Window * window);
 extern void X11_MinimizeWindow(_THIS, SDL_Window * window);
 extern void X11_RestoreWindow(_THIS, SDL_Window * window);
+extern void X11_SetWindowBordered(_THIS, SDL_Window * window, SDL_bool bordered);
 extern void X11_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display, SDL_bool fullscreen);
 extern int X11_SetWindowGammaRamp(_THIS, SDL_Window * window, const Uint16 * ramp);
-extern void X11_SetWindowGrab(_THIS, SDL_Window * window);
+extern void X11_SetWindowGrab(_THIS, SDL_Window * window, SDL_bool grabbed);
 extern void X11_DestroyWindow(_THIS, SDL_Window * window);
 extern SDL_bool X11_GetWindowWMInfo(_THIS, SDL_Window * window,
                                     struct SDL_SysWMinfo *info);
+extern int X11_SetWindowHitTest(SDL_Window *window, SDL_bool enabled);
 
 #endif /* _SDL_x11window_h */
 

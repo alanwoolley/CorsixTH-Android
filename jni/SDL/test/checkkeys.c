@@ -1,6 +1,17 @@
+/*
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely.
+*/
 
 /* Simple program:  Loop, watching keystrokes
-   Note that you need to call SDL_PollEvent() or SDL_WaitEvent() to 
+   Note that you need to call SDL_PollEvent() or SDL_WaitEvent() to
    pump the event loop and catch keystrokes.
 */
 
@@ -8,7 +19,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
+
 #include "SDL.h"
+
+int done;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -28,8 +45,8 @@ print_string(char **text, size_t *maxlen, const char *fmt, ...)
     len = SDL_vsnprintf(*text, *maxlen, fmt, ap);
     if (len > 0) {
         *text += len;
-        if (len < *maxlen) {
-            *maxlen -= len;
+        if ( ((size_t) len) < *maxlen ) {
+            *maxlen -= (size_t) len;
         } else {
             *maxlen = 0;
         }
@@ -72,6 +89,20 @@ print_modifiers(char **text, size_t *maxlen)
 }
 
 static void
+PrintModifierState()
+{
+    char message[512];
+    char *spot;
+    size_t left;
+
+    spot = message;
+    left = sizeof(message);
+
+    print_modifiers(&spot, &left);
+    SDL_Log("Initial state:%s\n", message);
+}
+
+static void
 PrintKey(SDL_Keysym * sym, SDL_bool pressed, SDL_bool repeat)
 {
     char message[512];
@@ -94,85 +125,47 @@ PrintKey(SDL_Keysym * sym, SDL_bool pressed, SDL_bool repeat)
                 "Unknown Key (scancode %d = %s) %s ",
                 sym->scancode,
                 SDL_GetScancodeName(sym->scancode),
-                pressed ? "pressed" : "released");
-    }
-
-    /* Print the translated character, if one exists */
-    if (sym->unicode) {
-        /* Is it a control-character? */
-        if (sym->unicode < ' ') {
-            print_string(&spot, &left, " (^%c)", sym->unicode + '@');
-        } else {
-#ifdef UNICODE
-            print_string(&spot, &left, " (%c)", sym->unicode);
-#else
-            /* This is a Latin-1 program, so only show 8-bits */
-            if (!(sym->unicode & 0xFF00))
-                print_string(&spot, &left, " (%c)", sym->unicode);
-            else
-                print_string(&spot, &left, " (0x%X)", sym->unicode);
-#endif
-        }
+                pressed ? "pressed " : "released");
     }
     print_modifiers(&spot, &left);
     if (repeat) {
         print_string(&spot, &left, " (repeat)");
     }
-    SDL_Log("%s", message);
+    SDL_Log("%s\n", message);
 }
 
 static void
-PrintText(char *text)
+PrintText(char *eventtype, char *text)
 {
-    SDL_Log("Text: %s", text);
+    char *spot, expanded[1024];
+
+    expanded[0] = '\0';
+    for ( spot = text; *spot; ++spot )
+    {
+        size_t length = SDL_strlen(expanded);
+        SDL_snprintf(expanded + length, sizeof(expanded) - length, "\\x%.2x", (unsigned char)*spot);
+    }
+    SDL_Log("%s Text (%s): \"%s%s\"\n", eventtype, expanded, *text == '"' ? "\\" : "", text);
 }
 
-#if __IPHONEOS__
-extern DECLSPEC int SDLCALL SDL_iPhoneKeyboardShow(SDL_Window * window);
-#endif
-
-int
-main(int argc, char *argv[])
+void
+loop()
 {
-    SDL_Window *window;
     SDL_Event event;
-    int done;
+    /* Check for events */
+    /*SDL_WaitEvent(&event); emscripten does not like waiting*/
 
-    /* Initialize SDL */
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-        return (1);
-    }
-
-    /* Set 640x480 video mode */
-    window = SDL_CreateWindow("CheckKeys Test",
-                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              640, 480, 0);
-    if (!window) {
-        fprintf(stderr, "Couldn't create 640x480 window: %s\n",
-                SDL_GetError());
-        quit(2);
-    }
-
-#if __IPHONEOS__
-    /* Creating the context creates the view, which we need to show keyboard */
-    SDL_GL_CreateContext(window);
-    SDL_iPhoneKeyboardShow(window);
-#endif
-    
-
-    /* Watch keystrokes */
-    done = 0;
-    while (!done) {
-        /* Check for events */
-        SDL_WaitEvent(&event);
+    while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_KEYDOWN:
         case SDL_KEYUP:
-            PrintKey(&event.key.keysym, event.key.state, event.key.repeat);
+		    PrintKey(&event.key.keysym, (event.key.state == SDL_PRESSED) ? SDL_TRUE : SDL_FALSE, (event.key.repeat) ? SDL_TRUE : SDL_FALSE);
+            break;
+        case SDL_TEXTEDITING:
+            PrintText("EDIT", event.text.text);
             break;
         case SDL_TEXTINPUT:
-            PrintText(event.text.text);
+            PrintText("INPUT", event.text.text);
             break;
         case SDL_MOUSEBUTTONDOWN:
             /* Any button press quits the app... */
@@ -183,6 +176,58 @@ main(int argc, char *argv[])
             break;
         }
     }
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
+}
+
+int
+main(int argc, char *argv[])
+{
+    SDL_Window *window;
+	
+	/* Enable standard application logging */
+	SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+
+    /* Initialize SDL */
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
+        return (1);
+    }
+
+    /* Set 640x480 video mode */
+    window = SDL_CreateWindow("CheckKeys Test",
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              640, 480, 0);
+    if (!window) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create 640x480 window: %s\n",
+                SDL_GetError());
+        quit(2);
+    }
+
+#if __IPHONEOS__
+    /* Creating the context creates the view, which we need to show keyboard */
+    SDL_GL_CreateContext(window);
+#endif
+
+    SDL_StartTextInput();
+
+    /* Print initial modifier state */
+    SDL_PumpEvents();
+    PrintModifierState();
+
+    /* Watch keystrokes */
+    done = 0;
+
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, 0, 1);
+#else
+    while (!done) {
+        loop();
+    }
+#endif
 
     SDL_Quit();
     return (0);

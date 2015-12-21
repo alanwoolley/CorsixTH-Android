@@ -1,25 +1,10 @@
 /*
-
     TiMidity -- Experimental MIDI to WAVE converter
     Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    playmidi.c -- random stuff in need of rearrangement
-
-*/
+    it under the terms of the Perl Artistic License, available in COPYING.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -341,7 +326,7 @@ static void recompute_amp(int v)
    {
     int note = voice[v].sample->note_to_use;
     if (note>0 && drumvolume[chan][note]>=0) vol = drumvolume[chan][note];
-    if (note>0 && drumpanpot[chan][note]>=0) panning = drumvolume[chan][note];
+    if (note>0 && drumpanpot[chan][note]>=0) panning = drumpanpot[chan][note];
    }
 
   if (opt_expression_curve == 2) curved_expression = 127.0 * vol_table[expr];
@@ -1691,34 +1676,7 @@ void Timidity_SetVolume(int volume)
   ctl->master_volume(amplification);
 }
 
-MidiSong *Timidity_LoadSong(const char *midifile)
-{
-  MidiSong *song;
-  int32 events;
-  SDL_RWops *rw;
-
-  /* Allocate memory for the song */
-  song = (MidiSong *)safe_malloc(sizeof(*song));
-  memset(song, 0, sizeof(*song));
-
-  /* Open the file */
-  strcpy(midi_name, midifile);
-
-  rw = SDL_RWFromFile(midifile, "rb");
-  if ( rw != NULL ) {
-    song->events=read_midi_file(rw, &events, &song->samples);
-    SDL_RWclose(rw);
-  }
-
-  /* Make sure everything is okay */
-  if (!song->events) {
-    free(song);
-    song = NULL;
-  }
-  return(song);
-}
-
-MidiSong *Timidity_LoadSong_RW(SDL_RWops *rw)
+MidiSong *Timidity_LoadSong_RW(SDL_RWops *src, int freesrc)
 {
   MidiSong *song;
   int32 events;
@@ -1729,10 +1687,12 @@ MidiSong *Timidity_LoadSong_RW(SDL_RWops *rw)
 
   strcpy(midi_name, "SDLrwops source");
 
-  song->events=read_midi_file(rw, &events, &song->samples);
-
-  /* Make sure everything is okay */
-  if (!song->events) {
+  song->events = read_midi_file(src, &events, &song->samples);
+  if (song->events) {
+    if (freesrc) {
+      SDL_RWclose(src);
+    }
+  } else {
     free(song);
     song = NULL;
   }

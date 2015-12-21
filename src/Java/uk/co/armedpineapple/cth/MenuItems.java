@@ -11,6 +11,7 @@ public enum MenuItems {
     SAVE(R.string.menuitem_save, null, false),
     RESTART(R.string.menuitem_restart, null, false),
     SETTINGS(R.string.menuitem_settings, null, false),
+    JUKEBOX(R.string.menuitem_jukebox, null, false),
     CHEATS(R.string.menuitem_cheats, null, true),
     HELP(R.string.menuitem_help, null, false),
     ABOUT(R.string.menuitem_about, null, false),

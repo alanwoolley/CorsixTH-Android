@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
-    android:versionCode="162"
-    android:versionName="0.8-hotfix_dex">
+>
 
 
     <!--
@@ -77,7 +76,9 @@
             android:excludeFromRecents="true"
             android:theme="@style/Dialogs"/>
 
-
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="2c3cb65ca0b9c283a9fbd6d82f19f1a951dd2b20" />
     </application>
 
 </manifest>

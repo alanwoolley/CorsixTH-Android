@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="SDL"
+	Name="SDL2"
 	ProjectGUID="{81CE8DAF-EBB2-4761-8E45-B71ABCCA8C68}"
 	RootNamespace="SDL"
 	TargetFrameworkVersion="131072"
@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -51,15 +51,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(SolutionDir)/../include"
+				AdditionalUsingDirectories=""
 				PreprocessorDefinitions="_DEBUG;_WINDOWS"
-				RuntimeLibrary="3"
+				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
+				EnableEnhancedInstructionSet="1"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
-				CompileAs="0"
+				DebugInformationFormat="1"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -67,7 +69,6 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -75,8 +76,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib imm32.lib version.lib"
-				OutputFile="$(IntDir)\SDL.dll"
-				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -105,8 +104,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -135,15 +134,16 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\include"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="$(SolutionDir)/../include"
+				AdditionalUsingDirectories=""
 				PreprocessorDefinitions="_DEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
+				EnableEnhancedInstructionSet="1"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CompileAs="0"
+				DebugInformationFormat="1"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -151,7 +151,6 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -159,12 +158,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib imm32.lib version.lib"
-				OutputFile="$(IntDir)\SDL.dll"
-				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -190,8 +186,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -221,17 +217,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\..\include"
+				AdditionalIncludeDirectories="$(SolutionDir)/../include"
+				AdditionalUsingDirectories=""
 				PreprocessorDefinitions="NDEBUG;_WINDOWS"
-				StringPooling="true"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				CompileAs="0"
+				DebugInformationFormat="3"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -239,7 +233,6 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -247,10 +240,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib imm32.lib version.lib"
-				OutputFile="$(IntDir)\SDL.dll"
-				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -276,8 +270,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -306,17 +300,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="false"
-				AdditionalIncludeDirectories="..\..\include"
+				AdditionalIncludeDirectories="$(SolutionDir)/../include"
+				AdditionalUsingDirectories=""
 				PreprocessorDefinitions="NDEBUG;_WINDOWS"
-				StringPooling="true"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				CompileAs="0"
+				DebugInformationFormat="3"
+				OmitDefaultLibName="true"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -324,7 +316,6 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -332,11 +323,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib imm32.lib version.lib"
-				OutputFile="$(IntDir)\SDL.dll"
-				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
-				TargetMachine="17"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -368,6 +359,14 @@
 			Name="API Headers"
 			>
 			<File
+				RelativePath="..\..\include\begin_code.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\close_code.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL.h"
 				>
 			</File>
@@ -384,15 +383,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_bits.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_blendmode.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\SDL_clipboard.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\SDL_compat.h"
 				>
 			</File>
 			<File
@@ -412,6 +411,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_egl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_endian.h"
 				>
 			</File>
@@ -424,6 +427,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_filesystem.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_gamecontroller.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_gesture.h"
 				>
 			</File>
@@ -433,10 +444,6 @@
 			</File>
 			<File
 				RelativePath="..\..\include\SDL_hints.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\SDL_input.h"
 				>
 			</File>
 			<File
@@ -464,6 +471,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_messagebox.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_mouse.h"
 				>
 			</File>
@@ -480,7 +491,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_opengl_glext.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_opengles.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_opengles2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_opengles2_gl2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_opengles2_gl2ext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_opengles2_gl2platform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_opengles2_khrplatform.h"
 				>
 			</File>
 			<File
@@ -532,7 +567,59 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\include\SDL_system.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\include\SDL_syswm.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_assert.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_common.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_compare.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_crc32.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_font.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_fuzzer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_harness.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_images.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_log.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_md5.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\SDL_test_random.h"
 				>
 			</File>
 			<File
@@ -569,10 +656,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\audio\windx5\directx.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\libm\e_atan2.c"
 			>
 		</File>
@@ -602,6 +685,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\libm\k_sin.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\libm\k_tan.c"
 			>
 		</File>
 		<File
@@ -646,6 +733,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\libm\s_sin.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\libm\s_tan.c"
 			>
 		</File>
 		<File
@@ -777,19 +868,43 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\SDL_compat.c"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\cpuinfo\SDL_cpuinfo.c"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\audio\windib\SDL_dibaudio.c"
+			RelativePath="..\..\src\render\SDL_d3dmath.c"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\audio\windib\SDL_dibaudio.h"
+			RelativePath="..\..\src\render\SDL_d3dmath.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\haptic\windows\SDL_dinputhaptic.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\haptic\windows\SDL_dinputhaptic_c.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\windows\SDL_dinputjoystick.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\windows\SDL_dinputjoystick_c.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\audio\directsound\SDL_directsound.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\audio\directsound\SDL_directsound.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\core\windows\SDL_directx.h"
 			>
 		</File>
 		<File
@@ -821,6 +936,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\events\SDL_dropevents.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\events\SDL_dropevents_c.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\audio\dummy\SDL_dummyaudio.c"
 			>
 		</File>
@@ -829,15 +952,23 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\audio\windx5\SDL_dx5audio.c"
+			RelativePath="..\..\src\dynapi\SDL_dynapi.c"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\audio\windx5\SDL_dx5audio.h"
+			RelativePath="..\..\src\dynapi\SDL_dynapi.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\joystick\windows\SDL_dxjoystick.c"
+			RelativePath="..\..\src\dynapi\SDL_dynapi_overrides.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\dynapi\SDL_dynapi_procs.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\video\SDL_egl.c"
 			>
 		</File>
 		<File
@@ -857,15 +988,11 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\SDL_fatal.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\SDL_fatal.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\video\SDL_fillrect.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\SDL_gamecontroller.c"
 			>
 		</File>
 		<File
@@ -894,6 +1021,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\SDL_hints.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\SDL_hints_c.h"
 			>
 		</File>
 		<File
@@ -926,30 +1057,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\audio\SDL_mixer.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_mixer_m68k.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_mixer_m68k.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_mixer_MMX.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_mixer_MMX.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_mixer_MMX_VC.c"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\audio\SDL_mixer_MMX_VC.h"
 			>
 		</File>
 		<File
@@ -1025,7 +1132,15 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\render\direct3d11\SDL_render_d3d11.c"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\render\opengl\SDL_render_gl.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\render\opengles2\SDL_render_gles2.c"
 			>
 		</File>
 		<File
@@ -1045,6 +1160,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\render\software\SDL_rotate.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\render\software\SDL_rotate.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\file\SDL_rwops.c"
 			>
 		</File>
@@ -1054,6 +1177,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\render\opengl\SDL_shaders_gl.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\render\opengles2\SDL_shaders_gles2.c"
 			>
 		</File>
 		<File
@@ -1089,11 +1216,15 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\thread\generic\SDL_syscond.c"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\events\SDL_sysevents.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\haptic\windows\SDL_syshaptic.c"
+			RelativePath="..\..\src\filesystem\windows\SDL_sysfilesystem.c"
 			>
 		</File>
 		<File
@@ -1142,6 +1273,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\timer\SDL_systimer.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\thread\windows\SDL_systls.c"
 			>
 		</File>
 		<File
@@ -1229,11 +1364,35 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\haptic\windows\SDL_windowshaptic.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\haptic\windows\SDL_windowshaptic_c.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\windows\SDL_windowsjoystick.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\windows\SDL_windowsjoystick_c.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\video\windows\SDL_windowskeyboard.c"
 			>
 		</File>
 		<File
 			RelativePath="..\..\src\video\windows\SDL_windowskeyboard.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\video\windows\SDL_windowsmessagebox.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\video\windows\SDL_windowsmessagebox.h"
 			>
 		</File>
 		<File
@@ -1261,6 +1420,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\video\windows\SDL_windowsopengles.c"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\video\windows\SDL_windowsshape.c"
 			>
 		</File>
@@ -1285,6 +1448,42 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\audio\winmm\SDL_winmm.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\audio\winmm\SDL_winmm.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\audio\xaudio2\SDL_xaudio2.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\core\windows\SDL_xinput.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\core\windows\SDL_xinput.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\haptic\windows\SDL_xinputhaptic.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\haptic\windows\SDL_xinputhaptic_c.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\windows\SDL_xinputjoystick.c"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\joystick\windows\SDL_xinputjoystick_c.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\render\SDL_yuv_mmx.c"
 			>
 		</File>
@@ -1297,7 +1496,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Version.rc"
+			RelativePath="..\..\src\main\windows\version.rc"
 			>
 		</File>
 		<File

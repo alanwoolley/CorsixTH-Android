@@ -1,0 +1,11 @@
+SDL2_gfx ChangeLog
+
+Mon, Oct 28, 2013  8:00:05 AM
+- bugfix to _aaline special cases
+- added image filter functions
+- added to documentation
+- updated readme and changelog
+- updated solutions for VS2010 and VS2012
+
+Tue, Sep 04, 2012  8:27:44 AM
+- initial release of development version (partially finished)

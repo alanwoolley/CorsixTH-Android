@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 #include "SDL_video.h"
 #include "SDL_blit.h"
@@ -438,30 +437,29 @@ Blit1toNAlpha(SDL_BlitInfo * info)
     SDL_PixelFormat *dstfmt = info->dst_fmt;
     const SDL_Color *srcpal = info->src_fmt->palette->colors;
     int dstbpp;
-    const int A = info->a;
+    Uint32 pixel;
+    unsigned sR, sG, sB;
+    unsigned dR, dG, dB, dA;
+    const unsigned A = info->a;
 
     /* Set up some basic variables */
     dstbpp = dstfmt->BytesPerPixel;
 
     while (height--) {
-        int sR, sG, sB;
-        int dR, dG, dB;
-	    	/* *INDENT-OFF* */
-	    	DUFFS_LOOP4(
-			{
-			        Uint32 pixel;
-				sR = srcpal[*src].r;
-				sG = srcpal[*src].g;
-				sB = srcpal[*src].b;
-				DISEMBLE_RGB(dst, dstbpp, dstfmt,
-					     pixel, dR, dG, dB);
-				ALPHA_BLEND(sR, sG, sB, A, dR, dG, dB);
-			  	ASSEMBLE_RGB(dst, dstbpp, dstfmt, dR, dG, dB);
-				src++;
-				dst += dstbpp;
-			},
-			width);
-	    	/* *INDENT-ON* */
+        /* *INDENT-OFF* */
+        DUFFS_LOOP4(
+        {
+            sR = srcpal[*src].r;
+            sG = srcpal[*src].g;
+            sB = srcpal[*src].b;
+            DISEMBLE_RGBA(dst, dstbpp, dstfmt, pixel, dR, dG, dB, dA);
+            ALPHA_BLEND_RGBA(sR, sG, sB, A, dR, dG, dB, dA);
+            ASSEMBLE_RGBA(dst, dstbpp, dstfmt, dR, dG, dB, dA);
+            src++;
+            dst += dstbpp;
+        },
+        width);
+        /* *INDENT-ON* */
         src += srcskip;
         dst += dstskip;
     }
@@ -480,26 +478,25 @@ Blit1toNAlphaKey(SDL_BlitInfo * info)
     const SDL_Color *srcpal = info->src_fmt->palette->colors;
     Uint32 ckey = info->colorkey;
     int dstbpp;
-    const int A = info->a;
+    Uint32 pixel;
+    unsigned sR, sG, sB;
+    unsigned dR, dG, dB, dA;
+    const unsigned A = info->a;
 
     /* Set up some basic variables */
     dstbpp = dstfmt->BytesPerPixel;
 
     while (height--) {
-        int sR, sG, sB;
-        int dR, dG, dB;
 		/* *INDENT-OFF* */
 		DUFFS_LOOP(
 		{
 			if ( *src != ckey ) {
-			        Uint32 pixel;
 				sR = srcpal[*src].r;
 				sG = srcpal[*src].g;
 				sB = srcpal[*src].b;
-				DISEMBLE_RGB(dst, dstbpp, dstfmt,
-							pixel, dR, dG, dB);
-				ALPHA_BLEND(sR, sG, sB, A, dR, dG, dB);
-			  	ASSEMBLE_RGB(dst, dstbpp, dstfmt, dR, dG, dB);
+				DISEMBLE_RGBA(dst, dstbpp, dstfmt, pixel, dR, dG, dB, dA);
+				ALPHA_BLEND_RGBA(sR, sG, sB, A, dR, dG, dB, dA);
+			  	ASSEMBLE_RGBA(dst, dstbpp, dstfmt, dR, dG, dB, dA);
 			}
 			src++;
 			dst += dstbpp;
@@ -512,11 +509,11 @@ Blit1toNAlphaKey(SDL_BlitInfo * info)
 }
 
 static const SDL_BlitFunc one_blit[] = {
-    NULL, Blit1to1, Blit1to2, Blit1to3, Blit1to4
+    (SDL_BlitFunc) NULL, Blit1to1, Blit1to2, Blit1to3, Blit1to4
 };
 
 static const SDL_BlitFunc one_blitkey[] = {
-    NULL, Blit1to1Key, Blit1to2Key, Blit1to3Key, Blit1to4Key
+    (SDL_BlitFunc) NULL, Blit1to1Key, Blit1to2Key, Blit1to3Key, Blit1to4Key
 };
 
 SDL_BlitFunc
@@ -542,12 +539,12 @@ SDL_CalculateBlit1(SDL_Surface * surface)
         /* Supporting 8bpp->8bpp alpha is doable but requires lots of
            tables which consume space and takes time to precompute,
            so is better left to the user */
-        return which >= 2 ? Blit1toNAlpha : NULL;
+        return which >= 2 ? Blit1toNAlpha : (SDL_BlitFunc) NULL;
 
     case SDL_COPY_COLORKEY | SDL_COPY_MODULATE_ALPHA | SDL_COPY_BLEND:
-        return which >= 2 ? Blit1toNAlphaKey : NULL;
+        return which >= 2 ? Blit1toNAlphaKey : (SDL_BlitFunc) NULL;
     }
-    return NULL;
+    return (SDL_BlitFunc) NULL;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

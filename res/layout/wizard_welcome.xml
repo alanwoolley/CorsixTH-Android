@@ -11,7 +11,9 @@
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/header_image_description"
         android:padding="10dp"
-        android:src="@drawable/cth" />
+        android:src="@drawable/cth"
+        android:scaleType="center"
+        android:adjustViewBounds="false" />
 
     <RelativeLayout
         android:id="@+id/text"

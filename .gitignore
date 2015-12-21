@@ -27,8 +27,7 @@ local.properties
 proguard/
 
 # Android Studio
-.idea/workspace.xml
-.idea/tasks.xml
+.idea/
 .gradle
 /out
 /build
@@ -49,5 +48,7 @@ signing.properties
 
 # c9 IDE
 .c9revisions
+
+fabric.properties
 
 

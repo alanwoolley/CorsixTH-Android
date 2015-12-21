@@ -59,7 +59,7 @@ static char rcsid[] = "$NetBSD: e_pow.c,v 1.9 1995/05/12 04:57:32 jtc Exp $";
  * to produce the hexadecimal values shown.
  */
 
-#include "math.h"
+#include "math_libm.h"
 #include "math_private.h"
 
 libm_hidden_proto(scalbn)
@@ -178,7 +178,7 @@ libm_hidden_proto(scalbn)
          /* special value of x */
          if (lx == 0) {
              if (ix == 0x7ff00000 || ix == 0 || ix == 0x3ff00000) {
-                 z = ax;        /*x is +-0,+-inf,+-1 */
+                 z = ax;        /* x is +-0,+-inf,+-1 */
                  if (hy < 0)
                      z = one / z;       /* z = (1/|x|) */
                  if (hx < 0) {

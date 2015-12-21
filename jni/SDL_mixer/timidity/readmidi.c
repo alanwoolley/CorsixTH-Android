@@ -1,23 +1,10 @@
 /*
-
     TiMidity -- Experimental MIDI to WAVE converter
     Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+    it under the terms of the Perl Artistic License, available in COPYING.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,9 +98,9 @@ static int sysex(uint32 len, uint8 *syschan, uint8 *sysa, uint8 *sysb, SDL_RWops
   if (id==0x7f && len==7 && port==0x7f && model==0x04 && adhi==0x01)
     {
       ctl->cmsg(CMSG_TEXT, VERB_DEBUG, "Master Volume %d", s[4]+(s[5]<<7));
-      free(s);
       *sysa = s[4];
       *sysb = s[5];
+      free(s);
       return ME_MASTERVOLUME;
       /** return s[4]+(s[5]<<7); **/
     }
@@ -544,6 +531,7 @@ static int read_track(int append)
   MidiEventList *meep;
   MidiEventList *next, *new;
   int32 len;
+  Sint64 next_pos, pos;
   char tmp[4];
 
   meep=evlist;
@@ -565,7 +553,7 @@ static int read_track(int append)
       return -1;
     }
   len=BE_LONG(len);
-
+  next_pos = SDL_RWtell(rw) + len;
   if (memcmp(tmp, "MTrk", 4))
     {
       ctl->cmsg(CMSG_ERROR, VERB_NORMAL,
@@ -580,6 +568,9 @@ static int read_track(int append)
 
       if (new==MAGIC_EOT) /* End-of-track Hack. */
 	{
+          pos = SDL_RWtell(rw);
+          if (pos < next_pos)
+            SDL_RWseek(rw, next_pos - pos, RW_SEEK_CUR);
 	  return 0;
 	}
 
@@ -689,6 +680,8 @@ static MidiEvent *groom_list(int32 divisions,int32 *eventsp,int32 *samplesp)
 	  compute_sample_increment(tempo, divisions);
 	  skip_this_event=1;
 	}
+      else if (meep->event.channel >= MAXCHAN)
+	skip_this_event=1;
       else if ((quietchannels & (1<<meep->event.channel)))
 	skip_this_event=1;
       else switch (meep->event.type)

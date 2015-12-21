@@ -1,26 +1,25 @@
 /*
-    SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2009 Sam Lantinga
+  SDL_mixer:  An audio mixer library based on the SDL library
+  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 
-    Sam Lantinga
-    slouken@libsdl.org
-
-    Header to handle loading FLAC music files in SDL.
-	    									~ Austen Dicken (admin@cvpcs.org)
+  Header to handle loading FLAC music files in SDL.
+    ~ Austen Dicken (admin@cvpcs.org)
 */
 
 /* $Id:  $ */
@@ -30,32 +29,33 @@
 #include <FLAC/stream_decoder.h>
 
 typedef struct {
-	FLAC__uint64 sample_size;
-	unsigned sample_rate;
-	unsigned channels;
-	unsigned bits_per_sample;
-	FLAC__uint64 total_samples;
+    FLAC__uint64 sample_size;
+    unsigned sample_rate;
+    unsigned channels;
+    unsigned bits_per_sample;
+    FLAC__uint64 total_samples;
 
-	// the following are used to handle the callback nature of the writer
-	int max_to_read;
-	char *data;				// pointer to beginning of data array
-	int data_len;			// size of data array
-	int data_read;			// amount of data array used
-	char *overflow;			// pointer to beginning of overflow array
-	int overflow_len;		// size of overflow array
-	int overflow_read;		// amount of overflow array used
+    // the following are used to handle the callback nature of the writer
+    int max_to_read;
+    char *data;             // pointer to beginning of data array
+    int data_len;           // size of data array
+    int data_read;          // amount of data array used
+    char *overflow;         // pointer to beginning of overflow array
+    int overflow_len;       // size of overflow array
+    int overflow_read;      // amount of overflow array used
 } FLAC_Data;
 
 typedef struct {
-	int playing;
-	int volume;
-	int section;
-	FLAC__StreamDecoder *flac_decoder;
-	FLAC_Data flac_data;
-	SDL_RWops *rwops;
-	SDL_AudioCVT cvt;
-	int len_available;
-	Uint8 *snd_available;
+    int playing;
+    int volume;
+    int section;
+    FLAC__StreamDecoder *flac_decoder;
+    FLAC_Data flac_data;
+    SDL_RWops *src;
+    int freesrc;
+    SDL_AudioCVT cvt;
+    int len_available;
+    Uint8 *snd_available;
 } FLAC_music;
 
 /* Initialize the FLAC player, with the given mixer settings
@@ -66,11 +66,8 @@ extern int FLAC_init(SDL_AudioSpec *mixer);
 /* Set the volume for a FLAC stream */
 extern void FLAC_setvolume(FLAC_music *music, int volume);
 
-/* Load a FLAC stream from the given file */
-extern FLAC_music *FLAC_new(const char *file);
-
 /* Load an FLAC stream from an SDL_RWops object */
-extern FLAC_music *FLAC_new_RW(SDL_RWops *rw);
+extern FLAC_music *FLAC_new_RW(SDL_RWops *src, int freesrc);
 
 /* Start playback of a given FLAC stream */
 extern void FLAC_play(FLAC_music *music);

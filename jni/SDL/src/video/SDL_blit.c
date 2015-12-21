@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 #include "SDL_video.h"
 #include "SDL_sysvideo.h"
@@ -62,7 +61,7 @@ SDL_SoftBlit(SDL_Surface * src, SDL_Rect * srcrect,
     }
 
     /* Set up source and destination buffer pointers, and BLIT! */
-    if (okay && srcrect->w && srcrect->h) {
+    if (okay && !SDL_RectEmpty(srcrect)) {
         SDL_BlitFunc RunBlit;
         SDL_BlitInfo *info = &src->map->info;
 
@@ -240,9 +239,11 @@ SDL_CalculateBlit(SDL_Surface * surface)
     /* Choose a standard blit function */
     if (map->identity && !(map->info.flags & ~SDL_COPY_RLE_DESIRED)) {
         blit = SDL_BlitCopy;
-    } else if (surface->format->BitsPerPixel < 8) {
+    } else if (surface->format->BitsPerPixel < 8 &&
+               SDL_ISPIXELFORMAT_INDEXED(surface->format->format)) {
         blit = SDL_CalculateBlit0(surface);
-    } else if (surface->format->BytesPerPixel == 1) {
+    } else if (surface->format->BytesPerPixel == 1 &&
+               SDL_ISPIXELFORMAT_INDEXED(surface->format->format)) {
         blit = SDL_CalculateBlit1(surface);
     } else if (map->info.flags & SDL_COPY_BLEND) {
         blit = SDL_CalculateBlitA(surface);
@@ -261,8 +262,13 @@ SDL_CalculateBlit(SDL_Surface * surface)
     if (blit == NULL)
 #endif
     {
-        if (surface->format->BytesPerPixel > 1
-            && dst->format->BytesPerPixel > 1) {
+        Uint32 src_format = surface->format->format;
+        Uint32 dst_format = dst->format->format;
+
+        if (!SDL_ISPIXELFORMAT_INDEXED(src_format) &&
+            !SDL_ISPIXELFORMAT_FOURCC(src_format) &&
+            !SDL_ISPIXELFORMAT_INDEXED(dst_format) &&
+            !SDL_ISPIXELFORMAT_FOURCC(dst_format)) {
             blit = SDL_Blit_Slow;
         }
     }
@@ -271,11 +277,10 @@ SDL_CalculateBlit(SDL_Surface * surface)
     /* Make sure we have a blit function */
     if (blit == NULL) {
         SDL_InvalidateMap(map);
-        SDL_SetError("Blit combination not supported");
-        return (-1);
+        return SDL_SetError("Blit combination not supported");
     }
 
-    return (0);
+    return 0;
 }
 
 /* vi: set ts=4 sw=4 expandtab: */

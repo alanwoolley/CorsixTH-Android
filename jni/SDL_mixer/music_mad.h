@@ -1,23 +1,22 @@
 /*
-    SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2009 Sam Lantinga
+  SDL_mixer:  An audio mixer library based on the SDL library
+  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
 
 #ifdef MP3_MAD_MUSIC
@@ -27,8 +26,8 @@
 #include "SDL_audio.h"
 #include "SDL_mixer.h"
 
-#define MAD_INPUT_BUFFER_SIZE	(5*8192)
-#define MAD_OUTPUT_BUFFER_SIZE	8192
+#define MAD_INPUT_BUFFER_SIZE   (5*8192)
+#define MAD_OUTPUT_BUFFER_SIZE  8192
 
 enum {
   MS_input_eof    = 0x0001,
@@ -42,8 +41,8 @@ enum {
 };
 
 typedef struct {
-  SDL_RWops *rw;
-  SDL_bool freerw;
+  SDL_RWops *src;
+  int freesrc;
   struct mad_stream stream;
   struct mad_frame frame;
   struct mad_synth synth;
@@ -59,8 +58,7 @@ typedef struct {
   unsigned char output_buffer[MAD_OUTPUT_BUFFER_SIZE];
 } mad_data;
 
-mad_data *mad_openFile(const char *filename, SDL_AudioSpec *mixer);
-mad_data *mad_openFileRW(SDL_RWops *rw, SDL_AudioSpec *mixer);
+mad_data *mad_openFileRW(SDL_RWops *src, SDL_AudioSpec *mixer, int freesrc);
 void mad_closeFile(mad_data *mp3_mad);
 
 void mad_start(mad_data *mp3_mad);

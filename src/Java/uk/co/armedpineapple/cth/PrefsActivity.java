@@ -11,8 +11,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -25,10 +27,10 @@ import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
-import com.splunk.mint.Mint;
-
 import java.io.File;
+import java.util.ArrayList;
 
+import io.fabric.sdk.android.Fabric;
 import uk.co.armedpineapple.cth.Files.DownloadFileTask;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
@@ -36,17 +38,20 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 public class PrefsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String LOG_TAG = "Settings";
+    private static final Reporting.Logger Log = Reporting.getLogger("Settings");
 
     private CTHApplication    application;
     private SharedPreferences preferences;
+
+    private static final String BUG_FEEDBACK_DEST = "alan@armedpineapple.co.uk";
+    private static final String BUG_FEEDBACK_SUBJECT = "CorsixTH for Android Bug/Feedback";
 
     /**
      * Preferences that require the game to be restarted before they take effect *
      */
     private final String[] requireRestart = new String[]{"language_pref",
             "debug_pref", "movies_pref", "intromovie_pref", "resolution_pref",
-            "reswidth_pref", "resheight_pref", "music_pref", "autowage_pref"};
+            "reswidth_pref", "resheight_pref", "music_pref", "autowage_pref", "usage_pref"};
 
     private boolean displayRestartMessage;
 
@@ -94,8 +99,8 @@ public class PrefsActivity extends PreferenceActivity implements
                     @Override
                     public boolean onPreferenceChange(Preference preference,
                                                       Object newValue) {
-                        Log.d(LOG_TAG, "Res mode: " + newValue);
                         updateResolutionPrefsDisplay((String) newValue);
+                        Log.d("Res mode: " + newValue);
                         return true;
                     }
                 });
@@ -180,6 +185,46 @@ public class PrefsActivity extends PreferenceActivity implements
 
                 });
 
+
+        if (CTHApplication.isTestingVersion()) {
+            findPreference("alpha_pref").setTitle(R.string.preferences_alpha_leave);
+            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_on);
+
+            findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    openTestingPage();
+                    return true;
+                }
+            });
+
+        } else {
+            findPreference("alpha_pref").setTitle(R.string.preferences_alpha_join);
+            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_off);
+
+            findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    DialogFactory.createTestingWarningDialog(PrefsActivity.this, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            openTestingPage();
+                        }
+                    }).show();
+
+                    return true;
+                }
+            });
+        }
+
+        findPreference("bug_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                doBugReport();
+                return true;
+            }
+        });
+
         for (String s : requireRestart) {
             findPreference(s).setOnPreferenceClickListener(
                     new OnPreferenceClickListener() {
@@ -202,10 +247,10 @@ public class PrefsActivity extends PreferenceActivity implements
         getPreferenceManager().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
 
-        Log.d(LOG_TAG, "Refreshing configuration");
+        Log.d("Refreshing configuration");
 
         if (displayRestartMessage) {
-            Log.d(LOG_TAG, "app requires restarting");
+            Log.d("app requires restarting");
             Toast.makeText(this, R.string.dialog_require_restart, Toast.LENGTH_LONG)
                     .show();
         }
@@ -219,7 +264,7 @@ public class PrefsActivity extends PreferenceActivity implements
     protected void onResume() {
         super.onResume();
         displayRestartMessage = false;
-        Log.d(LOG_TAG, "onResume()");
+        Log.d("onResume()");
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
@@ -334,7 +379,7 @@ public class PrefsActivity extends PreferenceActivity implements
                 dialog.hide();
 
                 if (result.getResult() != null) {
-                    Log.d(LOG_TAG, "Downloaded and extracted Timidity successfully");
+                    Log.d("Downloaded and extracted Timidity successfully");
 
                     Editor editor = preferences.edit();
                     editor.putBoolean("music_pref", true);
@@ -344,11 +389,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
                 } else if (result.getError() != null) {
                     Exception e = result.getError();
-                    Mint.logException(e);
-                    Toast errorToast = Toast.makeText(PrefsActivity.this,
-                            R.string.download_timidity_error, Toast.LENGTH_LONG);
-
-                    errorToast.show();
+                    Reporting.reportWithToast(PrefsActivity.this, getString(R.string.download_timidity_error), e);
                 }
             }
 
@@ -383,7 +424,6 @@ public class PrefsActivity extends PreferenceActivity implements
                         R.string.download_timidity_error, Toast.LENGTH_LONG);
 
                 if (result.getError() != null) {
-                    Mint.logException(result.getError());
                     dialog.hide();
                     errorToast.show();
                 } else {
@@ -428,6 +468,42 @@ public class PrefsActivity extends PreferenceActivity implements
             dft.execute(getString(R.string.timidity_url));
         }
 
+    }
+
+    void openTestingPage() {
+        String url = getResources().getString(R.string.testing_url);
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
+
+    void doBugReport() {
+
+        Intent messageIntent = new Intent(Intent.ACTION_SEND_MULTIPLE, Uri.fromParts("mailto", BUG_FEEDBACK_DEST, null));
+
+        String aEmailList[] = { BUG_FEEDBACK_DEST };
+        messageIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
+
+        messageIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, BUG_FEEDBACK_SUBJECT);
+        messageIntent.setType("message/rfc822");
+
+        File cthLog = new File(application.configuration.getCthPath() + "/cthlog.txt");
+        File cthErrLog = new File(application.configuration.getCthPath() + "/ctherrlog.txt");
+
+        ArrayList<Uri> uris = new ArrayList<>();
+
+        if (cthLog.canRead() && cthLog.length() > 0) {
+            uris.add(Uri.fromFile(cthLog));
+        }
+        if (cthErrLog.canRead() && cthErrLog.length() > 0) {
+            uris.add(Uri.fromFile(cthErrLog));
+        }
+
+        if (uris.size() > 0) {
+            messageIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        }
+        
+        startActivity(Intent.createChooser(messageIntent, getResources().getString(R.string.send_feedback_email_chooser)));
     }
 
 }

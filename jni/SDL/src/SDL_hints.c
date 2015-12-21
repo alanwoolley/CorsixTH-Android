@@ -1,48 +1,55 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "./SDL_internal.h"
 
 #include "SDL_hints.h"
+#include "SDL_error.h"
 
 
 /* Assuming there aren't many hints set and they aren't being queried in
-   critical performance paths, we'll just use a linked list here.
+   critical performance paths, we'll just use linked lists here.
  */
+typedef struct SDL_HintWatch {
+    SDL_HintCallback callback;
+    void *userdata;
+    struct SDL_HintWatch *next;
+} SDL_HintWatch;
+
 typedef struct SDL_Hint {
     char *name;
     char *value;
     SDL_HintPriority priority;
+    SDL_HintWatch *callbacks;
     struct SDL_Hint *next;
 } SDL_Hint;
 
 static SDL_Hint *SDL_hints;
-
 
 SDL_bool
 SDL_SetHintWithPriority(const char *name, const char *value,
                         SDL_HintPriority priority)
 {
     const char *env;
-    SDL_Hint *prev, *hint;
+    SDL_Hint *hint;
+    SDL_HintWatch *entry;
 
     if (!name || !value) {
         return SDL_FALSE;
@@ -53,15 +60,20 @@ SDL_SetHintWithPriority(const char *name, const char *value,
         return SDL_FALSE;
     }
 
-    prev = NULL;
-    for (hint = SDL_hints; hint; prev = hint, hint = hint->next) {
+    for (hint = SDL_hints; hint; hint = hint->next) {
         if (SDL_strcmp(name, hint->name) == 0) {
             if (priority < hint->priority) {
                 return SDL_FALSE;
             }
-            if (SDL_strcmp(hint->value, value) != 0) {
+            if (!hint->value || !value || SDL_strcmp(hint->value, value) != 0) {
+                for (entry = hint->callbacks; entry; ) {
+                    /* Save the next entry in case this one is deleted */
+                    SDL_HintWatch *next = entry->next;
+                    entry->callback(entry->userdata, name, hint->value, value);
+                    entry = next;
+                }
                 SDL_free(hint->value);
-                hint->value = SDL_strdup(value);
+                hint->value = value ? SDL_strdup(value) : NULL;
             }
             hint->priority = priority;
             return SDL_TRUE;
@@ -74,8 +86,9 @@ SDL_SetHintWithPriority(const char *name, const char *value,
         return SDL_FALSE;
     }
     hint->name = SDL_strdup(name);
-    hint->value = SDL_strdup(value);
+    hint->value = value ? SDL_strdup(value) : NULL;
     hint->priority = priority;
+    hint->callbacks = NULL;
     hint->next = SDL_hints;
     SDL_hints = hint;
     return SDL_TRUE;
@@ -105,9 +118,92 @@ SDL_GetHint(const char *name)
     return env;
 }
 
+void
+SDL_AddHintCallback(const char *name, SDL_HintCallback callback, void *userdata)
+{
+    SDL_Hint *hint;
+    SDL_HintWatch *entry;
+    const char *value;
+
+    if (!name || !*name) {
+        SDL_InvalidParamError("name");
+        return;
+    }
+    if (!callback) {
+        SDL_InvalidParamError("callback");
+        return;
+    }
+
+    SDL_DelHintCallback(name, callback, userdata);
+
+    entry = (SDL_HintWatch *)SDL_malloc(sizeof(*entry));
+    if (!entry) {
+        SDL_OutOfMemory();
+        return;
+    }
+    entry->callback = callback;
+    entry->userdata = userdata;
+
+    for (hint = SDL_hints; hint; hint = hint->next) {
+        if (SDL_strcmp(name, hint->name) == 0) {
+            break;
+        }
+    }
+    if (!hint) {
+        /* Need to add a hint entry for this watcher */
+        hint = (SDL_Hint *)SDL_malloc(sizeof(*hint));
+        if (!hint) {
+            SDL_OutOfMemory();
+            SDL_free(entry);
+            return;
+        }
+        hint->name = SDL_strdup(name);
+        hint->value = NULL;
+        hint->priority = SDL_HINT_DEFAULT;
+        hint->callbacks = NULL;
+        hint->next = SDL_hints;
+        SDL_hints = hint;
+    }
+
+    /* Add it to the callbacks for this hint */
+    entry->next = hint->callbacks;
+    hint->callbacks = entry;
+
+    /* Now call it with the current value */
+    value = SDL_GetHint(name);
+    callback(userdata, name, value, value);
+}
+
+void
+SDL_DelHintCallback(const char *name, SDL_HintCallback callback, void *userdata)
+{
+    SDL_Hint *hint;
+    SDL_HintWatch *entry, *prev;
+
+    for (hint = SDL_hints; hint; hint = hint->next) {
+        if (SDL_strcmp(name, hint->name) == 0) {
+            prev = NULL;
+            for (entry = hint->callbacks; entry; entry = entry->next) {
+                if (callback == entry->callback && userdata == entry->userdata) {
+                    if (prev) {
+                        prev->next = entry->next;
+                    } else {
+                        hint->callbacks = entry->next;
+                    }
+                    SDL_free(entry);
+                    break;
+                }
+                prev = entry;
+            }
+            return;
+        }
+    }
+}
+
 void SDL_ClearHints(void)
 {
     SDL_Hint *hint;
+    SDL_HintWatch *entry;
 
     while (SDL_hints) {
         hint = SDL_hints;
@@ -115,6 +211,11 @@ void SDL_ClearHints(void)
 
         SDL_free(hint->name);
         SDL_free(hint->value);
+        for (entry = hint->callbacks; entry; ) {
+            SDL_HintWatch *freeable = entry;
+            entry = entry->next;
+            SDL_free(freeable);
+        }
         SDL_free(hint);
     }
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/savecard"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp" android:layout_margin="16dp">
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+            <ImageView
+                android:layout_width="152dp"
+                android:layout_height="152dp"
+                android:id="@+id/saveimage"
+                android:adjustViewBounds="false"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentEnd="true"
+                android:scaleType="centerCrop"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Some long game save"
+                android:id="@+id/savename"
+                android:layout_alignTop="@+id/saveimage"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/file_card_header"
+                android:layout_toStartOf="@+id/saveimage"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:layout_marginRight="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Level 3"
+                android:id="@+id/savelevel"
+                android:layout_below="@+id/savename"
+                android:layout_alignStart="@+id/savename"
+                android:textSize="@dimen/file_card_subtitle"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Money"
+                android:id="@+id/savemoney"
+                android:layout_alignBottom="@+id/saveimage"
+                android:layout_alignStart="@+id/savelevel"
+                android:textSize="@dimen/file_card_extra" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Reputation"
+                android:id="@+id/saverep"
+                android:layout_above="@+id/savemoney"
+                android:layout_alignStart="@+id/savemoney"
+                android:textSize="@dimen/file_card_extra" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

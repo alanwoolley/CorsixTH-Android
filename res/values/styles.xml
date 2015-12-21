@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.AppTheme" parent="Theme.AppCompat.Light">
+    <style name="Theme.AppTheme" parent="@android:style/Theme.Material.Light">
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <style name="Theme.WizardTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.WizardTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/altbackground</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>

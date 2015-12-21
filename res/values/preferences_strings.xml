@@ -79,4 +79,16 @@
     <string name="preferences_earthquake_off">Will not vibrate during earthquakes</string>
     <string name="preferences_earthquake_on">Will vibrate during earthquakes</string>
 
+    <string name="preferences_extras">Extras</string>
+    <string name="preferences_alpha_join">Join Testing Programme</string>
+    <string name="preferences_alpha_on">Help test the next version</string>
+    <string name="preferences_alpha_leave">Leave Testing Programme</string>
+    <string name="preferences_alpha_off">Return to the stable version</string>
+    <string name="preferences_alpha_warning_header">Warning</string>
+    <string name="preferences_alpha_warning_text">Testing versions are likely to have more bugs and unfinished features. It may not be possible to return to the stable version without losing saved games. After joining, you will need to update CorsixTH from the Play Store to get the latest version.</string>
+
+    <string name="preferences_collect_usage">Collect Anonymous Usage/Crash Data</string>
+    <string name="preferences_collect_usage_summary">Collect data to help track down bugs</string>
+
+    <string name="preferences_report_bug">Report bug or feedback</string>
 </resources>

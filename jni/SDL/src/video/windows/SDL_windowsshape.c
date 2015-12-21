@@ -1,26 +1,27 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 2010 Eli Gottlieb
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Eli Gottlieb
-    eligottlieb@gmail.com
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
+#include "../../SDL_internal.h"
 
-#include <stdio.h>
+#if SDL_VIDEO_DRIVER_WINDOWS
+
 #include "SDL_assert.h"
 #include "SDL_windowsshape.h"
 #include "SDL_windowsvideo.h"
@@ -35,12 +36,12 @@ Win32_CreateShaper(SDL_Window * window) {
     result->userx = result->usery = 0;
     result->driverdata = (SDL_ShapeData*)SDL_malloc(sizeof(SDL_ShapeData));
     ((SDL_ShapeData*)result->driverdata)->mask_tree = NULL;
-    //Put some driver-data here.
+    /* Put some driver-data here. */
     window->shaper = result;
     resized_properly = Win32_ResizeWindowShape(window);
     if (resized_properly != 0)
             return NULL;
-    
+
     return result;
 }
 
@@ -48,15 +49,15 @@ void
 CombineRectRegions(SDL_ShapeTree* node,void* closure) {
     HRGN mask_region = *((HRGN*)closure),temp_region = NULL;
     if(node->kind == OpaqueShape) {
-        //Win32 API regions exclude their outline, so we widen the region by one pixel in each direction to include the real outline.
+        /* Win32 API regions exclude their outline, so we widen the region by one pixel in each direction to include the real outline. */
         temp_region = CreateRectRgn(node->data.shape.x,node->data.shape.y,node->data.shape.x + node->data.shape.w + 1,node->data.shape.y + node->data.shape.h + 1);
         if(mask_region != NULL) {
             CombineRgn(mask_region,mask_region,temp_region,RGN_OR);
             DeleteObject(temp_region);
-		}
-		else
+        }
+        else
             *((HRGN*)closure) = temp_region;
-	}
+    }
 }
 
 int
@@ -64,21 +65,24 @@ Win32_SetWindowShape(SDL_WindowShaper *shaper,SDL_Surface *shape,SDL_WindowShape
     SDL_ShapeData *data;
     HRGN mask_region = NULL;
 
-    if (shaper == NULL || shape == NULL)
+    if( (shaper == NULL) ||
+        (shape == NULL) ||
+        ((shape->format->Amask == 0) && (shape_mode->mode != ShapeModeColorKey)) ||
+        (shape->w != shaper->window->w) ||
+        (shape->h != shaper->window->h) ) {
         return SDL_INVALID_SHAPE_ARGUMENT;
-    if(shape->format->Amask == 0 && shape_mode->mode != ShapeModeColorKey || shape->w != shaper->window->w || shape->h != shaper->window->h)
-        return SDL_INVALID_SHAPE_ARGUMENT;
-    
+    }
+
     data = (SDL_ShapeData*)shaper->driverdata;
     if(data->mask_tree != NULL)
         SDL_FreeShapeTree(&data->mask_tree);
     data->mask_tree = SDL_CalculateShapeTree(*shape_mode,shape);
-    
+
     SDL_TraverseShapeTree(data->mask_tree,&CombineRectRegions,&mask_region);
-	SDL_assert(mask_region != NULL);
+    SDL_assert(mask_region != NULL);
 
     SetWindowRgn(((SDL_WindowData *)(shaper->window->driverdata))->hwnd, mask_region, TRUE);
-    
+
     return 0;
 }
 
@@ -91,14 +95,16 @@ Win32_ResizeWindowShape(SDL_Window *window) {
     data = (SDL_ShapeData *)window->shaper->driverdata;
     if (data == NULL)
         return -1;
-    
+
     if(data->mask_tree != NULL)
         SDL_FreeShapeTree(&data->mask_tree);
     if(window->shaper->hasshape == SDL_TRUE) {
         window->shaper->userx = window->x;
         window->shaper->usery = window->y;
         SDL_SetWindowPosition(window,-1000,-1000);
-	}
-    
+    }
+
     return 0;
 }
+
+#endif /* SDL_VIDEO_DRIVER_WINDOWS */

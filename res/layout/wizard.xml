@@ -8,27 +8,48 @@
         android:id="@+id/flipper"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/leftbutton"
-        android:autoStart="false" >
+        android:layout_above="@+id/LinearLayout1"
+        android:autoStart="false"
+        android:padding="10dp" >
 
     </ViewFlipper>
 
-    <Button
-        android:id="@+id/leftbutton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:drawableLeft="@drawable/ic_menu_back"
-        android:text="@string/previousButton" />
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal"
+        android:paddingLeft="2dip"
+        android:paddingRight="2dip"
+        android:paddingTop="0dip">
 
-    <Button
-        android:id="@+id/rightbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:drawableRight="@drawable/ic_menu_forward"
-        android:text="@string/nextButton" />
+        <Button
+            android:id="@+id/leftbutton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/previousButton"/>
+
+        <Button
+            android:id="@+id/rightbutton"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/nextButton"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/View1"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_above="@+id/LinearLayout1"
+        android:layout_alignParentLeft="true"
+        android:background="?android:attr/dividerHorizontal"/>
 
 </RelativeLayout>

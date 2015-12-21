@@ -125,5 +125,12 @@
 	<string name="facebook_group">Facebook Group</string>
 	<string name="gplus_community">G+ Community</string>
     <string name="menuitem_cheats">Cheats</string>
+	<string name="save_level_text">Level: %s</string>
+	<string name="save_rep_text">Reputation: %d</string>
+	<string name="save_balance_text">$%,d</string>
+	<string name="menuitem_jukebox">Jukebox</string>
+
+	<string name="send_feedback_email_chooser">Send feedback email</string>
+
 
 </resources>

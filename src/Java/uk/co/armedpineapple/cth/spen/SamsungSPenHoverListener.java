@@ -24,7 +24,7 @@ public class SamsungSPenHoverListener implements SPenHoverListener {
 	@Override
 	public void onHoverButtonUp(View arg0, MotionEvent arg1) {
 		if (PEN_BUTTON_PRESSED == currentPenButtonState) {
-			SDLActivity.onSpenButton();
+			//SDLActivity.onSpenButton();
 		}
 
 		currentPenButtonState = PEN_BUTTON_NOT_PRESSED;
@@ -39,7 +39,7 @@ public class SamsungSPenHoverListener implements SPenHoverListener {
 	public boolean onHover(View arg0, MotionEvent event) {
 		float[] coords = SDLActivity.mSurface.translateCoords(event.getX(0),
 				event.getY(0));
-		SDLActivity.onNativeHover(coords[0], coords[1]);
+		SDLActivity.onNativeMouse(0, MotionEvent.ACTION_HOVER_MOVE, coords[0], coords[1]);
 		return true;
 	}
 }

@@ -1,25 +1,24 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /* This a stretch blit implementation based on ideas given to me by
    Tomasz Cejner - thanks! :)
@@ -34,12 +33,12 @@
    into the general blitting mechanism.
 */
 
-#if ((defined(_MFC_VER) && defined(_M_IX86)/* && !defined(_WIN32_WCE) still needed? */) || \
+#if ((defined(_MFC_VER) && defined(_M_IX86)) || \
      defined(__WATCOMC__) || \
      (defined(__GNUC__) && defined(__i386__))) && SDL_ASSEMBLY_ROUTINES
 /* There's a bug with gcc 4.4.1 and -O2 where srcp doesn't get the correct
  * value after the first scanline.  FIXME? */
-/*#define USE_ASM_STRETCH*/
+/* #define USE_ASM_STRETCH */
 #endif
 
 #ifdef USE_ASM_STRETCH
@@ -55,12 +54,12 @@
 #endif
 
 #if defined(_M_IX86) || defined(i386)
-#define PREFIX16	0x66
-#define STORE_BYTE	0xAA
-#define STORE_WORD	0xAB
-#define LOAD_BYTE	0xAC
-#define LOAD_WORD	0xAD
-#define RETURN		0xC3
+#define PREFIX16    0x66
+#define STORE_BYTE  0xAA
+#define STORE_WORD  0xAB
+#define LOAD_BYTE   0xAC
+#define LOAD_WORD   0xAD
+#define RETURN      0xC3
 #else
 #error Need assembly opcodes for this architecture
 #endif
@@ -103,14 +102,12 @@ generate_rowbytes(int src_w, int dst_w, int bpp)
         store = STORE_WORD;
         break;
     default:
-        SDL_SetError("ASM stretch of %d bytes isn't supported\n", bpp);
-        return (-1);
+        return SDL_SetError("ASM stretch of %d bytes isn't supported\n", bpp);
     }
 #ifdef HAVE_MPROTECT
     /* Make the code writeable */
     if (mprotect(copy_row, sizeof(copy_row), PROT_READ | PROT_WRITE) < 0) {
-        SDL_SetError("Couldn't make copy buffer writeable");
-        return (-1);
+        return SDL_SetError("Couldn't make copy buffer writeable");
     }
 #endif
     pos = 0x10000;
@@ -142,8 +139,7 @@ generate_rowbytes(int src_w, int dst_w, int bpp)
 #ifdef HAVE_MPROTECT
     /* Make the code executable but not writeable */
     if (mprotect(copy_row, sizeof(copy_row), PROT_READ | PROT_EXEC) < 0) {
-        SDL_SetError("Couldn't make copy buffer executable");
-        return (-1);
+        return SDL_SetError("Couldn't make copy buffer executable");
     }
 #endif
     last.status = 0;
@@ -152,23 +148,23 @@ generate_rowbytes(int src_w, int dst_w, int bpp)
 
 #endif /* USE_ASM_STRETCH */
 
-#define DEFINE_COPY_ROW(name, type)			\
-static void name(type *src, int src_w, type *dst, int dst_w)	\
-{							\
-	int i;						\
-	int pos, inc;					\
-	type pixel = 0;					\
-							\
-	pos = 0x10000;					\
-	inc = (src_w << 16) / dst_w;			\
-	for ( i=dst_w; i>0; --i ) {			\
-		while ( pos >= 0x10000L ) {		\
-			pixel = *src++;			\
-			pos -= 0x10000L;		\
-		}					\
-		*dst++ = pixel;				\
-		pos += inc;				\
-	}						\
+#define DEFINE_COPY_ROW(name, type)         \
+static void name(type *src, int src_w, type *dst, int dst_w)    \
+{                                           \
+    int i;                                  \
+    int pos, inc;                           \
+    type pixel = 0;                         \
+                                            \
+    pos = 0x10000;                          \
+    inc = (src_w << 16) / dst_w;            \
+    for ( i=dst_w; i>0; --i ) {             \
+        while ( pos >= 0x10000L ) {         \
+            pixel = *src++;                 \
+            pos -= 0x10000L;                \
+        }                                   \
+        *dst++ = pixel;                     \
+        pos += inc;                         \
+    }                                       \
 }
 /* *INDENT-OFF* */
 DEFINE_COPY_ROW(copy_row1, Uint8)
@@ -210,7 +206,6 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
     int src_locked;
     int dst_locked;
     int pos, inc;
-    int dst_width;
     int dst_maxrow;
     int src_row, dst_row;
     Uint8 *srcp = NULL;
@@ -225,9 +220,8 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
 #endif /* USE_ASM_STRETCH */
     const int bpp = dst->format->BytesPerPixel;
 
-    if (src->format->BitsPerPixel != dst->format->BitsPerPixel) {
-        SDL_SetError("Only works with same format surfaces");
-        return (-1);
+    if (src->format->format != dst->format->format) {
+        return SDL_SetError("Only works with same format surfaces");
     }
 
     /* Verify the blit rectangles */
@@ -235,8 +229,7 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
         if ((srcrect->x < 0) || (srcrect->y < 0) ||
             ((srcrect->x + srcrect->w) > src->w) ||
             ((srcrect->y + srcrect->h) > src->h)) {
-            SDL_SetError("Invalid source blit rectangle");
-            return (-1);
+            return SDL_SetError("Invalid source blit rectangle");
         }
     } else {
         full_src.x = 0;
@@ -249,8 +242,7 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
         if ((dstrect->x < 0) || (dstrect->y < 0) ||
             ((dstrect->x + dstrect->w) > dst->w) ||
             ((dstrect->y + dstrect->h) > dst->h)) {
-            SDL_SetError("Invalid destination blit rectangle");
-            return (-1);
+            return SDL_SetError("Invalid destination blit rectangle");
         }
     } else {
         full_dst.x = 0;
@@ -264,8 +256,7 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
     dst_locked = 0;
     if (SDL_MUSTLOCK(dst)) {
         if (SDL_LockSurface(dst) < 0) {
-            SDL_SetError("Unable to lock destination surface");
-            return (-1);
+            return SDL_SetError("Unable to lock destination surface");
         }
         dst_locked = 1;
     }
@@ -276,8 +267,7 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
             if (dst_locked) {
                 SDL_UnlockSurface(dst);
             }
-            SDL_SetError("Unable to lock source surface");
-            return (-1);
+            return SDL_SetError("Unable to lock source surface");
         }
         src_locked = 1;
     }
@@ -287,7 +277,6 @@ SDL_SoftStretch(SDL_Surface * src, const SDL_Rect * srcrect,
     inc = (srcrect->h << 16) / dstrect->h;
     src_row = srcrect->y;
     dst_row = dstrect->y;
-    dst_width = dstrect->w * bpp;
 
 #ifdef USE_ASM_STRETCH
     /* Write the opcodes for this stretch */

@@ -8,13 +8,7 @@ import android.widget.ListView;
 import uk.co.armedpineapple.cth.dialogs.GameSpeedDialog;
 import uk.co.armedpineapple.cth.dialogs.HelpDialog;
 
-import static uk.co.armedpineapple.cth.CommandHandler.Command.HIDE_MENU;
-import static uk.co.armedpineapple.cth.CommandHandler.Command.QUICK_LOAD;
-import static uk.co.armedpineapple.cth.CommandHandler.Command.QUICK_SAVE;
-import static uk.co.armedpineapple.cth.CommandHandler.Command.RESTART_GAME;
-import static uk.co.armedpineapple.cth.CommandHandler.Command.SHOW_ABOUT_DIALOG;
-import static uk.co.armedpineapple.cth.CommandHandler.Command.SHOW_LOAD_DIALOG;
-import static uk.co.armedpineapple.cth.CommandHandler.Command.SHOW_SAVE_DIALOG;
+import static uk.co.armedpineapple.cth.CommandHandler.Command.*;
 
 public class NavDrawerListListener implements ListView.OnItemClickListener {
 
@@ -76,6 +70,10 @@ public class NavDrawerListListener implements ListView.OnItemClickListener {
             case CHEATS:
                 SDLActivity.sendCommand(HIDE_MENU, null);
                 SDLActivity.cthShowCheats();
+                return;
+            case JUKEBOX:
+                SDLActivity.sendCommand(HIDE_MENU, null);
+                SDLActivity.sendCommand(SHOW_JUKEBOX, null);
                 return;
         }
     }

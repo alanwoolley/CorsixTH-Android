@@ -1,29 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
-
-    This driver was written by:
-    Erik Inge Bolsø
-    knan@mo.himolde.no
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_AUDIO_DRIVER_NAS
 
 /* Allow access to a raw mixing buffer */
 
@@ -36,9 +33,6 @@
 #include "../SDL_audiomem.h"
 #include "../SDL_audio_c.h"
 #include "SDL_nasaudio.h"
-
-/* The tag name used by nas audio */
-#define NAS_DRIVER_NAME         "nas"
 
 static struct SDL_PrivateAudioData *this2 = NULL;
 
@@ -116,8 +110,8 @@ LoadNASLibrary(void)
         nas_handle = SDL_LoadObject(nas_library);
         if (nas_handle == NULL) {
             /* Copy error string so we can use it in a new SDL_SetError(). */
-            char *origerr = SDL_GetError();
-            size_t len = SDL_strlen(origerr) + 1;
+            const char *origerr = SDL_GetError();
+            const size_t len = SDL_strlen(origerr) + 1;
             char *err = (char *) alloca(len);
             SDL_strlcpy(err, origerr, len);
             retval = -1;
@@ -197,10 +191,8 @@ static void
 NAS_CloseDevice(_THIS)
 {
     if (this->hidden != NULL) {
-        if (this->hidden->mixbuf != NULL) {
-            SDL_FreeAudioMem(this->hidden->mixbuf);
-            this->hidden->mixbuf = NULL;
-        }
+        SDL_FreeAudioMem(this->hidden->mixbuf);
+        this->hidden->mixbuf = NULL;
         if (this->hidden->aud) {
             NAS_AuCloseServer(this->hidden->aud);
             this->hidden->aud = 0;
@@ -284,7 +276,7 @@ find_device(_THIS, int nch)
 }
 
 static int
-NAS_OpenDevice(_THIS, const char *devname, int iscapture)
+NAS_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
 {
     AuElement elms[3];
     int buffer_size;
@@ -294,8 +286,7 @@ NAS_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden = (struct SDL_PrivateAudioData *)
         SDL_malloc((sizeof *this->hidden));
     if (this->hidden == NULL) {
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden, 0, (sizeof *this->hidden));
 
@@ -310,24 +301,21 @@ NAS_OpenDevice(_THIS, const char *devname, int iscapture)
     }
     if (format == 0) {
         NAS_CloseDevice(this);
-        SDL_SetError("NAS: Couldn't find any hardware audio formats");
-        return 0;
+        return SDL_SetError("NAS: Couldn't find any hardware audio formats");
     }
     this->spec.format = test_format;
 
     this->hidden->aud = NAS_AuOpenServer("", 0, NULL, 0, NULL, NULL);
     if (this->hidden->aud == 0) {
         NAS_CloseDevice(this);
-        SDL_SetError("NAS: Couldn't open connection to NAS server");
-        return 0;
+        return SDL_SetError("NAS: Couldn't open connection to NAS server");
     }
 
     this->hidden->dev = find_device(this, this->spec.channels);
     if ((this->hidden->dev == AuNone)
         || (!(this->hidden->flow = NAS_AuCreateFlow(this->hidden->aud, 0)))) {
         NAS_CloseDevice(this);
-        SDL_SetError("NAS: Couldn't find a fitting device on NAS server");
-        return 0;
+        return SDL_SetError("NAS: Couldn't find a fitting device on NAS server");
     }
 
     buffer_size = this->spec.freq;
@@ -360,13 +348,12 @@ NAS_OpenDevice(_THIS, const char *devname, int iscapture)
     this->hidden->mixbuf = (Uint8 *) SDL_AllocAudioMem(this->hidden->mixlen);
     if (this->hidden->mixbuf == NULL) {
         NAS_CloseDevice(this);
-        SDL_OutOfMemory();
-        return 0;
+        return SDL_OutOfMemory();
     }
     SDL_memset(this->hidden->mixbuf, this->spec.silence, this->spec.size);
 
     /* We're ready to rock and roll. :-) */
-    return 1;
+    return 0;
 }
 
 static void
@@ -402,7 +389,9 @@ NAS_Init(SDL_AudioDriverImpl * impl)
 }
 
 AudioBootStrap NAS_bootstrap = {
-    NAS_DRIVER_NAME, "Network Audio System", NAS_Init, 0
+    "nas", "Network Audio System", NAS_Init, 0
 };
+
+#endif /* SDL_AUDIO_DRIVER_NAS */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -1,45 +1,56 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.2'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
+project.ext.version = "0.9.0.2"
+
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply from: 'versioning.gradle'
 
 repositories {
     mavenCentral();
-    maven {
-        url "http://mint.splunk.com/gradle/"
-    }
+    maven { url 'https://maven.fabric.io/public' }
 
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:22.1.1'
-    compile 'com.splunk.mint:mint:4.2'
+    compile 'com.android.support:cardview-v7:21.0.0'
+    compile 'com.android.support:recyclerview-v7:21.0.0'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'commons-io:commons-io:2.4'
-    compile 'com.google.android.gms:play-services:7.3.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
     compile 'com.android.support:multidex:1.0.0'
-    compile fileTree(dir: 'jars', include: '*.jar')
+    compile fileTree(include: '*.jar', dir: 'jars')
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
+        transitive = true;
+    }
 }
 
 android {
-
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 22
 
         multiDexEnabled true
+
+        versionName project.ext.version
+        versionCode buildVersionCode()
+
     }
-
     Properties signingProperties = new Properties()
-
     if (file("signing.properties").exists()) {
         signingProperties.load(new FileInputStream(file("signing.properties")))
         signingConfigs {
@@ -51,28 +62,41 @@ android {
             }
         }
 
-        buildTypes {
-            release {
-                signingConfig signingConfigs.release
-            }
 
-            beta {
+        productFlavors {
+            prod {
                 signingConfig signingConfigs.release
             }
         }
     }
+    productFlavors {
+        dev {
+            minSdkVersion 21
+        }
 
+        prod {
+
+        }
+    }
     buildTypes {
         release {
-            buildConfigField "boolean", "USE_BUGSENSE", "true"
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+            signingConfig signingConfigs.release
         }
 
         beta {
-            buildConfigField "boolean", "USE_BUGSENSE", "true"
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+            versionNameSuffix "-BETA"
+        }
+
+        alpha {
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
+            versionNameSuffix "-ALPHA-" + System.getenv("BUILD_NUMBER") ?: "9999"
         }
 
         debug {
-            buildConfigField "boolean", "USE_BUGSENSE", "false"
+            buildConfigField "boolean", "ALWAYS_UPGRADE", "true"
+            ext.enableCrashlytics = false
         }
 
 
@@ -81,7 +105,6 @@ android {
             jniDebuggable true
         }
     }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -108,12 +131,21 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
-
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
     dexOptions {
+    }
+    lintOptions {
+        abortOnError false
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(
+                    output.outputFile.parent,
+                    "CTH-${variant.buildType.name}-${variant.versionName}.apk")
+        }
     }
 }
 

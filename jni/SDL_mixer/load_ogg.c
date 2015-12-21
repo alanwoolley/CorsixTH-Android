@@ -1,23 +1,25 @@
 /*
-    SDL_mixer:  An audio mixer library based on the SDL library
-    Copyright (C) 1997-2009 Sam Lantinga
+  SDL_mixer:  An audio mixer library based on the SDL library
+  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Library General Public
-    License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 
-    This is the source needed to decode an Ogg Vorbis into a waveform.
-    This file by Vaclav Slavik (vaclav.slavik@matfyz.cz).
+  This is the source needed to decode an Ogg Vorbis into a waveform.
+  This file by Vaclav Slavik (vaclav.slavik@matfyz.cz).
 */
 
 /* $Id$ */
@@ -43,7 +45,7 @@ static size_t sdl_read_func(void *ptr, size_t size, size_t nmemb, void *datasour
 
 static int sdl_seek_func(void *datasource, ogg_int64_t offset, int whence)
 {
-    return SDL_RWseek((SDL_RWops*)datasource, (int)offset, whence);
+    return (int)SDL_RWseek((SDL_RWops*)datasource, offset, whence);
 }
 
 static int sdl_close_func_freesrc(void *datasource)
@@ -53,12 +55,13 @@ static int sdl_close_func_freesrc(void *datasource)
 
 static int sdl_close_func_nofreesrc(void *datasource)
 {
-    return SDL_RWseek((SDL_RWops*)datasource, 0, RW_SEEK_SET);
+    SDL_RWseek((SDL_RWops*)datasource, 0, RW_SEEK_SET);
+    return 0;
 }
 
 static long sdl_tell_func(void *datasource)
 {
-    return SDL_RWtell((SDL_RWops*)datasource);
+    return (long)SDL_RWtell((SDL_RWops*)datasource);
 }
 
 
@@ -76,7 +79,7 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     int read, to_read;
     int must_close = 1;
     int was_error = 1;
-    
+
     if ( (!src) || (!audio_buf) || (!audio_len) )   /* sanity checks. */
         goto done;
 
@@ -86,7 +89,7 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     callbacks.read_func = sdl_read_func;
     callbacks.seek_func = sdl_seek_func;
     callbacks.tell_func = sdl_tell_func;
-    callbacks.close_func = freesrc ? 
+    callbacks.close_func = freesrc ?
                            sdl_close_func_freesrc : sdl_close_func_nofreesrc;
 
     if (vorbis.ov_open_callbacks(src, &vf, NULL, 0, callbacks) != 0)
@@ -96,9 +99,9 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     }
 
     must_close = 0;
-    
+
     info = vorbis.ov_info(&vf, -1);
-    
+
     *audio_buf = NULL;
     *audio_len = 0;
     memset(spec, '\0', sizeof (SDL_AudioSpec));
@@ -107,11 +110,11 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     spec->channels = info->channels;
     spec->freq = info->rate;
     spec->samples = 4096; /* buffer size */
-    
+
     samples = (long)vorbis.ov_pcm_total(&vf, -1);
 
     *audio_len = spec->size = samples * spec->channels * 2;
-    *audio_buf = malloc(*audio_len);
+    *audio_buf = (Uint8 *)SDL_malloc(*audio_len);
     if (*audio_buf == NULL)
         goto done;
 
@@ -119,17 +122,17 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     to_read = *audio_len;
 #ifdef OGG_USE_TREMOR
     for (read = vorbis.ov_read(&vf, (char *)buf, to_read, &bitstream);
-	 read > 0;
-	 read = vorbis.ov_read(&vf, (char *)buf, to_read, &bitstream))
+     read > 0;
+     read = vorbis.ov_read(&vf, (char *)buf, to_read, &bitstream))
 #else
     for (read = vorbis.ov_read(&vf, (char *)buf, to_read, 0/*LE*/, 2/*16bit*/, 1/*signed*/, &bitstream);
          read > 0;
          read = vorbis.ov_read(&vf, (char *)buf, to_read, 0, 2, 1, &bitstream))
-#endif	 
+#endif
     {
         if (read == OV_HOLE || read == OV_EBADLINK)
             break; /* error */
-        
+
         to_read -= read;
         buf += read;
     }
@@ -142,16 +145,13 @@ SDL_AudioSpec *Mix_LoadOGG_RW (SDL_RWops *src, int freesrc,
     *audio_len &= ~(samplesize-1);
 
 done:
-    if (src && must_close)
-    {
-        if (freesrc)
-            SDL_RWclose(src);
-        else
-            SDL_RWseek(src, 0, RW_SEEK_SET);
+    if (freesrc && src && must_close) {
+        SDL_RWclose(src);
     }
 
-    if ( was_error )
+    if (was_error) {
         spec = NULL;
+    }
 
     return(spec);
 } /* Mix_LoadOGG_RW */

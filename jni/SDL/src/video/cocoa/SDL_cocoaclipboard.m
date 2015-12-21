@@ -1,25 +1,26 @@
 /*
-    SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2011 Sam Lantinga
+  Simple DirectMedia Layer
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Sam Lantinga
-    slouken@libsdl.org
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
+
+#if SDL_VIDEO_DRIVER_COCOA
 
 #include "SDL_cocoavideo.h"
 #include "../../events/SDL_clipboardevents_c.h"
@@ -27,48 +28,36 @@
 static NSString *
 GetTextFormat(_THIS)
 {
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_6
-    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
-
-    if (data->osversion >= 0x1060) {
+    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
         return NSPasteboardTypeString;
     } else {
         return NSStringPboardType;
     }
-#else
-    return NSStringPboardType;
-#endif
 }
 
 int
 Cocoa_SetClipboardText(_THIS, const char *text)
+{ @autoreleasepool
 {
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
-    NSAutoreleasePool *pool;
     NSPasteboard *pasteboard;
     NSString *format = GetTextFormat(_this);
-
-    pool = [[NSAutoreleasePool alloc] init];
 
     pasteboard = [NSPasteboard generalPasteboard];
     data->clipboard_count = [pasteboard declareTypes:[NSArray arrayWithObject:format] owner:nil];
     [pasteboard setString:[NSString stringWithUTF8String:text] forType:format];
 
-    [pool release];
-
     return 0;
-}
+}}
 
 char *
 Cocoa_GetClipboardText(_THIS)
+{ @autoreleasepool
 {
-    NSAutoreleasePool *pool;
     NSPasteboard *pasteboard;
     NSString *format = GetTextFormat(_this);
     NSString *available;
     char *text;
-
-    pool = [[NSAutoreleasePool alloc] init];
 
     pasteboard = [NSPasteboard generalPasteboard];
     available = [pasteboard availableTypeFromArray: [NSArray arrayWithObject:format]];
@@ -87,43 +76,27 @@ Cocoa_GetClipboardText(_THIS)
         text = SDL_strdup("");
     }
 
-    [pool release];
-
     return text;
-}
+}}
 
 SDL_bool
 Cocoa_HasClipboardText(_THIS)
 {
-    NSAutoreleasePool *pool;
-    NSPasteboard *pasteboard;
-    NSString *format = GetTextFormat(_this);
-    NSString *available;
-    SDL_bool result;
-
-    pool = [[NSAutoreleasePool alloc] init];
-
-    pasteboard = [NSPasteboard generalPasteboard];
-    available = [pasteboard availableTypeFromArray: [NSArray arrayWithObject:format]];
-    if ([available isEqualToString:format]) {
-        result = SDL_TRUE;
-    } else {
-        result = SDL_FALSE;
+    SDL_bool result = SDL_FALSE;
+    char *text = Cocoa_GetClipboardText(_this);
+    if (text) {
+        result = text[0] != '\0' ? SDL_TRUE : SDL_FALSE;
+        SDL_free(text);
     }
-
-    [pool release];
-
     return result;
 }
 
 void
 Cocoa_CheckClipboardUpdate(struct SDL_VideoData * data)
+{ @autoreleasepool
 {
-    NSAutoreleasePool *pool;
     NSPasteboard *pasteboard;
     NSInteger count;
-
-    pool = [[NSAutoreleasePool alloc] init];
 
     pasteboard = [NSPasteboard generalPasteboard];
     count = [pasteboard changeCount];
@@ -133,8 +106,8 @@ Cocoa_CheckClipboardUpdate(struct SDL_VideoData * data)
         }
         data->clipboard_count = count;
     }
+}}
 
-    [pool release];
-}
+#endif /* SDL_VIDEO_DRIVER_COCOA */
 
 /* vi: set ts=4 sw=4 expandtab: */

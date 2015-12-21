@@ -1,3 +1,14 @@
+/*
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely.
+*/
 /********************************************************************************
  *                                                                              *
  * Test of the overlay used for moved pictures, test more closed to real life.  *
@@ -8,6 +19,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
 
 #include "SDL.h"
 
@@ -124,6 +139,18 @@ SDL_Color MooseColors[84] = {
     , {239, 206, 173}
 };
 
+Uint8 MooseFrame[MOOSEFRAMES_COUNT][MOOSEFRAME_SIZE*2];
+SDL_Texture *MooseTexture;
+SDL_Rect displayrect;
+int window_w;
+int window_h;
+SDL_Window *window;
+SDL_Renderer *renderer;
+int paused = 0;
+int i;
+SDL_bool done = SDL_FALSE;
+Uint32 pixel_format = SDL_PIXELFORMAT_YV12;
+int fpsdelay;
 
 /* Call this instead of exit(), so we can clean up SDL: atexit() is evil. */
 static void
@@ -196,150 +223,101 @@ ConvertRGBtoYV12(Uint8 *rgb, Uint8 *out, int w, int h,
 }
 
 void
-ConvertRGBtoIYUV(SDL_Surface * s, SDL_Overlay * o, int monochrome,
-                 int luminance)
+ConvertRGBtoNV12(Uint8 *rgb, Uint8 *out, int w, int h,
+                 int monochrome, int luminance)
 {
     int x, y;
     int yuv[3];
-    Uint8 *p, *op[3];
+    Uint8 *op[2];
 
-    SDL_LockSurface(s);
-    SDL_LockYUVOverlay(o);
-
-    /* Convert */
-    for (y = 0; y < s->h && y < o->h; y++) {
-        p = ((Uint8 *) s->pixels) + s->pitch * y;
-        op[0] = o->pixels[0] + o->pitches[0] * y;
-        op[1] = o->pixels[1] + o->pitches[1] * (y / 2);
-        op[2] = o->pixels[2] + o->pitches[2] * (y / 2);
-        for (x = 0; x < s->w && x < o->w; x++) {
-            RGBtoYUV(p, yuv, monochrome, luminance);
+    op[0] = out;
+    op[1] = op[0] + w*h;
+    for (y = 0; y < h; ++y) {
+        for (x = 0; x < w; ++x) {
+            RGBtoYUV(rgb, yuv, monochrome, luminance);
             *(op[0]++) = yuv[0];
             if (x % 2 == 0 && y % 2 == 0) {
                 *(op[1]++) = yuv[1];
-                *(op[2]++) = yuv[2];
+                *(op[1]++) = yuv[2];
             }
-            p += s->format->BytesPerPixel;
+            rgb += 3;
         }
     }
-
-    SDL_UnlockYUVOverlay(o);
-    SDL_UnlockSurface(s);
-}
-
-void
-ConvertRGBtoUYVY(SDL_Surface * s, SDL_Overlay * o, int monochrome,
-                 int luminance)
-{
-    int x, y;
-    int yuv[3];
-    Uint8 *p, *op;
-
-    SDL_LockSurface(s);
-    SDL_LockYUVOverlay(o);
-
-    for (y = 0; y < s->h && y < o->h; y++) {
-        p = ((Uint8 *) s->pixels) + s->pitch * y;
-        op = o->pixels[0] + o->pitches[0] * y;
-        for (x = 0; x < s->w && x < o->w; x++) {
-            RGBtoYUV(p, yuv, monochrome, luminance);
-            if (x % 2 == 0) {
-                *(op++) = yuv[1];
-                *(op++) = yuv[0];
-                *(op++) = yuv[2];
-            } else
-                *(op++) = yuv[0];
-
-            p += s->format->BytesPerPixel;
-        }
-    }
-
-    SDL_UnlockYUVOverlay(o);
-    SDL_UnlockSurface(s);
-}
-
-void
-ConvertRGBtoYVYU(SDL_Surface * s, SDL_Overlay * o, int monochrome,
-                 int luminance)
-{
-    int x, y;
-    int yuv[3];
-    Uint8 *p, *op;
-
-    SDL_LockSurface(s);
-    SDL_LockYUVOverlay(o);
-
-    for (y = 0; y < s->h && y < o->h; y++) {
-        p = ((Uint8 *) s->pixels) + s->pitch * y;
-        op = o->pixels[0] + o->pitches[0] * y;
-        for (x = 0; x < s->w && x < o->w; x++) {
-            RGBtoYUV(p, yuv, monochrome, luminance);
-            if (x % 2 == 0) {
-                *(op++) = yuv[0];
-                *(op++) = yuv[2];
-                op[1] = yuv[1];
-            } else {
-                *op = yuv[0];
-                op += 2;
-            }
-
-            p += s->format->BytesPerPixel;
-        }
-    }
-
-    SDL_UnlockYUVOverlay(o);
-    SDL_UnlockSurface(s);
-}
-
-void
-ConvertRGBtoYUY2(SDL_Surface * s, SDL_Overlay * o, int monochrome,
-                 int luminance)
-{
-    int x, y;
-    int yuv[3];
-    Uint8 *p, *op;
-
-    SDL_LockSurface(s);
-    SDL_LockYUVOverlay(o);
-
-    for (y = 0; y < s->h && y < o->h; y++) {
-        p = ((Uint8 *) s->pixels) + s->pitch * y;
-        op = o->pixels[0] + o->pitches[0] * y;
-        for (x = 0; x < s->w && x < o->w; x++) {
-            RGBtoYUV(p, yuv, monochrome, luminance);
-            if (x % 2 == 0) {
-                *(op++) = yuv[0];
-                *(op++) = yuv[1];
-                op[1] = yuv[2];
-            } else {
-                *op = yuv[0];
-                op += 2;
-            }
-
-            p += s->format->BytesPerPixel;
-        }
-    }
-
-    SDL_UnlockYUVOverlay(o);
-    SDL_UnlockSurface(s);
 }
 
 static void
 PrintUsage(char *argv0)
 {
-    fprintf(stderr, "Usage: %s [arg] [arg] [arg] ...\n", argv0);
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Where 'arg' is any of the following options:\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "    -fps <frames per second>\n");
-    fprintf(stderr, "    -nodelay\n");
-    fprintf(stderr, "    -format <fmt> (one of the: YV12, IYUV, YUY2, UYVY, YVYU)\n");
-    fprintf(stderr, "    -scale <scale factor> (initial scale of the overlay)\n");
-    fprintf(stderr, "    -help (shows this help)\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr,
-            "Press ESC to exit, or SPACE to freeze the movie while application running.\n");
-    fprintf(stderr, "\n");
+    SDL_Log("Usage: %s [arg] [arg] [arg] ...\n", argv0);
+    SDL_Log("\n");
+    SDL_Log("Where 'arg' is any of the following options:\n");
+    SDL_Log("\n");
+    SDL_Log("    -fps <frames per second>\n");
+    SDL_Log("    -nodelay\n");
+    SDL_Log("    -format <fmt> (one of the: YV12, IYUV, YUY2, UYVY, YVYU)\n");
+    SDL_Log("    -scale <scale factor> (initial scale of the overlay)\n");
+    SDL_Log("    -help (shows this help)\n");
+    SDL_Log("\n");
+    SDL_Log("Press ESC to exit, or SPACE to freeze the movie while application running.\n");
+    SDL_Log("\n");
+}
+
+void
+loop()
+{
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                SDL_RenderSetViewport(renderer, NULL);
+                displayrect.w = window_w = event.window.data1;
+                displayrect.h = window_h = event.window.data2;
+            }
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            displayrect.x = event.button.x - window_w / 2;
+            displayrect.y = event.button.y - window_h / 2;
+            break;
+        case SDL_MOUSEMOTION:
+            if (event.motion.state) {
+                displayrect.x = event.motion.x - window_w / 2;
+                displayrect.y = event.motion.y - window_h / 2;
+            }
+            break;
+        case SDL_KEYDOWN:
+            if (event.key.keysym.sym == SDLK_SPACE) {
+                paused = !paused;
+                break;
+            }
+            if (event.key.keysym.sym != SDLK_ESCAPE) {
+                break;
+            }
+        case SDL_QUIT:
+            done = SDL_TRUE;
+            break;
+        }
+    }
+
+#ifndef __EMSCRIPTEN__
+    SDL_Delay(fpsdelay);
+#endif
+
+    if (!paused) {
+        i = (i + 1) % MOOSEFRAMES_COUNT;
+
+        SDL_UpdateTexture(MooseTexture, NULL, MooseFrame[i], MOOSEPIC_W*SDL_BYTESPERPIXEL(pixel_format));
+    }
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, MooseTexture, NULL, &displayrect);
+    SDL_RenderPresent(renderer);
+
+#ifdef __EMSCRIPTEN__
+    if (done) {
+        emscripten_cancel_main_loop();
+    }
+#endif
 }
 
 int
@@ -347,25 +325,23 @@ main(int argc, char **argv)
 {
     Uint8 *RawMooseData;
     SDL_RWops *handle;
-    int window_w;
-    int window_h;
     SDL_Window *window;
-    SDL_Renderer *renderer;
-    Uint8 MooseFrame[MOOSEFRAMES_COUNT][MOOSEFRAME_SIZE*2];
-    SDL_Texture *MooseTexture;
-    SDL_Rect displayrect;
-    SDL_Event event;
-    int paused = 0;
-    int i, j;
+    int j;
     int fps = 12;
     int fpsdelay;
     int nodelay = 0;
+#ifdef TEST_NV12
+    Uint32 pixel_format = SDL_PIXELFORMAT_NV12;
+#else
     Uint32 pixel_format = SDL_PIXELFORMAT_YV12;
+#endif
     int scale = 5;
-    SDL_bool done = SDL_FALSE;
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
-        fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+    /* Enable standard application logging */
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
+
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
         return 3;
     }
 
@@ -374,19 +350,19 @@ main(int argc, char **argv)
             if (argv[2]) {
                 fps = atoi(argv[2]);
                 if (fps == 0) {
-                    fprintf(stderr,
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                             "The -fps option requires an argument [from 1 to 1000], default is 12.\n");
                     quit(10);
                 }
                 if ((fps < 0) || (fps > 1000)) {
-                    fprintf(stderr,
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                             "The -fps option must be in range from 1 to 1000, default is 12.\n");
                     quit(10);
                 }
                 argv += 2;
                 argc -= 2;
             } else {
-                fprintf(stderr,
+                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                         "The -fps option requires an argument [from 1 to 1000], default is 12.\n");
                 quit(10);
             }
@@ -394,48 +370,23 @@ main(int argc, char **argv)
             nodelay = 1;
             argv += 1;
             argc -= 1;
-        } else if (strcmp(argv[1], "-format") == 0) {
-            if (argv[2]) {
-                if (!strcmp(argv[2], "YV12"))
-                    pixel_format = SDL_PIXELFORMAT_YV12;
-                else if (!strcmp(argv[2], "IYUV"))
-                    pixel_format = SDL_PIXELFORMAT_IYUV;
-                else if (!strcmp(argv[2], "YUY2"))
-                    pixel_format = SDL_PIXELFORMAT_YUY2;
-                else if (!strcmp(argv[2], "UYVY"))
-                    pixel_format = SDL_PIXELFORMAT_UYVY;
-                else if (!strcmp(argv[2], "YVYU"))
-                    pixel_format = SDL_PIXELFORMAT_YVYU;
-                else {
-                    fprintf(stderr,
-                            "The -format option %s is not recognized, see help for info.\n",
-                            argv[2]);
-                    quit(10);
-                }
-                argv += 2;
-                argc -= 2;
-            } else {
-                fprintf(stderr,
-                        "The -format option requires an argument, default is YUY2.\n");
-                quit(10);
-            }
         } else if (strcmp(argv[1], "-scale") == 0) {
             if (argv[2]) {
                 scale = atoi(argv[2]);
                 if (scale == 0) {
-                    fprintf(stderr,
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                             "The -scale option requires an argument [from 1 to 50], default is 5.\n");
                     quit(10);
                 }
                 if ((scale < 0) || (scale > 50)) {
-                    fprintf(stderr,
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                             "The -scale option must be in range from 1 to 50, default is 5.\n");
                     quit(10);
                 }
                 argv += 2;
                 argc -= 2;
             } else {
-                fprintf(stderr,
+                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                         "The -fps option requires an argument [from 1 to 1000], default is 12.\n");
                 quit(10);
             }
@@ -444,7 +395,7 @@ main(int argc, char **argv)
             PrintUsage(argv[0]);
             quit(0);
         } else {
-            fprintf(stderr, "Unrecognized option: %s.\n", argv[1]);
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unrecognized option: %s.\n", argv[1]);
             quit(10);
         }
         break;
@@ -452,7 +403,7 @@ main(int argc, char **argv)
 
     RawMooseData = (Uint8 *) malloc(MOOSEFRAME_SIZE * MOOSEFRAMES_COUNT);
     if (RawMooseData == NULL) {
-        fprintf(stderr, "Can't allocate memory for movie !\n");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Can't allocate memory for movie !\n");
         free(RawMooseData);
         quit(1);
     }
@@ -460,7 +411,7 @@ main(int argc, char **argv)
     /* load the trojan moose images */
     handle = SDL_RWFromFile("moose.dat", "rb");
     if (handle == NULL) {
-        fprintf(stderr, "Can't find the file moose.dat !\n");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Can't find the file moose.dat !\n");
         free(RawMooseData);
         quit(2);
     }
@@ -476,26 +427,28 @@ main(int argc, char **argv)
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
                               window_w, window_h,
-                              SDL_WINDOW_SHOWN|SDL_WINDOW_RESIZABLE);
+                              SDL_WINDOW_RESIZABLE);
     if (!window) {
-        fprintf(stderr, "Couldn't set create window: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set create window: %s\n", SDL_GetError());
         free(RawMooseData);
         quit(4);
     }
 
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer) {
-        fprintf(stderr, "Couldn't set create renderer: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set create renderer: %s\n", SDL_GetError());
         free(RawMooseData);
         quit(4);
     }
 
     MooseTexture = SDL_CreateTexture(renderer, pixel_format, SDL_TEXTUREACCESS_STREAMING, MOOSEPIC_W, MOOSEPIC_H);
     if (!MooseTexture) {
-        fprintf(stderr, "Couldn't set create texture: %s\n", SDL_GetError());
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't set create texture: %s\n", SDL_GetError());
         free(RawMooseData);
         quit(5);
     }
+    /* Uncomment this to check vertex color with a YUV texture */
+    /* SDL_SetTextureColorMod(MooseTexture, 0xff, 0x80, 0x80); */
 
     for (i = 0; i < MOOSEFRAMES_COUNT; i++) {
         Uint8 MooseFrameRGB[MOOSEFRAME_SIZE*3];
@@ -510,7 +463,17 @@ main(int argc, char **argv)
             rgb[2] = MooseColors[frame[j]].b;
             rgb += 3;
         }
-        ConvertRGBtoYV12(MooseFrameRGB, MooseFrame[i], MOOSEPIC_W, MOOSEPIC_H, 0, 100);
+        switch (pixel_format) {
+        case SDL_PIXELFORMAT_YV12:
+            ConvertRGBtoYV12(MooseFrameRGB, MooseFrame[i], MOOSEPIC_W, MOOSEPIC_H, 0, 100);
+            break;
+        case SDL_PIXELFORMAT_NV12:
+            ConvertRGBtoNV12(MooseFrameRGB, MooseFrame[i], MOOSEPIC_W, MOOSEPIC_H, 0, 100);
+            break;
+        default:
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unsupported pixel format\n");
+            break;
+        }
     }
 
     free(RawMooseData);
@@ -532,50 +495,14 @@ main(int argc, char **argv)
     SDL_EventState(SDL_KEYUP, SDL_IGNORE);
 
     /* Loop, waiting for QUIT or RESIZE */
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(loop, nodelay ? 0 : fps, 1);
+#else
     while (!done) {
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    SDL_RenderSetViewport(renderer, NULL);
-                    displayrect.w = window_w = event.window.data1;
-                    displayrect.h = window_h = event.window.data2;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                displayrect.x = event.button.x - window_w / 2;
-                displayrect.y = event.button.y - window_h / 2;
-                break;
-            case SDL_MOUSEMOTION:
-                if (event.motion.state) {
-                    displayrect.x = event.motion.x - window_w / 2;
-                    displayrect.y = event.motion.y - window_h / 2;
-                }
-                break;
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_SPACE) {
-                    paused = !paused;
-                    break;
-                }
-                if (event.key.keysym.sym != SDLK_ESCAPE) {
-                    break;
-                }
-            case SDL_QUIT:
-                done = SDL_TRUE;
-                break;
+        loop();
             }
-        }
-        SDL_Delay(fpsdelay);
+#endif
 
-        if (!paused) {
-            i = (i + 1) % MOOSEFRAMES_COUNT;
-
-            SDL_UpdateTexture(MooseTexture, NULL, MooseFrame[i], MOOSEPIC_W*SDL_BYTESPERPIXEL(pixel_format));
-        }
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, MooseTexture, NULL, &displayrect);
-        SDL_RenderPresent(renderer);
-    }
     SDL_DestroyRenderer(renderer);
     quit(0);
     return 0;

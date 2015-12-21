@@ -1,3 +1,14 @@
+/*
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely.
+*/
 
 /* Definitions for platform dependent windowing functions to test SDL
    integration with native windows
@@ -30,8 +41,6 @@ extern NativeWindowFactory X11WindowFactory;
    support to the build system, which is a little tricky.  You can uncomment
    it manually though and link testnativecocoa.m into the test application.
 */
-#if 1
 #define TEST_NATIVE_COCOA
 extern NativeWindowFactory CocoaWindowFactory;
-#endif
 #endif
