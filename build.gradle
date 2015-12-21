@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-project.ext.version = "0.9.0.2"
+project.ext.version = "0.9.0.3"
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
@@ -136,6 +136,8 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
     dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
     }
     lintOptions {
         abortOnError false
