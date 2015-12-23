@@ -1065,7 +1065,11 @@ public class SDLActivity extends CTHActivity {
     /* The native thread has finished */
     public static void handleNativeExit() {
         SDLActivity.mSDLThread = null;
-        mSingleton.finish();
+
+        // The activity could already be in the process of closing down
+        if (mSingleton != null && !mSingleton.isDestroyed() && !mSingleton.isFinishing()) {
+            mSingleton.finish();
+        }
     }
 
     public void hideTextEdit() {
