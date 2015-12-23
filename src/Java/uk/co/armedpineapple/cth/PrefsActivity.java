@@ -188,7 +188,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
         if (CTHApplication.isTestingVersion()) {
             findPreference("alpha_pref").setTitle(R.string.preferences_alpha_leave);
-            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_on);
+            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_off);
 
             findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
@@ -200,7 +200,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
         } else {
             findPreference("alpha_pref").setTitle(R.string.preferences_alpha_join);
-            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_off);
+            findPreference("alpha_pref").setSummary(R.string.preferences_alpha_on);
 
             findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
