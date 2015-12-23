@@ -280,23 +280,25 @@ public class SDLActivity extends CTHActivity {
             return;
         }
 
-        // Send a quit message to the application
-        SDLActivity.mExitCalledFromJava = true;
-        SDLActivity.nativeQuit();
+        if (hasGameLoaded) {
+            // Send a quit message to the application
+            SDLActivity.mExitCalledFromJava = true;
+            SDLActivity.nativeQuit();
 
-        // Now wait for the SDL thread to quit
-        if (SDLActivity.mSDLThread != null) {
-            try {
-                SDLActivity.mSDLThread.join();
-            } catch (Exception e) {
-                Log.w("Problem stopping thread");
-                Reporting.report(e);
+            // Now wait for the SDL thread to quit
+            if (SDLActivity.mSDLThread != null) {
+                try {
+                    SDLActivity.mSDLThread.join();
+                } catch (Exception e) {
+                    Log.w("Problem stopping thread");
+                    Reporting.report(e);
+                }
+                SDLActivity.mSDLThread = null;
+
+                Log.v("Finished waiting for SDL thread");
             }
-            SDLActivity.mSDLThread = null;
 
-            Log.v("Finished waiting for SDL thread");
         }
-
         super.onDestroy();
         // Reset everything in case the user re opens the app
         SDLActivity.initialize();
