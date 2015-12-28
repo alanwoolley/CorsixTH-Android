@@ -79,12 +79,12 @@ public class HelpDialog extends Dialog implements OnItemClickListener {
 			View newView;
 
 			if (convertView == null) {
-				newView = inflater.inflate(R.layout.menu_item, null);
+				newView = inflater.inflate(R.layout.help_item, null);
 			} else {
 				newView = convertView;
 			}
 
-			((TextView) newView.findViewById(R.id.menu_item_text))
+			((TextView) newView.findViewById(R.id.help_item_text))
 					.setText(text[position]);
 
 			return newView;
