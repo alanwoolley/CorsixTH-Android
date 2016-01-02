@@ -64,10 +64,10 @@ public class CTHApplication extends android.app.Application {
     }
 
     public static boolean isTestingVersion() {
-        return BuildConfig.BUILD_TYPE.equals("debug")
-                || BuildConfig.FLAVOR.equals("alpha")
-                || BuildConfig.FLAVOR.equals("dev")
-                || BuildConfig.FLAVOR.equals("beta"); 
+        return BuildConfig.BUILD_TYPE.equalsIgnoreCase("debug")
+                || BuildConfig.FLAVOR.equalsIgnoreCase("alpha")
+                || BuildConfig.FLAVOR.equalsIgnoreCase("dev")
+                || BuildConfig.FLAVOR.equalsIgnoreCase("beta");
     }
 
     public Properties getProperties() {

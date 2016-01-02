@@ -20,8 +20,8 @@ import uk.co.armedpineapple.cth.SDLActivity;
 public class HelpDialog extends Dialog implements OnItemClickListener {
 
     private HelpListAdapter mHelpListAdapter;
-    private ListView        mHelpListView;
-    private Context         ctx;
+    private ListView mHelpListView;
+    private Context ctx;
 
     public HelpDialog(SDLActivity context) {
         super(context);
@@ -40,58 +40,56 @@ public class HelpDialog extends Dialog implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> adapterview, View arg1, int pos, long arg3) {
         String intentUrl = (String) mHelpListAdapter.getItem(pos);
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(intentUrl));
-		ctx.startActivity(browserIntent);
-		
-	}
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(intentUrl));
+        ctx.startActivity(browserIntent);
 
-	class HelpListAdapter extends BaseAdapter {
-		String[]				text;
-		String[]				urls;
+    }
 
-		LayoutInflater	inflater;
-		int							selected	= 0;
+    class HelpListAdapter extends BaseAdapter {
+        String[] text;
+        String[] urls;
 
-		public HelpListAdapter(Context ctx, String[] helpArray, String[] helpUrls) {
-			super();
-			text = helpArray;
-			urls = helpUrls;
-			inflater = LayoutInflater.from(ctx);
-		}
+        LayoutInflater inflater;
+        int selected = 0;
 
-		@Override
-		public int getCount() {
-			return text.length;
-		}
+        public HelpListAdapter(Context ctx, String[] helpArray, String[] helpUrls) {
+            super();
+            text = helpArray;
+            urls = helpUrls;
+            inflater = LayoutInflater.from(ctx);
+        }
 
-		@Override
-		public Object getItem(int position) {
-			return urls[position];
-		}
+        @Override
+        public int getCount() {
+            return text.length;
+        }
 
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
+        @Override
+        public Object getItem(int position) {
+            return urls[position];
+        }
 
-		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
-			View newView;
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-			if (convertView == null) {
-				newView = inflater.inflate(R.layout.menu_item, null);
-			} else {
-				newView = convertView;
-			}
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View newView;
 
-			((TextView) newView.findViewById(R.id.menu_item_text))
-					.setText(text[position]);
+            if (convertView == null) {
+                newView = inflater.inflate(R.layout.help_item, parent);
+            } else {
+                newView = convertView;
+            }
 
-			return newView;
-		}
-	}
+            ((TextView) newView.findViewById(R.id.help_item_text))
+                    .setText(text[position]);
 
-
+            return newView;
+        }
+    }
 
 
 }
