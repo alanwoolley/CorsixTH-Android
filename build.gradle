@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-project.ext.version = "0.9.0.4"
+project.ext.version = "0.9.1.0"
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
