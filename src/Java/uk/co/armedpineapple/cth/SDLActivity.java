@@ -850,6 +850,11 @@ public class SDLActivity extends CTHActivity {
 
     @SuppressLint("NewApi")
     public static void hideSystemUi() {
+        if (!isActivityAvailable() || mSingleton.getWindow() == null) {
+            Log.i("Tried to hide system UI with no window. Ignoring.");
+            return;
+        }
+        
         if (Build.VERSION.SDK_INT >= 19) {
 
             // Hide the navigation buttons if supported
