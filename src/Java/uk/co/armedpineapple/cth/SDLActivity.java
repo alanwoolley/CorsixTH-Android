@@ -458,6 +458,10 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static void audioWriteShortBuffer(short[] buffer) {
+        if (mAudioTrack == null) {
+            Log.w("Tried to write to audio buffer without initialising first");
+            return;
+        }
         for (int i = 0; i < buffer.length; ) {
             int result = mAudioTrack.write(buffer, i, buffer.length - i);
             if (result > 0) {
@@ -479,6 +483,10 @@ public class SDLActivity extends CTHActivity {
     // Java functions called from C
 
     public static void audioWriteByteBuffer(byte[] buffer) {
+        if (mAudioTrack == null) {
+            Log.w("Tried to write to audio buffer without initialising first");
+            return;
+        }
         for (int i = 0; i < buffer.length; ) {
             int result = mAudioTrack.write(buffer, i, buffer.length - i);
             if (result > 0) {
