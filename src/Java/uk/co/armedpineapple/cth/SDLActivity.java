@@ -712,7 +712,7 @@ public class SDLActivity extends CTHActivity {
     public static Surface getNativeSurface() {
         return mSurface.getHolder().getSurface();
     }
-    void loadApplication() {
+        void loadApplication() {
 
         // Load shared libraries
         String errorMsgBrokenLib = "";
