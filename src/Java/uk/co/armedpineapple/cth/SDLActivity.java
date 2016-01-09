@@ -942,7 +942,8 @@ public class SDLActivity extends CTHActivity {
         commandHandler.cleanUp();
 
 
-        if (SDLActivity.mBrokenLibraries) {
+        // Can't do anything in this case
+        if (SDLActivity.mBrokenLibraries || !isGameLoaded()) {
             return;
         }
 
@@ -1088,6 +1089,9 @@ public class SDLActivity extends CTHActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mTextEdit.getWindowToken(), 0);
         }
+    }
+    public boolean isGameLoaded() {
+        return hasGameLoaded;
     }
 
     public void setScreenOn(boolean on) {
