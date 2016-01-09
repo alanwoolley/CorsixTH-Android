@@ -56,7 +56,12 @@ public class CommandHandler extends Handler {
     }
 
     public void handleMessage(Message msg) {
-        InputMethodManager mgr;
+        // Receiving a message when the activity is not available will likely cause a fatal error.
+        if (!SDLActivity.isActivityAvailable()) {
+            Log.w("Received message when activity is not ready. Ignoring.");
+            return;
+        }
+
         switch (Command.values()[msg.arg1]) {
             case GAME_LOAD_ERROR:
                 SharedPreferences prefs = activityContext.app.getPreferences();

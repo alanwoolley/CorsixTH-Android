@@ -1063,13 +1063,15 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
-
+    public static boolean isActivityAvailable() {
+        return mSingleton != null && !mSingleton.isDestroyed() && !mSingleton.isFinishing();
+    }
     /* The native thread has finished */
     public static void handleNativeExit() {
         SDLActivity.mSDLThread = null;
 
         // The activity could already be in the process of closing down
-        if (mSingleton != null && !mSingleton.isDestroyed() && !mSingleton.isFinishing()) {
+        if (isActivityAvailable()) {
             mSingleton.finish();
         }
     }
