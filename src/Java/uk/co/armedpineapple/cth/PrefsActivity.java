@@ -256,7 +256,9 @@ public class PrefsActivity extends PreferenceActivity implements
         }
         if (Files.canAccessExternalStorage()) {
             application.configuration.refresh();
-            SDLActivity.cthUpdateConfiguration(application.configuration);
+            if (SDLActivity.isActivityAvailable()) {
+                SDLActivity.cthUpdateConfiguration(application.configuration);
+            }
         }
     }
 

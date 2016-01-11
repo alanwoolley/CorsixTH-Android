@@ -458,6 +458,10 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static void audioWriteShortBuffer(short[] buffer) {
+        if (mAudioTrack == null) {
+            Log.w("Tried to write to audio buffer without initialising first");
+            return;
+        }
         for (int i = 0; i < buffer.length; ) {
             int result = mAudioTrack.write(buffer, i, buffer.length - i);
             if (result > 0) {
@@ -479,6 +483,10 @@ public class SDLActivity extends CTHActivity {
     // Java functions called from C
 
     public static void audioWriteByteBuffer(byte[] buffer) {
+        if (mAudioTrack == null) {
+            Log.w("Tried to write to audio buffer without initialising first");
+            return;
+        }
         for (int i = 0; i < buffer.length; ) {
             int result = mAudioTrack.write(buffer, i, buffer.length - i);
             if (result > 0) {
@@ -712,7 +720,7 @@ public class SDLActivity extends CTHActivity {
     public static Surface getNativeSurface() {
         return mSurface.getHolder().getSurface();
     }
-    void loadApplication() {
+        void loadApplication() {
 
         // Load shared libraries
         String errorMsgBrokenLib = "";
@@ -850,22 +858,19 @@ public class SDLActivity extends CTHActivity {
 
     @SuppressLint("NewApi")
     public static void hideSystemUi() {
-        if (Build.VERSION.SDK_INT >= 19) {
-
-            // Hide the navigation buttons if supported
-            mSingleton.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-            );
-        } else if (Build.VERSION.SDK_INT >= 11) {
-
-            // Use low profile mode if supported
-            mSingleton.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LOW_PROFILE);
-
+        if (!isActivityAvailable() || mSingleton.getWindow() == null) {
+            Log.i("Tried to hide system UI with no window. Ignoring.");
+            return;
         }
+
+        // Hide the navigation buttons
+        mSingleton.getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+        );
+
     }
 
     public void startApp() {
@@ -937,7 +942,8 @@ public class SDLActivity extends CTHActivity {
         commandHandler.cleanUp();
 
 
-        if (SDLActivity.mBrokenLibraries) {
+        // Can't do anything in this case
+        if (SDLActivity.mBrokenLibraries || !isGameLoaded()) {
             return;
         }
 
@@ -1063,13 +1069,15 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
-
+    public static boolean isActivityAvailable() {
+        return mSingleton != null && !mSingleton.isDestroyed() && !mSingleton.isFinishing();
+    }
     /* The native thread has finished */
     public static void handleNativeExit() {
         SDLActivity.mSDLThread = null;
 
         // The activity could already be in the process of closing down
-        if (mSingleton != null && !mSingleton.isDestroyed() && !mSingleton.isFinishing()) {
+        if (isActivityAvailable()) {
             mSingleton.finish();
         }
     }
@@ -1081,6 +1089,9 @@ public class SDLActivity extends CTHActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mTextEdit.getWindowToken(), 0);
         }
+    }
+    public boolean isGameLoaded() {
+        return hasGameLoaded;
     }
 
     public void setScreenOn(boolean on) {

@@ -40,6 +40,10 @@
     <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
     </style>
 
+    <style name="HelpFont" parent="@android:style/TextAppearance.Medium">
+
+    </style>
+
     <style name="Dialogs" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowFullscreen">true</item>
     </style>

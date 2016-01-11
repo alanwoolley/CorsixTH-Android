@@ -13,6 +13,6 @@
         android:paddingEnd="56dp"
         android:paddingTop="8dp"
         android:text=""
-        android:textAppearance="@style/MenuFont"/>
+        android:textAppearance="@style/HelpFont"/>
 
 </RelativeLayout>
