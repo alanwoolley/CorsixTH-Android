@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-project.ext.version = "0.9.2.1"
+project.ext.version = "0.9.3.0"
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
@@ -159,12 +159,14 @@ task createGameZip(type: Zip) {
 
     from('jni/src/CorsixTH') {
         include 'Levels/**'
+        include 'Campaigns/**'
         include 'Lua/**'
         include 'CorsixTH.lua'
         include 'Bitmap/aux_ui.*'
         include 'Bitmap/tree_ctrl.*'
         include 'Bitmap/mainmenu1080.dat'
         include 'Bitmap/mainmenu1080.pal'
+
     }
 }
 
