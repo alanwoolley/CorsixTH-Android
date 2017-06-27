@@ -2,9 +2,6 @@ package uk.co.armedpineapple.cth;
 
 import android.content.Context;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
 public class Utils {
 
     private Utils() {
@@ -19,6 +16,7 @@ public class Utils {
 	 * @return true if GPS is available
 	 */
 	public static boolean hasGooglePlayServices(Context ctx) {
-		return GooglePlayServicesUtil.isGooglePlayServicesAvailable(ctx) == ConnectionResult.SUCCESS;
+		//return GooglePlayServicesUtil.isGooglePlayServicesAvailable(ctx) == ConnectionResult.SUCCESS;
+		return false;
 	}
 }

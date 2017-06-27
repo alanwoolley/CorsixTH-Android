@@ -5,15 +5,22 @@
  */
 package uk.co.armedpineapple.cth.wizard;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import uk.co.armedpineapple.cth.CTHActivity;
 import uk.co.armedpineapple.cth.Configuration;
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException;
@@ -24,17 +31,60 @@ import uk.co.armedpineapple.cth.Reporting;
 import uk.co.armedpineapple.cth.SDLActivity;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
-public class WizardActivity extends CTHActivity {
+public class WizardActivity extends CTHActivity  implements EasyPermissions.PermissionCallbacks {
 
     private static final Reporting.Logger Log = Reporting.getLogger("Wizard");
-
+    private static final int REQUIRED_PERMISSIONS = 1;
     private ViewFlipper flipper;
     private Button previousButton;
     private Button nextButton;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        bootstrap();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            Log.d("User permenantly denied us permission!");
+            new AppSettingsDialog.Builder(this).build().show();
+        } else {
+            Log.d("User just denied us permission!");
+            bootstrap();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            bootstrap();
+        }
+    }
+
+    @AfterPermissionGranted(REQUIRED_PERMISSIONS)
+    public void bootstrap() {
+        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            hasPermissions();
+        } else {
+            Log.d("Do not have permissions - requesting");
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, "This application requires access to storage to run.",
+                    REQUIRED_PERMISSIONS, perms);
+        }
+    }
+
+    public void hasPermissions() {
         if (!Files.canAccessExternalStorage()) {
             Log.e("Can't get storage.");
 
@@ -92,6 +142,10 @@ public class WizardActivity extends CTHActivity {
         nextButton.setOnClickListener(buttonClickListener);
 
     }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        bootstrap();
+    }
 
     public WizardView loadAndAdd(LayoutInflater inflater, ViewFlipper flipper,
                                  WizardView wv) {
@@ -101,7 +155,7 @@ public class WizardActivity extends CTHActivity {
         return wv;
     }
 
-    class WizardButtonClickListener implements OnClickListener {
+    private class WizardButtonClickListener implements OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -152,16 +206,13 @@ public class WizardActivity extends CTHActivity {
 
         }
 
-        public boolean hasNext(ViewFlipper flipper) {
+        boolean hasNext(ViewFlipper flipper) {
             return flipper.indexOfChild(flipper.getCurrentView()) != flipper
                     .getChildCount() - 1;
         }
 
-        public boolean hasPrevious(ViewFlipper flipper) {
-            if (flipper.indexOfChild(flipper.getCurrentView()) == 0) {
-                return false;
-            }
-            return true;
+        boolean hasPrevious(ViewFlipper flipper) {
+            return flipper.indexOfChild(flipper.getCurrentView()) != 0;
         }
 
     }

@@ -6,8 +6,9 @@ package uk.co.armedpineapple.cth;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public abstract class CTHActivity extends Activity {
+public abstract class CTHActivity extends AppCompatActivity {
 
 	private static final String	LOG_TAG	= "CTHActivity";
 
