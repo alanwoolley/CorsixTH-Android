@@ -60,11 +60,10 @@ public class Files {
     // Places to look for files
     @SuppressLint("SdCardPath")
     private static final String[] SearchRoot = {"/mnt/sdcard",
-            "/sdcard", "/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc"};
+            "/mnt/sdcard/external_sd", "/mnt/emmc", "/mnt/sdcard/emmc"};
 
-    private static final String[] SearchDirs = {"th", "TH",
-            "themehospital", "ThemeHospital", "Themehospital", "theme_hospital",
-            "Theme_Hospital"};
+    private static final String[] SearchDirs = {"th",
+            "themehospital", "theme_hospital"};
 
     private Files() {
     }
@@ -151,14 +150,46 @@ public class Files {
 
         // As soon as a file is not found in the directory, fail.
         for (String file : files) {
-            File f = new File(directory + File.separator + file);
-            if (!f.exists()) {
+            if (!locateFileCaseInsensitive(file, directory)) {
                 return false;
             }
         }
 
         return true;
     }
+
+    private static boolean locateFileCaseInsensitive(String file, String directory) {
+
+        if (directory == null) {
+            return false;
+        }
+
+        File dir = new File(directory);
+        if (!dir.exists() || !dir.isDirectory()) {
+            return false;
+        }
+
+        if (file.contains(File.separator)) {
+            String firstPart = file.substring(0, file.indexOf(File.separator));
+            for ( File f : dir.listFiles()) {
+                if (f.isDirectory() && f.getName().toLowerCase().equals(firstPart.toLowerCase())) {
+                    if (locateFileCaseInsensitive(file.substring(file.indexOf(File.separator)+1), f.getAbsolutePath())) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+            for ( String f: dir.list()) {
+                if (f.toLowerCase().equals(file.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
 
     /**
      * Checks if external storage can be accessed. This should be called any time
@@ -329,7 +360,7 @@ public class Files {
                 File dir = new File(root);
 
                 if (hasDataFiles(root)) {
-                    return root;
+                    return dir.getAbsolutePath();
                 }
 
                 if (dir.exists() && dir.isDirectory()) {

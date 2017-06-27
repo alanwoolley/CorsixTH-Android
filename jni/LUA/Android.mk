@@ -38,7 +38,7 @@ LOCAL_SRC_FILES := lapi.c \
 	lvm.c \
 	lzio.c
 	
-LOCAL_CFLAGS := -DLUA_USE_LINUX
+LOCAL_CFLAGS :=
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 

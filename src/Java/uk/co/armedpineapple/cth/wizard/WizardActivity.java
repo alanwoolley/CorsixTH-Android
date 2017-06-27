@@ -87,7 +87,6 @@ public class WizardActivity extends CTHActivity  implements EasyPermissions.Perm
     public void hasPermissions() {
         if (!Files.canAccessExternalStorage()) {
             Log.e("Can't get storage.");
-
             // Show dialog and end
             DialogFactory.createExternalStorageWarningDialog(this, true).show();
             return;
@@ -102,6 +101,8 @@ public class WizardActivity extends CTHActivity  implements EasyPermissions.Perm
                 finish();
                 startActivity(new Intent(this, SDLActivity.class));
                 return;
+            } else {
+                Log.w("Configured but cannot find data files");
             }
         }
 
