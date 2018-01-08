@@ -2,10 +2,14 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'io.fabric.tools:gradle:1.21.6'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'io.fabric.tools:gradle:1.22.1'
     }
 }
 
@@ -16,9 +20,13 @@ apply plugin: 'io.fabric'
 apply from: 'versioning.gradle'
 
 repositories {
-    jcenter();
+    jcenter()
     maven { url 'https://maven.fabric.io/public' }
 
+    maven {
+        url 'https://maven.google.com/'
+        name 'Google'
+    }
 }
 dependencies {
     compile 'com.android.support:cardview-v7:25.3.1'
@@ -30,28 +38,33 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'commons-io:commons-io:2.4'
     compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.2'
     compile fileTree(include: '*.jar', dir: 'jars')
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+        transitive = true
     }
 
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.0'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
 
         multiDexEnabled true
 
         versionName project.ext.version
         versionCode buildVersionCode()
 
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+
     }
     Properties signingProperties = new Properties()
+
     if (file("signing.properties").exists()) {
         signingProperties.load(new FileInputStream(file("signing.properties")))
         signingConfigs {
@@ -62,23 +75,15 @@ android {
                 keyPassword signingProperties['signing.release.keyPassword']
             }
         }
-
-
-        productFlavors {
-            prod {
-                signingConfig signingConfigs.release
-            }
-        }
     }
-    productFlavors {
-        dev {
-            minSdkVersion 21
-        }
 
-        prod {
+    signingConfigs {
+        release {
 
         }
     }
+
+
     buildTypes {
         release {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
@@ -115,7 +120,6 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
-            jniLibs.srcDirs = ['libs']
         }
 
         // Move the tests to tests/java, tests/res, etc...
@@ -138,16 +142,13 @@ android {
     }
     dexOptions {
         javaMaxHeapSize "4g"
-        incremental true
     }
     lintOptions {
         abortOnError false
     }
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(
-                    output.outputFile.parent,
-                    "CTH-${variant.buildType.name}-${variant.versionName}.apk")
+    externalNativeBuild {
+        ndkBuild {
+            path 'jni/Android.mk'
         }
     }
 
