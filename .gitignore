@@ -52,4 +52,4 @@ signing.properties
 fabric.properties
 
 .externalNativeBuild
-
+*.jks
