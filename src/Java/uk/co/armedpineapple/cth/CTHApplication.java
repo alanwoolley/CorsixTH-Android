@@ -12,10 +12,6 @@ import android.os.Build;
 import android.os.Vibrator;
 import android.support.multidex.MultiDex;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
-
-import io.fabric.sdk.android.Fabric;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -37,7 +33,6 @@ public class CTHApplication extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
-        Fabric.with(this, new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.FLAVOR.equalsIgnoreCase("dev") || BuildConfig.DEBUG || !preferences.getBoolean("usage_pref", true)).build()).build());
         Vibrator vib = ((Vibrator) getSystemService(VIBRATOR_SERVICE));
         if (Build.VERSION.SDK_INT >= 11) {
             hasVibration = vib.hasVibrator();

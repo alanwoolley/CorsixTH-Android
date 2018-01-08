@@ -1,46 +1,43 @@
 package uk.co.armedpineapple.cth;
 
-
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.crashlytics.android.Crashlytics;
+import android.content.*;
+import android.util.*;
+import android.widget.*;
 
 public class Reporting {
+    private static final String TAG = "CorsixTH";
 
-    public static void reportWithToast(Context ctx, String msg,  Exception e) {
+    public static void reportWithToast(Context ctx, String msg, Exception e) {
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
-        Crashlytics.log(msg);
-        report(e);
+        Log.w(TAG, msg, e);
     }
 
     public static void event(String msg) {
-        Crashlytics.getInstance().core.log(msg);
+        Log.i(TAG, msg);
     }
 
     public static void report(Exception e) {
-        Crashlytics.getInstance().core.logException(e);
+        Log.e(TAG, "Exception", e);
+
     }
+
     public static void report(String log, Exception e) {
-        Crashlytics.log(log);
-        report(e);
+        Log.e(TAG, log, e);
     }
 
     public static void setBool(String key, boolean value) {
-        Crashlytics.getInstance().core.setBool(key, value);
     }
+
     public static void setDouble(String key, double value) {
-        Crashlytics.getInstance().core.setDouble(key, value);
     }
+
     public static void setFloat(String key, float value) {
-        Crashlytics.getInstance().core.setFloat(key, value);
     }
+
     public static void setInt(String key, int value) {
-        Crashlytics.getInstance().core.setInt(key, value);
     }
+
     public static void setLong(String key, long value) {
-        Crashlytics.getInstance().core.setLong(key, value);
     }
 
     public static Logger getLogger(String tag) {
@@ -56,15 +53,28 @@ public class Reporting {
         }
 
         public void d(String msg) {
-            Crashlytics.log(Log.DEBUG, tag, msg);
+
+            Log.d(tag, msg);
+
         }
+
         public void e(String msg) {
-            Crashlytics.log(Log.ERROR, tag, msg);
+            Log.e(tag, msg);
+
         }
+
         public void i(String msg) {
-            Crashlytics.log(Log.INFO, tag, msg);
+
+            Log.i(tag, msg);
         }
-        public void w(String msg) { Crashlytics.log(Log.WARN, tag, msg); }
-        public void v(String msg) { Crashlytics.log(Log.VERBOSE, tag, msg); }
+
+        public void w(String msg) {
+            Log.w(tag, msg);
+        }
+
+        public void v(String msg) {
+            Log.v(tag, msg);
+
+        }
     }
 }

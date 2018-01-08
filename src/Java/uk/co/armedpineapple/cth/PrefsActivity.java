@@ -23,14 +23,12 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import io.fabric.sdk.android.Fabric;
 import uk.co.armedpineapple.cth.Files.DownloadFileTask;
 import uk.co.armedpineapple.cth.Files.UnzipTask;
 import uk.co.armedpineapple.cth.dialogs.DialogFactory;
