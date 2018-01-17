@@ -642,7 +642,7 @@ public class SDLActivity extends CTHActivity {
                 edit.putBoolean("scripts_copied", true);
                 edit.putInt("last_version", currentVersion);
                 edit.apply();
-                dialog.hide();
+                dialog.cancel();
                 loadApplication();
             }
 
