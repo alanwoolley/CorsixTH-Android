@@ -140,7 +140,7 @@ class OriginalFilesWizard : WizardView {
             val f = File(ctx.getExternalFilesDir(null)!!.absolutePath + "/demo/HOSP")
             if (!f.exists()) {
 
-                val builder = AlertDialog.Builder(ctx)
+                val dialogBuilder = AlertDialog.Builder(ctx)
                 val alertListener = DialogInterface.OnClickListener { dialog, which ->
                     if (which == DialogInterface.BUTTON_POSITIVE) {
 
@@ -151,14 +151,14 @@ class OriginalFilesWizard : WizardView {
                     }
                 }
 
-                builder
+                dialogBuilder
                         .setMessage(
                                 resources.getString(R.string.download_demo_dialog))
                         .setCancelable(true)
                         .setNegativeButton(R.string.cancel, alertListener)
                         .setPositiveButton(R.string.ok, alertListener)
 
-                val alert = builder.create()
+                val alert = dialogBuilder.create()
                 alert.show()
             } else {
                 customLocation = ctx.getExternalFilesDir(null)!!.absolutePath + "/demo/HOSP"
@@ -324,7 +324,6 @@ class OriginalFilesWizard : WizardView {
     }
 
     companion object {
-
         private val Log = Reporting.getLogger("OriginalFilesWizard")
     }
 }
