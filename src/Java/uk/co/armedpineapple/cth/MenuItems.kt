@@ -14,14 +14,9 @@ enum class MenuItems(val textResource: Int?, val imageResource: Int?, private va
     ABOUT(R.string.menuitem_about, null, false),
     EXIT(R.string.menuitem_exit, null, false);
 
-
     companion object {
-
         fun getItems(inDebugMode: Boolean): List<MenuItems> {
-            val items = MenuItems.values().filter { !it.debugOnly || it.debugOnly == inDebugMode }
-
-            return items
+            return MenuItems.values().filter { !it.debugOnly || it.debugOnly == inDebugMode }
         }
     }
-
 }

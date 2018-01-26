@@ -983,7 +983,7 @@ public class SDLActivity extends CTHActivity {
         if (mVibratorService != null && getApp().getHasVibration() && getApp()
                 .getConfiguration().getHaptic()) {
             mVibratorService.cancel();
-            commandHandler.playingEarthquake = false;
+            commandHandler.setPlayingEarthquake(false);
         }
     }
 
