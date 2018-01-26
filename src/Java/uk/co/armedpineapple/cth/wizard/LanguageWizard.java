@@ -72,8 +72,7 @@ public class LanguageWizard extends WizardView {
 		}
 	}
 
-	@Override
-	void saveConfiguration(Configuration config) throws ConfigurationException {
+	@Override public void saveConfiguration(Configuration config) throws ConfigurationException {
 
 		String lang = (String) ((LanguageListAdapter) languageListView.getAdapter())
 				.getSelectedItem();
@@ -82,8 +81,7 @@ public class LanguageWizard extends WizardView {
 
 	}
 
-	@Override
-	void loadConfiguration(Configuration config) {
+	@Override public void loadConfiguration(Configuration config) {
 
 	}
 

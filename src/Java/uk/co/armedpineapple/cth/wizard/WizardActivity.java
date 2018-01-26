@@ -85,18 +85,19 @@ public class WizardActivity extends CTHActivity  implements EasyPermissions.Perm
     }
 
     public void hasPermissions() {
-        if (!Files.canAccessExternalStorage()) {
+        if (!Files.Companion.canAccessExternalStorage()) {
             Log.e("Can't get storage.");
             // Show dialog and end
-            DialogFactory.createExternalStorageWarningDialog(this, true).show();
+            DialogFactory.INSTANCE.createExternalStorageWarningDialog(this, true).show();
             return;
 
         }
 
-        SharedPreferences preferences = app.getPreferences();
+        SharedPreferences preferences = getApp().getPreferences();
         boolean alreadyRun = preferences.getBoolean("wizard_run", false);
         if (alreadyRun) {
-            if (Files.hasDataFiles(preferences.getString("originalfiles_pref", ""))) {
+            if (Files.Companion
+                    .hasDataFiles(preferences.getString("originalfiles_pref", ""))) {
                 Log.d("Wizard isn't going to run.");
                 finish();
                 startActivity(new Intent(this, SDLActivity.class));
@@ -112,15 +113,16 @@ public class WizardActivity extends CTHActivity  implements EasyPermissions.Perm
         previousButton = (Button) findViewById(R.id.leftbutton);
         nextButton = (Button) findViewById(R.id.rightbutton);
 
-        if (app.configuration == null) {
+        if (getApp().getConfiguration() == null) {
             try {
-                app.configuration = Configuration
-                        .loadFromPreferences(this, preferences);
+                getApp().setConfiguration(
+                        Configuration.loadFromPreferences(this, preferences));
             } catch (StorageUnavailableException e) {
                 Log.e("Can't get storage.");
 
                 // Show dialog and end
-                DialogFactory.createExternalStorageWarningDialog(this, true).show();
+                DialogFactory.INSTANCE
+                        .createExternalStorageWarningDialog(this, true).show();
                 return;
             }
         }
@@ -152,7 +154,7 @@ public class WizardActivity extends CTHActivity  implements EasyPermissions.Perm
                                  WizardView wv) {
 
         flipper.addView(wv);
-        wv.loadConfiguration(app.configuration);
+        wv.loadConfiguration(getApp().getConfiguration());
         return wv;
     }
 
@@ -169,10 +171,10 @@ public class WizardActivity extends CTHActivity  implements EasyPermissions.Perm
             } else if (v.equals(nextButton)) {
                 try {
                     ((WizardView) flipper.getCurrentView())
-                            .saveConfiguration(app.configuration);
+                            .saveConfiguration(getApp().getConfiguration());
 
                     if (!hasNext(flipper)) {
-                        app.configuration.saveToPreferences();
+                        getApp().getConfiguration().saveToPreferences();
 
                         finish();
                         WizardActivity.this.startActivity(new Intent(WizardActivity.this,

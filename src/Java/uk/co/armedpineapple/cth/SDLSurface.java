@@ -80,7 +80,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
             @Override
             public boolean onGenericMotion(View v, MotionEvent event) {
-                if (context.app.configuration.getControlsMode() == Configuration.CONTROLS_DESKTOP) {
+                if (context.getApp().getConfiguration().getControlsMode() == Configuration.CONTROLS_DESKTOP) {
                     int actionPointerIndex = event.getActionIndex();
                     float[] coords = translateCoords(event.getX(actionPointerIndex),
                             event.getY(actionPointerIndex));
@@ -107,7 +107,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
 		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-		if (context.app.configuration.getSpen()) {
+		if (context.getApp().getConfiguration().getSpen()) {
 			Log.d("S Pen support enabled");
             Reporting.setBool("spen", true);
 			SamsungSPenUtils.registerListeners();
@@ -190,7 +190,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             // This is the entry point to the C app.
             // Start up the C app thread and enable sensor input for the first time
             Log.d("Starting up SDLThread");
-            SDLActivity.mSDLThread = new Thread(new SDLMain(context.app.configuration, ""), "SDLThread");
+            SDLActivity.mSDLThread = new Thread(new SDLMain(
+                    context.getApp().getConfiguration(), ""), "SDLThread");
             enableSensor(Sensor.TYPE_ACCELEROMETER, true);
             SDLActivity.mSDLThread.start();
 
