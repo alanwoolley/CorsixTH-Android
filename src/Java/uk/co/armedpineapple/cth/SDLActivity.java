@@ -216,7 +216,7 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static String nativeGetGamePath() {
-        return mSingleton.app.configuration.getCthPath() + "/scripts/";
+        return mSingleton.getApp().getConfiguration().getCthPath() + "/scripts/";
     }
 
     // EGL functions
@@ -538,21 +538,22 @@ public class SDLActivity extends CTHActivity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         // Make sure that external media is mounted.
-        if (Files.canAccessExternalStorage()) {
+        if (Files.Companion.canAccessExternalStorage()) {
 
-            final SharedPreferences preferences = app.getPreferences();
+            final SharedPreferences preferences = getApp().getPreferences();
 
-            if (app.configuration == null) {
+            if (getApp().getConfiguration() == null) {
                 try {
-                    app.configuration = Configuration.loadFromPreferences(this,
-                            preferences);
+                    getApp().setConfiguration(Configuration
+                            .loadFromPreferences(this, preferences));
                 } catch (StorageUnavailableException e) {
                     Log.e("Can't get storage.");
 
                     // Create an alert dialog warning that external storage isn't
                     // mounted. The application will have to exit at this point.
 
-                    DialogFactory.createExternalStorageWarningDialog(this, true).show();
+                    DialogFactory.INSTANCE
+                            .createExternalStorageWarningDialog(this, true).show();
                 }
             }
 
@@ -575,7 +576,7 @@ public class SDLActivity extends CTHActivity {
                 Reporting.setBool("new_installation", true);
 
                 // Show the recent changes dialog
-                Dialog recentChangesDialog = DialogFactory
+                Dialog recentChangesDialog = DialogFactory.INSTANCE
                         .createRecentChangesDialog(this);
                 recentChangesDialog.setOnDismissListener(new OnDismissListener() {
 
@@ -603,14 +604,14 @@ public class SDLActivity extends CTHActivity {
             // Create an alert dialog warning that external storage isn't
             // mounted. The application will have to exit at this point.
 
-            DialogFactory.createExternalStorageWarningDialog(this, true).show();
+            DialogFactory.INSTANCE.createExternalStorageWarningDialog(this, true).show();
         }
     }
 
     private void installFiles(final SharedPreferences preferences) {
         Log.d("Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
-        final UnzipTask unzipTask = new UnzipTask(app.configuration.getCthPath()
+        final UnzipTask unzipTask = new UnzipTask(getApp().getConfiguration().getCthPath()
                 + "/scripts/", this) {
 
             @Override
@@ -654,11 +655,13 @@ public class SDLActivity extends CTHActivity {
             protected AsyncTaskResult<File> doInBackground(String... params) {
 
                 try {
-                    Files.copyAsset(SDLActivity.this, params[0], params[1]);
+                    Files.Companion
+                            .copyAsset(SDLActivity.this, params[0], params[1]);
                 } catch (IOException e) {
                     return new AsyncTaskResult<File>(e);
                 }
-                return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0]));
+                return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0])
+                        );
             }
 
             @Override
@@ -681,12 +684,13 @@ public class SDLActivity extends CTHActivity {
                     protected AsyncTaskResult<File> doInBackground(String... params) {
 
                         try {
-                            Files.copyAsset(SDLActivity.this, params[0], params[1]);
+                            Files.Companion.copyAsset(SDLActivity.this, params[0], params[1]);
                         } catch (IOException e) {
 
                             return new AsyncTaskResult<File>(e);
                         }
-                        return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0]));
+                        return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0])
+                                );
                     }
 
                     @Override
@@ -702,7 +706,7 @@ public class SDLActivity extends CTHActivity {
 
                 };
 
-        if (Files.canAccessExternalStorage()) {
+        if (Files.Companion.canAccessExternalStorage()) {
             Log.d("Starting copy task");
             copyTask
                     .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
@@ -712,7 +716,7 @@ public class SDLActivity extends CTHActivity {
 
         } else {
             Log.w("Wasn't able to access external storage when copying files");
-            DialogFactory.createExternalStorageWarningDialog(this, true).show();
+            DialogFactory.INSTANCE.createExternalStorageWarningDialog(this, true).show();
         }
     }
 
@@ -772,12 +776,12 @@ public class SDLActivity extends CTHActivity {
 
 
         try {
-            app.configuration.writeToFile();
+            getApp().getConfiguration().writeToFile();
         } catch (IOException e) {
             Reporting.reportWithToast(SDLActivity.this, "Could not write to configuration file", e);
         }
 
-        File f = new File(app.configuration.getSaveGamesPath());
+        File f = new File(getApp().getConfiguration().getSaveGamesPath());
 
         if (!f.isDirectory()) {
             f.mkdirs();
@@ -785,8 +789,8 @@ public class SDLActivity extends CTHActivity {
 
         hideSystemUi();
 
-        mSurface = new SDLSurface(this, app.configuration.getDisplayWidth(),
-                app.configuration.getDisplayHeight());
+        mSurface = new SDLSurface(this, getApp().getConfiguration().getDisplayWidth(),
+                getApp().getConfiguration().getDisplayHeight());
         mSurface.setZOrderOnTop(false);
 
         mLayout = (DrawerLayout) getLayoutInflater().inflate(
@@ -797,14 +801,15 @@ public class SDLActivity extends CTHActivity {
         gameFrame.addView(mSurface);
         setContentView(mLayout);
 
-        if (app.configuration.getHaptic()) {
+        if (getApp().getConfiguration().getHaptic()) {
             mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         mDrawerList.setAdapter(new NavDrawerAdapter(this,
-                uk.co.armedpineapple.cth.MenuItems.getItems(BuildConfig.DEBUG || app.configuration.getDebug())));
+                uk.co.armedpineapple.cth.MenuItems.Companion
+                        .getItems(BuildConfig.DEBUG || getApp().getConfiguration().getDebug())));
         mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerLayout.setDrawerListener(new DrawerListener() {
@@ -812,7 +817,7 @@ public class SDLActivity extends CTHActivity {
             @Override
             public void onDrawerClosed(View arg0) {
                 // Restore game speed
-                cthGameSpeed(app.configuration.getGameSpeed());
+                cthGameSpeed(getApp().getConfiguration().getGameSpeed());
                 mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
 
@@ -847,8 +852,8 @@ public class SDLActivity extends CTHActivity {
         }
 
         SurfaceHolder holder = mSurface.getHolder();
-        holder.setFixedSize(app.configuration.getDisplayWidth(),
-                app.configuration.getDisplayHeight());
+        holder.setFixedSize(getApp().getConfiguration().getDisplayWidth(),
+                getApp().getConfiguration().getDisplayHeight());
 
         gameFrame.setVisibility(View.VISIBLE);
 
@@ -890,7 +895,7 @@ public class SDLActivity extends CTHActivity {
         // Attempt to autosave.
         if (hasGameLoaded) {
             // Reset the game speed back to normal
-            cthGameSpeed(app.configuration.getGameSpeed());
+            cthGameSpeed(getApp().getConfiguration().getGameSpeed());
 
             cthTryAutoSave("cthAndroidAutoSave.sav");
         }
@@ -907,7 +912,7 @@ public class SDLActivity extends CTHActivity {
         super.onResume();
         Log.v("onResume()");
 
-        if (app.configuration != null && app.configuration.getKeepScreenOn()) {
+        if (getApp().getConfiguration() != null && getApp().getConfiguration().getKeepScreenOn()) {
             Log.d("Getting wakelock");
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
             wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
@@ -952,11 +957,11 @@ public class SDLActivity extends CTHActivity {
     }
 
     public void playVibration(int vibrationCode) {
-        if (app.configuration.getHaptic() && app.hasVibration) {
+        if (getApp().getConfiguration().getHaptic() && getApp().getHasVibration()) {
 
             if (mVibratorService == null)
                 mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-            if (app.hasVibration) {
+            if (getApp().getHasVibration()) {
 
                 switch (vibrationCode) {
                     case CommandHandler.VIBRATION_SHORT_CLICK:
@@ -975,7 +980,8 @@ public class SDLActivity extends CTHActivity {
     }
 
     public void stopVibration() {
-        if (mVibratorService != null && app.hasVibration && app.configuration.getHaptic()) {
+        if (mVibratorService != null && getApp().getHasVibration() && getApp()
+                .getConfiguration().getHaptic()) {
             mVibratorService.cancel();
             commandHandler.playingEarthquake = false;
         }

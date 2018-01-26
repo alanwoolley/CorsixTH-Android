@@ -45,7 +45,7 @@ public class CommandHandler extends Handler {
     public CommandHandler(SDLActivity context) {
         super();
         this.activityContext = context;
-        this.app = context.app;
+        this.app = context.getApp();
         this.persistence = new PersistenceHelper(context);
     }
 
@@ -64,12 +64,12 @@ public class CommandHandler extends Handler {
 
         switch (Command.values()[msg.arg1]) {
             case GAME_LOAD_ERROR:
-                SharedPreferences prefs = activityContext.app.getPreferences();
+                SharedPreferences prefs = activityContext.getApp().getPreferences();
                 Editor editor = prefs.edit();
                 editor.putInt("last_version", 0);
                 editor.putBoolean("wizard_run", false);
                 editor.apply();
-                Dialog errorDialog = DialogFactory.createErrorDialog(activityContext);
+                Dialog errorDialog = DialogFactory.INSTANCE.createErrorDialog(activityContext);
 
                 errorDialog.show();
 
@@ -77,7 +77,7 @@ public class CommandHandler extends Handler {
 
             case SHOW_ABOUT_DIALOG:
                 if (aboutDialog == null) {
-                    aboutDialog = DialogFactory.createAboutDialog(activityContext);
+                    aboutDialog = DialogFactory.INSTANCE.createAboutDialog(activityContext);
                 }
                 aboutDialog.show();
                 break;
@@ -91,7 +91,8 @@ public class CommandHandler extends Handler {
                 new SDLActivity.ShowTextInputTask(0,0,0,0).run();
                 break;
             case QUICK_LOAD:
-                if (Files.doesFileExist(activityContext.app.configuration.getSaveGamesPath()
+                if (Files.Companion.doesFileExist(
+                        activityContext.getApp().getConfiguration().getSaveGamesPath()
                         + File.separator + activityContext.getString(R.string.quicksave_name))) {
                     SDLActivity.cthLoadGame(activityContext.getString(R.string.quicksave_name));
                 } else {
@@ -109,7 +110,7 @@ public class CommandHandler extends Handler {
             case SHOW_LOAD_DIALOG:
                 if (loadDialog == null) {
                     loadDialog = new LoadDialog(activityContext,
-                            activityContext.app.configuration.getSaveGamesPath());
+                            activityContext.getApp().getConfiguration().getSaveGamesPath());
                 }
                 try {
                     loadDialog.refreshSaves(activityContext);
@@ -122,7 +123,7 @@ public class CommandHandler extends Handler {
             case SHOW_SAVE_DIALOG:
                 if (saveDialog == null) {
                     saveDialog = new SaveDialog(activityContext,
-                            activityContext.app.configuration.getSaveGamesPath());
+                            activityContext.getApp().getConfiguration().getSaveGamesPath());
                 }
                 try {
                     saveDialog.refreshSaves(activityContext);
@@ -147,13 +148,13 @@ public class CommandHandler extends Handler {
                 activityContext.startActivity(new Intent(activityContext, PrefsActivity.class));
                 break;
             case GAME_SPEED_UPDATED:
-                activityContext.app.configuration.setGameSpeed((Integer) msg.obj);
+                activityContext.getApp().getConfiguration().setGameSpeed((Integer) msg.obj);
                 break;
             case START_VIBRATION:
 
                 Integer vibrationCode = (Integer) msg.obj;
                 Log.d("Vibrating: " + vibrationCode);
-                if (app.configuration.getHaptic()) {
+                if (app.getConfiguration().getHaptic()) {
                      activityContext.playVibration(vibrationCode);
                 }
                 break;

@@ -69,7 +69,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
         application = (CTHApplication) getApplication();
         preferences = application.getPreferences();
-        application.configuration.saveToPreferences();
+        application.getConfiguration().saveToPreferences();
 
         addPreferencesFromResource(R.xml.prefs);
 
@@ -184,7 +184,7 @@ public class PrefsActivity extends PreferenceActivity implements
                 });
 
 
-        if (CTHApplication.isTestingVersion()) {
+        if (CTHApplication.Companion.isTestingVersion()) {
             findPreference("alpha_pref").setTitle(R.string.preferences_alpha_leave);
             findPreference("alpha_pref").setSummary(R.string.preferences_alpha_off);
 
@@ -203,7 +203,8 @@ public class PrefsActivity extends PreferenceActivity implements
             findPreference("alpha_pref").setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    DialogFactory.createTestingWarningDialog(PrefsActivity.this, new OnClickListener() {
+                    DialogFactory.INSTANCE
+                            .createTestingWarningDialog(PrefsActivity.this, new OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             openTestingPage();
@@ -252,10 +253,11 @@ public class PrefsActivity extends PreferenceActivity implements
             Toast.makeText(this, R.string.dialog_require_restart, Toast.LENGTH_LONG)
                     .show();
         }
-        if (Files.canAccessExternalStorage()) {
-            application.configuration.refresh();
+        if (Files.Companion.canAccessExternalStorage()) {
+            application.getConfiguration().refresh();
             if (SDLActivity.isActivityAvailable()) {
-                SDLActivity.cthUpdateConfiguration(application.configuration);
+                SDLActivity.cthUpdateConfiguration(
+                        application.getConfiguration());
             }
         }
     }
@@ -288,7 +290,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
         // Check if the original files has music, and show a dialog if not
 
-        if (!Files.hasMusicFiles(application.configuration.getOriginalFilesPath())) {
+        if (!Files.Companion.hasMusicFiles(application.getConfiguration().getOriginalFilesPath())) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -308,7 +310,7 @@ public class PrefsActivity extends PreferenceActivity implements
             return false;
         }
 
-        File timidityConfig = new File(Files.getExtStoragePath() + "timidity"
+        File timidityConfig = new File(Files.Companion.getExtStoragePath() + "timidity"
                 + File.separator + "timidity.cfg");
 
         if (!(timidityConfig.isFile() && timidityConfig.canRead())) {
@@ -344,7 +346,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
     void doTimidityDownload() {
         // Check for external storage
-        if (!Files.canAccessExternalStorage()) {
+        if (!Files.Companion.canAccessExternalStorage()) {
             // No external storage
             Toast toast = Toast.makeText(this, R.string.no_external_storage,
                     Toast.LENGTH_LONG);
@@ -353,9 +355,9 @@ public class PrefsActivity extends PreferenceActivity implements
         }
 
         // Check for network connection
-        if (!Network.hasNetworkConnection(this)) {
+        if (!Network.INSTANCE.hasNetworkConnection(this)) {
             // Connection error
-            Dialog connectionDialog = DialogFactory
+            Dialog connectionDialog = DialogFactory.INSTANCE
                     .createNoNetworkConnectionDialog(this);
             connectionDialog.show();
             return;
@@ -370,7 +372,7 @@ public class PrefsActivity extends PreferenceActivity implements
         dialog.setIndeterminate(false);
         dialog.setCancelable(false);
 
-        final UnzipTask uzt = new Files.UnzipTask(Files.getExtStoragePath()
+        final UnzipTask uzt = new Files.UnzipTask(Files.Companion.getExtStoragePath()
                 + File.separator + "timidity" + File.separator, this) {
 
             @Override
@@ -451,7 +453,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
         };
 
-        Dialog mobileDialog = DialogFactory.createMobileNetworkWarningDialog(this,
+        Dialog mobileDialog = DialogFactory.INSTANCE.createMobileNetworkWarningDialog(this,
                 new OnClickListener() {
 
                     @Override
@@ -462,7 +464,7 @@ public class PrefsActivity extends PreferenceActivity implements
 
                 });
 
-        if (Network.isMobileNetwork(this)) {
+        if (Network.INSTANCE.isMobileNetwork(this)) {
             mobileDialog.show();
         } else {
             dft.execute(getString(R.string.timidity_url));
@@ -487,8 +489,8 @@ public class PrefsActivity extends PreferenceActivity implements
         messageIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, BUG_FEEDBACK_SUBJECT);
         messageIntent.setType("message/rfc822");
 
-        File cthLog = new File(application.configuration.getCthPath() + "/cthlog.txt");
-        File cthErrLog = new File(application.configuration.getCthPath() + "/ctherrlog.txt");
+        File cthLog = new File(application.getConfiguration().getCthPath() + "/cthlog.txt");
+        File cthErrLog = new File(application.getConfiguration().getCthPath() + "/ctherrlog.txt");
 
         ArrayList<Uri> uris = new ArrayList<>();
 

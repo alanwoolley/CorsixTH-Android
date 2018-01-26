@@ -50,7 +50,7 @@ public class Configuration {
             resolutionMode, displayWidth, displayHeight, gameSpeed, fpsLimit,
             edgeBordersSize, edgeScrollSpeed, controlsMode, nativeWidth,
             nativeHeight;
-    private String saveGamesPath = Files.getExtStoragePath()
+    private String saveGamesPath = Files.Companion.getExtStoragePath()
             + "CTHsaves";
     private final Context ctx;
     private final SharedPreferences preferences;
