@@ -21,7 +21,7 @@ import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
 @SuppressWarnings("nls")
 public class Configuration {
 
-    private static Reporting.Logger Log = Reporting.getLogger("Config");
+    private static Reporting.Logger Log = Reporting.INSTANCE.getLogger("Config");
 
     public final static int RESOLUTION_DEFAULT = 1;
     public final static int RESOLUTION_NATIVE = 2;
@@ -251,7 +251,7 @@ public class Configuration {
                 split = original.split(SEPARATOR);
 
             } catch (IOException e) {
-                Reporting.report("Couldn't read config file.", e);
+                Reporting.INSTANCE.report("Couldn't read config file.", e);
             }
         }
         StringBuilder sbuilder = new StringBuilder();

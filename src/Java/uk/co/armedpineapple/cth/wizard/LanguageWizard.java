@@ -29,7 +29,7 @@ public class LanguageWizard extends WizardView {
     private final Context  ctx;
     private       ListView languageListView;
 
-    private static final Reporting.Logger Log = Reporting.getLogger("LanguageWizard");
+    private static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("LanguageWizard");
 
     public LanguageWizard(Context context, AttributeSet attrs) {
         super(context, attrs);
