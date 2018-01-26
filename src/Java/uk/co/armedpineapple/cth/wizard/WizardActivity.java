@@ -33,7 +33,7 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 public class WizardActivity extends CTHActivity  implements EasyPermissions.PermissionCallbacks {
 
-    private static final Reporting.Logger Log = Reporting.getLogger("Wizard");
+    private static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("Wizard");
     private static final int REQUIRED_PERMISSIONS = 1;
     private ViewFlipper flipper;
     private Button previousButton;

@@ -41,7 +41,7 @@ import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		View.OnKeyListener, View.OnTouchListener, SensorEventListener {
 
-    public static final Reporting.Logger Log = Reporting.getLogger("SDLSurface");
+    public static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("SDLSurface");
 
     private static final int GESTURE_LONGPRESS = 1;
     private static final int GESTURE_MOVE      = 2;
@@ -109,7 +109,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
 		if (context.getApp().getConfiguration().getSpen()) {
 			Log.d("S Pen support enabled");
-            Reporting.setBool("spen", true);
+            Reporting.INSTANCE.setBool("spen", true);
 			SamsungSPenUtils.registerListeners();
 		}
 	}
@@ -203,7 +203,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                         SDLActivity.mSDLThread.join();
                     }
                     catch(Exception e){
-                        Reporting.report(e);
+                        Reporting.INSTANCE.report(e);
                     }
                     finally{
                         // Native thread has finished

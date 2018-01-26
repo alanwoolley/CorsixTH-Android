@@ -72,7 +72,7 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 
 public class SDLActivity extends CTHActivity {
 
-    public static final Reporting.Logger Log = Reporting.getLogger("SDLActivity");
+    public static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("SDLActivity");
 
     private static final String ENGINE_ZIP_FILE = "game.zip";
 
@@ -261,7 +261,7 @@ public class SDLActivity extends CTHActivity {
 
                 SDLActivity.createEGLSurface();
             } catch (Exception e) {
-                Reporting.report(e);
+                Reporting.INSTANCE.report(e);
             }
         } else
             SDLActivity.createEGLSurface();
@@ -291,7 +291,7 @@ public class SDLActivity extends CTHActivity {
                     SDLActivity.mSDLThread.join();
                 } catch (Exception e) {
                     Log.w("Problem stopping thread");
-                    Reporting.report(e);
+                    Reporting.INSTANCE.report(e);
                 }
                 SDLActivity.mSDLThread = null;
 
@@ -371,7 +371,7 @@ public class SDLActivity extends CTHActivity {
             egl.eglSwapBuffers(SDLActivity.mEGLDisplay, SDLActivity.mEGLSurface);
 
         } catch (Exception e) {
-            Reporting.report(e);
+            Reporting.INSTANCE.report(e);
         }
     }
 
@@ -564,7 +564,7 @@ public class SDLActivity extends CTHActivity {
                         0).versionCode);
 
             } catch (NameNotFoundException e) {
-                Reporting.report(e);
+                Reporting.INSTANCE.report(e);
             }
 
             // Check to see if the game files have been copied yet, or whether the
@@ -573,7 +573,7 @@ public class SDLActivity extends CTHActivity {
                     || preferences.getInt("last_version", 0) < currentVersion) {
 
                 Log.d("This is a new installation");
-                Reporting.setBool("new_installation", true);
+                Reporting.INSTANCE.setBool("new_installation", true);
 
                 // Show the recent changes dialog
                 Dialog recentChangesDialog = DialogFactory.INSTANCE
@@ -636,7 +636,7 @@ public class SDLActivity extends CTHActivity {
                 super.onPostExecute(result);
                 Exception error;
                 if ((error = result.getError()) != null) {
-                    Reporting.reportWithToast(SDLActivity.this, "Error copying files", error);
+                    Reporting.INSTANCE.reportWithToast(SDLActivity.this, "Error copying files", error);
                 }
 
                 Editor edit = preferences.edit();
@@ -700,7 +700,7 @@ public class SDLActivity extends CTHActivity {
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
-                            Reporting.reportWithToast(SDLActivity.this, "Unable to copy files", result.getError());
+                            Reporting.INSTANCE.reportWithToast(SDLActivity.this, "Unable to copy files", result.getError());
                         }
                     }
 
@@ -778,7 +778,7 @@ public class SDLActivity extends CTHActivity {
         try {
             getApp().getConfiguration().writeToFile();
         } catch (IOException e) {
-            Reporting.reportWithToast(SDLActivity.this, "Could not write to configuration file", e);
+            Reporting.INSTANCE.reportWithToast(SDLActivity.this, "Could not write to configuration file", e);
         }
 
         File f = new File(getApp().getConfiguration().getSaveGamesPath());
@@ -1164,7 +1164,7 @@ public class SDLActivity extends CTHActivity {
  */
 class SDLMain implements Runnable {
 
-    private static final Reporting.Logger Log = Reporting.getLogger("SDLMain");
+    private static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("SDLMain");
 
 
     private final Configuration config;

@@ -36,7 +36,7 @@ import uk.co.armedpineapple.cth.dialogs.DialogFactory;
 public class PrefsActivity extends PreferenceActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final Reporting.Logger Log = Reporting.getLogger("Settings");
+    private static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("Settings");
 
     private CTHApplication    application;
     private SharedPreferences preferences;
@@ -391,7 +391,8 @@ public class PrefsActivity extends PreferenceActivity implements
 
                 } else if (result.getError() != null) {
                     Exception e = result.getError();
-                    Reporting.reportWithToast(PrefsActivity.this, getString(R.string.download_timidity_error), e);
+                    Reporting.INSTANCE
+                            .reportWithToast(PrefsActivity.this, getString(R.string.download_timidity_error), e);
                 }
             }
 
