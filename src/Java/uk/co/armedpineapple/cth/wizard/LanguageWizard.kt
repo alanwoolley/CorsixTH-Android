@@ -12,8 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
+import kotlinx.android.synthetic.main.language_list_item.view.*
 import kotlinx.android.synthetic.main.wizard_language.view.*
 import uk.co.armedpineapple.cth.Configuration
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException
@@ -66,7 +65,7 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
     internal inner class LanguageListAdapter(ctx: Context, val text: Array<String>,
                                              val values: Array<String>) : BaseAdapter() {
 
-        val inflater: LayoutInflater = LayoutInflater.from(ctx)
+        private val inflater: LayoutInflater = LayoutInflater.from(ctx)
 
         var selected = 0
 
@@ -96,15 +95,14 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
 
             val langFlagsArray = resources.obtainTypedArray(
                     R.array.languages_flags)
-            (newView.findViewById<View>(R.id.language_flag) as ImageView)
-                    .setImageDrawable(langFlagsArray.getDrawable(position))
+            newView.languageListFlag.setImageDrawable(langFlagsArray.getDrawable(position))
             langFlagsArray.recycle()
-            (newView.findViewById<View>(R.id.language_text) as TextView).text = text[position]
+            newView.languageText.text = text[position]
 
             if (selected == position) {
-                newView.findViewById<View>(R.id.language_tick).visibility = View.VISIBLE
+                newView.languageListTick.visibility = View.VISIBLE
             } else {
-                newView.findViewById<View>(R.id.language_tick).visibility = View.INVISIBLE
+                newView.languageListTick.visibility = View.INVISIBLE
             }
 
             return newView
