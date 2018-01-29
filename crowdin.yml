@@ -1,0 +1,8 @@
+files:
+  - source: /res/values/
+    ignore:
+      - /res/values/styles.xml
+      - /res/values/help_dialog.xml
+      - /res/values/dimens.xml
+      - /res/values/urls.xml
+    translation: /res/values-%android_code%/%original_file_name%
