@@ -5,4 +5,19 @@
   <string name="yes">Evet</string>
   <string name="no">Hayır</string>
   <string name="welcome_header">CorsixTH\'ye Hoşgeldiniz!</string>
+  <string name="welcome_text">Oynamaya başlamaya neredeyse hazırsınız, fakat öncelikle
+		yapılandırmamız gereken bir kaç şey var.
+	</string>
+  <string name="no_external_storage">Harici depolama uygun değil! Lütfen cihazınızın
+		bilgisayarınızdan çıkarıldığından ve SD kartınızın takılı olduğundan (eğer varsa)
+		emin olun. Sonra uygulamayı yeniden başlatın.
+	</string>
+  <string name="setup_wizard_dialog">Kurulum sihirbazı oyunu bir sonraki başlatmanızda 
+		tekrar çalışacak.
+	</string>
+  <string name="previousButton">Önceki</string>
+  <string name="nextButton">Sonraki</string>
+  <string name="automatic_resolution">Otomatik</string>
+  <string name="download_demo">Demoyu İndir</string>
+  <string name="original_files_header">Orijinal Theme Hospital Dosyaları</string>
 </resources>
