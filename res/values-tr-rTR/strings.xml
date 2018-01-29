@@ -60,4 +60,42 @@
 		bu yüzden müzik etkinleştirilemedi. Lütfen müziği \'Sound\'
 		dizinine kopyaladığınızdan emin olun.
 	</string>
+  <string name="no_data_dialog">Oyun dosyaları bulunamıyor. Lütfen onları cihazınıdaki
+		\'th\' adlı bir dizine kopyaladınızdan, veya geçerli bir dizin
+		belirttiğinizden emin olun.
+	</string>
+  <string name="speed_slowest">En yavaş</string>
+  <string name="speed_default">Varsayılan</string>
+  <string name="speed_fastest">En hızlı</string>
+  <string name="load_last_save">Önceki oyuna devam et?</string>
+  <string name="save_game_dialog_title">Oyunu Kaydet</string>
+  <string name="save_game_dialog_message">Lütfen bir oyun kayıt ismi girin</string>
+  <string name="load_game_dialog_title">Oyunu Yükle</string>
+  <string name="menuitem_change_game_speed">Oyun Hızını Değiştir</string>
+  <string name="menuitem_quickload">Hızlı Yükle</string>
+  <string name="menuitem_quicksave">Hızlı Kaydet</string>
+  <string name="menuitem_load">Oyunu Yükle</string>
+  <string name="menuitem_save">Oyunu Kaydet</string>
+  <string name="menuitem_restart">Bölümü Yeniden Başlat</string>
+  <string name="menuitem_about">Hakkında</string>
+  <string name="menuitem_help">Yardım</string>
+  <string name="menuitem_exit">Oyundan Çık</string>
+  <string name="about_dialog_header">Hakkında</string>
+  <string name="gamespeed_dialog_header">Oyun Hızını Ayarla</string>
+  <string name="play_button">Oyna!</string>
+  <string name="custom_location_message">Theme Hospital Oyun Dosyaları konumu</string>
+  <string name="game_paused">Oyun Durduruldu</string>
+  <string name="load_error">CorsixTH yüklenemedi. Kurulum sihirbazı uygulamayı
+		bir sonraki başlatışınızda tekrar çalışacaktır.
+	</string>
+  <string name="menuitem_settings">Ayarlar</string>
+  <string name="dialog_require_restart">Bu değişikliklerin bazılarının etkin olabilmesi için oyunu
+		yeniden başlatmanız
+			gerekebilir
+	</string>
+  <string name="off">Kapalı</string>
+  <string name="no_quicksave">Yüklenecek hızlı kayıt yok!</string>
+  <string name="dialog_error_title">Hata!</string>
+  <string name="recent_changes_title">Son Değişiklikler</string>
+  <string name="search_cancelled">Arama iptal edildi</string>
 </resources>
