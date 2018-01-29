@@ -40,4 +40,16 @@ Anslut till ett nätverk och försök igen.</string>
   <string name="speed_default">Standard</string>
   <string name="speed_fastest">Snabbast</string>
   <string name="load_last_save">Återuppta tidigare spel?</string>
+  <string name="save_game_dialog_title">Spara spel</string>
+  <string name="save_game_dialog_message">Ange ett namn att spara spelet som</string>
+  <string name="load_game_dialog_title">Ladda spel</string>
+  <string name="menuitem_change_game_speed">Ändra spelhastighet</string>
+  <string name="menuitem_quickload">Snabbladda</string>
+  <string name="menuitem_quicksave">Snabbspara</string>
+  <string name="menuitem_load">Ladda spel</string>
+  <string name="menuitem_save">Spara spel</string>
+  <string name="menuitem_restart">Starta om nivån</string>
+  <string name="menuitem_about">Om</string>
+  <string name="menuitem_help">Hjälp</string>
+  <string name="menuitem_exit">Avsluta spelet</string>
 </resources>
