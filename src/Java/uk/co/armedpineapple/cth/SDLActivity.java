@@ -6,73 +6,34 @@
 // $codepro.audit.disable disallowNativeMethods
 package uk.co.armedpineapple.cth;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.hardware.Sensor;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.os.Vibrator;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.text.InputType;
-import android.util.Log;
-import android.view.InputDevice;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsoluteLayout;
-import android.widget.FrameLayout;
-import android.widget.ListView;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.content.DialogInterface.*;
+import android.content.SharedPreferences.*;
+import android.content.pm.PackageManager.*;
+import android.hardware.*;
+import android.media.*;
+import android.os.*;
+import android.os.PowerManager.*;
+import android.support.v4.widget.*;
+import android.support.v4.widget.DrawerLayout.*;
+import android.text.*;
+import android.view.*;
+import android.view.inputmethod.*;
+import android.widget.*;
+import uk.co.armedpineapple.cth.CommandHandler.*;
+import uk.co.armedpineapple.cth.Files.*;
+import uk.co.armedpineapple.cth.dialogs.*;
 
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.egl.EGLSurface;
-
-import uk.co.armedpineapple.cth.CommandHandler.Command;
-import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
-import uk.co.armedpineapple.cth.Files.UnzipTask;
-import uk.co.armedpineapple.cth.dialogs.DialogFactory;
+import javax.microedition.khronos.egl.*;
+import java.io.*;
+import java.util.*;
 
 public class SDLActivity extends CTHActivity {
 
-    public static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("SDLActivity");
+    public static final Reporting.Logger Log = Reporting.INSTANCE
+            .getLogger("SDLActivity");
 
     private static final String ENGINE_ZIP_FILE = "game.zip";
 
@@ -80,7 +41,9 @@ public class SDLActivity extends CTHActivity {
     public static boolean mIsPaused, mIsSurfaceReady, mHasFocus;
     public static boolean mExitCalledFromJava;
 
-    /** If shared libraries (e.g. SDL or the native application) could not be loaded. */
+    /**
+     * If shared libraries (e.g. SDL or the native application) could not be loaded.
+     */
     public static boolean mBrokenLibraries;
 
     // If we want to separate mouse and touch events.
@@ -88,30 +51,30 @@ public class SDLActivity extends CTHActivity {
     public static boolean mSeparateMouseAndTouch = true;
 
     // Main components
-    public static    SDLActivity        mSingleton;
-    public static    SDLSurface         mSurface;
-    protected static View               mTextEdit;
-    protected static ViewGroup          mLayout;
+    public static SDLActivity mSingleton;
+    public static SDLSurface mSurface;
+    protected static View mTextEdit;
+    protected static ViewGroup mLayout;
     protected static SDLJoystickHandler mJoystickHandler;
 
     // This is what SDL runs in. It invokes SDL_main(), eventually
-    protected static Thread     mSDLThread;
+    protected static Thread mSDLThread;
     // EGL private objects
-    private static   EGLContext mEGLContext;
-    private static   EGLSurface mEGLSurface;
-    private static   EGLDisplay mEGLDisplay;
-    private static   EGLConfig  mEGLConfig;
-    private static   int        mGLMajor, mGLMinor;
+    private static EGLContext mEGLContext;
+    private static EGLSurface mEGLSurface;
+    private static EGLDisplay mEGLDisplay;
+    private static EGLConfig mEGLConfig;
+    private static int mGLMajor, mGLMinor;
     // Audio
-    private static Thread         mAudioThread;
-    private static AudioTrack     mAudioTrack;
-    private static Object         audioBuffer;
+    private static Thread mAudioThread;
+    private static AudioTrack mAudioTrack;
+    private static Object audioBuffer;
     // Handler for the messages
-    public         CommandHandler commandHandler;
+    public CommandHandler commandHandler;
     // Menu Drawer
     DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private int      currentVersion;
+    private int currentVersion;
     private WakeLock wake;
     private boolean hasGameLoaded = false;
 
@@ -119,11 +82,11 @@ public class SDLActivity extends CTHActivity {
     private Vibrator mVibratorService;
     private PowerManager pm;
 
-
     /**
      * This method is called by SDL before starting the native application thread.
      * It can be overridden to provide the arguments after the application name.
      * The default implementation returns an empty array. It never returns null.
+     *
      * @return arguments for the native application.
      */
     protected String[] getArguments() {
@@ -131,7 +94,8 @@ public class SDLActivity extends CTHActivity {
     }
 
     // C functions we call
-    public static native void nativeInit(Object arguments, Configuration config);
+    public static native void nativeInit(Object arguments,
+            Configuration config);
 
     public static native void nativeLowMemory();
 
@@ -151,14 +115,15 @@ public class SDLActivity extends CTHActivity {
 
     public static native void onNativeKeyboardFocusLost();
 
-    public static native void onNativeMouse(int button, int action, float x, float y);
+    public static native void onNativeMouse(int button, int action, float x,
+            float y);
 
     public static native void onNativeTouch(int touchDevId, int pointerFingerId,
-                                            int action, float x, float y, float p);
+            int action, float x, float y, float p);
 
     public static native int nativeAddJoystick(int device_id, String name,
-                                               int is_accelerometer, int nbuttons,
-                                               int naxes, int nhats, int nballs);
+            int is_accelerometer, int nbuttons, int naxes, int nhats,
+            int nballs);
 
     public static native int nativeRemoveJoystick(int device_id);
 
@@ -166,11 +131,10 @@ public class SDLActivity extends CTHActivity {
 
     public static native int onNativePadUp(int device_id, int keycode);
 
-    public static native void onNativeJoy(int device_id, int axis,
-                                          float value);
+    public static native void onNativeJoy(int device_id, int axis, float value);
 
-    public static native void onNativeHat(int device_id, int hat_id,
-                                          int x, int y);
+    public static native void onNativeHat(int device_id, int hat_id, int x,
+            int y);
 
     public static native void onNativeAccel(float x, float y, float z);
 
@@ -181,7 +145,6 @@ public class SDLActivity extends CTHActivity {
     public static native void onNativeSurfaceDestroyed();
 
     public static native String nativeGetHint(String name);
-
 
     public static native void nativeRunAudioThread();
 
@@ -218,14 +181,14 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static String nativeGetGamePath() {
-        return mSingleton.getApp().getConfiguration().getCthPath() + "/scripts/";
+        return mSingleton.getApp().getConfiguration().getCthPath()
+                + "/scripts/";
     }
 
     // EGL functions
     public static boolean initEGL(int majorVersion, int minorVersion) {
         if (SDLActivity.mEGLDisplay == null) {
-            Log.v("Starting up OpenGL ES "
-                    + majorVersion + "." + minorVersion);
+            Log.v("Starting up OpenGL ES " + majorVersion + "." + minorVersion);
 
             try {
                 EGL10 egl = (EGL10) EGLContext.getEGL();
@@ -246,11 +209,12 @@ public class SDLActivity extends CTHActivity {
 
                 int[] configSpec = {
                         // EGL10.EGL_DEPTH_SIZE, 16,
-                        EGL10.EGL_RENDERABLE_TYPE, renderableType, EGL10.EGL_NONE};
+                        EGL10.EGL_RENDERABLE_TYPE, renderableType,
+                        EGL10.EGL_NONE };
                 EGLConfig[] configs = new EGLConfig[1];
                 int[] num_config = new int[1];
-                if (!egl.eglChooseConfig(dpy, configSpec, configs, 1, num_config)
-                        || num_config[0] == 0) {
+                if (!egl.eglChooseConfig(dpy, configSpec, configs, 1,
+                        num_config) || num_config[0] == 0) {
                     Log.e("No EGL config available");
                     return false;
                 }
@@ -271,8 +235,7 @@ public class SDLActivity extends CTHActivity {
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         Log.v("onDestroy()");
 
         if (SDLActivity.mBrokenLibraries) {
@@ -309,8 +272,8 @@ public class SDLActivity extends CTHActivity {
     public static boolean createEGLContext() {
         EGL10 egl = (EGL10) EGLContext.getEGL();
         int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
-        int contextAttrs[] = new int[]{EGL_CONTEXT_CLIENT_VERSION,
-                SDLActivity.mGLMajor, EGL10.EGL_NONE};
+        int contextAttrs[] = new int[] { EGL_CONTEXT_CLIENT_VERSION,
+                SDLActivity.mGLMajor, EGL10.EGL_NONE };
         SDLActivity.mEGLContext = egl.eglCreateContext(SDLActivity.mEGLDisplay,
                 SDLActivity.mEGLConfig, EGL10.EGL_NO_CONTEXT, contextAttrs);
         if (SDLActivity.mEGLContext == EGL10.EGL_NO_CONTEXT) {
@@ -327,8 +290,9 @@ public class SDLActivity extends CTHActivity {
                 createEGLContext();
 
             Log.v("Creating new EGL Surface");
-            EGLSurface surface = egl.eglCreateWindowSurface(SDLActivity.mEGLDisplay,
-                    SDLActivity.mEGLConfig, SDLActivity.mSurface, null);
+            EGLSurface surface = egl
+                    .eglCreateWindowSurface(SDLActivity.mEGLDisplay,
+                            SDLActivity.mEGLConfig, SDLActivity.mSurface, null);
             if (surface == EGL10.EGL_NO_SURFACE) {
                 Log.e("Couldn't create surface");
                 return false;
@@ -338,8 +302,8 @@ public class SDLActivity extends CTHActivity {
                     SDLActivity.mEGLContext)) {
                 Log.e("Old EGL Context doesnt work, trying with a new one");
                 createEGLContext();
-                if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface, surface,
-                        SDLActivity.mEGLContext)) {
+                if (!egl.eglMakeCurrent(SDLActivity.mEGLDisplay, surface,
+                        surface, SDLActivity.mEGLContext)) {
                     Log.e("Failed making EGL Context current");
                     return false;
                 }
@@ -370,7 +334,8 @@ public class SDLActivity extends CTHActivity {
 
             egl.eglWaitGL();
 
-            egl.eglSwapBuffers(SDLActivity.mEGLDisplay, SDLActivity.mEGLSurface);
+            egl.eglSwapBuffers(SDLActivity.mEGLDisplay,
+                    SDLActivity.mEGLSurface);
 
         } catch (Exception e) {
             Reporting.INSTANCE.report(e);
@@ -412,21 +377,33 @@ public class SDLActivity extends CTHActivity {
     }
 
     // Audio
-    public static int audioInit(int sampleRate, boolean is16Bit, boolean isStereo, int desiredFrames) {
-        int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO : AudioFormat.CHANNEL_CONFIGURATION_MONO;
-        int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT : AudioFormat.ENCODING_PCM_8BIT;
+    public static int audioInit(int sampleRate, boolean is16Bit,
+            boolean isStereo, int desiredFrames) {
+        int channelConfig = isStereo ?
+                AudioFormat.CHANNEL_CONFIGURATION_STEREO :
+                AudioFormat.CHANNEL_CONFIGURATION_MONO;
+        int audioFormat = is16Bit ?
+                AudioFormat.ENCODING_PCM_16BIT :
+                AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
-        Log.v("SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + (sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+        Log.v("SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (
+                is16Bit ?
+                        "16-bit" :
+                        "8-bit") + " " + (sampleRate / 1000f) + "kHz, "
+                + desiredFrames + " frames buffer");
 
         // Let the user pick a larger buffer if they really want -- but ye
         // gods they probably shouldn't, the minimums are horrifyingly high
         // latency already
-        desiredFrames = Math.max(desiredFrames, (AudioTrack.getMinBufferSize(sampleRate, channelConfig, audioFormat) + frameSize - 1) / frameSize);
+        desiredFrames = Math.max(desiredFrames, (AudioTrack
+                .getMinBufferSize(sampleRate, channelConfig, audioFormat)
+                + frameSize - 1) / frameSize);
 
         if (mAudioTrack == null) {
             mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
-                    channelConfig, audioFormat, desiredFrames * frameSize, AudioTrack.MODE_STREAM);
+                    channelConfig, audioFormat, desiredFrames * frameSize,
+                    AudioTrack.MODE_STREAM);
 
             // Instantiating AudioTrack can "succeed" without an exception and the track may still be invalid
             // Ref: https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/media/java/android/media/AudioTrack.java
@@ -441,7 +418,12 @@ public class SDLActivity extends CTHActivity {
             mAudioTrack.play();
         }
 
-        Log.v("SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ? "stereo" : "mono") + " " + ((mAudioTrack.getAudioFormat() == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " " + (mAudioTrack.getSampleRate() / 1000f) + "kHz, " + desiredFrames + " frames buffer");
+        Log.v("SDL audio: got " + ((mAudioTrack.getChannelCount() >= 2) ?
+                "stereo" :
+                "mono") + " " + ((mAudioTrack.getAudioFormat()
+                == AudioFormat.ENCODING_PCM_16BIT) ? "16-bit" : "8-bit") + " "
+                + (mAudioTrack.getSampleRate() / 1000f) + "kHz, "
+                + desiredFrames + " frames buffer");
 
         return 0;
     }
@@ -475,8 +457,7 @@ public class SDLActivity extends CTHActivity {
                     // Nom nom
                 }
             } else {
-                Log.w(
-                        "SDL audio: error return from write(short)");
+                Log.w("SDL audio: error return from write(short)");
                 return;
             }
         }
@@ -500,8 +481,7 @@ public class SDLActivity extends CTHActivity {
                     // Nom nom
                 }
             } else {
-                Log.w(
-                        "SDL audio: error return from write(byte)");
+                Log.w("SDL audio: error return from write(byte)");
                 return;
             }
         }
@@ -550,22 +530,23 @@ public class SDLActivity extends CTHActivity {
                 try {
                     getApp().setConfiguration(Configuration
                             .loadFromPreferences(this, preferences));
-                } catch (StorageUnavailableException e) {
+                } catch (IOException | StorageUnavailableException e) {
                     Log.e("Can't get storage.");
 
                     // Create an alert dialog warning that external storage isn't
                     // mounted. The application will have to exit at this point.
 
                     DialogFactory.INSTANCE
-                            .createExternalStorageWarningDialog(this, true).show();
+                            .createExternalStorageWarningDialog(this, true)
+                            .show();
                 }
             }
 
             currentVersion = preferences.getInt("last_version", 0) - 1;
 
             try {
-                currentVersion = (getPackageManager().getPackageInfo(getPackageName(),
-                        0).versionCode);
+                currentVersion = (getPackageManager()
+                        .getPackageInfo(getPackageName(), 0).versionCode);
 
             } catch (NameNotFoundException e) {
                 Reporting.INSTANCE.report(e);
@@ -582,25 +563,25 @@ public class SDLActivity extends CTHActivity {
                 // Show the recent changes dialog
                 Dialog recentChangesDialog = DialogFactory.INSTANCE
                         .createRecentChangesDialog(this);
-                recentChangesDialog.setOnDismissListener(new OnDismissListener() {
+                recentChangesDialog
+                        .setOnDismissListener(new OnDismissListener() {
 
-                    @Override
-                    public void onDismiss(DialogInterface arg0) {
-                        installFiles(preferences);
-                    }
+                            @Override public void onDismiss(
+                                    DialogInterface arg0) {
+                                installFiles(preferences);
+                            }
 
-                });
+                        });
                 recentChangesDialog.show();
 
             } else if (BuildConfig.ALWAYS_UPGRADE) {
                 // For the debug variants, we always want to copy new files
                 installFiles(preferences);
-            }  else {
+            } else {
 
-                    // Continue to load the application otherwise
-                    loadApplication();
-                }
-
+                // Continue to load the application otherwise
+                loadApplication();
+            }
 
         } else {
             Log.e("Can't get storage.");
@@ -608,39 +589,40 @@ public class SDLActivity extends CTHActivity {
             // Create an alert dialog warning that external storage isn't
             // mounted. The application will have to exit at this point.
 
-            DialogFactory.INSTANCE.createExternalStorageWarningDialog(this, true).show();
+            DialogFactory.INSTANCE
+                    .createExternalStorageWarningDialog(this, true).show();
         }
     }
 
     private void installFiles(final SharedPreferences preferences) {
         Log.d("Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
-        final UnzipTask unzipTask = new UnzipTask(getApp().getConfiguration().getCthPath()
-                + "/scripts/", pm) {
+        final UnzipTask unzipTask = new UnzipTask(
+                getApp().getConfiguration().getCthPath() + "/scripts/", pm) {
 
-            @Override
-            protected void onPreExecute() {
+            @Override protected void onPreExecute() {
                 super.onPreExecute();
                 dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                dialog.setMessage(getString(R.string.preparing_game_files_dialog));
+                dialog.setMessage(
+                        getString(R.string.preparing_game_files_dialog));
                 dialog.setIndeterminate(false);
                 dialog.setCancelable(false);
                 dialog.show();
             }
 
-            @Override
-            protected void onProgressUpdate(Integer... values) {
+            @Override protected void onProgressUpdate(Integer... values) {
                 super.onProgressUpdate(values);
                 dialog.setProgress(values[0]);
                 dialog.setMax(values[1]);
             }
 
-            @Override
-            protected void onPostExecute(AsyncTaskResult<String> result) {
+            @Override protected void onPostExecute(
+                    AsyncTaskResult<String> result) {
                 super.onPostExecute(result);
                 Exception error;
                 if ((error = result.getError()) != null) {
-                    Reporting.INSTANCE.reportWithToast(SDLActivity.this, "Error copying files", error);
+                    Reporting.INSTANCE.reportWithToast(SDLActivity.this,
+                            "Error copying files", error);
                 }
 
                 Editor edit = preferences.edit();
@@ -655,8 +637,8 @@ public class SDLActivity extends CTHActivity {
 
         AsyncTask<String, Void, AsyncTaskResult<File>> fontCopyTask = new AsyncTask<String, Void, AsyncTaskResult<File>>() {
 
-            @Override
-            protected AsyncTaskResult<File> doInBackground(String... params) {
+            @Override protected AsyncTaskResult<File> doInBackground(
+                    String... params) {
 
                 try {
                     Files.Companion
@@ -664,12 +646,12 @@ public class SDLActivity extends CTHActivity {
                 } catch (IOException e) {
                     return new AsyncTaskResult<File>(e);
                 }
-                return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0])
-                        );
+                return new AsyncTaskResult<File>(
+                        new File(params[1] + "/" + params[0]));
             }
 
-            @Override
-            protected void onPostExecute(AsyncTaskResult<File> result) {
+            @Override protected void onPostExecute(
+                    AsyncTaskResult<File> result) {
                 super.onPostExecute(result);
                 File f;
                 if ((f = result.getResult()) == null) {
@@ -684,27 +666,30 @@ public class SDLActivity extends CTHActivity {
 
                 AsyncTask<String, Void, AsyncTaskResult<File>>() {
 
-                    @Override
-                    protected AsyncTaskResult<File> doInBackground(String... params) {
+                    @Override protected AsyncTaskResult<File> doInBackground(
+                            String... params) {
 
                         try {
-                            Files.Companion.copyAsset(SDLActivity.this, params[0], params[1]);
+                            Files.Companion
+                                    .copyAsset(SDLActivity.this, params[0],
+                                            params[1]);
                         } catch (IOException e) {
 
                             return new AsyncTaskResult<File>(e);
                         }
-                        return new AsyncTaskResult<File>(new File(params[1] + "/" + params[0])
-                                );
+                        return new AsyncTaskResult<File>(
+                                new File(params[1] + "/" + params[0]));
                     }
 
-                    @Override
-                    protected void onPostExecute(AsyncTaskResult<File> result) {
+                    @Override protected void onPostExecute(
+                            AsyncTaskResult<File> result) {
                         super.onPostExecute(result);
                         File f;
                         if ((f = result.getResult()) != null) {
                             unzipTask.execute(f);
                         } else {
-                            Reporting.INSTANCE.reportWithToast(SDLActivity.this, "Unable to copy files", result.getError());
+                            Reporting.INSTANCE.reportWithToast(SDLActivity.this,
+                                    "Unable to copy files", result.getError());
                         }
                     }
 
@@ -712,23 +697,31 @@ public class SDLActivity extends CTHActivity {
 
         if (Files.Companion.canAccessExternalStorage()) {
             Log.d("Starting copy task");
-            copyTask
-                    .execute(ENGINE_ZIP_FILE, getExternalCacheDir().getAbsolutePath());
+            try {
+                copyTask.execute(ENGINE_ZIP_FILE,
+                        getExternalCacheDir().getCanonicalPath());
 
-            // Copy fallback font asset
-            fontCopyTask.execute("DroidSansFallbackFull.ttf", getFilesDir().getAbsolutePath());
+                // Copy fallback font asset
+                fontCopyTask.execute("DroidSansFallbackFull.ttf",
+                        getFilesDir().getCanonicalPath());
+            } catch (IOException e) {
+                Reporting.INSTANCE.report(e);
+                DialogFactory.INSTANCE
+                        .createExternalStorageWarningDialog(this, true).show();
+            }
 
         } else {
             Log.w("Wasn't able to access external storage when copying files");
-            DialogFactory.INSTANCE.createExternalStorageWarningDialog(this, true).show();
+            DialogFactory.INSTANCE
+                    .createExternalStorageWarningDialog(this, true).show();
         }
     }
-
 
     public static Surface getNativeSurface() {
         return mSurface.getHolder().getSurface();
     }
-        void loadApplication() {
+
+    void loadApplication() {
 
         // Load shared libraries
         String errorMsgBrokenLib = "";
@@ -739,34 +732,34 @@ public class SDLActivity extends CTHActivity {
             System.loadLibrary("SDL2_mixer");
             //System.loadLibrary("ffmpeg");
             System.loadLibrary("appmain");
-//            System.loadLibrary("avcodec");
-//            System.loadLibrary("avfilter");
-//            System.loadLibrary("avformat");
-//            System.loadLibrary("avutil");
-//            System.loadLibrary("swresample");
-//            System.loadLibrary("swscale");
-        } catch(UnsatisfiedLinkError e) {
+            //            System.loadLibrary("avcodec");
+            //            System.loadLibrary("avfilter");
+            //            System.loadLibrary("avformat");
+            //            System.loadLibrary("avutil");
+            //            System.loadLibrary("swresample");
+            //            System.loadLibrary("swscale");
+        } catch (UnsatisfiedLinkError e) {
             System.err.println(e.getMessage());
             mBrokenLibraries = true;
             errorMsgBrokenLib = e.getMessage();
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             mBrokenLibraries = true;
             errorMsgBrokenLib = e.getMessage();
         }
 
-        if (mBrokenLibraries)
-        {
-            AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-            dlgAlert.setMessage("An error occurred while trying to start the application. Please try again and/or reinstall."
-                    + System.getProperty("line.separator")
-                    + System.getProperty("line.separator")
-                    + "Error: " + errorMsgBrokenLib);
+        if (mBrokenLibraries) {
+            AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+            dlgAlert.setMessage(
+                    "An error occurred while trying to start the application. Please try again and/or reinstall."
+                            + System.getProperty("line.separator") + System
+                            .getProperty("line.separator") + "Error: "
+                            + errorMsgBrokenLib);
             dlgAlert.setTitle("SDL Error");
             dlgAlert.setPositiveButton("Exit",
                     new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog,int id) {
+                        @Override public void onClick(DialogInterface dialog,
+                                int id) {
                             // if this button is clicked, close current activity
                             SDLActivity.mSingleton.finish();
                         }
@@ -777,12 +770,11 @@ public class SDLActivity extends CTHActivity {
             return;
         }
 
-
-
         try {
             getApp().getConfiguration().writeToFile();
         } catch (IOException e) {
-            Reporting.INSTANCE.reportWithToast(SDLActivity.this, "Could not write to configuration file", e);
+            Reporting.INSTANCE.reportWithToast(SDLActivity.this,
+                    "Could not write to configuration file", e);
         }
 
         File f = new File(getApp().getConfiguration().getSaveGamesPath());
@@ -793,12 +785,13 @@ public class SDLActivity extends CTHActivity {
 
         hideSystemUi();
 
-        mSurface = new SDLSurface(this, getApp().getConfiguration().getDisplayWidth(),
+        mSurface = new SDLSurface(this,
+                getApp().getConfiguration().getDisplayWidth(),
                 getApp().getConfiguration().getDisplayHeight());
         mSurface.setZOrderOnTop(false);
 
-        mLayout = (DrawerLayout) getLayoutInflater().inflate(
-                R.layout.game, null);
+        mLayout = (DrawerLayout) getLayoutInflater()
+                .inflate(R.layout.game, null);
         FrameLayout gameFrame = ((FrameLayout) mLayout
                 .findViewById(R.id.game_frame));
 
@@ -812,48 +805,40 @@ public class SDLActivity extends CTHActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_layout);
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
         mDrawerList.setAdapter(new NavDrawerAdapter(this,
-                uk.co.armedpineapple.cth.MenuItems.Companion
-                        .getItems(BuildConfig.DEBUG || getApp().getConfiguration().getDebug())));
+                uk.co.armedpineapple.cth.MenuItems.Companion.getItems(
+                        BuildConfig.DEBUG || getApp().getConfiguration()
+                                .getDebug())));
         mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mDrawerLayout.setDrawerListener(new DrawerListener() {
 
-            @Override
-            public void onDrawerClosed(View arg0) {
+            @Override public void onDrawerClosed(View arg0) {
                 // Restore game speed
                 cthGameSpeed(getApp().getConfiguration().getGameSpeed());
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mDrawerLayout.setDrawerLockMode(
+                        DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
 
-            @Override
-            public void onDrawerOpened(View arg0) {
+            @Override public void onDrawerOpened(View arg0) {
                 // Pause the game
                 cthGameSpeed(0);
             }
 
-            @Override
-            public void onDrawerSlide(View arg0, float arg1) {
+            @Override public void onDrawerSlide(View arg0, float arg1) {
                 arg0.bringToFront();
                 mDrawerLayout.bringChildToFront(arg0);
                 mDrawerLayout.requestLayout();
 
             }
 
-            @Override
-            public void onDrawerStateChanged(int arg0) {
+            @Override public void onDrawerStateChanged(int arg0) {
                 // TODO Auto-generated method stub
 
             }
 
         });
 
-
-        if(Build.VERSION.SDK_INT >= 12) {
-            mJoystickHandler = new SDLJoystickHandler_API12();
-        }
-        else {
-            mJoystickHandler = new SDLJoystickHandler();
-        }
+        mJoystickHandler = new SDLJoystickHandler_API12();
 
         SurfaceHolder holder = mSurface.getHolder();
         holder.setFixedSize(getApp().getConfiguration().getDisplayWidth(),
@@ -865,8 +850,7 @@ public class SDLActivity extends CTHActivity {
 
     }
 
-    @SuppressLint("NewApi")
-    public static void hideSystemUi() {
+    @SuppressLint("NewApi") public static void hideSystemUi() {
         if (!isActivityAvailable() || mSingleton.getWindow() == null) {
             Log.i("Tried to hide system UI with no window. Ignoring.");
             return;
@@ -877,17 +861,15 @@ public class SDLActivity extends CTHActivity {
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-        );
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
     }
 
     public void startApp() {
         // Start up the C app thread
 
-
-                //mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
-               // mSDLThread.start();
+        //mSDLThread = new Thread(new SDLMain(app.configuration, ""), "SDLThread");
+        // mSDLThread.start();
 
     }
 
@@ -916,9 +898,11 @@ public class SDLActivity extends CTHActivity {
         super.onResume();
         Log.v("onResume()");
 
-        if (getApp().getConfiguration() != null && getApp().getConfiguration().getKeepScreenOn()) {
+        if (getApp().getConfiguration() != null && getApp().getConfiguration()
+                .getKeepScreenOn()) {
             Log.d("Getting wakelock");
-            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            PowerManager powerManager = (PowerManager) getSystemService(
+                    Context.POWER_SERVICE);
             wake = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                     "Keep Screen On Wakelock");
             wake.acquire();
@@ -936,8 +920,7 @@ public class SDLActivity extends CTHActivity {
         startActivity(intent);
     }
 
-    @Override
-    public void onLowMemory() {
+    @Override public void onLowMemory() {
         super.onLowMemory();
         Log.w("Low memory detected. Going to try and tighten our belt!");
 
@@ -950,7 +933,6 @@ public class SDLActivity extends CTHActivity {
         // that the GC can get rid of them.
         commandHandler.cleanUp();
 
-
         // Can't do anything in this case
         if (SDLActivity.mBrokenLibraries || !isGameLoaded()) {
             return;
@@ -961,10 +943,12 @@ public class SDLActivity extends CTHActivity {
     }
 
     public void playVibration(int vibrationCode) {
-        if (getApp().getConfiguration().getHaptic() && getApp().getHasVibration()) {
+        if (getApp().getConfiguration().getHaptic() && getApp()
+                .getHasVibration()) {
 
             if (mVibratorService == null)
-                mVibratorService = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                mVibratorService = (Vibrator) getSystemService(
+                        VIBRATOR_SERVICE);
             if (getApp().getHasVibration()) {
 
                 switch (vibrationCode) {
@@ -993,8 +977,7 @@ public class SDLActivity extends CTHActivity {
 
     // Input
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    @Override public boolean dispatchKeyEvent(KeyEvent event) {
 
         if (SDLActivity.mBrokenLibraries) {
             return false;
@@ -1002,12 +985,10 @@ public class SDLActivity extends CTHActivity {
 
         int keyCode = event.getKeyCode();
         // Ignore certain special keys so they're handled by Android
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
-                keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
-                keyCode == KeyEvent.KEYCODE_CAMERA ||
-                keyCode == 168 || /* API 11: KeyEvent.KEYCODE_ZOOM_IN */
-                keyCode == 169 /* API 11: KeyEvent.KEYCODE_ZOOM_OUT */
-                ) {
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+                || keyCode == KeyEvent.KEYCODE_VOLUME_UP
+                || keyCode == KeyEvent.KEYCODE_CAMERA || keyCode == 168 || /* API 11: KeyEvent.KEYCODE_ZOOM_IN */
+                keyCode == 169 /* API 11: KeyEvent.KEYCODE_ZOOM_OUT */) {
             return false;
         }
         return super.dispatchKeyEvent(event);
@@ -1040,9 +1021,10 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
-    /** Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
-     *  is the first to be called, mIsSurfaceReady should still be set
-     *  to 'true' during the call to onPause (in a usual scenario).
+    /**
+     * Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
+     * is the first to be called, mIsSurfaceReady should still be set
+     * to 'true' during the call to onPause (in a usual scenario).
      */
     public static void handlePause() {
         if (!SDLActivity.mIsPaused && SDLActivity.mIsSurfaceReady) {
@@ -1052,20 +1034,21 @@ public class SDLActivity extends CTHActivity {
         }
     }
 
-    /** Called by onResume or surfaceCreated. An actual resume should be done only when the surface is ready.
+    /**
+     * Called by onResume or surfaceCreated. An actual resume should be done only when the surface is ready.
      * Note: Some Android variants may send multiple surfaceChanged events, so we don't need to resume
      * every time we get one of those events, only if it comes after surfaceDestroyed
      */
     public static void handleResume() {
-        if (SDLActivity.mIsPaused && SDLActivity.mIsSurfaceReady && SDLActivity.mHasFocus) {
+        if (SDLActivity.mIsPaused && SDLActivity.mIsSurfaceReady
+                && SDLActivity.mHasFocus) {
             SDLActivity.mIsPaused = false;
             SDLActivity.nativeResume();
             mSurface.enableSensor(Sensor.TYPE_ACCELEROMETER, true);
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
+    @Override public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         Log.v("onWindowFocusChanged(): " + hasFocus);
 
@@ -1080,8 +1063,10 @@ public class SDLActivity extends CTHActivity {
     }
 
     public static boolean isActivityAvailable() {
-        return mSingleton != null && !mSingleton.isDestroyed() && !mSingleton.isFinishing();
+        return mSingleton != null && !mSingleton.isDestroyed() && !mSingleton
+                .isFinishing();
     }
+
     /* The native thread has finished */
     public static void handleNativeExit() {
         SDLActivity.mSDLThread = null;
@@ -1096,10 +1081,12 @@ public class SDLActivity extends CTHActivity {
         if (mTextEdit != null) {
             mTextEdit.setVisibility(View.GONE);
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mTextEdit.getWindowToken(), 0);
         }
     }
+
     public boolean isGameLoaded() {
         return hasGameLoaded;
     }
@@ -1110,7 +1097,8 @@ public class SDLActivity extends CTHActivity {
             if (on) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                window.clearFlags(
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
         }
     }
@@ -1121,7 +1109,8 @@ public class SDLActivity extends CTHActivity {
 
     public static boolean showTextInput(int x, int y, int w, int h) {
         // Transfer the task to the main thread as a Runnable
-        return mSingleton.commandHandler.post(new ShowTextInputTask(x, y, w, h));
+        return mSingleton.commandHandler
+                .post(new ShowTextInputTask(x, y, w, h));
     }
 
     static class ShowTextInputTask implements Runnable {
@@ -1141,9 +1130,9 @@ public class SDLActivity extends CTHActivity {
             this.h = h;
         }
 
-        @Override
-        public void run() {
-            DrawerLayout.LayoutParams params = new DrawerLayout.LayoutParams(w,h);
+        @Override public void run() {
+            DrawerLayout.LayoutParams params = new DrawerLayout.LayoutParams(w,
+                    h);
 
             if (mTextEdit == null) {
                 mTextEdit = new DummyEdit(getContext());
@@ -1156,7 +1145,8 @@ public class SDLActivity extends CTHActivity {
             mTextEdit.setVisibility(View.VISIBLE);
             mTextEdit.requestFocus();
 
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(mTextEdit, 0);
         }
     }
@@ -1168,8 +1158,8 @@ public class SDLActivity extends CTHActivity {
  */
 class SDLMain implements Runnable {
 
-    private static final Reporting.Logger Log = Reporting.INSTANCE.getLogger("SDLMain");
-
+    private static final Reporting.Logger Log = Reporting.INSTANCE
+            .getLogger("SDLMain");
 
     private final Configuration config;
     private final String toLoad;
@@ -1178,12 +1168,11 @@ class SDLMain implements Runnable {
         this.config = config;
         this.toLoad = toLoad;
 
-
     }
 
     public void run() {
         // Runs SDL_main()
-        SDLActivity.nativeInit(new String[] {"--load",toLoad}, config);
+        SDLActivity.nativeInit(new String[] { "--load", toLoad }, config);
 
         Log.d("SDL thread terminated");
     }
@@ -1204,15 +1193,15 @@ class SDLJoystickHandler {
 class SDLJoystickHandler_API12 extends SDLJoystickHandler {
 
     class SDLJoystick {
-        public int                                device_id;
-        public String                             name;
+        public int device_id;
+        public String name;
         public ArrayList<InputDevice.MotionRange> axes;
         public ArrayList<InputDevice.MotionRange> hats;
     }
 
     class RangeComparator implements Comparator<InputDevice.MotionRange> {
-        @Override
-        public int compare(InputDevice.MotionRange arg0, InputDevice.MotionRange arg1) {
+        @Override public int compare(InputDevice.MotionRange arg0,
+                InputDevice.MotionRange arg1) {
             return arg0.getAxis() - arg1.getAxis();
         }
     }
@@ -1224,8 +1213,7 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
         mJoysticks = new ArrayList<SDLJoystick>();
     }
 
-    @Override
-    public void pollInputDevices() {
+    @Override public void pollInputDevices() {
         int[] deviceIds = InputDevice.getDeviceIds();
         // It helps processing the device ids in reverse order
         // For example, in the case of the XBox 360 wireless dongle,
@@ -1236,19 +1224,24 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
             SDLJoystick joystick = getJoystick(deviceIds[i]);
             if (joystick == null) {
                 joystick = new SDLJoystick();
-                InputDevice joystickDevice = InputDevice.getDevice(deviceIds[i]);
-                if ((joystickDevice.getSources() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+                InputDevice joystickDevice = InputDevice
+                        .getDevice(deviceIds[i]);
+                if ((joystickDevice.getSources()
+                        & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
                     joystick.device_id = deviceIds[i];
                     joystick.name = joystickDevice.getName();
                     joystick.axes = new ArrayList<InputDevice.MotionRange>();
                     joystick.hats = new ArrayList<InputDevice.MotionRange>();
 
-                    List<InputDevice.MotionRange> ranges = joystickDevice.getMotionRanges();
+                    List<InputDevice.MotionRange> ranges = joystickDevice
+                            .getMotionRanges();
                     Collections.sort(ranges, new RangeComparator());
                     for (InputDevice.MotionRange range : ranges) {
-                        if ((range.getSource() & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
-                            if (range.getAxis() == MotionEvent.AXIS_HAT_X ||
-                                    range.getAxis() == MotionEvent.AXIS_HAT_Y) {
+                        if ((range.getSource()
+                                & InputDevice.SOURCE_CLASS_JOYSTICK) != 0) {
+                            if (range.getAxis() == MotionEvent.AXIS_HAT_X
+                                    || range.getAxis()
+                                    == MotionEvent.AXIS_HAT_Y) {
                                 joystick.hats.add(range);
                             } else {
                                 joystick.axes.add(range);
@@ -1257,8 +1250,9 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
                     }
 
                     mJoysticks.add(joystick);
-                    SDLActivity.nativeAddJoystick(joystick.device_id, joystick.name, 0, -1,
-                            joystick.axes.size(), joystick.hats.size() / 2, 0);
+                    SDLActivity.nativeAddJoystick(joystick.device_id,
+                            joystick.name, 0, -1, joystick.axes.size(),
+                            joystick.hats.size() / 2, 0);
                 }
             }
         }
@@ -1269,7 +1263,8 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
             int device_id = mJoysticks.get(i).device_id;
             int j;
             for (j = 0; j < deviceIds.length; j++) {
-                if (device_id == deviceIds[j]) break;
+                if (device_id == deviceIds[j])
+                    break;
             }
             if (j == deviceIds.length) {
                 removedDevices.add(device_id);
@@ -1297,8 +1292,7 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
         return null;
     }
 
-    @Override
-    public boolean handleMotionEvent(MotionEvent event) {
+    @Override public boolean handleMotionEvent(MotionEvent event) {
         if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) != 0) {
             int actionPointerIndex = event.getActionIndex();
             int action = event.getActionMasked();
@@ -1307,15 +1301,24 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
                     SDLJoystick joystick = getJoystick(event.getDeviceId());
                     if (joystick != null) {
                         for (int i = 0; i < joystick.axes.size(); i++) {
-                            InputDevice.MotionRange range = joystick.axes.get(i);
+                            InputDevice.MotionRange range = joystick.axes
+                                    .get(i);
                             /* Normalize the value to -1...1 */
-                            float value = (event.getAxisValue(range.getAxis(), actionPointerIndex) - range.getMin()) / range.getRange() * 2.0f - 1.0f;
-                            SDLActivity.onNativeJoy(joystick.device_id, i, value);
+                            float value = (event.getAxisValue(range.getAxis(),
+                                    actionPointerIndex) - range.getMin())
+                                    / range.getRange() * 2.0f - 1.0f;
+                            SDLActivity
+                                    .onNativeJoy(joystick.device_id, i, value);
                         }
                         for (int i = 0; i < joystick.hats.size(); i += 2) {
-                            int hatX = Math.round(event.getAxisValue(joystick.hats.get(i).getAxis(), actionPointerIndex));
-                            int hatY = Math.round(event.getAxisValue(joystick.hats.get(i + 1).getAxis(), actionPointerIndex));
-                            SDLActivity.onNativeHat(joystick.device_id, i / 2, hatX, hatY);
+                            int hatX = Math.round(event.getAxisValue(
+                                    joystick.hats.get(i).getAxis(),
+                                    actionPointerIndex));
+                            int hatY = Math.round(event.getAxisValue(
+                                    joystick.hats.get(i + 1).getAxis(),
+                                    actionPointerIndex));
+                            SDLActivity.onNativeHat(joystick.device_id, i / 2,
+                                    hatX, hatY);
                         }
                     }
                     break;
@@ -1326,14 +1329,12 @@ class SDLJoystickHandler_API12 extends SDLJoystickHandler {
         return true;
     }
 
-
 }
 
 class SDLGenericMotionListener_API12 implements View.OnGenericMotionListener {
     // Generic Motion (mouse hover, joystick...) events go here
     // We only have joysticks yet
-    @Override
-    public boolean onGenericMotion(View v, MotionEvent event) {
+    @Override public boolean onGenericMotion(View v, MotionEvent event) {
         return SDLActivity.handleJoystickMotionEvent(event);
     }
 }
@@ -1351,13 +1352,11 @@ class DummyEdit extends View implements View.OnKeyListener {
         setOnKeyListener(this);
     }
 
-    @Override
-    public boolean onCheckIsTextEditor() {
+    @Override public boolean onCheckIsTextEditor() {
         return true;
     }
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    @Override public boolean onKey(View v, int keyCode, KeyEvent event) {
 
         // This handles the hardware keyboard input
         if (event.isPrintingKey()) {
@@ -1379,16 +1378,17 @@ class DummyEdit extends View implements View.OnKeyListener {
     }
 
     //
-    @Override
-    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+    @Override public boolean onKeyPreIme(int keyCode, KeyEvent event) {
         // As seen on StackOverflow: http://stackoverflow.com/questions/7634346/keyboard-hide-event
         // FIXME: Discussion at http://bugzilla.libsdl.org/show_bug.cgi?id=1639
         // FIXME: This is not a 100% effective solution to the problem of detecting if the keyboard is showing or not
         // FIXME: A more effective solution would be to change our Layout from AbsoluteLayout to Relative or Linear
         // FIXME: And determine the keyboard presence doing this: http://stackoverflow.com/questions/2150078/how-to-check-visibility-of-software-keyboard-in-android
         // FIXME: An even more effective way would be if Android provided this out of the box, but where would the fun be in that :)
-        if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-            if (SDLActivity.mTextEdit != null && SDLActivity.mTextEdit.getVisibility() == View.VISIBLE) {
+        if (event.getAction() == KeyEvent.ACTION_UP
+                && keyCode == KeyEvent.KEYCODE_BACK) {
+            if (SDLActivity.mTextEdit != null
+                    && SDLActivity.mTextEdit.getVisibility() == View.VISIBLE) {
                 SDLActivity.onNativeKeyboardFocusLost();
                 SDLActivity.hideSystemUi();
             }
@@ -1396,11 +1396,12 @@ class DummyEdit extends View implements View.OnKeyListener {
         return super.onKeyPreIme(keyCode, event);
     }
 
-    @Override
-    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+    @Override public InputConnection onCreateInputConnection(
+            EditorInfo outAttrs) {
         ic = new SDLInputConnection(this, true);
 
-        outAttrs.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+        outAttrs.inputType = InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
         outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI
                 | 33554432 /* API 11: EditorInfo.IME_FLAG_NO_FULLSCREEN */;
 
@@ -1415,8 +1416,7 @@ class SDLInputConnection extends BaseInputConnection {
 
     }
 
-    @Override
-    public boolean sendKeyEvent(KeyEvent event) {
+    @Override public boolean sendKeyEvent(KeyEvent event) {
 
                  /*
             * This handles the keycodes from soft keyboard (and IME-translated
@@ -1437,16 +1437,16 @@ class SDLInputConnection extends BaseInputConnection {
         return super.sendKeyEvent(event);
     }
 
-    @Override
-    public boolean commitText(CharSequence text, int newCursorPosition) {
+    @Override public boolean commitText(CharSequence text,
+            int newCursorPosition) {
 
         nativeCommitText(text.toString(), newCursorPosition);
 
         return super.commitText(text, newCursorPosition);
     }
 
-    @Override
-    public boolean setComposingText(CharSequence text, int newCursorPosition) {
+    @Override public boolean setComposingText(CharSequence text,
+            int newCursorPosition) {
 
         nativeSetComposingText(text.toString(), newCursorPosition);
 
@@ -1455,15 +1455,18 @@ class SDLInputConnection extends BaseInputConnection {
 
     public native void nativeCommitText(String text, int newCursorPosition);
 
-    public native void nativeSetComposingText(String text, int newCursorPosition);
+    public native void nativeSetComposingText(String text,
+            int newCursorPosition);
 
-    @Override
-    public boolean deleteSurroundingText(int beforeLength, int afterLength) {
+    @Override public boolean deleteSurroundingText(int beforeLength,
+            int afterLength) {
         // Workaround to capture backspace key. Ref: http://stackoverflow.com/questions/14560344/android-backspace-in-webview-baseinputconnection
         if (beforeLength == 1 && afterLength == 0) {
             // backspace
-            return super.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-                    && super.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+            return super.sendKeyEvent(
+                    new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+                    && super.sendKeyEvent(
+                    new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
         }
 
         return super.deleteSurroundingText(beforeLength, afterLength);

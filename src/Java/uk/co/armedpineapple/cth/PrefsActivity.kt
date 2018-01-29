@@ -324,7 +324,7 @@ class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreference
         }
 
         val dft = object : Files.DownloadFileTask(
-                extDir!!.absolutePath, pm) {
+                extDir!!.canonicalPath, pm) {
 
             override fun onPostExecute(result: AsyncTaskResult<File>) {
                 super.onPostExecute(result)
