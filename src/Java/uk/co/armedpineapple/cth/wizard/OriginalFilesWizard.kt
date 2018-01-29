@@ -134,7 +134,7 @@ class OriginalFilesWizard : WizardView {
                 return@OnClickListener
             }
 
-            val f = File(ctx.getExternalFilesDir(null)!!.absolutePath + "/demo/HOSP")
+            val f = File(ctx.getExternalFilesDir(null)!!.canonicalPath + "/demo/HOSP")
             if (!f.exists()) {
 
                 val dialogBuilder = AlertDialog.Builder(ctx)
@@ -158,7 +158,7 @@ class OriginalFilesWizard : WizardView {
                 val alert = dialogBuilder.create()
                 alert.show()
             } else {
-                customLocation = ctx.getExternalFilesDir(null)!!.absolutePath + "/demo/HOSP"
+                customLocation = ctx.getExternalFilesDir(null)!!.canonicalPath + "/demo/HOSP"
             }
         })
     }
@@ -192,7 +192,7 @@ class OriginalFilesWizard : WizardView {
         dialog.isIndeterminate = false
         dialog.setCancelable(false)
 
-        val uzt = object : Files.UnzipTask(extDir!!.absolutePath + "/demo/", pm) {
+        val uzt = object : Files.UnzipTask(extDir!!.canonicalPath + "/demo/", pm) {
 
             override fun onPostExecute(result: AsyncTaskResult<String>) {
                 super.onPostExecute(result)
@@ -228,7 +228,7 @@ class OriginalFilesWizard : WizardView {
         }
 
         val dft = object : Files.DownloadFileTask(
-                extDir.absolutePath, pm) {
+                extDir.canonicalPath, pm) {
 
             override fun onPostExecute(result: AsyncTaskResult<File>) {
                 super.onPostExecute(result)

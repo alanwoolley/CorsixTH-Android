@@ -5,18 +5,13 @@
  */
 package uk.co.armedpineapple.cth;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
+import android.content.*;
+import android.content.SharedPreferences.*;
+import android.util.*;
+import android.view.*;
+import uk.co.armedpineapple.cth.Files.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import uk.co.armedpineapple.cth.Files.StorageUnavailableException;
+import java.io.*;
 
 @SuppressWarnings("nls")
 public class Configuration {
@@ -82,7 +77,8 @@ public class Configuration {
      * @throws StorageUnavailableException if storage is unavailable
      */
     public static Configuration loadFromPreferences(Context ctx,
-                                                    SharedPreferences preferences) throws StorageUnavailableException {
+                                                    SharedPreferences preferences)
+            throws StorageUnavailableException, IOException {
         Configuration config = new Configuration(ctx, preferences);
         Log.d("Loading configuration");
 
@@ -134,12 +130,12 @@ public class Configuration {
      * initialised from. Does not reset any configuration options that are not
      * present in the preferences
      */
-    public void refresh() {
+    public void refresh() throws IOException {
         originalFilesPath = preferences.getString("originalfiles_pref", "");
 
         // TODO - No check for external storage availability
         cthPath = preferences.getString("gamescripts_pref", ctx
-                .getExternalFilesDir(null).getAbsolutePath());
+                .getExternalFilesDir(null).getCanonicalPath());
 
         globalAudio = preferences.getBoolean("audio_pref", true);
         playMusic = preferences.getBoolean("music_pref", false);
@@ -230,7 +226,7 @@ public class Configuration {
      *
      * @throws IOException if the configuration file cannot be written to
      */
-    public void writeToFile() throws IOException {
+    void writeToFile() throws IOException {
         String configFileName = cthPath + "/scripts/" + "config.txt";
 
         File file = new File(configFileName);
@@ -292,7 +288,7 @@ public class Configuration {
 
         File fallbackFont = new File(ctx.getFilesDir() + File.separator + "DroidSansFallbackFull.ttf");
         if (fallbackFont.exists()) {
-            sbuilder.append("unicode_font = [[" + fallbackFont.getAbsolutePath() + "]]\n");
+            sbuilder.append("unicode_font = [[" + fallbackFont.getCanonicalPath() + "]]\n");
         } else {
             sbuilder.append("unicode_font = [[" + DEFAULT_UNICODE_PATH + "]]\n");
 
