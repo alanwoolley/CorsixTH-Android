@@ -1,8 +1,8 @@
 package uk.co.armedpineapple.cth
 
-import java.util.Date
+import java.util.*
 
-class FileDetails(val fileName: String, val directory: String, private val lastModified: Date) : Comparable<FileDetails> {
+data class FileDetails(val fileName: String, val directory: String, private val lastModified: Date) : Comparable<FileDetails> {
 
     override fun compareTo(other: FileDetails): Int {
         if (lastModified == other.lastModified) {

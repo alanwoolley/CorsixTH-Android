@@ -14,7 +14,6 @@ import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.preference.CheckBoxPreference
@@ -29,8 +28,9 @@ import java.util.*
 
 class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var application: CTHApplication? = null
-    private var preferences: SharedPreferences? = null
+    private val application: CTHApplication get() { return getApplication() as CTHApplication
+    }
+    private val preferences: SharedPreferences? get() { return application.preferences }
 
     private val pm: PowerManager
         get() {
@@ -57,9 +57,7 @@ class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreference
         // Save the configuration to the preferences to make sure that everything is
         // up-to-date
 
-        application = getApplication() as CTHApplication
-        preferences = application!!.preferences
-        application!!.configuration!!.saveToPreferences()
+        application.configuration!!.saveToPreferences()
 
         addPreferencesFromResource(R.xml.prefs)
 
@@ -210,7 +208,7 @@ class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreference
         }
     }
 
-    internal fun onMusicEnabled(): Boolean {
+    private fun onMusicEnabled(): Boolean {
 
         // Check if the original files has music, and show a dialog if not
 
@@ -256,7 +254,7 @@ class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreference
 
     }
 
-    internal fun doTimidityDownload() {
+    private fun doTimidityDownload() {
         // Check for external storage
         if (!Files.canAccessExternalStorage()) {
             // No external storage
@@ -342,14 +340,11 @@ class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreference
                 }
             }
 
-            @SuppressLint("NewApi")
             override fun onPreExecute() {
                 super.onPreExecute()
                 dialog.show()
-                if (Build.VERSION.SDK_INT >= 14) {
                     dialog
                             .setProgressNumberFormat(getString(R.string.download_progress_dialog_text))
-                }
             }
 
             override fun onProgressUpdate(vararg values: Int?) {
@@ -388,8 +383,8 @@ class PrefsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreference
         messageIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, BUG_FEEDBACK_SUBJECT)
         messageIntent.type = "message/rfc822"
 
-        val cthLog = File(application!!.configuration!!.cthPath + "/cthlog.txt")
-        val cthErrLog = File(application!!.configuration!!.cthPath + "/ctherrlog.txt")
+        val cthLog = File(application.configuration!!.cthPath + "/cthlog.txt")
+        val cthErrLog = File(application.configuration!!.cthPath + "/ctherrlog.txt")
 
         val uris = ArrayList<Uri>()
 
