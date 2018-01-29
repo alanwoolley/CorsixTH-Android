@@ -101,6 +101,7 @@
   <string name="couldnt_find_game_files">Oyun dosyaları bulunamadı. Lütfen konumu
 		manüel olarak ayarlayın veya demoyu indirin
 	</string>
+  <string name="found_files">Dosyaların şurada bulundu: </string>
   <string name="searching">Aranıyor...</string>
   <string name="download_progress_dialog_text">%2$d MB\'ın %1$d MB\'ı</string>
   <string name="mobile_network_warning">Bir mobil ağa bağlısınız. Veri ücretleri uygulanabilir.
@@ -108,4 +109,17 @@
   <string name="warning">Uyarı!</string>
   <string name="faq">Sık Sorulan Sorular</string>
   <string name="feedback">Geri Bildirim Gönder</string>
+  <string name="external_links">Bu seçenekler harici bağlantıları açacaktır. Oyununuz
+		kaydedilecektir.</string>
+  <string name="full_version_text">Theme Hospital\'i cihazınıza kaydetmek için yardıma ihtiyacınız var mı?
+	</string>
+  <string name="game_guide">Oyun Rehberi</string>
+  <string name="facebook_group">Facebook Grubu</string>
+  <string name="gplus_community">G+ Topluluğu</string>
+  <string name="menuitem_cheats">Hileler</string>
+  <string name="save_level_text">Seviye: %s</string>
+  <string name="save_rep_text">İtibar: %d</string>
+  <string name="save_balance_text">$%,d</string>
+  <string name="menuitem_jukebox">Müzik Kutusu</string>
+  <string name="send_feedback_email_chooser">Geri bildirim e-postası gönder</string>
 </resources>
