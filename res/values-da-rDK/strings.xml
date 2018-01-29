@@ -18,7 +18,6 @@
   <string name="custom_resolution">Brugerdefineret</string>
   <string name="custom_files">Brugerdefineret</string>
   <string name="default_files">Opdag automatisk</string>
-  <string name="header_image_description">Header</string>
   <string name="preparing_game_files_dialog">Forbereder spilfiler. Dette skal kun køre én gang, men kan tage et stykke tid.</string>
   <string name="download_demo_dialog">Dette vil downloade og installere Theme Hospital demoen, som vil give dig adgang til den grundlæggende funktionalitet i spillet.</string>
   <string name="download_demo_error">Der opstod et problem under hentning af demo filerne!</string>

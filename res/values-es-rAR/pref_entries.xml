@@ -10,4 +10,13 @@
     <item>Más grande</item>
     <item>Enorme</item>
   </string-array>
+  <string-array name="speeds">
+    <item>Lo más lento</item>
+    <item>Slower</item>
+    <item>Slow</item>
+    <item>Normal</item>
+    <item>Fast</item>
+    <item>Faster</item>
+    <item>Más rápido</item>
+  </string-array>
 </resources>

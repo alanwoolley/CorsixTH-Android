@@ -60,7 +60,6 @@ znovu při příštím spuštění aplikace</string>
   <string name="search_cancelled">Hledání přerušeno</string>
   <string name="found_files">Najít soubory v:</string>
   <string name="searching">Hledání</string>
-  <string name="download_progress_dialog_text">%1$d MB of %2$d MB</string>
   <string name="mobile_network_warning">Jste připojeni k mobilní síti. Datové poplatky.</string>
   <string name="warning">Varování!</string>
   <string name="faq">Často kladené otázky</string>
