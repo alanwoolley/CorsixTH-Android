@@ -34,71 +34,51 @@ class Files private constructor() {
         }
 
         private fun findGameFiles(): String? {
-            val searchPaths = ArrayList(
-                    Arrays.asList(*SearchRoot))
+            val searchPaths = Arrays.asList(*SearchRoot)
             val sdcard = trimPath(Environment.getExternalStorageDirectory()
-                    .absolutePath)
+                    .canonicalPath)
 
             if (!searchPaths.contains(sdcard)) {
                 searchPaths.add(sdcard)
             }
 
             // Search common locations first
-            for (root in searchPaths) {
-                if (isCancelled) {
-                    Log.d("Task cancelled")
-                    return null
-                }
-                for (dir in SearchDirs) {
-                    val toSearch = root + File.separator + dir
-                    val r = findGameFilesInternal(toSearch)
-                    if (r != null) {
-                        return r
-                    }
-                }
+
+            var result = searchPaths.find { root ->
+                root.map { dir -> root + File.separator + dir }
+                        .find { toSearch -> findGameFilesInternal(toSearch) != null } != null
             }
 
-            for (root in searchPaths) {
-                if (isCancelled) {
-                    Log.d("Task cancelled")
-                    return null
-                }
-
-                val r = findGameFilesInternal(root)
-                if (r != null) {
-                    Log.d("Found game files in: " + r)
-                    return r
-                }
+            if (result != null) {
+                return result
             }
+
+            // Then do a deep search
+            result = searchPaths.find { root -> findGameFilesInternal(root) != null }
+            if (result != null) {
+                return result
+            }
+
             return null
         }
 
         private fun findGameFilesInternal(root: String): String? {
-            if (!isCancelled) {
-                val dir = File(root)
-
-                if (hasDataFiles(root)) {
-                    return dir.absolutePath
-                }
-
-                if (dir.exists() && dir.isDirectory) {
-                    val sub = dir.listFiles()
-                    if (sub != null) {
-                        for (f in sub) {
-                            if (f.isDirectory) {
-                                val r = findGameFilesInternal(trimPath(f
-                                        .absolutePath))
-                                if (r != null) {
-                                    Log.d("Found game files in: " + r)
-                                    return r
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
+            if (isCancelled) {
                 Log.d("Task cancelled")
+                return null
             }
+
+            val dir = File(root)
+
+            if (hasDataFiles(root)) {
+                return dir.canonicalPath
+            }
+
+            if (dir.exists() && dir.isDirectory) {
+                val sub = dir.listFiles().filterNotNull().filter { d -> d.isDirectory }
+                return sub.map { f -> findGameFilesInternal(trimPath(f.canonicalPath)) }.firstOrNull()
+            }
+
             return null
         }
 
@@ -126,8 +106,8 @@ class Files private constructor() {
             val downloadUrl: URL
             val ucon: URLConnection
             var input: InputStream? = null
-            var fos: FileOutputStream? = null
-            var cos: CountingOutputStream? = null
+            val fos: FileOutputStream?
+            val cos: CountingOutputStream?
 
             try {
                 downloadUrl = URL(url[0])
@@ -228,7 +208,7 @@ class Files private constructor() {
                     } else {
 
                         var zin: InputStream? = null
-                        var fout: FileOutputStream? = null
+                        var fout: FileOutputStream?
                         try {
                             zin = zf.getInputStream(ze)
                             fout = FileOutputStream(unzipTo + ze.name)
