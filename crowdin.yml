@@ -5,4 +5,4 @@ files:
       - /res/values/help_dialog.xml
       - /res/values/dimens.xml
       - /res/values/urls.xml
-    translation: /res/values-%locale%/%original_file_name%
+    translation: /res/values-%android_code%/%original_file_name%
