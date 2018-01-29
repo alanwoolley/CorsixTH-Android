@@ -76,7 +76,6 @@ class Files private constructor() {
 
         private fun findGameFilesInternal(root: String): String? {
             if (!isCancelled) {
-                var result: String?
                 val dir = File(root)
 
                 if (hasDataFiles(root)) {
@@ -109,13 +108,11 @@ class Files private constructor() {
     /**
      * AsyncTask for downloading a file
      */
-    open class DownloadFileTask(internal val downloadTo: String, internal val ctx: Context) : AsyncTask<String, Int, AsyncTaskResult<File>>() {
-        internal var downloadLock: WakeLock? = null
+    open class DownloadFileTask(private val downloadTo: String, private val pm: PowerManager) : AsyncTask<String, Int, AsyncTaskResult<File>>() {
+        private var downloadLock: WakeLock? = null
 
         override fun onPreExecute() {
             super.onPreExecute()
-            val pm = ctx
-                    .getSystemService(Context.POWER_SERVICE) as PowerManager
             downloadLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                     "downloading")
             downloadLock?.acquire()
@@ -188,13 +185,11 @@ class Files private constructor() {
     /**
      * AsyncTask for extracting a .zip file to a directory
      */
-    open class UnzipTask(internal val unzipTo: String, internal val ctx: Context) : AsyncTask<File, Int, AsyncTaskResult<String>>() {
+    open class UnzipTask(internal val unzipTo: String, private val pm: PowerManager) : AsyncTask<File, Int, AsyncTaskResult<String>>() {
         private var unzipLock: WakeLock? = null
 
         override fun onPreExecute() {
             super.onPreExecute()
-            val pm = ctx
-                    .getSystemService(Context.POWER_SERVICE) as PowerManager
             unzipLock = pm
                     .newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "unzipping")
             unzipLock?.acquire()

@@ -11,10 +11,12 @@ import android.app.AlertDialog.Builder
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Context.POWER_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
@@ -47,6 +49,10 @@ class OriginalFilesWizard : WizardView {
     private var customLocation: String? = null
 
     private val ctx: Context
+
+    private val pm : PowerManager get() {
+        return ctx.getSystemService(POWER_SERVICE) as PowerManager
+    }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         ctx = context
@@ -195,7 +201,7 @@ class OriginalFilesWizard : WizardView {
         dialog.isIndeterminate = false
         dialog.setCancelable(false)
 
-        val uzt = object : Files.UnzipTask(extDir!!.absolutePath + "/demo/", ctx) {
+        val uzt = object : Files.UnzipTask(extDir!!.absolutePath + "/demo/", pm) {
 
             override fun onPostExecute(result: AsyncTaskResult<String>) {
                 super.onPostExecute(result)
@@ -231,7 +237,7 @@ class OriginalFilesWizard : WizardView {
         }
 
         val dft = object : Files.DownloadFileTask(
-                extDir.absolutePath, ctx) {
+                extDir.absolutePath, pm) {
 
             override fun onPostExecute(result: AsyncTaskResult<File>) {
                 super.onPostExecute(result)
@@ -257,7 +263,7 @@ class OriginalFilesWizard : WizardView {
                 dialog.show()
             }
 
-            protected override fun onProgressUpdate(vararg values: Int?) {
+            override fun onProgressUpdate(vararg values: Int?) {
                 super.onProgressUpdate(*values)
                 if (values != null && values.size >= 2) {
                     dialog.progress = values[0]!! / 1000000

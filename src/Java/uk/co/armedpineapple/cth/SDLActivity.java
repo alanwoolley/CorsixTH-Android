@@ -117,6 +117,8 @@ public class SDLActivity extends CTHActivity {
 
     // Vibration
     private Vibrator mVibratorService;
+    private PowerManager pm;
+
 
     /**
      * This method is called by SDL before starting the native application thread.
@@ -529,6 +531,8 @@ public class SDLActivity extends CTHActivity {
         Log.v("Model: " + android.os.Build.MODEL);
         Log.v("onCreate(): " + mSingleton);
 
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+
         SDLActivity.initialize();
         // So we can call stuff from static callbacks
         mSingleton = this;
@@ -612,7 +616,7 @@ public class SDLActivity extends CTHActivity {
         Log.d("Installing files");
         final ProgressDialog dialog = new ProgressDialog(this);
         final UnzipTask unzipTask = new UnzipTask(getApp().getConfiguration().getCthPath()
-                + "/scripts/", this) {
+                + "/scripts/", pm) {
 
             @Override
             protected void onPreExecute() {
