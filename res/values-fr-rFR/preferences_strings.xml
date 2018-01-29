@@ -84,4 +84,7 @@
   <string name="preferences_alpha_off">Revenir à la version stable</string>
   <string name="preferences_alpha_warning_header">Attention</string>
   <string name="preferences_alpha_warning_text">Les versions tests sont susceptibles d’avoir plus de bugs et de fonctionnalités inachevées. Il n’est pas possible de revenir à la version stable sans perdre des parties sauvegardées. Après avoir rejoint, vous devez mettre à jour CorsixTH du magasin de jouer pour obtenir la version la plus récente.</string>
+  <string name="preferences_collect_usage">Collecter les données d’utilisation anonymes d\'utilisation/de crash</string>
+  <string name="preferences_collect_usage_summary">Recueillir des données pour aider à traquer les bugs</string>
+  <string name="preferences_report_bug">Rapport de bogue ou retour</string>
 </resources>
