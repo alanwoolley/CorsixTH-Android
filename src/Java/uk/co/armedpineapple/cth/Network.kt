@@ -5,7 +5,6 @@
  */
 package uk.co.armedpineapple.cth
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 
@@ -26,7 +25,6 @@ object Network {
         return netInfo != null && netInfo.isConnected
     }
 
-    @SuppressLint("InlinedApi")
     fun isMobileNetwork(ctx: Context): Boolean {
         val cm = ctx
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
