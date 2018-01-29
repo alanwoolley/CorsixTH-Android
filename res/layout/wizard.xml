@@ -28,7 +28,7 @@
         android:paddingTop="0dip">
 
         <Button
-            android:id="@+id/leftbutton"
+            android:id="@+id/leftButton"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:text="@string/previousButton"/>
 
         <Button
-            android:id="@+id/rightbutton"
+            android:id="@+id/rightButton"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dip"
             android:layout_height="wrap_content"

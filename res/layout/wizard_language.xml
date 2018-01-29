@@ -25,7 +25,7 @@
         android:textAppearance="@style/WizardText" />
 
     <ListView
-        android:id="@+id/language_list"
+        android:id="@+id/languageListView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"

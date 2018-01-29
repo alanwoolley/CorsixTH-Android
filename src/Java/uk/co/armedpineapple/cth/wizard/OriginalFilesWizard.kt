@@ -5,39 +5,29 @@
  */
 package uk.co.armedpineapple.cth.wizard
 
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.AlertDialog.Builder
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Context.POWER_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.PowerManager
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
-
-
-import java.io.File
-
-import uk.co.armedpineapple.cth.AsyncTaskResult
-import uk.co.armedpineapple.cth.Configuration
+import uk.co.armedpineapple.cth.*
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException
-import uk.co.armedpineapple.cth.Files
-import uk.co.armedpineapple.cth.Files.DownloadFileTask
 import uk.co.armedpineapple.cth.Files.FindFilesTask
-import uk.co.armedpineapple.cth.Files.UnzipTask
-import uk.co.armedpineapple.cth.Network
-import uk.co.armedpineapple.cth.R
-import uk.co.armedpineapple.cth.Reporting
 import uk.co.armedpineapple.cth.dialogs.DialogFactory
+import java.io.File
 
 class OriginalFilesWizard : WizardView {
 
@@ -50,9 +40,10 @@ class OriginalFilesWizard : WizardView {
 
     private val ctx: Context
 
-    private val pm : PowerManager get() {
-        return ctx.getSystemService(POWER_SERVICE) as PowerManager
-    }
+    private val pm: PowerManager
+        get() {
+            return ctx.getSystemService(POWER_SERVICE) as PowerManager
+        }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         ctx = context
@@ -221,12 +212,12 @@ class OriginalFilesWizard : WizardView {
             override fun onPreExecute() {
                 super.onPreExecute()
                 dialog.setMessage(ctx.getString(R.string.extracting_demo))
-                if (Build.VERSION.SDK_INT >= 14) {
-                    dialog.setProgressNumberFormat(null)
-                }
+
+                dialog.setProgressNumberFormat(null)
+
             }
 
-            protected override fun onProgressUpdate(vararg values: Int?) {
+            override fun onProgressUpdate(vararg values: Int?) {
                 super.onProgressUpdate(*values)
                 if (values != null && values.size >= 2) {
                     dialog.progress = values!![0] as Int
@@ -256,10 +247,9 @@ class OriginalFilesWizard : WizardView {
             @SuppressLint("NewApi")
             override fun onPreExecute() {
                 super.onPreExecute()
-                if (Build.VERSION.SDK_INT >= 14) {
-                    dialog.setProgressNumberFormat(ctx
-                            .getString(R.string.download_progress_dialog_text))
-                }
+                dialog.setProgressNumberFormat(ctx
+                        .getString(R.string.download_progress_dialog_text))
+
                 dialog.show()
             }
 

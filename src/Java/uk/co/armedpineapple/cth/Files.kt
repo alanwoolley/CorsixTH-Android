@@ -34,7 +34,6 @@ class Files private constructor() {
         }
 
         private fun findGameFiles(): String? {
-            var result: String?
             val searchPaths = ArrayList(
                     Arrays.asList(*SearchRoot))
             val sdcard = trimPath(Environment.getExternalStorageDirectory()
