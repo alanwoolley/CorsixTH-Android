@@ -5,4 +5,6 @@
   <string name="yes">Ya</string>
   <string name="no">Tidak</string>
   <string name="welcome_header">Selamat datang di CorsixTH!</string>
+  <string name="welcome_text">Anda sudah hampir siap untuk memulai bermain, tetapi ada beberapa hal yang harus kita sesuaikan terlebih dahulu.</string>
+  <string name="no_external_storage">Penyimpanan eksternal tidak tersedia! Mohon pastikan bahwa perangkat anda tidak tersambung ke komputer anda dan kartu SD dimasukkan (jika memungkinkan). Lalu restart aplikasi.</string>
 </resources>
