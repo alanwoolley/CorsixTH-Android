@@ -83,4 +83,8 @@
   <string name="preferences_alpha_leave">Tinggalkan Program Testing</string>
   <string name="preferences_alpha_off">Kembali ke versi stabil</string>
   <string name="preferences_alpha_warning_header">Peringatan</string>
+  <string name="preferences_alpha_warning_text">Versi pengujian cenderung memiliki lebih banyak bug dan fitur yang belum selesai. Tidak mungkin kembali ke versi stabil tanpa kehilangan data yang telah disimpan. Setalah bergabung, anda harus memperbaharui versi CorsixTH ke versi terbaru dari Play Store.</string>
+  <string name="preferences_collect_usage">Mengumpulkan Data Anonim/Data Rusak</string>
+  <string name="preferences_collect_usage_summary">Kumpulkan data untuk membantu melacak bug</string>
+  <string name="preferences_report_bug">Laporkan bug atau berikan saran</string>
 </resources>
