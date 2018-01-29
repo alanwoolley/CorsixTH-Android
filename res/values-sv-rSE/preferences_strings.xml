@@ -58,4 +58,11 @@
   <string name="preferences_intro_movie_disabled">Introfilm av</string>
   <string name="preferences_intro_movie_enabled">Introfilm på</string>
   <string name="preferences_play_intro_movie">Spela introfilm</string>
+  <string name="preferences_edge_scroll_speed">Kantrullningshastighet</string>
+  <string name="preferences_edgescrollspeedsummary">Hur snabbt spelet scrollar</string>
+  <string name="preferences_spen">Samsung S Pen stöd</string>
+  <string name="preferences_spen_disabled">S Pen stöd av</string>
+  <string name="preferences_spen_enabled">S Pen stöd på</string>
+  <string name="preferences_controls">Kontroller</string>
+  <string name="preferences_controls_mode">Kontroll-läge</string>
 </resources>
