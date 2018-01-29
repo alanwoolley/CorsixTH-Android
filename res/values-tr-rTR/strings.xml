@@ -32,4 +32,23 @@
   <string name="preparing_game_files_dialog">Oyun Dosyaları Hazırlanıyor. Bunun yalnızca bir kez çalışması
 		gerekiyor fakat biraz zaman alabilir.
 	</string>
+  <string name="download_demo_dialog">Bu, oyunun temel işlevselliğine erişmenizi sağlayacak
+		olan Theme Hospital demosunu indirip kuracaktır.
+	</string>
+  <string name="download_demo_error">Demo dosyaları indirilirken bir hata oluştu!
+	</string>
+  <string name="downloading_demo">Demo dosyaları indiriliyor…</string>
+  <string name="extracting_demo">Demo dosyaları çıkarılıyor…</string>
+  <string name="language_header">Dil</string>
+  <string name="language_text">CorsixTH birden çok dili desteklemektedir. Lütfen
+		aşağıdaki desteklenen dillerden seçiniz.
+	</string>
+  <string name="downloading_timidity">Dosya indiriliyor…</string>
+  <string name="download_timidity_error">Dosya indirme hatası. Müzik kullanılabilir
+		olmayacak. Lütfen daha sonra tekrar deneyin.
+	</string>
+  <string name="extracting_timidity">Dosyalar çıkarılıyor…</string>
+  <string name="music_download_dialog">Müzik, ilave bir indirme gerektiriyor. Dosyayı
+		indir (14.1MB)?
+	</string>
 </resources>
