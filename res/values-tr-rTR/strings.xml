@@ -20,4 +20,16 @@
   <string name="automatic_resolution">Otomatik</string>
   <string name="download_demo">Demoyu İndir</string>
   <string name="original_files_header">Orijinal Theme Hospital Dosyaları</string>
+  <string name="original_files_text">Orijinal Theme Hospital dosyalarını cihazınızda \'th\'
+		adlı bir klasöre koymalısınız, veya aşağıdan bir alternatif
+		seçin.
+	</string>
+  <string name="native_resolution">Yerel</string>
+  <string name="custom_resolution">Özel</string>
+  <string name="custom_files">Özel</string>
+  <string name="default_files">Otomatik Olarak Algıla</string>
+  <string name="header_image_description">Başlık</string>
+  <string name="preparing_game_files_dialog">Oyun Dosyaları Hazırlanıyor. Bunun yalnızca bir kez çalışması
+		gerekiyor fakat biraz zaman alabilir.
+	</string>
 </resources>
