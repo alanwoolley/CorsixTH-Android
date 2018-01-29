@@ -15,19 +15,21 @@ import java.util.*
 
 class CTHApplication : android.app.Application() {
     var configuration: Configuration? = null
-    var hasVibration = false
+
+    val hasVibration : Boolean by lazy {
+        val vib = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vib.hasVibrator()
+    }
+
     var preferences: SharedPreferences? = null
         private set
+
     val properties = Properties()
 
     @SuppressLint("NewApi")
     override fun onCreate() {
         super.onCreate()
         preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE)
-        val vib = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-        hasVibration = vib.hasVibrator()
-
 
         try {
             val inputStream = assets.open(APPLICATION_PROPERTIES_FILE)
@@ -37,7 +39,6 @@ class CTHApplication : android.app.Application() {
         } catch (e: IOException) {
             Log.i("No properties file found")
         }
-
     }
 
     override fun attachBaseContext(base: Context) {
@@ -51,7 +52,6 @@ class CTHApplication : android.app.Application() {
 
         const val PREFERENCES_KEY = "cthprefs"
         private const val APPLICATION_PROPERTIES_FILE = "application.properties"
-        private const val LOG_TAG = "CTHApp"
 
         val isTestingVersion: Boolean
             get() = (BuildConfig.BUILD_TYPE.equals("debug", ignoreCase = true)

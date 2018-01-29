@@ -33,17 +33,16 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
             languageListView.adapter = LanguageListAdapter(ctx, langArray,
                     langValuesArray)
 
-            languageListView.onItemClickListener = OnItemClickListener { arg0, arg1, pos, arg3 -> (arg0.adapter as LanguageListAdapter).setSelectedItem(pos) }
+            languageListView.onItemClickListener = OnItemClickListener { arg0, arg1, pos, arg3 -> (arg0.adapter as LanguageListAdapter).selected = pos }
             // Look for the language in the values array
             Log.d("System Language: " + Locale.getDefault().language)
 
             for (i in langValuesArray.indices) {
                 if (langValuesArray[i] == Locale.getDefault().language) {
                     (languageListView.adapter as LanguageListAdapter)
-                            .setSelectedItem(i)
+                            .selected = i
                     break
                 }
-
             }
         }
     }
@@ -67,7 +66,11 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
 
         private val inflater: LayoutInflater = LayoutInflater.from(ctx)
 
-        var selected = 0
+        var selected: Int = 0
+            set(value) {
+                field = value
+                notifyDataSetChanged()
+            }
 
         val selectedItem: Any
             get() = getItem(selected)
@@ -76,18 +79,9 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
             return text.size
         }
 
-        override fun getItem(position: Int): Any {
-            return values[position]
-        }
+        override fun getItem(position: Int): Any = values[position]
 
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-
-        fun setSelectedItem(pos: Int) {
-            selected = pos
-            notifyDataSetChanged()
-        }
+        override fun getItemId(position: Int): Long = position.toLong()
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val newView: View = convertView
@@ -99,11 +93,12 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
             langFlagsArray.recycle()
             newView.languageText.text = text[position]
 
-            if (selected == position) {
-                newView.languageListTick.visibility = View.VISIBLE
+            newView.languageListTick.visibility = if (selected == position) {
+                View.VISIBLE
             } else {
-                newView.languageListTick.visibility = View.INVISIBLE
+                View.INVISIBLE
             }
+
 
             return newView
         }

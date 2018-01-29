@@ -73,6 +73,9 @@
         <item>Russian (Русский)</item>
         <item>Brazilian Portuguese (Português do Brasil)</item>
     	<item>Czech (Čeština)</item>
+        <item>Hungarian (Magyar)</item>
+        <item>Korean (한국어)</item>
+        <item>Polish (Polski)</item>
     </string-array>
 
     <array name="languages_flags" translatable="false">
@@ -92,6 +95,9 @@
         <item>@drawable/flag_ru</item>
         <item>@drawable/flag_br</item>
         <item>@drawable/flag_cz</item>
+        <item>@drawable/flag_hu</item>
+        <item>@drawable/flag_ko</item>
+        <item>@drawable/flag_po</item>
     </array>
 
     <string-array name="languages_values" translatable="false">
@@ -111,6 +117,9 @@
         <item>ru</item>
         <item>pt_br</item>
         <item>cs</item>
+        <item>hu</item>
+        <item>ko</item>
+        <item>po</item>
     </string-array>
     <string-array name="resolutions_values" translatable="false">
         <item>1</item>
