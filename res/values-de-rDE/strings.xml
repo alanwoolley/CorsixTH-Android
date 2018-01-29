@@ -18,7 +18,7 @@
   <string name="custom_resolution">Benutzerdefiniert</string>
   <string name="custom_files">Benutzerdefiniert</string>
   <string name="default_files">Automatisch erkennen</string>
-  <string name="header_image_description">Header</string>
+  <string name="header_image_description">Kopfzeile</string>
   <string name="preparing_game_files_dialog">Bereite die Spiel-Dateien vor. Dies kann eine Weile dauern, muss aber nur einmal vorgenommen werden.</string>
   <string name="download_demo_dialog">Das lädt und installiert die Theme Hospital-Demo, dies wird dir nur Zugang auf die Grundfunktionen des Spiels geben.</string>
   <string name="download_demo_error">Beim Herunterladen der Demo-Dateien ist ein Fehler aufgetreten!</string>
@@ -78,4 +78,9 @@
   <string name="facebook_group">Facebook-Gruppe</string>
   <string name="gplus_community">G + Community</string>
   <string name="menuitem_cheats">Cheats</string>
+  <string name="save_level_text">Level: %s</string>
+  <string name="save_rep_text">Ruf: %d</string>
+  <string name="save_balance_text">$%, d</string>
+  <string name="menuitem_jukebox">Jukebox</string>
+  <string name="send_feedback_email_chooser">Feedback senden</string>
 </resources>

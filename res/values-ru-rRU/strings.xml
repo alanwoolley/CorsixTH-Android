@@ -78,4 +78,9 @@
   <string name="facebook_group">Группа на Facebook</string>
   <string name="gplus_community">Сообщество G+</string>
   <string name="menuitem_cheats">Читы</string>
+  <string name="save_level_text">Уровень: %s</string>
+  <string name="save_rep_text">Репутация: %d</string>
+  <string name="save_balance_text">$%,d</string>
+  <string name="menuitem_jukebox">Музыкальный автомат</string>
+  <string name="send_feedback_email_chooser">Отправить отзыв</string>
 </resources>
