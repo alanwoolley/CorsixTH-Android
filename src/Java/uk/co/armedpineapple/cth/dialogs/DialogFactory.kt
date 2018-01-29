@@ -51,7 +51,7 @@ object DialogFactory {
 
         d.setOnShowListener {
             val aboutText = d.findViewById<View>(R.id.aboutTextView) as TextView
-            var text: String = try {
+            val text: String = try {
                 Files.readTextFromResource(ctx, R.raw.about)
             } catch (e: IOException) {
                 ""

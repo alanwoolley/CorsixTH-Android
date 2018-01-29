@@ -7,7 +7,7 @@ import android.widget.*
 object Reporting {
     private val TAG = "CorsixTH"
 
-    fun reportWithToast(ctx: Context, msg: String, e: Exception) {
+    fun reportWithToast(ctx: Context, msg: String, e: Exception?) {
         Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
         Log.w(TAG, msg, e)
     }
@@ -16,12 +16,12 @@ object Reporting {
         Log.i(TAG, msg)
     }
 
-    fun report(e: Exception) {
+    fun report(e: Exception?) {
         Log.e(TAG, "Exception", e)
 
     }
 
-    fun report(log: String, e: Exception) {
+    fun report(log: String, e: Exception?) {
         Log.e(TAG, log, e)
     }
 
