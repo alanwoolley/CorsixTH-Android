@@ -51,4 +51,13 @@
   <string name="music_download_dialog">Müzik, ilave bir indirme gerektiriyor. Dosyayı
 		indir (14.1MB)?
 	</string>
+  <string name="no_connection_error">İndirmek için aktif bir internet bağlantısına ihtiyacınız var.
+		Lütfen bir ağa bağlanın ve tekrar deneyin.
+	</string>
+  <string name="cancel">İptal</string>
+  <string name="new_save">Yeni Kayıt</string>
+  <string name="no_music_dialog">Oyun dosyalarınız müzik içeriyor gibi görünmüyor,
+		bu yüzden müzik etkinleştirilemedi. Lütfen müziği \'Sound\'
+		dizinine kopyaladığınızdan emin olun.
+	</string>
 </resources>
