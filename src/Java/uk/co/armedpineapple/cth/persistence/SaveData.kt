@@ -26,6 +26,4 @@ class SaveData {
 
     @DatabaseField(version = true, dataType = DataType.DATE_LONG)
     var lastModified: Date? = null
-
-
 }

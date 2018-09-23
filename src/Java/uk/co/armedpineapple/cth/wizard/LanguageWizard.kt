@@ -18,51 +18,46 @@ import uk.co.armedpineapple.cth.Configuration
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException
 import uk.co.armedpineapple.cth.R
 import uk.co.armedpineapple.cth.Reporting
+import uk.co.armedpineapple.cth.models.Language
+import uk.co.armedpineapple.cth.services.LanguageService
+import java.lang.Math.max
 import java.util.*
 
 class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView(ctx, attrs) {
 
+    private lateinit var languageService : LanguageService
+
     override fun onFinishInflate() {
         super.onFinishInflate()
+
         if (!isInEditMode) {
 
-            val langArray = resources.getStringArray(R.array.languages)
-            val langValuesArray = resources.getStringArray(
-                    R.array.languages_values)
+            languageService = LanguageService(ctx)
 
-            languageListView.adapter = LanguageListAdapter(ctx, langArray,
-                    langValuesArray)
 
-            languageListView.onItemClickListener = OnItemClickListener { arg0, arg1, pos, arg3 -> (arg0.adapter as LanguageListAdapter).selected = pos }
+            languageListView.adapter = LanguageListAdapter(ctx, languageService.languages)
+
+            languageListView.onItemClickListener = OnItemClickListener { arg0, _, pos, _ -> (arg0.adapter as LanguageListAdapter).selected = pos }
             // Look for the language in the values array
             Log.d("System Language: " + Locale.getDefault().language)
 
-            for (i in langValuesArray.indices) {
-                if (langValuesArray[i] == Locale.getDefault().language) {
-                    (languageListView.adapter as LanguageListAdapter)
-                            .selected = i
-                    break
-                }
-            }
+            (languageListView.adapter as LanguageListAdapter).selected = max(0, languageService.languages.indexOfFirst { l -> l.code == languageService.userLanguage })
         }
     }
 
     @Throws(ConfigurationException::class)
     override fun saveConfiguration(config: Configuration) {
-
-        val lang = (languageListView.adapter as LanguageListAdapter)
-                .selectedItem as String
-
-        config.language = lang
-
+        languageService.userLanguage = (languageListView.adapter as LanguageListAdapter).selectedItem.code
+//        val lang = (languageListView.adapter as LanguageListAdapter)
+//                .selectedItem as String
+//        config.language = lang
     }
 
     override fun loadConfiguration(config: Configuration) {
 
     }
 
-    internal inner class LanguageListAdapter(ctx: Context, val text: Array<String>,
-                                             val values: Array<String>) : BaseAdapter() {
+    internal inner class LanguageListAdapter(ctx: Context, val languages: List<Language>) : BaseAdapter() {
 
         private val inflater: LayoutInflater = LayoutInflater.from(ctx)
 
@@ -72,14 +67,14 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
                 notifyDataSetChanged()
             }
 
-        val selectedItem: Any
-            get() = getItem(selected)
+        val selectedItem: Language
+            get() = getItem(selected) as Language
 
         override fun getCount(): Int {
-            return text.size
+            return languages.size
         }
 
-        override fun getItem(position: Int): Any = values[position]
+        override fun getItem(position: Int): Any = languages[position]
 
         override fun getItemId(position: Int): Long = position.toLong()
 
@@ -91,14 +86,13 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
                     R.array.languages_flags)
             newView.languageListFlag.setImageDrawable(langFlagsArray.getDrawable(position))
             langFlagsArray.recycle()
-            newView.languageText.text = text[position]
+            newView.languageListText.text = languages[position].displayName
 
             newView.languageListTick.visibility = if (selected == position) {
                 View.VISIBLE
             } else {
                 View.INVISIBLE
             }
-
 
             return newView
         }
@@ -107,5 +101,4 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
     companion object {
         private val Log = Reporting.getLogger("LanguageWizard")
     }
-
 }
