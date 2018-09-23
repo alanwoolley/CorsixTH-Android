@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.70'
     ext.anko_version='0.10.4'
 
     repositories {
@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -41,11 +41,11 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'commons-io:commons-io:2.4'
     implementation 'com.github.gabrielemariotti.changeloglib:changelog:2.1.0'
-    implementation 'com.android.support:multidex:1.0.2'
+    implementation 'com.android.support:multidex:1.0.3'
     implementation fileTree(include: '*.jar', dir: 'jars')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation  "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
 }
 
 android {
@@ -121,9 +121,6 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
 
         // Move the build types to build-types/<type>
         // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
