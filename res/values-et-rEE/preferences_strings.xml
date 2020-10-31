@@ -64,5 +64,25 @@
     <string name="preferences_controls">Kontrollid</string>
     <string name="preferences_controls_mode">Kontrollnuppude valikud</string>
     <string name="preferences_controls_mode_summary">Kuidas sisestust käsitletakse</string>
+    <string name="preferences_other">Muu</string>
+    <string name="preferences_auto_wage">Autopalgad</string>
+    <string name="preferences_auto_wage_disabled">Palgataotlusi automaatselt ei rahuldata</string>
+    <string name="preferences_auto_wage_enabled">Palgataotlused rahuldatakse automaatselt</string>
+    <string name="preferences_haptic">Haptiline tagasiside</string>
+    <string name="preferences_vibration">Vibratsioon</string>
+    <string name="preferences_earthquakes">Maavärinad</string>
+    <string name="preferences_vibration_on">Vibratsioon on keelatud</string>
+    <string name="preferences_vibration_off">Vibratsioon on lubatud</string>
+    <string name="preferences_earthquake_off">Maavärinate ajal ei vibreeri</string>
+    <string name="preferences_earthquake_on">Maavärinate ajal vibreerib</string>
+    <string name="preferences_extras">Lisad</string>
+    <string name="preferences_alpha_join">Join Testing programm</string>
+    <string name="preferences_alpha_on">Aidake testida järgmist versiooni</string>
+    <string name="preferences_alpha_leave">Leave Testing programm</string>
+    <string name="preferences_alpha_off">Tagasi stabiilse versiooni juurde</string>
     <string name="preferences_alpha_warning_header">Hoiatus</string>
+    <string name="preferences_alpha_warning_text">Versioonide testimisel on tõenäoliselt rohkem vigu ja lõpetamata funktsioone. Stabiilse versiooni juurde naasmine ei pruugi olla võimalik ilma salvestatud mänge kaotamata. Pärast liitumist peate uusima versiooni saamiseks Play poest CorsixTH-i värskendama.</string>
+    <string name="preferences_collect_usage">Koguge anonüümseid kasutamise/krahhi andmeid</string>
+    <string name="preferences_collect_usage_summary">Koguge andmeid, et aidata vigu üles leida</string>
+    <string name="preferences_report_bug">Veast teatamine või tagasisidest</string>
 </resources>
