@@ -27,11 +27,13 @@
     <string name="preferences_debug_mode_disabled">Debug-Modus deaktiviert</string>
     <string name="preferences_debug_mode_enabled">Debug-Modus aktiviert</string>
     <string name="preferences_debug_mode">Debug-Modus</string>
+    <string name="preferences_keep_screen_on_off">Bildschirm bleibt nicht beim Spielen an</string>
     <string name="preferences_experimental_features">Experimentelle Funktionen</string>
     <string name="preferences_experimental">Experimentell</string>
     <string name="preferences_fps_limiter">FPS limitieren</string>
     <string name="preferences_reduce_cpu">CPU-Auslastung reduzieren um die Batterie zu schonen</string>
     <string name="preferences_localisation">Lokalisierung</string>
+    <string name="preferences_custom_resolution">Benutzerdefinierte Auflösung</string>
     <string name="preferences_debug">Debug</string>
     <string name="preferences_performance">Leistung</string>
     <string name="preferences_movies">Filme</string>
@@ -40,6 +42,7 @@
     <string name="preferences_intro_movie_disabled">Intro deaktiviert</string>
     <string name="preferences_intro_movie_enabled">Intro aktiviert</string>
     <string name="preferences_play_intro_movie">Starte Intro</string>
+    <string name="preferences_edgescrollspeedsummary">Wie schnell die Welt scrollt</string>
     <string name="preferences_spen">Samsung S Pen</string>
     <string name="preferences_spen_disabled">S Pen deaktiviert</string>
     <string name="preferences_spen_enabled">S Pen aktiviert</string>
