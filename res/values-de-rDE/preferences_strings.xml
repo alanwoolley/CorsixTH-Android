@@ -5,6 +5,7 @@
     <string name="preferences_gameplay_preferences">Spieleinstellungen</string>
     <string name="preferences_language">Spielsprache</string>
     <string name="preferences_adviser">Berater</string>
+    <string name="preferences_audio_preferences">Audioeinstellungen</string>
     <string name="preferences_audio">Audio</string>
     <string name="preferences_adviser_disabled">Berater deaktiviert</string>
     <string name="preferences_adviser_enabled">Berater aktiviert</string>
@@ -16,15 +17,21 @@
     <string name="preferences_sound_fx">Soundeffekte</string>
     <string name="preferences_sound_fx_disabled">Soundeffekte deaktiviert</string>
     <string name="preferences_sound_fx_enabled">Soundeffekte aktiviert</string>
+    <string name="preferences_display_preferences">Anzeigeeinstellungen</string>
     <string name="preferences_display">Bildschirm</string>
     <string name="preferences_resolution">Auflösung</string>
     <string name="preferences_width">Breite</string>
     <string name="preferences_height">Höhe</string>
+    <string name="preferences_advanced_preferences">Erweiterte Einstellungen</string>
+    <string name="preferences_advanced">Erweitert</string>
     <string name="preferences_debug_mode_disabled">Debug-Modus deaktiviert</string>
     <string name="preferences_debug_mode_enabled">Debug-Modus aktiviert</string>
     <string name="preferences_debug_mode">Debug-Modus</string>
+    <string name="preferences_experimental_features">Experimentelle Funktionen</string>
     <string name="preferences_experimental">Experimentell</string>
     <string name="preferences_fps_limiter">FPS limitieren</string>
+    <string name="preferences_reduce_cpu">CPU-Auslastung reduzieren um die Batterie zu schonen</string>
+    <string name="preferences_localisation">Lokalisierung</string>
     <string name="preferences_debug">Debug</string>
     <string name="preferences_performance">Leistung</string>
     <string name="preferences_movies">Filme</string>
@@ -38,6 +45,7 @@
     <string name="preferences_spen_enabled">S Pen aktiviert</string>
     <string name="preferences_controls">Steuerung</string>
     <string name="preferences_controls_mode">Steuerungsmodus</string>
+    <string name="preferences_controls_mode_summary">Wie die Eingabe erfolgt</string>
     <string name="preferences_other">Andere</string>
     <string name="preferences_haptic">Haptisches Feedback</string>
     <string name="preferences_vibration">Vibration</string>
@@ -50,6 +58,9 @@
     <string name="preferences_alpha_join">Testprogramm beitreten</string>
     <string name="preferences_alpha_on">Helfen Sie die nächste Version zu testen</string>
     <string name="preferences_alpha_leave">Test Programm verlassen</string>
+    <string name="preferences_alpha_off">Zurück zur stabilen Version</string>
     <string name="preferences_alpha_warning_header">Warnung</string>
+    <string name="preferences_alpha_warning_text">Testversionen werden voraussichtlich weitere Fehler und unfertige Funktionen haben. Möglicherweise können Sie nicht auf die stabile Version zurückkehren ohne die Spielstände zu verlieren. Nachdem Beitritt müssen Sie CorsixTH im Play Store auf die neuste Version aktualisieren.</string>
+    <string name="preferences_collect_usage">Anonyme Nutzungs-/Absturzberichte sammeln</string>
     <string name="preferences_collect_usage_summary">Nutzungsdaten sammeln um das Spiel zu verbessern</string>
 </resources>
