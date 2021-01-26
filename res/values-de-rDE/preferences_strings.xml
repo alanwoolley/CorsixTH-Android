@@ -2,6 +2,7 @@
 <resources>
     <string name="preferences_run_setup_wizard">Starte Instalationsassistenten</string>
     <string name="preferences_settings">Einstellungen</string>
+    <string name="preferences_gameplay_preferences">Spieleinstellungen</string>
     <string name="preferences_language">Spielsprache</string>
     <string name="preferences_adviser">Berater</string>
     <string name="preferences_audio">Audio</string>
@@ -18,6 +19,7 @@
     <string name="preferences_height">Höhe</string>
     <string name="preferences_debug_mode_disabled">Debug-Modus deaktiviert</string>
     <string name="preferences_debug_mode_enabled">Debug-Modus aktiviert</string>
+    <string name="preferences_debug_mode">Debug-Modus</string>
     <string name="preferences_experimental">Experimentell</string>
     <string name="preferences_fps_limiter">FPS limitieren</string>
     <string name="preferences_debug">Debug</string>
@@ -25,6 +27,8 @@
     <string name="preferences_movies">Filme</string>
     <string name="preferences_movies_disabled">Filme deaktiviert</string>
     <string name="preferences_movies_enabled">Filme aktiviert</string>
+    <string name="preferences_intro_movie_disabled">Intro deaktiviert</string>
+    <string name="preferences_intro_movie_enabled">Intro aktiviert</string>
     <string name="preferences_play_intro_movie">Starte Intro</string>
     <string name="preferences_spen">Samsung S Pen</string>
     <string name="preferences_spen_disabled">S Pen deaktiviert</string>
