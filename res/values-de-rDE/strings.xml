@@ -75,6 +75,7 @@
 	<string name="game_guide">Spielanleitung</string>
 	<string name="facebook_group">Facebook-Gruppe</string>
 	<string name="gplus_community">G + Community</string>
+	<string name="menuitem_cheats">Cheats</string>
 	<string name="save_rep_text">Ruf: %d</string>
 	<string name="save_balance_text">$%, d</string>
 	<string name="menuitem_jukebox">Jukebox</string>
