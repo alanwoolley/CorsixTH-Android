@@ -26,4 +26,6 @@
     <string name="preferences_controls">Steuerung</string>
     <string name="preferences_other">Andere</string>
     <string name="preferences_earthquakes">Erdbeben</string>
+    <string name="preferences_extras">Extras</string>
+    <string name="preferences_alpha_warning_header">Warnung</string>
 </resources>
