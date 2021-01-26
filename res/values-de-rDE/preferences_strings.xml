@@ -13,6 +13,9 @@
     <string name="preferences_music">Musik</string>
     <string name="preferences_music_disabled">Musik deaktiviert</string>
     <string name="preferences_music_enabled">Musik aktiviert</string>
+    <string name="preferences_sound_fx">Soundeffekte</string>
+    <string name="preferences_sound_fx_disabled">Soundeffekte deaktiviert</string>
+    <string name="preferences_sound_fx_enabled">Soundeffekte aktiviert</string>
     <string name="preferences_display">Bildschirm</string>
     <string name="preferences_resolution">Auflösung</string>
     <string name="preferences_width">Breite</string>
