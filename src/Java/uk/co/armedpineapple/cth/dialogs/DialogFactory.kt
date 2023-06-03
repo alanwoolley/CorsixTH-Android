@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.Button
 import android.widget.TextView
-import it.gmariotti.changelibs.library.view.ChangeLogListView
 import uk.co.armedpineapple.cth.Files
 import uk.co.armedpineapple.cth.R
 import uk.co.armedpineapple.cth.SDLActivity
@@ -61,19 +60,6 @@ object DialogFactory {
         }
 
         return d
-    }
-
-    fun createRecentChangesDialog(ctx: Context): Dialog {
-        val builder = AlertDialog.Builder(ctx)
-        val chgList = (ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.changes_dialog, null) as ChangeLogListView
-        builder.setView(chgList)
-        builder.setTitle(R.string.recent_changes_title)
-
-
-        builder.setPositiveButton(R.string.ok
-        ) { dialog, whichButton -> dialog.dismiss() }
-        return builder.create()
-
     }
 
     fun createNoNetworkConnectionDialog(ctx: Context): Dialog {

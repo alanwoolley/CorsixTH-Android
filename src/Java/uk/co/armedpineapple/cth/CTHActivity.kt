@@ -5,7 +5,7 @@
 package uk.co.armedpineapple.cth
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 
 abstract class CTHActivity : AppCompatActivity() {
 

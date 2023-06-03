@@ -4,8 +4,8 @@ import android.app.Dialog
 import android.content.Intent
 import android.os.Handler
 import android.os.Message
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import android.widget.Toast
 import com.j256.ormlite.dao.Dao
 import uk.co.armedpineapple.cth.CommandHandler.Command.*

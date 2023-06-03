@@ -9,7 +9,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Vibrator
-import android.support.multidex.MultiDex
+import androidx.multidex.MultiDex
 import java.io.IOException
 import java.util.*
 

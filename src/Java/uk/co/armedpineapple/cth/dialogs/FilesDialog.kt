@@ -7,7 +7,7 @@ package uk.co.armedpineapple.cth.dialogs
 
 import android.app.Dialog
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup.LayoutParams
 import android.view.Window
 import uk.co.armedpineapple.cth.*

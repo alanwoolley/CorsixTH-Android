@@ -25,12 +25,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import uk.co.armedpineapple.cth.spen.SamsungSPenUtils;
 
 /**
  * SDLSurface. This is what we draw on, so we need to know when it's created in
@@ -105,13 +99,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.v("surfaceCreated()");
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-
-		// enableSensor(Sensor.TYPE_ACCELEROMETER, true);
-		if (context.getApp().getConfiguration().getSpen()) {
-			Log.d("S Pen support enabled");
-            Reporting.INSTANCE.setBool("spen", true);
-			SamsungSPenUtils.registerListeners();
-		}
 	}
 
 	// Called when we lose the surface

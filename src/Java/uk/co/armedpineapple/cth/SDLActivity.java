@@ -16,8 +16,9 @@ import android.hardware.*;
 import android.media.*;
 import android.os.*;
 import android.os.PowerManager.*;
-import android.support.v4.widget.*;
-import android.support.v4.widget.DrawerLayout.*;
+import androidx.core.widget.*;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.text.*;
 import android.view.*;
 import android.view.inputmethod.*;
@@ -560,20 +561,6 @@ public class SDLActivity extends CTHActivity {
                 Log.d("This is a new installation");
                 Reporting.INSTANCE.setBool("new_installation", true);
 
-                // Show the recent changes dialog
-                Dialog recentChangesDialog = DialogFactory.INSTANCE
-                        .createRecentChangesDialog(this);
-                recentChangesDialog
-                        .setOnDismissListener(new OnDismissListener() {
-
-                            @Override public void onDismiss(
-                                    DialogInterface arg0) {
-                                installFiles(preferences);
-                            }
-
-                        });
-                recentChangesDialog.show();
-
             } else if (BuildConfig.ALWAYS_UPGRADE) {
                 // For the debug variants, we always want to copy new files
                 installFiles(preferences);
@@ -810,7 +797,7 @@ public class SDLActivity extends CTHActivity {
                                 .getDebug())));
         mDrawerList.setOnItemClickListener(new NavDrawerListListener(this));
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mDrawerLayout.setDrawerListener(new DrawerListener() {
+        mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
 
             @Override public void onDrawerClosed(View arg0) {
                 // Restore game speed

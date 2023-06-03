@@ -8,8 +8,8 @@ package uk.co.armedpineapple.cth.dialogs
 import android.app.AlertDialog
 import android.app.AlertDialog.Builder
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
