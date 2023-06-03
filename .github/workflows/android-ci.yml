@@ -1,0 +1,48 @@
+name: Android CI
+
+on:
+  push:
+    branches: 
+      - 'dev'
+  pull_request:
+    branches: [ "dev" ]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build App bundle
+      run: ./gradlew bundleRelease
+    - name: Build APKS
+      run: ./gradlew assembleRelease
+      
+    - name: Upload APKs
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        # Artifact name
+        name: APK
+        # A file, directory or wildcard pattern that describes what to upload
+        path: App/build/outputs/apk/release/*.apk
+        # The desired behavior if no files are found using the provided path. 
+    - name: Upload AppBundle
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        # Artifact name
+        name: AppBundle
+        # A file, directory or wildcard pattern that describes what to upload
+        path: App/build/outputs/bundle/release/*.aab
+        # The desired behavior if no files are found using the provided path.

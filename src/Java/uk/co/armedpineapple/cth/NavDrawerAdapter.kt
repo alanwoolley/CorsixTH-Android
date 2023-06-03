@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.menu_item.view.*
+import android.widget.TextView
 
 class NavDrawerAdapter(internal val context: Context, internal val items: List<MenuItems>) : BaseAdapter() {
 
@@ -33,7 +33,7 @@ class NavDrawerAdapter(internal val context: Context, internal val items: List<M
         val mi = getItem(position)
 
         if (mi.textResource != null) {
-            view.menuItemTextView.setText(mi.textResource)
+            view.findViewById<TextView>(R.id.menuItemTextView).setText(mi.textResource)
         }
 
         return view

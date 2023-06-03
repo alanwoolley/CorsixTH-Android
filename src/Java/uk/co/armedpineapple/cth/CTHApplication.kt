@@ -55,8 +55,8 @@ class CTHApplication : android.app.Application() {
 
         val isTestingVersion: Boolean
             get() = (BuildConfig.BUILD_TYPE.equals("debug", ignoreCase = true)
-                    || BuildConfig.FLAVOR.equals("alpha", ignoreCase = true)
-                    || BuildConfig.FLAVOR.equals("dev", ignoreCase = true)
-                    || BuildConfig.FLAVOR.equals("beta", ignoreCase = true))
+                    || BuildConfig.BUILD_TYPE.equals("alpha", ignoreCase = true)
+                    || BuildConfig.BUILD_TYPE.equals("dev", ignoreCase = true)
+                    || BuildConfig.BUILD_TYPE.equals("beta", ignoreCase = true))
     }
 }

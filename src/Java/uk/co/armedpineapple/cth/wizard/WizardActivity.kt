@@ -12,16 +12,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ViewFlipper
-import kotlinx.android.synthetic.main.wizard.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import uk.co.armedpineapple.cth.*
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException
 import uk.co.armedpineapple.cth.Files.StorageUnavailableException
+import uk.co.armedpineapple.cth.databinding.WizardBinding
 import uk.co.armedpineapple.cth.dialogs.DialogFactory
 
 class WizardActivity : CTHActivity(), EasyPermissions.PermissionCallbacks {
+
+    private lateinit var binding: WizardBinding
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -88,6 +90,10 @@ class WizardActivity : CTHActivity(), EasyPermissions.PermissionCallbacks {
         }
 
         Log.d("Wizard is going to run.")
+        binding = WizardBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         setContentView(R.layout.wizard)
 
         if (app.configuration == null) {
@@ -107,20 +113,19 @@ class WizardActivity : CTHActivity(), EasyPermissions.PermissionCallbacks {
         // Add all the wizard views
 
         val inflater = layoutInflater
-        loadAndAdd(inflater, flipper,
-                inflater.inflate(R.layout.wizard_welcome, flipper, false) as WizardView)
-        loadAndAdd(inflater, flipper,
-                inflater.inflate(R.layout.wizard_language, flipper, false) as LanguageWizard)
-        loadAndAdd(inflater, flipper, inflater.inflate(
-                R.layout.wizard_originalfiles, flipper, false) as OriginalFilesWizard)
+        loadAndAdd(inflater, binding.flipper,
+                inflater.inflate(R.layout.wizard_welcome, binding.flipper, false) as WizardView)
+        loadAndAdd(inflater, binding.flipper,
+                inflater.inflate(R.layout.wizard_language, binding.flipper, false) as LanguageWizard)
+        loadAndAdd(inflater, binding.flipper, inflater.inflate(
+                R.layout.wizard_originalfiles, binding.flipper, false) as OriginalFilesWizard)
 
         // Setup Buttons
-        leftButton.visibility = View.GONE
+        binding.leftButton.visibility = View.GONE
         val buttonClickListener = WizardButtonClickListener()
 
-        leftButton.setOnClickListener(buttonClickListener)
-        rightButton.setOnClickListener(buttonClickListener)
-
+        binding.leftButton.setOnClickListener(buttonClickListener)
+        binding.rightButton.setOnClickListener(buttonClickListener)
     }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,30 +144,29 @@ class WizardActivity : CTHActivity(), EasyPermissions.PermissionCallbacks {
     private inner class WizardButtonClickListener : OnClickListener {
 
         override fun onClick(v: View) {
-            if (v == leftButton) {
-                flipper.setInAnimation(this@WizardActivity,
+            if (v == binding.leftButton) {
+                binding.flipper.setInAnimation(this@WizardActivity,
                         R.animator.wizard_anim_slideinright)
-                flipper.setOutAnimation(this@WizardActivity,
+                binding.flipper.setOutAnimation(this@WizardActivity,
                         R.animator.wizard_anim_slideoutright)
-                flipper!!.showPrevious()
-            } else if (v == rightButton) {
+                binding.flipper!!.showPrevious()
+            } else if (v == binding.rightButton) {
                 try {
-                    (flipper.currentView as WizardView)
+                    (binding.flipper.currentView as WizardView)
                             .saveConfiguration(app.configuration!!)
 
-                    if (!hasNext(flipper)) {
+                    if (!hasNext(binding.flipper)) {
                         app.configuration!!.saveToPreferences()
 
                         finish()
                         this@WizardActivity.startActivity(Intent(this@WizardActivity,
                                 SDLActivity::class.java))
                     } else {
-
-                        flipper.setInAnimation(this@WizardActivity,
+                        binding.flipper.setInAnimation(this@WizardActivity,
                                 R.animator.wizard_anim_slideinleft)
-                        flipper.setOutAnimation(this@WizardActivity,
+                        binding.flipper.setOutAnimation(this@WizardActivity,
                                 R.animator.wizard_anim_slideoutleft)
-                        flipper.showNext()
+                        binding.flipper.showNext()
                     }
 
                 } catch (e: ConfigurationException) {
@@ -173,16 +177,16 @@ class WizardActivity : CTHActivity(), EasyPermissions.PermissionCallbacks {
 
             }
 
-            if (hasNext(flipper)) {
-                rightButton.setText(R.string.nextButton)
+            if (hasNext(binding.flipper)) {
+                binding.rightButton.setText(R.string.nextButton)
             } else {
-                rightButton.setText(R.string.play_button)
+                binding.rightButton.setText(R.string.play_button)
             }
 
-            if (hasPrevious(flipper)) {
-                leftButton.visibility = View.VISIBLE
+            if (hasPrevious(binding.flipper)) {
+                binding.leftButton.visibility = View.VISIBLE
             } else {
-                leftButton.visibility = View.GONE
+                binding.leftButton.visibility = View.GONE
             }
 
         }

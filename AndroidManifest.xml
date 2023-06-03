@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uk.co.armedpineapple.cth"
     android:installLocation="auto"
 >
 
@@ -11,7 +10,7 @@
 	INTERNET - required to download the demo and music files
 	READ_EXTERNAL_STORAGE
 	WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
-	WAKE_LOKE - required to keep the device awake during play
+	WAKE_LOCK - required to keep the device awake during play
 	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
 	
 	Beta:

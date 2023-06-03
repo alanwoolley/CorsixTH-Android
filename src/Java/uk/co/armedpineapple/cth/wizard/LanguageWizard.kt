@@ -12,12 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
-import kotlinx.android.synthetic.main.language_list_item.view.*
-import kotlinx.android.synthetic.main.wizard_language.view.*
+import android.widget.ImageView
+import android.widget.TextView
 import uk.co.armedpineapple.cth.Configuration
 import uk.co.armedpineapple.cth.Configuration.ConfigurationException
 import uk.co.armedpineapple.cth.R
 import uk.co.armedpineapple.cth.Reporting
+import uk.co.armedpineapple.cth.databinding.WizardLanguageBinding
 import uk.co.armedpineapple.cth.models.Language
 import uk.co.armedpineapple.cth.services.LanguageService
 import java.lang.Math.max
@@ -26,28 +27,33 @@ import java.util.*
 class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView(ctx, attrs) {
 
     private lateinit var languageService : LanguageService
+    private lateinit var binding : WizardLanguageBinding
+
+    init {
+        //binding = WizardLanguageBinding.inflate(LayoutInflater.from(this), this, true)
+    }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-
+        binding = WizardLanguageBinding.bind(this)
         if (!isInEditMode) {
 
             languageService = LanguageService(ctx)
 
 
-            languageListView.adapter = LanguageListAdapter(ctx, languageService.languages)
+            binding.languageListView.adapter = LanguageListAdapter(ctx, languageService.languages)
 
-            languageListView.onItemClickListener = OnItemClickListener { arg0, _, pos, _ -> (arg0.adapter as LanguageListAdapter).selected = pos }
+            binding.languageListView.onItemClickListener = OnItemClickListener { arg0, _, pos, _ -> (arg0.adapter as LanguageListAdapter).selected = pos }
             // Look for the language in the values array
             Log.d("System Language: " + Locale.getDefault().language)
 
-            (languageListView.adapter as LanguageListAdapter).selected = max(0, languageService.languages.indexOfFirst { l -> l.code == languageService.userLanguage })
+            (binding.languageListView.adapter as LanguageListAdapter).selected = max(0, languageService.languages.indexOfFirst { l -> l.code == languageService.userLanguage })
         }
     }
 
     @Throws(ConfigurationException::class)
     override fun saveConfiguration(config: Configuration) {
-        languageService.userLanguage = (languageListView.adapter as LanguageListAdapter).selectedItem.code
+        languageService.userLanguage = (binding.languageListView.adapter as LanguageListAdapter).selectedItem.code
 //        val lang = (languageListView.adapter as LanguageListAdapter)
 //                .selectedItem as String
 //        config.language = lang
@@ -84,11 +90,11 @@ class LanguageWizard(private val ctx: Context, attrs: AttributeSet) : WizardView
 
             val langFlagsArray = resources.obtainTypedArray(
                     R.array.languages_flags)
-            newView.languageListFlag.setImageDrawable(langFlagsArray.getDrawable(position))
+            newView.findViewById<ImageView>(R.id.languageListFlag).setImageDrawable(langFlagsArray.getDrawable(position))
             langFlagsArray.recycle()
-            newView.languageListText.text = languages[position].displayName
+            newView.findViewById<TextView>(R.id.languageListText).text = languages[position].displayName
 
-            newView.languageListTick.visibility = if (selected == position) {
+            newView.findViewById<ImageView>(R.id.languageListTick).visibility = if (selected == position) {
                 View.VISIBLE
             } else {
                 View.INVISIBLE

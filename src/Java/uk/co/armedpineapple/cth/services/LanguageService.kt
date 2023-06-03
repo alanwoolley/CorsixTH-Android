@@ -9,7 +9,7 @@ import java.util.*
 class LanguageService(private val applicationContext : Context) {
 
     var userLanguage : String
-        get() =  preferences.getString(LANGUAGE_KEY, systemLocale.language)
+        get() = preferences.getString(LANGUAGE_KEY, systemLocale.language)!!
         set(value){
             preferences.edit().putString(LANGUAGE_KEY, value).apply()
         }

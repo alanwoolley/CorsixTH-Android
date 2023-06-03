@@ -31,7 +31,7 @@ object Network {
 
         val netInfo = cm.activeNetworkInfo
 
-        return netInfo.type != ConnectivityManager.TYPE_WIFI && netInfo.type != ConnectivityManager.TYPE_ETHERNET
+        return netInfo?.type != ConnectivityManager.TYPE_WIFI && netInfo?.type != ConnectivityManager.TYPE_ETHERNET
 
     }
 }
