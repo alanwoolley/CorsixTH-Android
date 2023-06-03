@@ -2,7 +2,7 @@ import com.android.build.gradle.tasks.MergeSourceSetFolders
 
 buildscript {
     ext.kotlin_version = '1.8.21'
-    ext.anko_version='0.10.4'
+    ext.anko_version = '0.10.4'
 
     repositories {
         mavenCentral()
@@ -47,7 +47,7 @@ dependencies {
     implementation fileTree(include: '*.jar', dir: 'jars')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    implementation  "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
 }
 
 android {
@@ -73,31 +73,10 @@ android {
         targetCompatibility = 17
     }
 
-    Properties signingProperties = new Properties()
-
-    if (file("signing.properties").exists()) {
-        signingProperties.load(new FileInputStream(file("signing.properties")))
-        signingConfigs {
-            release {
-                storeFile file(signingProperties['signing.release.storeFile'])
-                storePassword signingProperties['signing.release.storePassword']
-                keyAlias signingProperties['signing.release.keyAlias']
-                keyPassword signingProperties['signing.release.keyPassword']
-            }
-        }
-    }
-
-    signingConfigs {
-        release {
-
-        }
-    }
-
 
     buildTypes {
         release {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-            signingConfig signingConfigs.release
         }
 
         beta {
@@ -183,7 +162,6 @@ task createGameZip(type: Zip) {
     }
 }
 
-tasks.withType(MergeSourceSetFolders) {
-    t -> t.dependsOn createGameZip
+tasks.withType(MergeSourceSetFolders) { t -> t.dependsOn createGameZip
 }
 
