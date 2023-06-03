@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.lint.AndroidLintTask
 import com.android.build.gradle.tasks.MergeSourceSetFolders
 
 buildscript {
@@ -162,6 +163,6 @@ task createGameZip(type: Zip) {
     }
 }
 
-tasks.withType(MergeSourceSetFolders) { t -> t.dependsOn createGameZip
-}
+tasks.withType(MergeSourceSetFolders) { t -> t.dependsOn createGameZip }
+tasks.withType(AndroidLintTask ) { t -> t.dependsOn createGameZip }
 
