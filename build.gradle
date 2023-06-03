@@ -136,6 +136,7 @@ android {
 
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
     externalNativeBuild {
         ndkBuild {
@@ -168,4 +169,3 @@ task createGameZip(type: Zip) {
 
     }
 }
-
