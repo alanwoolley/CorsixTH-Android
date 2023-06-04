@@ -49,6 +49,11 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation "com.lazygeniouz:dfc:1.0.7"
+
 }
 
 android {
@@ -62,11 +67,6 @@ android {
 
         versionName project.ext.version
         versionCode buildVersionCode()
-
-        ndk {
-            abiFilters "armeabi-v7a"
-        }
-
     }
 
     compileOptions {
@@ -145,11 +145,12 @@ android {
     }
     buildFeatures {
         viewBinding true
+        dataBinding true
         buildConfig true
     }
 }
 
-// Create ZIP of CorsixTH Lua files
+// Create ZIP of CorsixTH game assets
 task createGameZip(type: Zip) {
 
     destinationDirectory = file('assets')
