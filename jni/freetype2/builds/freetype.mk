@@ -3,7 +3,7 @@
 #
 
 
-# Copyright 1996-2000, 2001, 2002, 2003, 2004, 2005, 2006, 2008 by
+# Copyright (C) 1996-2023 by
 # David Turner, Robert Wilhelm, and Werner Lemberg.
 #
 # This file is part of the FreeType project, and may only be used, modified,
@@ -20,8 +20,8 @@
 # The following variables (set by other Makefile components, in the
 # environment, or on the command line) are used:
 #
-#   BUILD_DIR      The architecture dependent directory,
-#                  e.g. `$(TOP_DIR)/builds/unix'.  Added to INCLUDES also.
+#   PLATFORM_DIR   The architecture-dependent directory,
+#                  e.g., `$(TOP_DIR)/builds/unix'.  Added to INCLUDES also.
 #
 #   OBJ_DIR        The directory in which object files are created.
 #
@@ -75,7 +75,7 @@
 # The targets `objects' and `library' are defined at the end of this
 # Makefile after all other rules have been included.
 #
-.PHONY: single multi objects library refdoc
+.PHONY: single multi objects library refdoc refdoc-venv
 
 # default target -- build single objects and library
 #
@@ -104,7 +104,7 @@ CONFIG_DIR   := $(PUBLIC_DIR)/config
 
 # The documentation directory.
 #
-DOC_DIR ?= $(TOP_DIR)/docs/reference
+DOC_DIR ?= $(TOP_DIR)/docs
 
 # The final name of the library file.
 #
@@ -116,15 +116,25 @@ PROJECT_LIBRARY := $(LIB_DIR)/$(LIBRARY).$A
 # IMPORTANT NOTE: The architecture-dependent directory must ALWAYS be placed
 #                 before the standard include list.  Porters are then able to
 #                 put their own version of some of the FreeType components
-#                 in the `freetype/builds/<system>' directory, as these
-#                 files will override the default sources.
+#                 in the `builds/<system>' directory, as these files will
+#                 override the default sources.
 #
 INCLUDES := $(subst /,$(COMPILER_SEP),$(OBJ_DIR) \
                                       $(DEVEL_DIR) \
-                                      $(BUILD_DIR) \
+                                      $(PLATFORM_DIR) \
                                       $(TOP_DIR)/include)
 
 INCLUDE_FLAGS := $(INCLUDES:%=$I%)
+
+# For a development build, we assume that the external library dependencies
+# defined in `ftoption.h' are fulfilled, so we directly access the necessary
+# include directory information using `pkg-config'.
+#
+ifdef DEVEL_DIR
+  INCLUDE_FLAGS += $(shell pkg-config --cflags libpng)
+  INCLUDE_FLAGS += $(shell pkg-config --cflags harfbuzz)
+  INCLUDE_FLAGS += $(shell pkg-config --cflags libbrotlidec)
+endif
 
 
 # C flags used for the compilation of an object file.  This must include at
@@ -138,23 +148,13 @@ INCLUDE_FLAGS := $(INCLUDES:%=$I%)
 # FreeType.  This is required to let our sources include the internal
 # headers (something forbidden by clients).
 #
-# Finally, we define FT_CONFIG_MODULES_H so that the compiler uses the
-# generated version of `ftmodule.h' in $(OBJ_DIR).  If there is an
-# `ftoption.h' files in $(OBJ_DIR), define FT_CONFIG_OPTIONS_H too.
+# `CPPFLAGS' might be specified by the user in the environment.
 #
-ifneq ($(wildcard $(OBJ_DIR)/ftoption.h),)
-  FTOPTION_H    := $(OBJ_DIR)/ftoption.h
-  FTOPTION_FLAG := $DFT_CONFIG_OPTIONS_H="<ftoption.h>"
-endif
+FT_CFLAGS = $(CPPFLAGS) \
+            $(CFLAGS) \
+            $DFT2_BUILD_LIBRARY
 
-FT_CFLAGS  = $(CPPFLAGS) \
-             $(INCLUDE_FLAGS) \
-             $(CFLAGS) \
-             $DFT2_BUILD_LIBRARY \
-             $DFT_CONFIG_MODULES_H="<ftmodule.h>" \
-             $(FTOPTION_FLAG)
-FT_CC      = $(CC) $(FT_CFLAGS)
-FT_COMPILE = $(CC) $(ANSIFLAGS) $(FT_CFLAGS)
+FT_COMPILE := $(CC) $(ANSIFLAGS) $(INCLUDE_FLAGS) $(FT_CFLAGS)
 
 
 # Include the `exports' rules file.
@@ -169,16 +169,22 @@ OBJECTS_LIST :=
 
 # Define $(PUBLIC_H) as the list of all public header files located in
 # `$(TOP_DIR)/include/freetype'.  $(INTERNAL_H), and $(CONFIG_H) are defined
-# similarly.
+# similarly.  $(FTOPTION_H) is the option file used in the compilation.
 #
 # This is used to simplify the dependency rules -- if one of these files
 # changes, the whole library is recompiled.
 #
+ifneq ($(wildcard $(OBJ_DIR)/ftoption.h),)
+  FTOPTION_H := $(OBJ_DIR)/ftoption.h
+else ifneq ($(wildcard $(PLATFORM_DIR)/ftoption.h),)
+  FTOPTION_H := $(PLATFORM_DIR)/ftoption.h
+endif
+
 PUBLIC_H   := $(wildcard $(PUBLIC_DIR)/*.h)
 INTERNAL_H := $(wildcard $(INTERNAL_DIR)/*.h) \
               $(wildcard $(SERVICES_DIR)/*.h)
 CONFIG_H   := $(wildcard $(CONFIG_DIR)/*.h) \
-              $(wildcard $(BUILD_DIR)/freetype/config/*.h) \
+              $(wildcard $(PLATFORM_DIR)/config/*.h) \
               $(FTMODULE_H) \
               $(FTOPTION_H)
 DEVEL_H    := $(wildcard $(TOP_DIR)/devel/*.h)
@@ -214,6 +220,7 @@ $(FTDEBUG_OBJ): $(FTDEBUG_SRC) $(FREETYPE_H)
 #
 include $(SRC_DIR)/base/rules.mk
 include $(patsubst %,$(SRC_DIR)/%/rules.mk,$(MODULES))
+include $(SRC_DIR)/dlg/rules.mk
 
 
 # ftinit component
@@ -236,10 +243,26 @@ $(FTINIT_OBJ): $(FTINIT_SRC) $(FREETYPE_H)
 	$(FT_COMPILE) $T$(subst /,$(COMPILER_SEP),$@ $<)
 
 
+# ftver component
+#
+#  The VERSIONINFO resource `ftver.rc' contains version and copyright
+#  to be compiled by windres and tagged into DLL usually.
+#
+ifneq ($(RC),)
+  FTVER_SRC := $(BASE_DIR)/ftver.rc
+  FTVER_OBJ := $(OBJ_DIR)/ftver.$O
+
+  OBJECTS_LIST += $(FTVER_OBJ)
+
+  $(FTVER_OBJ): $(FTVER_SRC)
+	$(RC) -o $@ $<
+endif
+
+
 # All FreeType library objects.
 #
-OBJ_M := $(BASE_OBJ_M) $(BASE_EXT_OBJ) $(DRV_OBJS_M)
-OBJ_S := $(BASE_OBJ_S) $(BASE_EXT_OBJ) $(DRV_OBJS_S)
+OBJ_M := $(BASE_OBJ_M) $(BASE_EXT_OBJ) $(DRV_OBJS_M) $(DLG_OBJS_M)
+OBJ_S := $(BASE_OBJ_S) $(BASE_EXT_OBJ) $(DRV_OBJS_S) $(DLG_OBJS_S)
 
 
 # The target `multi' on the Make command line indicates that we want to
@@ -261,49 +284,51 @@ objects: $(OBJECTS_LIST)
 
 library: $(PROJECT_LIBRARY)
 
-dll: $(PROJECT_LIBRARY) exported_symbols
-
-.c.$O:
-	$(FT_COMPILE) $T$(subst /,$(COMPILER_SEP),$@ $<)
-
-
-ifneq ($(findstring refdoc,$(MAKECMDGOALS)),)
-  # poor man's `sed' emulation with make's built-in string functions
-  work := $(strip $(shell $(CAT) $(PUBLIC_DIR)/freetype.h))
-  work := $(subst |,x,$(work))
-  work := $(subst $(space),|,$(work))
-  work := $(subst \#define|FREETYPE_MAJOR|,$(space),$(work))
-  work := $(word 2,$(work))
-  major := $(subst |,$(space),$(work))
-  major := $(firstword $(major))
-
-  work := $(subst \#define|FREETYPE_MINOR|,$(space),$(work))
-  work := $(word 2,$(work))
-  minor := $(subst |,$(space),$(work))
-  minor := $(firstword $(minor))
-
-  work := $(subst \#define|FREETYPE_PATCH|,$(space),$(work))
-  work := $(word 2,$(work))
-  patch := $(subst |,$(space),$(work))
-  patch := $(firstword $(patch))
-
-  version := $(major).$(minor).$(patch)
-endif
-
-# We write-protect the docmaker directory to suppress generation
-# of .pyc files.
+# Run `docwriter' in the current Python environment.
 #
-refdoc:
-	-chmod -w $(SRC_DIR)/tools/docmaker
-	python $(SRC_DIR)/tools/docmaker/docmaker.py \
-               --prefix=ft2                          \
-               --title=FreeType-$(version)           \
-               --output=$(DOC_DIR)                   \
-               $(PUBLIC_DIR)/*.h                     \
-               $(PUBLIC_DIR)/config/*.h              \
-               $(PUBLIC_DIR)/cache/*.h
-	-chmod +w $(SRC_DIR)/tools/docmaker
+PYTHON ?= python
 
+refdoc:
+	@echo Running docwriter...
+	$(PYTHON) -m docwriter \
+                  --prefix=ft2 \
+                  --title=FreeType-$(version) \
+                  --site=reference \
+                  --output=$(DOC_DIR) \
+                  $(PUBLIC_DIR)/*.h \
+                  $(PUBLIC_DIR)/config/*.h \
+                  $(PUBLIC_DIR)/cache/*.h
+	@echo Building static site...
+	cd $(DOC_DIR) && mkdocs build
+	@echo Done.
+
+# Variables for running `refdoc' with Python's `virtualenv'.  The
+# environment is created in `DOC_DIR/env' and is gitignored.
+#
+# We still need to cd into `DOC_DIR' to build `mkdocs' because paths in
+# `mkdocs.yml' are relative to the current working directory.
+#
+VENV_NAME  := env
+VENV_DIR   := $(DOC_DIR)$(SEP)$(VENV_NAME)
+ENV_PYTHON := $(VENV_DIR)$(SEP)$(BIN)$(SEP)$(PYTHON)
+
+refdoc-venv:
+	@echo Setting up virtualenv for Python...
+	virtualenv --python=$(PYTHON) $(VENV_DIR)
+	@echo Installing docwriter...
+	$(ENV_PYTHON) -m pip install docwriter
+	@echo Running docwriter...
+	$(ENV_PYTHON) -m docwriter \
+                      --prefix=ft2 \
+                      --title=FreeType-$(version) \
+                      --site=reference \
+                      --output=$(DOC_DIR) \
+                      $(PUBLIC_DIR)/*.h \
+                      $(PUBLIC_DIR)/config/*.h \
+                      $(PUBLIC_DIR)/cache/*.h
+	@echo Building static site...
+	cd $(DOC_DIR) && $(VENV_NAME)$(SEP)$(BIN)$(SEP)python -m mkdocs build
+	@echo Done.
 
 .PHONY: clean_project_std distclean_project_std
 
@@ -348,10 +373,9 @@ remove_ftmodule_h:
 
 .PHONY: clean distclean
 
-# The `config.mk' file must define `clean_freetype' and
-# `distclean_freetype'.  Implementations may use to relay these to either
-# the `std' or `dos' versions from above, or simply provide their own
-# implementation.
+# The `config.mk' file must define `clean_project' and `distclean_project'.
+# Implementations may use to relay these to either the `std' or `dos'
+# versions from above, or simply provide their own implementation.
 #
 clean: clean_project
 distclean: distclean_project remove_config_mk remove_ftmodule_h

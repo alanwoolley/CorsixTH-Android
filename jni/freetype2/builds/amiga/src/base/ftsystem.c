@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Amiga-specific FreeType low-level system interface (body).           */
 /*                                                                         */
-/*  Copyright 1996-2001, 2002, 2005, 2006, 2007, 2010 by                   */
+/*  Copyright (C) 1996-2023 by                                             */
 /*  David Turner, Robert Wilhelm, Werner Lemberg and Detlef Würkner.       */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -96,10 +96,10 @@ Free_VecPooled( APTR  poolHeader,
 
 #include <ft2build.h>
 #include FT_CONFIG_CONFIG_H
-#include FT_INTERNAL_DEBUG_H
-#include FT_SYSTEM_H
-#include FT_ERRORS_H
-#include FT_TYPES_H
+#include <freetype/internal/ftdebug.h>
+#include <freetype/ftsystem.h>
+#include <freetype/fterrors.h>
+#include <freetype/fttypes.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -235,7 +235,7 @@ Free_VecPooled( APTR  poolHeader,
   /* messages during execution.                                            */
   /*                                                                       */
 #undef  FT_COMPONENT
-#define FT_COMPONENT  trace_io
+#define FT_COMPONENT  io
 
   /* We use the macro STREAM_FILE for convenience to extract the       */
   /* system-specific stream handle from a given FreeType stream object */
@@ -264,7 +264,7 @@ Free_VecPooled( APTR  poolHeader,
 
     stream->descriptor.pointer = NULL;
     stream->size               = 0;
-    stream->base               = 0;
+    stream->base               = NULL;
   }
 
 
@@ -386,7 +386,7 @@ Free_VecPooled( APTR  poolHeader,
 
 
     if ( !stream )
-      return FT_Err_Invalid_Stream_Handle;
+      return FT_THROW( Invalid_Stream_Handle );
 
 #ifdef __amigaos4__
     sysfile = AllocMem ( sizeof (struct SysFile ), MEMF_SHARED );
@@ -398,7 +398,7 @@ Free_VecPooled( APTR  poolHeader,
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
 
-      return FT_Err_Cannot_Open_Resource;
+      return FT_THROW( Cannot_Open_Resource );
     }
     sysfile->file = Open( (STRPTR)filepathname, MODE_OLDFILE );
     if ( !sysfile->file )
@@ -407,7 +407,7 @@ Free_VecPooled( APTR  poolHeader,
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
 
-      return FT_Err_Cannot_Open_Resource;
+      return FT_THROW( Cannot_Open_Resource );
     }
 
     fib = AllocDosObject( DOS_FIB, NULL );
@@ -418,7 +418,7 @@ Free_VecPooled( APTR  poolHeader,
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
 
-      return FT_Err_Cannot_Open_Resource;
+      return FT_THROW( Cannot_Open_Resource );
     }
     if ( !( ExamineFH( sysfile->file, fib ) ) )
     {
@@ -428,7 +428,7 @@ Free_VecPooled( APTR  poolHeader,
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " could not open `%s'\n", filepathname ));
 
-      return FT_Err_Cannot_Open_Resource;
+      return FT_THROW( Cannot_Open_Resource );
     }
     stream->size = fib->fib_Size;
     FreeDosObject( DOS_FIB, fib );
@@ -447,7 +447,7 @@ Free_VecPooled( APTR  poolHeader,
       ft_amiga_stream_close( stream );
       FT_ERROR(( "FT_Stream_Open:" ));
       FT_ERROR(( " opened `%s' but zero-sized\n", filepathname ));
-      return FT_Err_Cannot_Open_Stream;;
+      return FT_THROW( Cannot_Open_Stream );
     }
 
     FT_TRACE1(( "FT_Stream_Open:" ));
