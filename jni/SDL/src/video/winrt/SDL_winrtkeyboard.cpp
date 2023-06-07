@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -28,7 +28,7 @@
 
 
 /* SDL-specific includes */
-#include <SDL.h>
+#include "SDL.h"
 #include "SDL_winrtevents_c.h"
 
 extern "C" {
@@ -382,5 +382,85 @@ WINRT_ProcessCharacterReceivedEvent(Windows::UI::Core::CharacterReceivedEventArg
         SDL_SendKeyboardText(dest_utf8);
     }
 }
+
+
+#if NTDDI_VERSION >= NTDDI_WIN10
+
+static bool WINRT_InputPaneVisible = false;
+
+void WINTRT_OnInputPaneShowing(Windows::UI::ViewManagement::InputPane ^ sender, Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^ args)
+{
+    WINRT_InputPaneVisible = true;
+}
+
+void WINTRT_OnInputPaneHiding(Windows::UI::ViewManagement::InputPane ^ sender, Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^ args)
+{
+    WINRT_InputPaneVisible = false;
+}
+
+void WINTRT_InitialiseInputPaneEvents(_THIS)
+{
+    using namespace Windows::UI::ViewManagement;
+    InputPane ^ inputPane = InputPane::GetForCurrentView();
+    if (inputPane) {
+        inputPane->Showing += ref new Windows::Foundation::TypedEventHandler<Windows::UI::ViewManagement::InputPane ^, 
+            Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^>(&WINTRT_OnInputPaneShowing);
+        inputPane->Hiding += ref new Windows::Foundation::TypedEventHandler<Windows::UI::ViewManagement::InputPane ^, 
+            Windows::UI::ViewManagement::InputPaneVisibilityEventArgs ^>(&WINTRT_OnInputPaneHiding);
+    }
+}
+
+SDL_bool WINRT_HasScreenKeyboardSupport(_THIS)
+{
+    return SDL_TRUE;
+}
+
+void WINRT_ShowScreenKeyboard(_THIS, SDL_Window *window)
+{
+    using namespace Windows::UI::ViewManagement;
+    InputPane ^ inputPane = InputPane::GetForCurrentView();
+    if (inputPane) {
+        inputPane->TryShow();
+    }
+}
+
+void WINRT_HideScreenKeyboard(_THIS, SDL_Window *window)
+{
+    using namespace Windows::UI::ViewManagement;
+    InputPane ^ inputPane = InputPane::GetForCurrentView();
+    if (inputPane) {
+        inputPane->TryHide();
+    }
+}
+
+SDL_bool WINRT_IsScreenKeyboardShown(_THIS, SDL_Window *window)
+{
+    using namespace Windows::UI::ViewManagement;
+    InputPane ^ inputPane = InputPane::GetForCurrentView();
+    if (inputPane) {
+        switch (SDL_WinRTGetDeviceFamily()) {
+        case SDL_WINRT_DEVICEFAMILY_XBOX:
+            //Documentation recommends using inputPane->Visible 
+            //https://learn.microsoft.com/en-us/uwp/api/windows.ui.viewmanagement.inputpane.visible?view=winrt-22621
+            //This does not seem to work on latest UWP/Xbox.
+            //Workaround: Listen to Showing/Hiding events
+            if (WINRT_InputPaneVisible) {
+                return SDL_TRUE;
+            }
+            break;
+        default:
+            //OccludedRect is recommend on universal apps per docs
+            //https://learn.microsoft.com/en-us/uwp/api/windows.ui.viewmanagement.inputpane.visible?view=winrt-22621
+            Windows::Foundation::Rect rect = inputPane->OccludedRect;
+            if (rect.Width > 0 && rect.Height > 0) {
+                return SDL_TRUE;
+            }
+            break;
+        }
+    }
+    return SDL_FALSE;
+}
+
+#endif  // NTDDI_VERSION >= ...
 
 #endif // SDL_VIDEO_DRIVER_WINRT

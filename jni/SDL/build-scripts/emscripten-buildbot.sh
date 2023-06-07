@@ -1,9 +1,13 @@
 #!/bin/bash
 
-SDKDIR="/emsdk_portable"
+if [ -z "$SDKDIR" ]; then
+    SDKDIR="/emsdk"
+fi
+
 ENVSCRIPT="$SDKDIR/emsdk_env.sh"
 if [ ! -f "$ENVSCRIPT" ]; then
    echo "ERROR: This script expects the Emscripten SDK to be in '$SDKDIR'." 1>&2
+   echo "ERROR: Set the \$SDKDIR environment variable to override this." 1>&2
    exit 1
 fi
 
@@ -51,20 +55,20 @@ mkdir buildbot
 pushd buildbot
 
 echo "Configuring..."
-emconfigure ../configure --host=asmjs-unknown-emscripten --disable-assembly --disable-threads --enable-cpuinfo=false CFLAGS="-O2 -Wno-warn-absolute-paths -Wdeclaration-after-statement -Werror=declaration-after-statement" --prefix="$PWD/emscripten-sdl2-installed"
+emconfigure ../configure --host=wasm32-unknown-emscripten --disable-assembly --disable-threads --disable-cpuinfo CFLAGS="-s USE_SDL=0 -O2 -Wno-warn-absolute-paths -Wdeclaration-after-statement -Werror=declaration-after-statement" --prefix="$PWD/emscripten-sdl2-installed" || exit $?
 
 echo "Building..."
-emmake $MAKE
+emmake $MAKE || exit $?
 
 echo "Moving things around..."
-emmake $MAKE install
+emmake $MAKE install || exit $?
+
 # Fix up a few things to a real install path
 perl -w -pi -e "s#$PWD/emscripten-sdl2-installed#/usr/local#g;" ./emscripten-sdl2-installed/lib/libSDL2.la ./emscripten-sdl2-installed/lib/pkgconfig/sdl2.pc ./emscripten-sdl2-installed/bin/sdl2-config
 mkdir -p ./usr
 mv ./emscripten-sdl2-installed ./usr/local
+tar -cJvvf $TARBALL usr
 popd
-tar -cJvvf $TARBALL -C buildbot usr
-rm -rf buildbot
 
 exit 0
 

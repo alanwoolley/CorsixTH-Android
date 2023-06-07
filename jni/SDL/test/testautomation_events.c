@@ -25,7 +25,7 @@ int _userdataValue1 = 1;
 int _userdataValue2 = 2;
 
 /* Event filter that sets some flags and optionally checks userdata */
-int _events_sampleNullEventFilter(void *userdata, SDL_Event *event)
+int SDLCALL _events_sampleNullEventFilter(void *userdata, SDL_Event *event)
 {
    _eventFilterCalled = 1;
 
@@ -42,8 +42,8 @@ int _events_sampleNullEventFilter(void *userdata, SDL_Event *event)
 /**
  * @brief Test pumping and peeking events.
  *
- * @sa http://wiki.libsdl.org/moin.cgi/SDL_PumpEvents
- * @sa http://wiki.libsdl.org/moin.cgi/SDL_PollEvent
+ * @sa http://wiki.libsdl.org/SDL_PumpEvents
+ * @sa http://wiki.libsdl.org/SDL_PollEvent
  */
 int
 events_pushPumpAndPollUserevent(void *arg)
@@ -76,8 +76,8 @@ events_pushPumpAndPollUserevent(void *arg)
 /**
  * @brief Adds and deletes an event watch function with NULL userdata
  *
- * @sa http://wiki.libsdl.org/moin.cgi/SDL_AddEventWatch
- * @sa http://wiki.libsdl.org/moin.cgi/SDL_DelEventWatch
+ * @sa http://wiki.libsdl.org/SDL_AddEventWatch
+ * @sa http://wiki.libsdl.org/SDL_DelEventWatch
  *
  */
 int
@@ -87,7 +87,7 @@ events_addDelEventWatch(void *arg)
 
    /* Create user event */
    event.type = SDL_USEREVENT;
-   event.user.code = SDLTest_RandomSint32();;
+   event.user.code = SDLTest_RandomSint32();
    event.user.data1 = (void *)&_userdataValue1;
    event.user.data2 = (void *)&_userdataValue2;
 
@@ -126,8 +126,8 @@ events_addDelEventWatch(void *arg)
 /**
  * @brief Adds and deletes an event watch function with userdata
  *
- * @sa http://wiki.libsdl.org/moin.cgi/SDL_AddEventWatch
- * @sa http://wiki.libsdl.org/moin.cgi/SDL_DelEventWatch
+ * @sa http://wiki.libsdl.org/SDL_AddEventWatch
+ * @sa http://wiki.libsdl.org/SDL_DelEventWatch
  *
  */
 int
@@ -137,7 +137,7 @@ events_addDelEventWatchWithUserdata(void *arg)
 
    /* Create user event */
    event.type = SDL_USEREVENT;
-   event.user.code = SDLTest_RandomSint32();;
+   event.user.code = SDLTest_RandomSint32();
    event.user.data1 = (void *)&_userdataValue1;
    event.user.data2 = (void *)&_userdataValue2;
 

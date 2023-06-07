@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 */
 #include "../SDL_internal.h"
 
-#if defined(__WIN32__) || defined(__WINRT__)
+#if defined(__WIN32__) || defined(__WINRT__) || defined(__GDK__)
 #include "../core/windows/SDL_windows.h"
 #endif
 
@@ -31,6 +31,32 @@
 #if !defined(HAVE_GCC_ATOMICS) && defined(__SOLARIS__)
 #include <atomic.h>
 #endif
+
+#if !defined(HAVE_GCC_ATOMICS) && defined(__RISCOS__)
+#include <unixlib/local.h>
+#endif
+
+#if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
+#include <xmmintrin.h>
+#endif
+
+#if defined(PS2)
+#include <kernel.h>
+#endif
+
+#if !defined(HAVE_GCC_ATOMICS) && defined(__MACOSX__)
+#include <libkern/OSAtomic.h>
+#endif
+
+#if defined(__WATCOMC__) && defined(__386__)
+SDL_COMPILE_TIME_ASSERT(locksize, 4==sizeof(SDL_SpinLock));
+extern __inline int _SDL_xchg_watcom(volatile int *a, int v);
+#pragma aux _SDL_xchg_watcom = \
+  "lock xchg [ecx], eax" \
+  parm [ecx] [eax] \
+  value [eax] \
+  modify exact [eax];
+#endif /* __WATCOMC__ && __386__ */
 
 /* This function is where all the magic happens... */
 SDL_bool
@@ -54,18 +80,35 @@ SDL_AtomicTryLock(SDL_SpinLock *lock)
         return SDL_FALSE;
     }
 
+#elif HAVE_GCC_ATOMICS || HAVE_GCC_SYNC_LOCK_TEST_AND_SET
+    return (__sync_lock_test_and_set(lock, 1) == 0);
+
+#elif defined(_MSC_VER) && (defined(_M_ARM) || defined(_M_ARM64))
+    return (_InterlockedExchange_acq(lock, 1) == 0);
+
 #elif defined(_MSC_VER)
     SDL_COMPILE_TIME_ASSERT(locksize, sizeof(*lock) == sizeof(long));
     return (InterlockedExchange((long*)lock, 1) == 0);
 
-#elif HAVE_GCC_ATOMICS || HAVE_GCC_SYNC_LOCK_TEST_AND_SET
-    return (__sync_lock_test_and_set(lock, 1) == 0);
+#elif defined(__WATCOMC__) && defined(__386__)
+    return _SDL_xchg_watcom(lock, 1) == 0;
 
 #elif defined(__GNUC__) && defined(__arm__) && \
-        (defined(__ARM_ARCH_4__) || defined(__ARM_ARCH_4T__) || \
+        (defined(__ARM_ARCH_3__) || defined(__ARM_ARCH_3M__) || \
+         defined(__ARM_ARCH_4__) || defined(__ARM_ARCH_4T__) || \
          defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_5TE__) || \
          defined(__ARM_ARCH_5TEJ__))
     int result;
+
+#if defined(__RISCOS__)
+    if (__cpucap_have_rex()) {
+        __asm__ __volatile__ (
+            "ldrex %0, [%2]\nteq   %0, #0\nstrexeq %0, %1, [%2]"
+            : "=&r" (result) : "r" (1), "r" (lock) : "cc", "memory");
+        return (result == 0);
+    }
+#endif
+
     __asm__ __volatile__ (
         "swp %0, %1, [%2]\n"
         : "=&r,&r" (result) : "r,0" (1), "r,r" (lock) : "memory");
@@ -96,7 +139,19 @@ SDL_AtomicTryLock(SDL_SpinLock *lock)
 #elif defined(__SOLARIS__) && !defined(_LP64)
     /* Used for Solaris with non-gcc compilers. */
     return (SDL_bool) ((int) atomic_cas_32((volatile uint32_t*)lock, 0, 1) == 0);
+#elif defined(PS2)
+    uint32_t oldintr;
+    SDL_bool res = SDL_FALSE;
+    // disable interuption
+    oldintr = DIntr();
 
+    if (*lock == 0) {
+        *lock = 1;
+        res = SDL_TRUE;
+    }
+    // enable interuption
+    if(oldintr) { EIntr(); }
+    return res;
 #else
 #error Please implement for your platform.
     return SDL_FALSE;
@@ -106,21 +161,35 @@ SDL_AtomicTryLock(SDL_SpinLock *lock)
 void
 SDL_AtomicLock(SDL_SpinLock *lock)
 {
+    int iterations = 0;
     /* FIXME: Should we have an eventual timeout? */
     while (!SDL_AtomicTryLock(lock)) {
-        SDL_Delay(0);
+        if (iterations < 32) {
+            iterations++;
+            SDL_CPUPauseInstruction();
+        } else {
+            /* !!! FIXME: this doesn't definitely give up the current timeslice, it does different things on various platforms. */
+            SDL_Delay(0);
+        }
     }
 }
 
 void
 SDL_AtomicUnlock(SDL_SpinLock *lock)
 {
-#if defined(_MSC_VER)
+#if HAVE_GCC_ATOMICS || HAVE_GCC_SYNC_LOCK_TEST_AND_SET
+    __sync_lock_release(lock);
+
+#elif defined(_MSC_VER) && (defined(_M_ARM) || defined(_M_ARM64))
+    _InterlockedExchange_rel(lock, 0);
+
+#elif defined(_MSC_VER)
     _ReadWriteBarrier();
     *lock = 0;
 
-#elif HAVE_GCC_ATOMICS || HAVE_GCC_SYNC_LOCK_TEST_AND_SET
-    __sync_lock_release(lock);
+#elif defined(__WATCOMC__) && defined(__386__)
+    SDL_CompilerBarrier ();
+    *lock = 0;
 
 #elif defined(__SOLARIS__)
     /* Used for Solaris when not using gcc. */

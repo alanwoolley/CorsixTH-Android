@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -56,10 +56,10 @@ static int LoadContext(GL_Context * data)
     do { \
         data->func = SDL_GL_GetProcAddress(#func); \
         if ( ! data->func ) { \
-            return SDL_SetError("Couldn't load GL function %s: %s\n", #func, SDL_GetError()); \
+            return SDL_SetError("Couldn't load GL function %s: %s", #func, SDL_GetError()); \
         } \
     } while ( 0 );
-#endif /* _SDL_NOGETPROCADDR_ */
+#endif /* __SDL_NOGETPROCADDR__ */
 
 #include "../src/render/opengl/SDL_glfuncs.h"
 #undef SDL_PROC
@@ -218,6 +218,7 @@ main(int argc, char *argv[])
     Uint32 then, now, frames;
     int status;
     int dw, dh;
+    int swap_interval = 0;
 
     /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
@@ -237,18 +238,18 @@ main(int argc, char *argv[])
         consumed = SDLTest_CommonArg(state, i);
         if (consumed == 0) {
             if (SDL_strcasecmp(argv[i], "--fsaa") == 0 && i+1 < argc) {
-                fsaa = atoi(argv[i+1]);
+                fsaa = SDL_atoi(argv[i+1]);
                 consumed = 2;
             } else if (SDL_strcasecmp(argv[i], "--accel") == 0 && i+1 < argc) {
-                accel = atoi(argv[i+1]);
+                accel = SDL_atoi(argv[i+1]);
                 consumed = 2;
             } else {
                 consumed = -1;
             }
         }
         if (consumed < 0) {
-            SDL_Log("Usage: %s %s [--fsaa n] [--accel n]\n", argv[0],
-                    SDLTest_CommonUsage(state));
+            static const char *options[] = { "[--fsaa n]", "[--accel n]", NULL };
+            SDLTest_CommonLogUsage(state, argv[0], options);
             quit(1);
         }
         i += consumed;
@@ -289,15 +290,19 @@ main(int argc, char *argv[])
 
     if (state->render_flags & SDL_RENDERER_PRESENTVSYNC) {
         /* try late-swap-tearing first. If not supported, try normal vsync. */
-        if (SDL_GL_SetSwapInterval(-1) == -1) {
+        if (SDL_GL_SetSwapInterval(-1) == 0) {
+            swap_interval = -1;
+        } else {
             SDL_GL_SetSwapInterval(1);
+            swap_interval = 1;
         }
     } else {
         SDL_GL_SetSwapInterval(0);  /* disable vsync. */
+        swap_interval = 0;
     }
 
     SDL_GetCurrentDisplayMode(0, &mode);
-    SDL_Log("Screen BPP    : %d\n", SDL_BITSPERPIXEL(mode.format));
+    SDL_Log("Screen BPP    : %" SDL_PRIu32 "\n", SDL_BITSPERPIXEL(mode.format));
     SDL_Log("Swap Interval : %d\n", SDL_GL_GetSwapInterval());
     SDL_GetWindowSize(state->windows[0], &dw, &dh);
     SDL_Log("Window Size   : %d,%d\n", dw, dh);
@@ -357,7 +362,7 @@ main(int argc, char *argv[])
             SDL_Log("SDL_GL_ACCELERATED_VISUAL: requested %d, got %d\n", accel,
                    value);
         } else {
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to get SDL_GL_ACCELERATED_VISUAL: %s\n",
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to get SDL_GL_ACCELERATED_VISUAL: %s\n",
                    SDL_GetError());
         }
     }
@@ -377,16 +382,35 @@ main(int argc, char *argv[])
     then = SDL_GetTicks();
     done = 0;
     while (!done) {
+        SDL_bool update_swap_interval = SDL_FALSE;
+
         /* Check for events */
         ++frames;
         while (SDL_PollEvent(&event)) {
             SDLTest_CommonEvent(state, &event, &done);
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_o) {
+                    swap_interval--;
+                    update_swap_interval = SDL_TRUE;
+                } else if (event.key.keysym.sym == SDLK_p) {
+                    swap_interval++;
+                    update_swap_interval = SDL_TRUE;
+                }
+            }
         }
+
+        if (update_swap_interval) {
+            SDL_Log("Swap interval to be set to %d\n", swap_interval);
+        }
+
         for (i = 0; i < state->num_windows; ++i) {
             int w, h;
             if (state->windows[i] == NULL)
                 continue;
             SDL_GL_MakeCurrent(state->windows[i], context);
+            if (update_swap_interval) {
+                SDL_GL_SetSwapInterval(swap_interval);
+            }
             SDL_GL_GetDrawableSize(state->windows[i], &w, &h);
             ctx.glViewport(0, 0, w, h);
             Render();

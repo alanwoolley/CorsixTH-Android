@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -25,27 +25,21 @@
 #include "SDL_cocoavideo.h"
 #include "../../events/SDL_clipboardevents_c.h"
 
-static NSString *
-GetTextFormat(_THIS)
-{
-    if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_5) {
-        return NSPasteboardTypeString;
-    } else {
-        return NSStringPboardType;
-    }
-}
-
 int
 Cocoa_SetClipboardText(_THIS, const char *text)
 { @autoreleasepool
 {
-    SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    SDL_VideoData *data = (__bridge SDL_VideoData *) _this->driverdata;
     NSPasteboard *pasteboard;
-    NSString *format = GetTextFormat(_this);
+    NSString *format = NSPasteboardTypeString;
+    NSString *nsstr = [NSString stringWithUTF8String:text];
+    if (nsstr == nil) {
+        return SDL_SetError("Couldn't create NSString; is your string data in UTF-8 format?");
+    }
 
     pasteboard = [NSPasteboard generalPasteboard];
-    data->clipboard_count = [pasteboard declareTypes:[NSArray arrayWithObject:format] owner:nil];
-    [pasteboard setString:[NSString stringWithUTF8String:text] forType:format];
+    data.clipboard_count = [pasteboard declareTypes:[NSArray arrayWithObject:format] owner:nil];
+    [pasteboard setString:nsstr forType:format];
 
     return 0;
 }}
@@ -55,12 +49,12 @@ Cocoa_GetClipboardText(_THIS)
 { @autoreleasepool
 {
     NSPasteboard *pasteboard;
-    NSString *format = GetTextFormat(_this);
+    NSString *format = NSPasteboardTypeString;
     NSString *available;
     char *text;
 
     pasteboard = [NSPasteboard generalPasteboard];
-    available = [pasteboard availableTypeFromArray: [NSArray arrayWithObject:format]];
+    available = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:format]];
     if ([available isEqualToString:format]) {
         NSString* string;
         const char *utf8;
@@ -71,7 +65,7 @@ Cocoa_GetClipboardText(_THIS)
         } else {
             utf8 = [string UTF8String];
         }
-        text = SDL_strdup(utf8);
+        text = SDL_strdup(utf8 ? utf8 : "");
     } else {
         text = SDL_strdup("");
     }
@@ -92,7 +86,7 @@ Cocoa_HasClipboardText(_THIS)
 }
 
 void
-Cocoa_CheckClipboardUpdate(struct SDL_VideoData * data)
+Cocoa_CheckClipboardUpdate(SDL_VideoData * data)
 { @autoreleasepool
 {
     NSPasteboard *pasteboard;
@@ -100,11 +94,11 @@ Cocoa_CheckClipboardUpdate(struct SDL_VideoData * data)
 
     pasteboard = [NSPasteboard generalPasteboard];
     count = [pasteboard changeCount];
-    if (count != data->clipboard_count) {
-        if (data->clipboard_count) {
+    if (count != data.clipboard_count) {
+        if (data.clipboard_count) {
             SDL_SendClipboardUpdate();
         }
-        data->clipboard_count = count;
+        data.clipboard_count = count;
     }
 }}
 

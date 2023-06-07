@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,9 +19,11 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
+
 #import <UIKit/UIKit.h>
 #import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES3/gl.h>
 
 #import "SDL_uikitview.h"
 #include "SDL_uikitvideo.h"
@@ -38,6 +40,7 @@
                     depthBits:(int)depthBits
                   stencilBits:(int)stencilBits
                          sRGB:(BOOL)sRGB
+                 multisamples:(int)multisamples
                       context:(EAGLContext *)glcontext;
 
 @property (nonatomic, readonly, weak) EAGLContext *context;
@@ -48,11 +51,14 @@
 
 @property (nonatomic, readonly) GLuint drawableRenderbuffer;
 @property (nonatomic, readonly) GLuint drawableFramebuffer;
+@property (nonatomic, readonly) GLuint msaaResolveFramebuffer;
 
 - (void)swapBuffers;
 
 - (void)updateFrame;
 
 @end
+
+#endif // SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,19 +20,25 @@
 */
 #include "../../SDL_internal.h"
 
+#include "SDL.h"
 #include "SDL_error.h"
 #include "SDL_haptic.h"
 #include "../SDL_syshaptic.h"
 
 #if SDL_HAPTIC_XINPUT
 
-#include "SDL_assert.h"
 #include "SDL_hints.h"
 #include "SDL_timer.h"
 #include "SDL_windowshaptic_c.h"
 #include "SDL_xinputhaptic_c.h"
 #include "../../core/windows/SDL_xinput.h"
 #include "../../joystick/windows/SDL_windowsjoystick_c.h"
+#include "../../thread/SDL_systhread.h"
+
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Internal stuff.
@@ -43,22 +49,22 @@ static SDL_bool loaded_xinput = SDL_FALSE;
 int
 SDL_XINPUT_HapticInit(void)
 {
-    const char *env = SDL_GetHint(SDL_HINT_XINPUT_ENABLED);
-    if (!env || SDL_atoi(env)) {
-        loaded_xinput = (WIN_LoadXInputDLL() == 0);
+    if (SDL_GetHintBoolean(SDL_HINT_XINPUT_ENABLED, SDL_TRUE)) {
+        loaded_xinput = (WIN_LoadXInputDLL() == 0) ? SDL_TRUE : SDL_FALSE;
     }
 
-    if (loaded_xinput) {
+    /* If the joystick subsystem is active, it will manage adding XInput haptic devices */
+    if (loaded_xinput && !SDL_WasInit(SDL_INIT_JOYSTICK)) {
         DWORD i;
         for (i = 0; i < XUSER_MAX_COUNT; i++) {
-            SDL_XINPUT_MaybeAddDevice(i);
+            SDL_XINPUT_HapticMaybeAddDevice(i);
         }
     }
     return 0;
 }
 
 int
-SDL_XINPUT_MaybeAddDevice(const DWORD dwUserid)
+SDL_XINPUT_HapticMaybeAddDevice(const DWORD dwUserid)
 {
     const Uint8 userid = (Uint8)dwUserid;
     SDL_hapticlist_item *item;
@@ -107,7 +113,7 @@ SDL_XINPUT_MaybeAddDevice(const DWORD dwUserid)
 }
 
 int
-SDL_XINPUT_MaybeRemoveDevice(const DWORD dwUserid)
+SDL_XINPUT_HapticMaybeRemoveDevice(const DWORD dwUserid)
 {
     const Uint8 userid = (Uint8)dwUserid;
     SDL_hapticlist_item *item;
@@ -146,7 +152,7 @@ SDL_RunXInputHaptic(void *arg)
 {
     struct haptic_hwdata *hwdata = (struct haptic_hwdata *) arg;
 
-    while (!hwdata->stopThread) {
+    while (!SDL_AtomicGet(&hwdata->stopThread)) {
         SDL_Delay(50);
         SDL_LockMutex(hwdata->mutex);
         /* If we're currently running and need to stop... */
@@ -205,17 +211,8 @@ SDL_XINPUT_HapticOpenFromUserIndex(SDL_Haptic *haptic, const Uint8 userid)
     }
 
     SDL_snprintf(threadName, sizeof(threadName), "SDLXInputDev%d", (int)userid);
+    haptic->hwdata->thread = SDL_CreateThreadInternal(SDL_RunXInputHaptic, threadName, 64 * 1024, haptic->hwdata);
 
-#if defined(__WIN32__) && !defined(HAVE_LIBC)  /* !!! FIXME: this is nasty. */
-#undef SDL_CreateThread
-#if SDL_DYNAMIC_API
-    haptic->hwdata->thread = SDL_CreateThread_REAL(SDL_RunXInputHaptic, threadName, haptic->hwdata, NULL, NULL);
-#else
-    haptic->hwdata->thread = SDL_CreateThread(SDL_RunXInputHaptic, threadName, haptic->hwdata, NULL, NULL);
-#endif
-#else
-    haptic->hwdata->thread = SDL_CreateThread(SDL_RunXInputHaptic, threadName, haptic->hwdata);
-#endif
     if (haptic->hwdata->thread == NULL) {
         SDL_DestroyMutex(haptic->hwdata->mutex);
         SDL_free(haptic->effects);
@@ -254,14 +251,13 @@ SDL_XINPUT_HapticOpenFromJoystick(SDL_Haptic * haptic, SDL_Joystick * joystick)
         ++index;
     }
 
-    SDL_SetError("Couldn't find joystick in haptic device list");
-    return -1;
+    return SDL_SetError("Couldn't find joystick in haptic device list");
 }
 
 void
 SDL_XINPUT_HapticClose(SDL_Haptic * haptic)
 {
-    haptic->hwdata->stopThread = 1;
+    SDL_AtomicSet(&haptic->hwdata->stopThread, 1);
     SDL_WaitThread(haptic->hwdata->thread, NULL);
     SDL_DestroyMutex(haptic->hwdata->mutex);
 }
@@ -287,8 +283,9 @@ SDL_XINPUT_HapticUpdateEffect(SDL_Haptic * haptic, struct haptic_effect *effect,
 {
     XINPUT_VIBRATION *vib = &effect->hweffect->vibration;
     SDL_assert(data->type == SDL_HAPTIC_LEFTRIGHT);
-    vib->wLeftMotorSpeed = data->leftright.large_magnitude;
-    vib->wRightMotorSpeed = data->leftright.small_magnitude;
+    /* SDL_HapticEffect has max magnitude of 32767, XInput expects 65535 max, so multiply */
+    vib->wLeftMotorSpeed = data->leftright.large_magnitude * 2;
+    vib->wRightMotorSpeed = data->leftright.small_magnitude * 2;
     SDL_LockMutex(haptic->hwdata->mutex);
     if (haptic->hwdata->stopTicks) {  /* running right now? Update it. */
         XINPUTSETSTATE(haptic->hwdata->userid, vib);
@@ -373,6 +370,11 @@ SDL_XINPUT_HapticStopAll(SDL_Haptic * haptic)
     return (XINPUTSETSTATE(haptic->hwdata->userid, &vibration) == ERROR_SUCCESS) ? 0 : -1;
 }
 
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
+
 #else /* !SDL_HAPTIC_XINPUT */
 
 #include "../../core/windows/SDL_windows.h"
@@ -386,13 +388,13 @@ SDL_XINPUT_HapticInit(void)
 }
 
 int
-SDL_XINPUT_MaybeAddDevice(const DWORD dwUserid)
+SDL_XINPUT_HapticMaybeAddDevice(const DWORD dwUserid)
 {
     return SDL_Unsupported();
 }
 
 int
-SDL_XINPUT_MaybeRemoveDevice(const DWORD dwUserid)
+SDL_XINPUT_HapticMaybeRemoveDevice(const DWORD dwUserid)
 {
     return SDL_Unsupported();
 }

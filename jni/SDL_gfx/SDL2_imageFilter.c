@@ -2,7 +2,7 @@
 
 SDL2_imageFilter.c: byte-image "filter" routines
 
-Copyright (C) 2001-2012  Andreas Schiffler
+Copyright (C) 2012-2014  Andreas Schiffler
 Copyright (C) 2013  Sylvain Beucler
 
 This software is provided 'as-is', without any express or implied

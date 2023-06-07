@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,12 +20,12 @@
 */
 #include "../../SDL_internal.h"
 
-#if SDL_VIDEO_DRIVER_WINDOWS && SDL_VIDEO_OPENGL_EGL
+#if SDL_VIDEO_DRIVER_WINDOWS && SDL_VIDEO_OPENGL_EGL && !defined(__XBOXONE__) && !defined(__XBOXSERIES__)
 
 #include "SDL_windowsvideo.h"
 #include "SDL_windowsopengles.h"
 #include "SDL_windowsopengl.h"
-#include "SDL_log.h"
+#include "SDL_windowswindow.h"
 
 /* EGL implementation of SDL OpenGL support */
 
@@ -52,7 +52,7 @@ WIN_GLES_LoadLibrary(_THIS, const char *path) {
     }
     
     if (_this->egl_data == NULL) {
-        return SDL_EGL_LoadLibrary(_this, NULL, EGL_DEFAULT_DISPLAY);
+        return SDL_EGL_LoadLibrary(_this, NULL, EGL_DEFAULT_DISPLAY, 0);
     }
 
     return 0;
@@ -108,12 +108,16 @@ WIN_GLES_SetupWindow(_THIS, SDL_Window * window)
     SDL_Window *current_win = SDL_GL_GetCurrentWindow();
     SDL_GLContext current_ctx = SDL_GL_GetCurrentContext();
 
-
     if (_this->egl_data == NULL) {
-        if (SDL_EGL_LoadLibrary(_this, NULL, EGL_DEFAULT_DISPLAY) < 0) {
+        /* !!! FIXME: commenting out this assertion is (I think) incorrect; figure out why driver_loaded is wrong for ANGLE instead. --ryan. */
+        #if 0  /* When hint SDL_HINT_OPENGL_ES_DRIVER is set to "1" (e.g. for ANGLE support), _this->gl_config.driver_loaded can be 1, while the below lines function. */
+        SDL_assert(!_this->gl_config.driver_loaded);
+        #endif
+        if (SDL_EGL_LoadLibrary(_this, NULL, EGL_DEFAULT_DISPLAY, 0) < 0) {
             SDL_EGL_UnloadLibrary(_this);
             return -1;
         }
+        _this->gl_config.driver_loaded = 1;
     }
   
     /* Create the GLES window surface */
@@ -124,17 +128,6 @@ WIN_GLES_SetupWindow(_THIS, SDL_Window * window)
     }
 
     return WIN_GLES_MakeCurrent(_this, current_win, current_ctx);    
-}
-
-int
-WIN_GLES_SetSwapInterval(_THIS, int interval)
-{
-    /* FIXME: This should call SDL_EGL_SetSwapInterval, but ANGLE has a bug that prevents this
-     * from working if we do (the window contents freeze and don't swap properly). So, we ignore
-     * the request for now.
-     */
-    SDL_Log("WARNING: Ignoring SDL_GL_SetSwapInterval call due to ANGLE bug");
-    return 0;
 }
 
 #endif /* SDL_VIDEO_DRIVER_WINDOWS && SDL_VIDEO_OPENGL_EGL */

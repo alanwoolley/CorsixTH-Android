@@ -9,6 +9,7 @@
 
 /* Include this so we define UNICODE properly */
 #include "../../core/windows/SDL_windows.h"
+#include <shellapi.h> /* CommandLineToArgvW() */
 
 /* Include the SDL main definition header */
 #include "SDL.h"
@@ -17,88 +18,6 @@
 #ifdef main
 #  undef main
 #endif /* main */
-
-static void
-UnEscapeQuotes(char *arg)
-{
-    char *last = NULL;
-
-    while (*arg) {
-        if (*arg == '"' && (last != NULL && *last == '\\')) {
-            char *c_curr = arg;
-            char *c_last = last;
-
-            while (*c_curr) {
-                *c_last = *c_curr;
-                c_last = c_curr;
-                c_curr++;
-            }
-            *c_last = '\0';
-        }
-        last = arg;
-        arg++;
-    }
-}
-
-/* Parse a command line buffer into arguments */
-static int
-ParseCommandLine(char *cmdline, char **argv)
-{
-    char *bufp;
-    char *lastp = NULL;
-    int argc, last_argc;
-
-    argc = last_argc = 0;
-    for (bufp = cmdline; *bufp;) {
-        /* Skip leading whitespace */
-        while (SDL_isspace(*bufp)) {
-            ++bufp;
-        }
-        /* Skip over argument */
-        if (*bufp == '"') {
-            ++bufp;
-            if (*bufp) {
-                if (argv) {
-                    argv[argc] = bufp;
-                }
-                ++argc;
-            }
-            /* Skip over word */
-            lastp = bufp;
-            while (*bufp && (*bufp != '"' || *lastp == '\\')) {
-                lastp = bufp;
-                ++bufp;
-            }
-        } else {
-            if (*bufp) {
-                if (argv) {
-                    argv[argc] = bufp;
-                }
-                ++argc;
-            }
-            /* Skip over word */
-            while (*bufp && !SDL_isspace(*bufp)) {
-                ++bufp;
-            }
-        }
-        if (*bufp) {
-            if (argv) {
-                *bufp = '\0';
-            }
-            ++bufp;
-        }
-
-        /* Strip out \ from \" sequences */
-        if (argv && last_argc != argc) {
-            UnEscapeQuotes(argv[last_argc]);
-        }
-        last_argc = argc;
-    }
-    if (argv) {
-        argv[argc] = NULL;
-    }
-    return (argc);
-}
 
 /* Pop up an out of memory message, returns to Windows */
 static BOOL
@@ -116,22 +35,66 @@ OutOfMemory(void)
 # endif
 #endif
 
-/* WinMain, main, and wmain eventually call into here. */
+/* Gets the arguments with GetCommandLine, converts them to argc and argv
+   and calls SDL_main */
 static int
-main_utf8(int argc, char *argv[])
+main_getcmdline(void)
 {
+    LPWSTR *argvw;
+    char **argv;
+    int i, argc, result;
+
+    argvw = CommandLineToArgvW(GetCommandLineW(), &argc);
+    if (argvw == NULL) {
+        return OutOfMemory();
+    }
+
+    /* Note that we need to be careful about how we allocate/free memory here.
+     * If the application calls SDL_SetMemoryFunctions(), we can't rely on
+     * SDL_free() to use the same allocator after SDL_main() returns.
+     */
+
+    /* Parse it into argv and argc */
+    argv = (char **)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (argc + 1) * sizeof(*argv));
+    if (!argv) {
+        return OutOfMemory();
+    }
+    for (i = 0; i < argc; ++i) {
+        DWORD len;
+        char *arg = WIN_StringToUTF8W(argvw[i]);
+        if (!arg) {
+            return OutOfMemory();
+        }
+        len = (DWORD)SDL_strlen(arg);
+        argv[i] = (char *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, len + 1);
+        if (!argv[i]) {
+            return OutOfMemory();
+        }
+        SDL_memcpy(argv[i], arg, len);
+        SDL_free(arg);
+    }
+    argv[i] = NULL;
+    LocalFree(argvw);
+
     SDL_SetMainReady();
 
     /* Run the application main() code */
-    return SDL_main(argc, argv);
+    result = SDL_main(argc, argv);
+
+    /* Free argv, to avoid memory leak */
+    for (i = 0; i < argc; ++i) {
+        HeapFree(GetProcessHeap(), 0, argv[i]);
+    }
+    HeapFree(GetProcessHeap(), 0, argv);
+
+    return result;
 }
 
 /* This is where execution begins [console apps, ansi] */
 int
 console_ansi_main(int argc, char *argv[])
 {
-    /* !!! FIXME: are these in the system codepage? We need to convert to UTF-8. */
-    return main_utf8(argc, argv);
+    return main_getcmdline();
 }
 
 
@@ -140,20 +103,7 @@ console_ansi_main(int argc, char *argv[])
 int
 console_wmain(int argc, wchar_t *wargv[], wchar_t *wenvp)
 {
-    int retval = 0;
-    char **argv = SDL_stack_alloc(char*, argc);
-    int i;
-
-    for (i = 0; i < argc; ++i) {
-        argv[i] = WIN_StringToUTF8(wargv[i]);
-    }
-
-    retval = main_utf8(argc, argv);
-
-    /* !!! FIXME: we are leaking all the elements of argv we allocated. */
-    SDL_stack_free(argv);
-
-    return retval;
+    return main_getcmdline();
 }
 #endif
 
@@ -161,39 +111,7 @@ console_wmain(int argc, wchar_t *wargv[], wchar_t *wenvp)
 int WINAPI
 WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
 {
-    char **argv;
-    int argc;
-    char *cmdline;
-
-    /* Grab the command line */
-    TCHAR *text = GetCommandLine();
-#if UNICODE
-    cmdline = WIN_StringToUTF8(text);
-#else
-    /* !!! FIXME: are these in the system codepage? We need to convert to UTF-8. */
-    cmdline = SDL_strdup(text);
-#endif
-    if (cmdline == NULL) {
-        return OutOfMemory();
-    }
-
-    /* Parse it into argv and argc */
-    argc = ParseCommandLine(cmdline, NULL);
-    argv = SDL_stack_alloc(char *, argc + 1);
-    if (argv == NULL) {
-        return OutOfMemory();
-    }
-    ParseCommandLine(cmdline, argv);
-
-    /* Run the main program */
-    main_utf8(argc, argv);
-
-    SDL_stack_free(argv);
-
-    SDL_free(cmdline);
-
-    /* Hush little compiler, don't you cry... */
-    return 0;
+    return main_getcmdline();
 }
 
 #endif /* __WIN32__ */
