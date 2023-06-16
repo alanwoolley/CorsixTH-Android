@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="preferences_settings">Instellingen</string>
-    <string name="preferences_language">Taal</string>
-    <string name="preferences_edge_scrolling">Rand scrollen</string>
-    <string name="preferences_audio">Geluiden</string>
-    <string name="preferences_game">Spel</string>
-    <string name="preferences_music">Muziek</string>
-</resources>
