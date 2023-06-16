@@ -5,4 +5,6 @@ files:
       - /res/values/dimens.xml
       - /res/values/urls.xml
       - /res/values/colors.xml
+      - /res/values/prefs.xml
+      - /res/values/resolutions.xml
     translation: /res/values-%android_code%/%original_file_name%
