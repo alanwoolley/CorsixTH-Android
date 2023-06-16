@@ -1,0 +1,92 @@
+<resources>
+    <array name="languages_labels" translatable="false">
+        <item>@string/lang_brazilian_portuguese</item>
+        <item>@string/lang_chinese_simplified</item>
+        <item>@string/lang_chinese_traditional</item>
+        <item>@string/lang_czech</item>
+        <item>@string/lang_danish</item>
+        <item>@string/lang_dutch</item>
+        <item>@string/lang_english</item>
+        <item>@string/lang_finnish</item>
+        <item>@string/lang_french</item>
+        <item>@string/lang_german</item>
+        <item>@string/lang_greek</item>
+        <item>@string/lang_hungarian</item>
+        <item>@string/lang_italian</item>
+        <item>@string/lang_korean</item>
+        <item>@string/lang_norwegian</item>
+        <item>@string/lang_polish</item>
+        <item>@string/lang_portuguese</item>
+        <item>@string/lang_russian</item>
+        <item>@string/lang_spanish</item>
+        <item>@string/lang_swedish</item>
+    </array>
+
+    <array name="languages_values" translatable="false">
+        <item>@string/cth_lang_brazilian_portuguese</item>
+        <item>@string/cth_lang_chinese_simplified</item>
+        <item>@string/cth_lang_chinese_traditional</item>
+        <item>@string/cth_lang_czech</item>
+        <item>@string/cth_lang_danish</item>
+        <item>@string/cth_lang_dutch</item>
+        <item>@string/cth_lang_english</item>
+        <item>@string/cth_lang_finnish</item>
+        <item>@string/cth_lang_french</item>
+        <item>@string/cth_lang_german</item>
+        <item>@string/cth_lang_greek</item>
+        <item>@string/cth_lang_hungarian</item>
+        <item>@string/cth_lang_italian</item>
+        <item>@string/cth_lang_korean</item>
+        <item>@string/cth_lang_norwegian</item>
+        <item>@string/cth_lang_polish</item>
+        <item>@string/cth_lang_portuguese</item>
+        <item>@string/cth_lang_russian</item>
+        <item>@string/cth_lang_spanish</item>
+        <item>@string/cth_lang_swedish</item>
+    </array>
+
+    <!-- These are the language names in their own language -->
+    <string name="lang_brazilian_portuguese" translatable="false">Português Brasileiro</string>
+    <string name="lang_chinese_simplified" translatable="false">简体中文</string>
+    <string name="lang_chinese_traditional" translatable="false">繁體中文</string>
+    <string name="lang_czech" translatable="false">Čeština</string>
+    <string name="lang_danish" translatable="false">Dansk</string>
+    <string name="lang_dutch" translatable="false">Nederlands</string>
+    <string name="lang_english" translatable="false">English</string>
+    <string name="lang_finnish" translatable="false">Suomi</string>
+    <string name="lang_french" translatable="false">Français</string>
+    <string name="lang_german" translatable="false">Deutsch</string>
+    <string name="lang_greek" translatable="false">Ελληνικά</string>
+    <string name="lang_hungarian" translatable="false">Magyar</string>
+    <string name="lang_italian" translatable="false">Italiano</string>
+    <string name="lang_korean" translatable="false">한국어</string>
+    <string name="lang_norwegian" translatable="false">Norsk</string>
+    <string name="lang_polish" translatable="false">Polski</string>
+    <string name="lang_portuguese" translatable="false">Português</string>
+    <string name="lang_russian" translatable="false">Русский</string>
+    <string name="lang_spanish" translatable="false">Español</string>
+    <string name="lang_swedish" translatable="false">Svenska</string>
+
+    <!-- These are the language codes that correspond to the CorsixTH languages -->
+    <string name="cth_lang_brazilian_portuguese" translatable="false">pt_br</string>
+    <string name="cth_lang_chinese_simplified" translatable="false">zh(s)</string>
+    <string name="cth_lang_chinese_traditional" translatable="false">zh(t)</string>
+    <string name="cth_lang_czech" translatable="false">cze</string>
+    <string name="cth_lang_danish" translatable="false">da</string>
+    <string name="cth_lang_dutch" translatable="false">nl</string>
+    <string name="cth_lang_english" translatable="false">en</string>
+    <string name="cth_lang_finnish" translatable="false">fi</string>
+    <string name="cth_lang_french" translatable="false">fr</string>
+    <string name="cth_lang_german" translatable="false">de</string>
+    <string name="cth_lang_greek" translatable="false">el</string>
+    <string name="cth_lang_hungarian" translatable="false">hu</string>
+    <string name="cth_lang_italian" translatable="false">it</string>
+    <string name="cth_lang_korean" translatable="false">kor</string>
+    <string name="cth_lang_norwegian" translatable="false">nb</string>
+    <string name="cth_lang_polish" translatable="false">pl</string>
+    <string name="cth_lang_portuguese" translatable="false">pt</string>
+    <string name="cth_lang_russian" translatable="false">ru</string>
+    <string name="cth_lang_spanish" translatable="false">es</string>
+    <string name="cth_lang_swedish" translatable="false">sv</string>
+
+</resources>

@@ -1,5 +1,5 @@
 ##############################################################################
-# Based on libtool-2.2.6a
+# Based on libtool-2.2.6a.
 # libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
 #
 #   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005,
@@ -947,16 +947,11 @@ m4_defun_once([_LT_REQUIRED_DARWIN_CHECKS],[
       _lt_dar_allow_undefined='${wl}-undefined ${wl}suppress' ;;
     darwin1.*)
       _lt_dar_allow_undefined='${wl}-flat_namespace ${wl}-undefined ${wl}suppress' ;;
-    darwin*) # darwin 5.x on
-      # if running on 10.5 or later, the deployment target defaults
-      # to the OS version, if on x86, and 10.4, the deployment
-      # target defaults to 10.4. Don't you love it?
-      case ${MACOSX_DEPLOYMENT_TARGET-10.0},$host in
-	10.0,*86*-darwin8*|10.0,*-darwin[[91]]*)
-	  _lt_dar_allow_undefined='${wl}-undefined ${wl}dynamic_lookup' ;;
-	10.[[012]]*)
+    darwin*)
+      case ${MACOSX_DEPLOYMENT_TARGET},$host in
+	10.[[012]],*|,*powerpc*-darwin[[5-8]]*)
 	  _lt_dar_allow_undefined='${wl}-flat_namespace ${wl}-undefined ${wl}suppress' ;;
-	10.*)
+	*)
 	  _lt_dar_allow_undefined='${wl}-undefined ${wl}dynamic_lookup' ;;
       esac
     ;;
@@ -1023,7 +1018,7 @@ m4_defun([_LT_DARWIN_LINKER_FEATURES],
 # to the aix ld manual.
 m4_defun([_LT_SYS_MODULE_PATH_AIX],
 [m4_require([_LT_DECL_SED])dnl
-AC_LINK_IFELSE(AC_LANG_PROGRAM,[
+AC_LINK_IFELSE([AC_LANG_PROGRAM],[
 lt_aix_libpath_sed='
     /Import File Strings/,/^$/ {
 	/^0/ {
@@ -1302,7 +1297,10 @@ s390*-*linux*|s390*-*tpf*|sparc*-*linux*)
 	  x86_64-*linux*)
 	    LD="${LD-ld} -m elf_x86_64"
 	    ;;
-	  ppc*-*linux*|powerpc*-*linux*)
+	  powerpc64le-*linux*)
+	    LD="${LD-ld} -m elf64lppc"
+	    ;;
+	  powerpc64-*linux*)
 	    LD="${LD-ld} -m elf64ppc"
 	    ;;
 	  s390*-*linux*|s390*-*tpf*)
@@ -2296,10 +2294,6 @@ dgux*)
   shlibpath_var=LD_LIBRARY_PATH
   ;;
 
-freebsd1*)
-  dynamic_linker=no
-  ;;
-
 freebsd* | dragonfly*)
   # DragonFly does not have aout.  When/if they implement a new
   # versioning mechanism, adjust this.
@@ -2307,7 +2301,7 @@ freebsd* | dragonfly*)
     objformat=`/usr/bin/objformat`
   else
     case $host_os in
-    freebsd[[123]]*) objformat=aout ;;
+    freebsd[[23]].*) objformat=aout ;;
     *) objformat=elf ;;
     esac
   fi
@@ -2325,7 +2319,7 @@ freebsd* | dragonfly*)
   esac
   shlibpath_var=LD_LIBRARY_PATH
   case $host_os in
-  freebsd2*)
+  freebsd2.*)
     shlibpath_overrides_runpath=yes
     ;;
   freebsd3.[[01]]* | freebsdelf3.[[01]]*)
@@ -2562,9 +2556,34 @@ os2*)
   libname_spec='$name'
   shrext_cmds=".dll"
   need_lib_prefix=no
-  library_names_spec='$libname${shared_ext} $libname.a'
+  # OS/2 limits length of a DLL basename up to 8 characters.
+  # So there is need to use a short name instead of a original
+  # name longer than 8 characters. And replace '.' with '_'.
+# SDL customization: removed versioning support.
+# version_type=windows
+# need_version=no
+# soname_spec='`test -n "$os2dllname" && libname="$os2dllname";
+#   v=$($ECHO ${release}${versuffix} | tr -d .-);
+#   n=$($ECHO $libname | cut -b -$((8 - ${#v})) | tr . _);
+#   $ECHO ${n}${v}`${shared_ext}'
+  soname_spec='`test -n "$os2dllname" && libname="$os2dllname"; $ECHO $libname | cut -b -8 | tr . _`${shared_ext}'
+  library_names_spec='${libname}_dll.$libext'
   dynamic_linker='OS/2 ld.exe'
-  shlibpath_var=LIBPATH
+  shlibpath_var=BEGINLIBPATH
+  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  sys_lib_dlsearch_path_spec="$sys_lib_search_path_spec"
+  postinstall_cmds='base_file=`basename \$file`~
+    dlpath=`$SHELL 2>&1 -c '\''. $dir/'\''\$base_file'\''i; $ECHO \$dlname'\''`~
+    dldir=$destdir/`dirname \$dlpath`~
+    test -d \$dldir || mkdir -p \$dldir~
+    $install_prog $dir/$dlname \$dldir/$dlname~
+    chmod a+x \$dldir/$dlname~
+    if test -n '\''$stripme'\'' && test -n '\''$striplib'\''; then
+      eval '\''$striplib \$dldir/$dlname'\'' || exit \$?;
+    fi'
+  postuninstall_cmds='dldll=`$SHELL 2>&1 -c '\''. $file; $ECHO \$dlname'\''`~
+    dlpath=$dir/\$dldll~
+    $RM \$dlpath'
   ;;
 
 osf3* | osf4* | osf5*)
@@ -3020,7 +3039,7 @@ mingw* | pw32*)
   lt_cv_deplibs_check_method=pass_all
   ;;
 
-cegcc)
+cegcc*)
   # use the weaker test based on 'objdump'. See mingw*.
   lt_cv_deplibs_check_method='file_magic file format pe-arm-.*little(.*architecture: arm)?'
   lt_cv_file_magic_cmd='$OBJDUMP -f'
@@ -3158,6 +3177,9 @@ sysv4 | sysv4.3*)
   ;;
 
 tpf*)
+  lt_cv_deplibs_check_method=pass_all
+  ;;
+os2*)
   lt_cv_deplibs_check_method=pass_all
   ;;
 esac
@@ -3590,6 +3612,11 @@ m4_if([$1], [CXX], [
       # (--disable-auto-import) libraries
       m4_if([$1], [GCJ], [],
 	[_LT_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'])
+      case $host_os in
+      os2*)
+	_LT_TAGVAR(lt_prog_compiler_static, $1)='${wl}-static'
+	;;
+      esac
       ;;
     darwin* | rhapsody*)
       # PIC is the default on this platform
@@ -3897,6 +3924,11 @@ m4_if([$1], [CXX], [
       # (--disable-auto-import) libraries
       m4_if([$1], [GCJ], [],
 	[_LT_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'])
+      case $host_os in
+      os2*)
+	_LT_TAGVAR(lt_prog_compiler_static, $1)='${wl}-static'
+	;;
+      esac
       ;;
 
     darwin* | rhapsody*)
@@ -3965,6 +3997,11 @@ m4_if([$1], [CXX], [
       # built for inclusion in a dll (and should export symbols for example).
       m4_if([$1], [GCJ], [],
 	[_LT_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'])
+      case $host_os in
+      os2*)
+	_LT_TAGVAR(lt_prog_compiler_static, $1)='${wl}-static'
+	;;
+      esac
       ;;
 
     hpux9* | hpux10* | hpux11*)
@@ -4355,6 +4392,34 @@ _LT_EOF
       fi
       ;;
 
+    os2*)
+      _LT_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+      _LT_TAGVAR(hardcode_minus_L, $1)=yes
+      _LT_TAGVAR(allow_undefined_flag, $1)=unsupported
+      shrext_cmds=".dll"
+      _LT_TAGVAR(archive_cmds, $1)='$ECHO "LIBRARY ${soname%$shared_ext} INITINSTANCE TERMINSTANCE" > $output_objdir/$libname.def~
+	$ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~
+	$ECHO "DATA MULTIPLE NONSHARED">> $output_objdir/$libname.def~
+	$ECHO EXPORTS >> $output_objdir/$libname.def~
+	emxexp $libobjs | $SED /"_DLL_InitTerm"/d >> $output_objdir/$libname.def~
+	$CC -Zdll -Zcrtdll -o $output_objdir/$soname $libobjs $deplibs $compiler_flags $output_objdir/$libname.def~
+	emximp -o $lib $output_objdir/$libname.def'
+      _LT_TAGVAR(archive_expsym_cmds, $1)='$ECHO "LIBRARY ${soname%$shared_ext} INITINSTANCE TERMINSTANCE" > $output_objdir/$libname.def~
+	$ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~
+	$ECHO "DATA MULTIPLE NONSHARED">> $output_objdir/$libname.def~
+	$ECHO EXPORTS >> $output_objdir/$libname.def~
+	prefix_cmds="$SED"~
+	if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+	  prefix_cmds="$prefix_cmds -e 1d";
+	fi~
+	prefix_cmds="$prefix_cmds -e \"s/^\(.*\)$/_\1/g\""~
+	cat $export_symbols | $prefix_cmds >> $output_objdir/$libname.def~
+	$CC -Zdll -Zcrtdll -o $output_objdir/$soname $libobjs $deplibs $compiler_flags $output_objdir/$libname.def~
+	emximp -o $lib $output_objdir/$libname.def'
+      _LT_TAGVAR(old_archive_from_new_cmds, $1)='emximp -o $output_objdir/${libname}_dll.a $output_objdir/$libname.def'
+      _LT_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
+      ;;
+
     interix[[3-9]]*)
       _LT_TAGVAR(hardcode_direct, $1)=no
       _LT_TAGVAR(hardcode_shlibpath_var, $1)=no
@@ -4716,10 +4781,6 @@ _LT_EOF
       _LT_TAGVAR(hardcode_shlibpath_var, $1)=no
       ;;
 
-    freebsd1*)
-      _LT_TAGVAR(ld_shlibs, $1)=no
-      ;;
-
     # FreeBSD 2.2.[012] allows us to include c++rt0.o to get C++ constructor
     # support.  Future versions do this automatically, but an explicit c++rt0.o
     # does not break anything, and helps significantly (at the cost of a little
@@ -4732,7 +4793,7 @@ _LT_EOF
       ;;
 
     # Unfortunately, older versions of FreeBSD 2 do not have this feature.
-    freebsd2*)
+    freebsd2.*)
       _LT_TAGVAR(archive_cmds, $1)='$LD -Bshareable -o $lib $libobjs $deplibs $linker_flags'
       _LT_TAGVAR(hardcode_direct, $1)=yes
       _LT_TAGVAR(hardcode_minus_L, $1)=yes
@@ -4838,9 +4899,18 @@ _LT_EOF
 	# implicitly export all symbols.
         save_LDFLAGS="$LDFLAGS"
         LDFLAGS="$LDFLAGS -shared ${wl}-exported_symbol ${wl}foo ${wl}-update_registry ${wl}/dev/null"
-        AC_LINK_IFELSE(int foo(void) {},
+        AC_LINK_IFELSE(
+          [AC_LANG_SOURCE(
+	     [AC_LANG_CASE([C], [[int foo (void) { return 0; }]],
+			   [C++], [[int foo (void) { return 0; }]],
+			   [Fortran 77], [[
+       subroutine foo
+       end]],
+			   [Fortran], [[
+       subroutine foo
+       end]])])], [
           _LT_TAGVAR(archive_expsym_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags ${wl}-soname ${wl}$soname `test -n "$verstring" && $ECHO "X${wl}-set_version ${wl}$verstring" | $Xsed` ${wl}-update_registry ${wl}${output_objdir}/so_locations ${wl}-exports_file ${wl}$export_symbols -o $lib'
-        )
+        ])
         LDFLAGS="$save_LDFLAGS"
       else
 	_LT_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -soname $soname `test -n "$verstring" && $ECHO "X-set_version $verstring" | $Xsed` -update_registry ${output_objdir}/so_locations -o $lib'
@@ -4906,8 +4976,28 @@ _LT_EOF
       _LT_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
       _LT_TAGVAR(hardcode_minus_L, $1)=yes
       _LT_TAGVAR(allow_undefined_flag, $1)=unsupported
-      _LT_TAGVAR(archive_cmds, $1)='$ECHO "LIBRARY $libname INITINSTANCE" > $output_objdir/$libname.def~$ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~$ECHO DATA >> $output_objdir/$libname.def~$ECHO " SINGLE NONSHARED" >> $output_objdir/$libname.def~$ECHO EXPORTS >> $output_objdir/$libname.def~emxexp $libobjs >> $output_objdir/$libname.def~$CC -Zdll -Zcrtdll -o $lib $libobjs $deplibs $compiler_flags $output_objdir/$libname.def'
-      _LT_TAGVAR(old_archive_from_new_cmds, $1)='emximp -o $output_objdir/$libname.a $output_objdir/$libname.def'
+      shrext_cmds=".dll"
+      _LT_TAGVAR(archive_cmds, $1)='$ECHO "LIBRARY ${soname%$shared_ext} INITINSTANCE TERMINSTANCE" > $output_objdir/$libname.def~
+	$ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~
+	$ECHO "DATA MULTIPLE NONSHARED">> $output_objdir/$libname.def~
+	$ECHO EXPORTS >> $output_objdir/$libname.def~
+	emxexp $libobjs | $SED /"_DLL_InitTerm"/d >> $output_objdir/$libname.def~
+	$CC -Zdll -Zcrtdll -o $output_objdir/$soname $libobjs $deplibs $compiler_flags $output_objdir/$libname.def~
+	emximp -o $lib $output_objdir/$libname.def'
+      _LT_TAGVAR(archive_expsym_cmds, $1)='$ECHO "LIBRARY ${soname%$shared_ext} INITINSTANCE TERMINSTANCE" > $output_objdir/$libname.def~
+	$ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~
+	$ECHO "DATA MULTIPLE NONSHARED">> $output_objdir/$libname.def~
+	$ECHO EXPORTS >> $output_objdir/$libname.def~
+	prefix_cmds="$SED"~
+	if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+	  prefix_cmds="$prefix_cmds -e 1d";
+	fi~
+	prefix_cmds="$prefix_cmds -e \"s/^\(.*\)$/_\1/g\""~
+	cat $export_symbols | $prefix_cmds >> $output_objdir/$libname.def~
+	$CC -Zdll -Zcrtdll -o $output_objdir/$soname $libobjs $deplibs $compiler_flags $output_objdir/$libname.def~
+	emximp -o $lib $output_objdir/$libname.def'
+      _LT_TAGVAR(old_archive_from_new_cmds, $1)='emximp -o $output_objdir/${libname}_dll.a $output_objdir/$libname.def'
+      _LT_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
       ;;
 
     osf3*)
@@ -5660,6 +5750,34 @@ if test "$_lt_caught_CXX_error" != yes; then
         _LT_DARWIN_LINKER_FEATURES($1)
 	;;
 
+      os2*)
+	_LT_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+	_LT_TAGVAR(hardcode_minus_L, $1)=yes
+	_LT_TAGVAR(allow_undefined_flag, $1)=unsupported
+	shrext_cmds=".dll"
+	_LT_TAGVAR(archive_cmds, $1)='$ECHO "LIBRARY ${soname%$shared_ext} INITINSTANCE TERMINSTANCE" > $output_objdir/$libname.def~
+	  $ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~
+	  $ECHO "DATA MULTIPLE NONSHARED">> $output_objdir/$libname.def~
+	  $ECHO EXPORTS >> $output_objdir/$libname.def~
+	  emxexp $libobjs | $SED /"_DLL_InitTerm"/d >> $output_objdir/$libname.def~
+	  $CC -Zdll -Zcrtdll -o $output_objdir/$soname $libobjs $deplibs $compiler_flags $output_objdir/$libname.def~
+	  emximp -o $lib $output_objdir/$libname.def'
+	_LT_TAGVAR(archive_expsym_cmds, $1)='$ECHO "LIBRARY ${soname%$shared_ext} INITINSTANCE TERMINSTANCE" > $output_objdir/$libname.def~
+	  $ECHO "DESCRIPTION \"$libname\"" >> $output_objdir/$libname.def~
+	  $ECHO "DATA MULTIPLE NONSHARED">> $output_objdir/$libname.def~
+	  $ECHO EXPORTS >> $output_objdir/$libname.def~
+	  prefix_cmds="$SED"~
+	  if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+	    prefix_cmds="$prefix_cmds -e 1d";
+	  fi~
+	  prefix_cmds="$prefix_cmds -e \"s/^\(.*\)$/_\1/g\""~
+	  cat $export_symbols | $prefix_cmds >> $output_objdir/$libname.def~
+	  $CC -Zdll -Zcrtdll -o $output_objdir/$soname $libobjs $deplibs $compiler_flags $output_objdir/$libname.def~
+	  emximp -o $lib $output_objdir/$libname.def'
+	_LT_TAGVAR(old_archive_from_new_cmds, $1)='emximp -o $output_objdir/${libname}_dll.a $output_objdir/$libname.def'
+	_LT_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
+	;;
+
       dgux*)
         case $cc_basename in
           ec++*)
@@ -5678,7 +5796,7 @@ if test "$_lt_caught_CXX_error" != yes; then
         esac
         ;;
 
-      freebsd[[12]]*)
+      freebsd2.*)
         # C++ shared libraries reported to be fairly broken before
 	# switch to ELF
         _LT_TAGVAR(ld_shlibs, $1)=no

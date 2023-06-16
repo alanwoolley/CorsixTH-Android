@@ -1,0 +1,19 @@
+<resources>
+    <string name="warmth_red">Red</string>
+    <string name="warmth_blue_green_red">Blue Green Red</string>
+    <string name="warmth_yellow_orange_red">Yellow Orange Red</string>
+
+    <string name="cth_warmth_red" translatable="false">1</string>
+    <string name="cth_warmth_blue_green_red" translatable="false">2</string>
+    <string name="cth_warmth_yellow_orange_red" translatable="false">3</string>
+    <array name="warmth_options">
+        <item>@string/warmth_red</item>
+        <item>@string/warmth_blue_green_red</item>
+        <item>@string/warmth_yellow_orange_red</item>
+    </array>
+    <array name="warmth_values" translatable="false">
+        <item>@string/cth_warmth_red</item>
+        <item>@string/cth_warmth_blue_green_red</item>
+        <item>@string/cth_warmth_yellow_orange_red</item>
+    </array>
+</resources>

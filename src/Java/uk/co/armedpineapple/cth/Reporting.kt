@@ -25,16 +25,6 @@ object Reporting {
         Log.e(TAG, log, e)
     }
 
-    fun setBool(key: String, value: Boolean) {}
-
-    fun setDouble(key: String, value: Double) {}
-
-    fun setFloat(key: String, value: Float) {}
-
-    fun setInt(key: String, value: Int) {}
-
-    fun setLong(key: String, value: Long) {}
-
     fun getLogger(tag: String): Logger {
         return Logger(tag)
     }

@@ -1,0 +1,62 @@
+<resources>
+    <string name="res_640_480" translatable="false">640x480 (4:3)</string>
+    <string name="res_800x600" translatable="false">800x600 (4:3)</string>
+    <string name="res_1024_768" translatable="false">1024x768 (4:3)</string>
+    <string name="res_1280x960" translatable="false">1280x960 (4:3)</string>
+    <string name="res_1280x1024" translatable="false">1280x1024 (5:4)</string>
+    <string name="res_1280x720" translatable="false">1280x720 (16:9)</string>
+    <string name="res_1366x768" translatable="false">1366x768 (16:9)</string>
+    <string name="res_1600x900" translatable="false">1600x900 (16:9)</string>
+    <string name="res_1920x1080" translatable="false">1920x1080 (16:9)</string>
+    <string name="res_1200x800" translatable="false">1920x1080 (16:10)</string>
+    <string name="res_1440x900" translatable="false">1440x900 (16:10)</string>
+    <string name="res_1680x1050" translatable="false">1680x1050 (16:10)</string>
+    <string name="res_1900x1200" translatable="false">1900x1200 (16:10)</string>
+
+    <!-- These are encoded as a UInt with the first 16 bits being the width, with the second 16 bits
+    being the height -->
+    <string name="res_640_480_val" translatable="false">41943520</string>
+    <string name="res_800x600_val" translatable="false">52429400</string>
+    <string name="res_1024_768_val" translatable="false">67109632</string>
+    <string name="res_1280x960_val" translatable="false">83887040</string>
+    <string name="res_1280x1024_val" translatable="false">83887104</string>
+    <string name="res_1280x720_val" translatable="false">83886800</string>
+    <string name="res_1366x768_val" translatable="false">89522944</string>
+    <string name="res_1600x900_val" translatable="false">104858500</string>
+    <string name="res_1920x1080_val" translatable="false">125830200</string>
+    <string name="res_1200x800_val" translatable="false">78644000</string>
+    <string name="res_1440x900_val" translatable="false">94372740</string>
+    <string name="res_1680x1050_val" translatable="false">110101530</string>
+    <string name="res_1900x1200_val" translatable="false">124519600</string>
+
+    <array name="resolution_options">
+        <item>@string/res_640_480</item>
+        <item>@string/res_800x600</item>
+        <item>@string/res_1024_768</item>
+        <item>@string/res_1280x960</item>
+        <item>@string/res_1280x1024</item>
+        <item>@string/res_1280x720</item>
+        <item>@string/res_1366x768</item>
+        <item>@string/res_1600x900</item>
+        <item>@string/res_1920x1080</item>
+        <item>@string/res_1200x800</item>
+        <item>@string/res_1440x900</item>
+        <item>@string/res_1680x1050</item>
+        <item>@string/res_1900x1200</item>
+    </array>
+    <array name="resolution_values" translatable="false">
+        <item>@string/res_640_480_val</item>
+        <item>@string/res_800x600_val</item>
+        <item>@string/res_1024_768_val</item>
+        <item>@string/res_1280x960_val</item>
+        <item>@string/res_1280x1024_val</item>
+        <item>@string/res_1280x720_val</item>
+        <item>@string/res_1366x768_val</item>
+        <item>@string/res_1600x900_val</item>
+        <item>@string/res_1920x1080_val</item>
+        <item>@string/res_1200x800_val</item>
+        <item>@string/res_1440x900_val</item>
+        <item>@string/res_1680x1050_val</item>
+        <item>@string/res_1900x1200_val</item>
+    </array>
+</resources>

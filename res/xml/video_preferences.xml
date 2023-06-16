@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreference
+        android:icon="@drawable/baseline_local_movies_24"
+        android:key="@string/prefs_video_global"
+        android:title="@string/enable_videos"
+        android:summaryOn="@string/cutscene_videos_will_be_played"
+        android:summaryOff="@string/cutscene_videos_will_not_be_played"
+        android:defaultValue="true"/>
+    <SwitchPreference
+        android:dependency="@string/prefs_video_global"
+        android:icon="@drawable/baseline_waving_hand_24"
+        android:key="@string/prefs_video_intro"
+        android:title="@string/enable_intro_video"
+        android:summaryOn="@string/the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video"
+        android:summaryOff="@string/the_intro_video_will_not_be_played"
+        android:defaultValue="true"/>
+</PreferenceScreen>

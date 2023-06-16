@@ -45,6 +45,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         super(context);
         getHolder().addCallback(this);
 
+
         setFocusable(true);
         setFocusableInTouchMode(true);
         requestFocus();

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" translatable="false">
+    <!-- Advanced -->
+    <string name="prefs_advanced_alien_emergency_only" translatable="false">alien_emergency_only</string>
+    <string name="prefs_advanced_alien_must_stand" translatable="false">alien_must_stand</string>
+    <string name="prefs_advanced_alien_can_knock" translatable="false">alien_can_knock</string>
+    <string name="prefs_advanced_fractured_bones_allow_female" translatable="false">fractured_bones_allow_female</string>
+    <string name="prefs_advanced_allow_blocking" translatable="false">allow_blocking</string>
+    <string name="prefs_advanced_show_room_information" translatable="false">show_room_info</string>
+    <string name="prefs_advanced_show_machine_strength" translatable="false">show_machine_strength</string>
+    <string name="prefs_advanced_debug_mode" translatable="false">debug_mode</string>
+    <string name="prefs_advanced_show_fps" translatable="false">show_fps</string>
+
+    <!-- Audio -->
+    <string name="prefs_audio_global" translatable="false">audio_global</string>
+    <string name="prefs_audio_sounds" translatable="false">audio_sounds</string>
+    <string name="prefs_audio_sounds_volume" translatable="false">audio_sound_vol</string>
+    <string name="prefs_audio_announcements" translatable="false">audio_announcements</string>
+    <string name="prefs_audio_announcements_volume" translatable="false">audio_announcements_vol</string>
+    <string name="prefs_audio_music" translatable="false">audio_music</string>
+    <string name="prefs_audio_music_volume" translatable="false">audio_music_vol</string>
+
+    <!-- Display -->
+    <string name="prefs_display_warmth_colours" translatable="false">warmth_colours</string>
+    <string name="prefs_display_resolution" translatable="false">resolution</string>
+    <string name="prefs_display_keep_aspect_ratio" translatable="false">keep_aspect_ratio</string>
+    <string name="prefs_language" translatable="false">language</string>
+    <string name="prefs_display_stretch" translatable="false">stretch_display</string>
+
+    <!-- Gameplay -->
+    <string name="prefs_gameplay_free_build" translatable="false">free_build_mode</string>
+    <string name="prefs_gameplay_advisor" translatable="false">advisor</string>
+    <string name="prefs_gameplay_24hr_clock" translatable="false">24hr_clock</string>
+    <string name="prefs_gameplay_auto_wage" translatable="false">auto_wage</string>
+    <string name="prefs_gameplay_remember_room_contents" translatable="false">remember_room_contents</string>
+    <string name="prefs_gameplay_remove_destroyed_rooms" translatable="false">remove_destroyed_rooms</string>
+
+    <!-- Input -->
+    <string name="prefs_input_edge_scrolling" translatable="false">edge_scrolling</string>
+    <string name="prefs_input_scroll_momentum" translatable="false">scrolling_momentum</string>
+
+    <!-- Video -->
+    <string name="prefs_video_global" translatable="false">video_global</string>
+    <string name="prefs_video_intro" translatable="false">video_intro</string>
+</resources>

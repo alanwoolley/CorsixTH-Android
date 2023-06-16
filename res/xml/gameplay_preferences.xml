@@ -1,0 +1,51 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_carpenter_24"
+        android:key="@string/prefs_gameplay_free_build"
+        android:summaryOff="@string/you_can_win_or_lose_in_custom_maps"
+        android:summaryOn="@string/you_cannot_win_or_lose_in_custom_maps"
+        android:title="@string/free_build_sandbox_mode"
+        android:defaultValue="false"/>
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_support_agent_24"
+        android:key="@string/prefs_gameplay_advisor"
+        android:summaryOff="@string/the_adviser_will_not_pop_up_to_give_you_hints_and_tips"
+        android:summaryOn="@string/the_adviser_will_pop_up_to_give_you_hints_and_tips"
+        android:title="@string/enable_advisor"
+        android:defaultValue="true"/>
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_timelapse_24"
+        android:key="@string/prefs_gameplay_24hr_clock"
+        android:summaryOff="@string/the_clock_will_display_the_time_in_12_hour_format"
+        android:summaryOn="@string/the_clock_will_display_the_time_in_24_hour_format"
+        android:title="@string/_24_hour_clock"
+        android:defaultValue="true"/>
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_attach_money_24"
+        android:key="@string/prefs_gameplay_auto_wage"
+        android:summaryOff="@string/staff_members_will_quit_when_wage_increase_requests_expire"
+        android:summaryOn="@string/wage_increase_requests_will_automatically_be_granted_when_they_expire"
+        android:title="@string/automatically_grant_wage_increases"
+        android:defaultValue="false"/>
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_build_circle_24"
+        android:key="@string/prefs_gameplay_remember_room_contents"
+        android:summary="@string/remember_the_items_you_usually_add_to_a_room_when_building"
+        android:title="@string/remember_room_contents"
+        android:defaultValue="false"/>
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_meeting_room_24"
+        android:key="@string/prefs_gameplay_remove_destroyed_rooms"
+        android:summaryOff="@string/destroyed_rooms_cannot_be_removed"
+        android:summaryOn="@string/destroyed_rooms_can_be_removed"
+        android:title="@string/remove_destroyed_rooms"
+        android:defaultValue="false"/>
+
+</PreferenceScreen>

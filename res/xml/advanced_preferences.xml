@@ -1,0 +1,59 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/alien_dna">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_advanced_alien_emergency_only"
+            android:summary="@string/only_allow_alien_dna_patients_in_an_emergency"
+            android:title="@string/emergency_only" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_advanced_alien_must_stand"
+            android:summary="@string/theme_hospital_does_not_have_an_animation_for_alien_dna_patients_sitting_this_restricts_them_to_standing_only"
+            android:title="@string/must_stand" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_advanced_alien_can_knock"
+            android:summary="@string/theme_hospital_does_not_have_an_animation_for_alien_dna_patients_knocking_on_a_door_this_prevents_them_from_knocking"
+            android:title="@string/can_knock" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/fractured_bones">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_advanced_fractured_bones_allow_female"
+            android:summary="@string/theme_hospital_has_a_poor_animation_for_female_fractured_bones_patients"
+            android:title="@string/allow_female_patients" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/additional_options">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_advanced_allow_blocking"
+            android:summaryOff="@string/all_parts_of_the_hospital_must_be_kept_accessible"
+            android:summaryOn="@string/parts_of_the_hospital_can_be_made_inaccessible_by_blocking_paths_with_rooms_or_objects"
+            android:title="@string/allow_blocking_off_areas" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_advanced_show_room_information"
+            android:summaryOff="@string/information_about_new_rooms_will_not_be_shown_after_construction"
+            android:summaryOn="@string/information_about_new_rooms_will_be_shown_after_construction"
+            android:title="@string/show_room_information" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_advanced_show_machine_strength"
+            android:summaryOff="@string/a_new_machine_s_initial_strength_will_not_be_shown_before_purchasing"
+            android:summaryOn="@string/a_new_machine_s_initial_strength_will_be_shown_before_purchasing"
+            android:title="@string/show_machine_strength" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/debug">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_advanced_debug_mode"
+            android:summary="@string/this_allows_access_to_the_debug_menu"
+            android:title="@string/enable_debug_mode" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/prefs_advanced_show_fps"
+            android:summary="@string/shows_the_frame_rate_and_memory_usage_in_the_information_bar"
+            android:title="@string/show_fps" />
+    </PreferenceCategory>
+</PreferenceScreen>

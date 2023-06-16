@@ -1,0 +1,50 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/localisation">
+        <ListPreference
+            android:defaultValue="@string/cth_lang_english"
+            android:entries="@array/languages_labels"
+            android:entryValues="@array/languages_values"
+            android:icon="@drawable/baseline_language_24"
+            android:key="@string/prefs_language"
+            android:summary="%s"
+            android:title="@string/language" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/colours">
+        <ListPreference
+            android:defaultValue="@string/cth_warmth_red"
+            android:entries="@array/warmth_options"
+            android:entryValues="@array/warmth_values"
+            android:icon="@drawable/baseline_thermostat_24"
+            android:key="@string/prefs_display_warmth_colours"
+            android:summary="@string/the_colour_scheme_to_use_for_displaying_warmth"
+            android:title="@string/warmth_colours" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/screen">
+        <ListPreference
+            android:defaultValue="@string/res_640_480_val"
+            android:icon="@drawable/baseline_hd_24"
+            android:key="@string/prefs_display_resolution"
+            android:summary="@string/a_lower_resolution_will_result_in_larger_visual_elements"
+            android:title="@string/resolution"
+            android:entries="@array/resolution_options"
+            android:entryValues="@array/resolution_values"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/baseline_open_in_full_24"
+            android:key="@string/prefs_display_stretch"
+            android:summary="@string/stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution"
+            android:title="@string/stretch_display"
+            android:disableDependentsState="true" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/baseline_fit_screen_24"
+            android:key="@string/prefs_display_keep_aspect_ratio"
+            android:summary="@string/adjusts_the_game_resolution_to_fill_the_screen"
+            android:title="@string/keep_aspect_ratio"
+            android:dependency="@string/prefs_display_stretch"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

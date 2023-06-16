@@ -47,13 +47,14 @@ dependencies {
     implementation("com.google.guava:guava:32.0.0-android")
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation "com.lazygeniouz:dfc:1.0.7"
-
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 }
 
 android {
@@ -80,15 +81,6 @@ android {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
         }
 
-        beta {
-            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-            versionNameSuffix "-BETA"
-        }
-
-        alpha {
-            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-            versionNameSuffix "-ALPHA-" + System.getenv("BUILD_NUMBER") ?: "9999"
-        }
 
         debug {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "true"
@@ -104,24 +96,13 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src/Java']
+            java.srcDirs = ['src/Java', 'jni/SDL/android-project/app/src/main/java']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-
-        beta.setRoot('build-types/beta')
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
 
     applicationVariants.all { variant ->
@@ -161,10 +142,7 @@ task createGameZip(type: Zip) {
         include 'Campaigns/**'
         include 'Lua/**'
         include 'CorsixTH.lua'
-        include 'Bitmap/aux_ui.*'
-        include 'Bitmap/tree_ctrl.*'
-        include 'Bitmap/mainmenu1080.dat'
-        include 'Bitmap/mainmenu1080.pal'
+        include 'Bitmap/**'
         include 'Campaigns/**'
         include 'Graphics/**'
 

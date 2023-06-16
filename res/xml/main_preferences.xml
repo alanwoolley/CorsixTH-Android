@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$GameplayFragment"
+        app:icon="@drawable/baseline_videogame_asset_24"
+        app:summary="@string/adjust_the_game_options"
+        app:title="@string/gameplay" />
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$AudioFragment"
+        app:icon="@drawable/baseline_audiotrack_24"
+        app:summary="@string/toggle_audio_and_volume"
+        app:title="@string/audio" />
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$VideoFragment"
+        app:icon="@drawable/baseline_video_settings_24"
+        app:summary="@string/enable_disable_in_game_video_cutscenes"
+        app:title="@string/video" />
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$DisplayFragment"
+        app:icon="@drawable/baseline_display_settings_24"
+        app:summary="@string/change_the_display_resolution_and_colours"
+        app:title="@string/display" />
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$InputFragment"
+        app:icon="@drawable/baseline_touch_app_24"
+        app:summary="@string/change_how_the_game_responds_to_your_input"
+        app:title="@string/input_and_controls" />
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$AdvancedFragment"
+        app:icon="@drawable/baseline_science_24"
+        app:summary="@string/for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things"
+        app:title="@string/advanced" />
+
+</PreferenceScreen>

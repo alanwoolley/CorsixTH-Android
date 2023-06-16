@@ -6,57 +6,39 @@
 package uk.co.armedpineapple.cth
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.SharedPreferences
-import android.os.Vibrator
-import androidx.multidex.MultiDex
-import java.io.IOException
+import androidx.preference.PreferenceManager
+import org.jetbrains.anko.defaultSharedPreferences
 import java.util.*
+import java.util.prefs.Preferences
 
 class CTHApplication : android.app.Application() {
-    var configuration: Configuration? = null
+    lateinit var configuration: GameConfiguration
 
-    val hasVibration : Boolean by lazy {
-        val vib = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vib.hasVibrator()
-    }
-
-    var preferences: SharedPreferences? = null
-        private set
-
-    val properties = Properties()
-
-    @SuppressLint("NewApi")
     override fun onCreate() {
         super.onCreate()
-        preferences = getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE)
 
-        try {
-            val inputStream = assets.open(APPLICATION_PROPERTIES_FILE)
-            Log.d("Loading properties")
-            properties.load(inputStream)
+        val preferences = defaultSharedPreferences
 
-        } catch (e: IOException) {
-            Log.i("No properties file found")
+        if (!defaultSharedPreferences.getBoolean(
+                    PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES,
+                    false
+                )
+        ) {
+            for (preferencesId in arrayOf(
+                R.xml.advanced_preferences,
+                R.xml.audio_preferences,
+                R.xml.display_preferences,
+                R.xml.gameplay_preferences,
+                R.xml.input_preferences,
+                R.xml.main_preferences,
+                R.xml.video_preferences
+            )) {
+                // Because we use multiple preferences files, we need to set readAgain, otherwise
+                // only the first preferences file will have default values set.
+                PreferenceManager.setDefaultValues(this, preferencesId, true);
+            }
         }
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
-    }
-
-    companion object {
-
-        private val Log = Reporting.getLogger("CorsixTH Application")
-
-        const val PREFERENCES_KEY = "cthprefs"
-        private const val APPLICATION_PROPERTIES_FILE = "application.properties"
-
-        val isTestingVersion: Boolean
-            get() = (BuildConfig.BUILD_TYPE.equals("debug", ignoreCase = true)
-                    || BuildConfig.BUILD_TYPE.equals("alpha", ignoreCase = true)
-                    || BuildConfig.BUILD_TYPE.equals("dev", ignoreCase = true)
-                    || BuildConfig.BUILD_TYPE.equals("beta", ignoreCase = true))
+        configuration = GameConfiguration(this, preferences)
     }
 }
