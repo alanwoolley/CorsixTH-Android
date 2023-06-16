@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android" translatable="true"></resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" translatable="true">
+    <string name="music">เสียงดนตรี</string>
+    <string name="debug">ดีบั๊ก</string>
+    <string name="audio">เสียง</string>
+    <string name="display">การแสดงผล</string>
+    <string name="advanced">ขั้นสูง</string>
+    <string name="localisation">ภาษา</string>
+</resources>
