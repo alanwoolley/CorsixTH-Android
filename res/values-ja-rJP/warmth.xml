@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="warmth_red">赤色</string>
+    <string name="warmth_blue_green_red">ブルー グリーン レッド</string>
+    <string name="warmth_yellow_orange_red">イエロー オレンジ レッド</string>
+</resources>
