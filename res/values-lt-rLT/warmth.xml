@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="warmth_red">Raudona</string>
+    <string name="warmth_blue_green_red">Mėlyna žalia raudona</string>
+    <string name="warmth_yellow_orange_red">Geltona Oranžinė Raudona</string>
+</resources>

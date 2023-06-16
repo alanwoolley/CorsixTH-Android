@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="warmth_red">Червоний</string>
+    <string name="warmth_blue_green_red">Синій Зелений Червоний</string>
+    <string name="warmth_yellow_orange_red">Жовтий Помаранчевий Червоний</string>
+</resources>

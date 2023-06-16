@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="warmth_red">Rot</string>
+    <string name="warmth_blue_green_red">Blau Grün Rot</string>
+    <string name="warmth_yellow_orange_red">Gelb Orange Rot</string>
+</resources>

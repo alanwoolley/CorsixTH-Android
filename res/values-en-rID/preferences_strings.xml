@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preferences_gameplay_preferences">Gameplay preferensi</string>
+    <string name="preferences_language">Bahasa</string>
+    <string name="preferences_reduce_cpu">Mengurangi penggunaan CPU dan dapat memperbaiki masa pakai baterai</string>
+    <string name="preferences_auto_wage_disabled">Permintaan gaji tidak akan diberikan secara otomatis</string>
+    <string name="preferences_auto_wage_enabled">Permintaan gaji akan diberikan secara otomatis</string>
+    <string name="preferences_collect_usage_summary">Kumpulkan data untuk membantu melacak Kerusakan</string>
+</resources>

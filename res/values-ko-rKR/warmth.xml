@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="warmth_red">빨간색</string>
+    <string name="warmth_blue_green_red">블루 그린 레드</string>
+    <string name="warmth_yellow_orange_red">노란색 주황색 빨간색</string>
+</resources>

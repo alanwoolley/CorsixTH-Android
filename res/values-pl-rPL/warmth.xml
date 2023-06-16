@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="warmth_red">Czerwony</string>
+    <string name="warmth_blue_green_red">Niebieski Zielony Czerwony</string>
+    <string name="warmth_yellow_orange_red">Żółty Pomarańczowy Czerwony</string>
+</resources>

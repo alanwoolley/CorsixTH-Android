@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" translatable="true">
+    <string name="music">Reels \'n\' strathspeys</string>
+    <string name="debug">Debug</string>
+    <string name="audio">Audio</string>
+    <string name="display">Display</string>
+    <string name="advanced">Advanced</string>
+    <string name="localisation">Localisation</string>
+</resources>
