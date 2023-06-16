@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="warmth_red">Červená</string>
+    <string name="warmth_blue_green_red">Modrá Zelená Červená</string>
+    <string name="warmth_yellow_orange_red">Žlutá Oranžová Červená</string>
+</resources>
