@@ -1,0 +1,61 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:icon="@drawable/baseline_audiotrack_24"
+        android:key="@string/prefs_audio_global"
+        android:title="@string/enable_audio" />
+
+    <PreferenceCategory
+        android:dependency="@string/prefs_audio_global"
+        android:icon="@drawable/baseline_graphic_eq_24"
+        android:title="@string/sounds">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_audio_sounds"
+            android:title="@string/play_sounds" />
+        <SeekBarPreference
+            android:defaultValue="5"
+            android:dependency="@string/prefs_audio_sounds"
+            android:key="@string/prefs_audio_sounds_volume"
+            android:max="10"
+            android:min="0"
+            app:title="@string/sounds_volume" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:dependency="@string/prefs_audio_global"
+        android:icon="@drawable/baseline_announcement_24"
+        android:title="@string/announcements">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_audio_announcements"
+            android:title="@string/play_announcements" />
+        <SeekBarPreference
+            android:defaultValue="5"
+            android:dependency="@string/prefs_audio_announcements"
+            android:key="@string/prefs_audio_announcements_volume"
+            android:max="10"
+            android:min="0"
+            app:title="@string/announcements_volume" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:dependency="@string/prefs_audio_global"
+        android:icon="@drawable/baseline_library_music_24"
+        android:title="@string/music">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/prefs_audio_music"
+            android:title="@string/play_music" />
+        <SeekBarPreference
+            android:defaultValue="5"
+            android:dependency="@string/prefs_audio_music"
+            android:key="@string/prefs_audio_music_volume"
+            android:max="10"
+            android:min="0"
+            app:title="@string/music_volume" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -7,7 +7,7 @@
     android:padding="5dp" >
 
     <ImageView
-        android:id="@+id/language_flag"
+        android:id="@+id/languageListFlag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -16,17 +16,17 @@
         android:src="@drawable/flag_gb" />
 
     <TextView
-        android:id="@+id/language_text"
+        android:id="@+id/languageListText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/language_flag"
+        android:layout_toRightOf="@id/languageListFlag"
         android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView
-        android:id="@+id/language_tick"
+        android:id="@+id/languageListTick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.AppTheme" parent="@android:style/Theme.Material.Light">
-        <item name="android:windowBackground">@color/background</item>
-    </style>
+    <style name="Theme.AppTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
 
-    <style name="Theme.WizardTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">@color/altbackground</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+    <style name="Theme.SettingsTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowMinWidthMajor">65%</item>
+        <item name="windowMinWidthMinor">90%</item>"
     </style>
 
     <color name="background">#000000</color>
@@ -34,11 +29,9 @@
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small">
-    </style>
+    <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small"></style>
 
-    <style name="MenuFont" parent="@android:style/TextAppearance.Medium">
-    </style>
+    <style name="MenuFont" parent="@android:style/TextAppearance.Medium"></style>
 
     <style name="HelpFont" parent="@android:style/TextAppearance.Medium">
 
@@ -52,6 +45,10 @@
         <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
     </style>
 
-  
+    <style name="Widget.Theme.AppTheme.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
 
 </resources>

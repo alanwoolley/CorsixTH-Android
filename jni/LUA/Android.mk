@@ -4,10 +4,10 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := LUA
 
-LOCAL_SRC_FILES := lapi.c \
+LOCAL_SRC_FILES := \
+	lapi.c \
 	lauxlib.c \
 	lbaselib.c \
-	lbitlib.c \
 	lcode.c \
 	lcorolib.c \
 	lctype.c \
@@ -38,7 +38,7 @@ LOCAL_SRC_FILES := lapi.c \
 	lvm.c \
 	lzio.c
 	
-LOCAL_CFLAGS :=
+LOCAL_CFLAGS := -DLUA_USE_LINUX -Wl,-E -ldl
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 

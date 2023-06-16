@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,13 +20,15 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_cocoaevents_h
-#define _SDL_cocoaevents_h
+#ifndef SDL_cocoaevents_h_
+#define SDL_cocoaevents_h_
 
 extern void Cocoa_RegisterApp(void);
 extern void Cocoa_PumpEvents(_THIS);
+extern int  Cocoa_WaitEventTimeout(_THIS, int timeout);
+extern void Cocoa_SendWakeupEvent(_THIS, SDL_Window *window);
 extern void Cocoa_SuspendScreenSaver(_THIS);
 
-#endif /* _SDL_cocoaevents_h */
+#endif /* SDL_cocoaevents_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

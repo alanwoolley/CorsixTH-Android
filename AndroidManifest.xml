@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uk.co.armedpineapple.cth"
-    android:installLocation="auto"
->
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-    Permissions 
-    
-	INTERNET - required to download the demo and music files
-	READ_EXTERNAL_STORAGE
-	WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
-	WAKE_LOKE - required to keep the device awake during play
-	ACCESS_NETWORK_STATE - required to see if the device has an internet connection
-	
-	Beta:
-	READ_LOGS - Lets us read the system logs for additional debugging
-	GET_TASKS - Gives us the number of app processes running, for debugging.
+                Permissions
 
-    -->
+                INTERNET - required to download the demo and music files
+                READ_EXTERNAL_STORAGE
+                WRITE_EXTERNAL_STORAGE - required to R/W game files to storage
+                WAKE_LOCK - required to keep the device awake during play
+                ACCESS_NETWORK_STATE - required to see if the device has an internet connection
 
+                Beta:
+                READ_LOGS - Lets us read the system logs for additional debugging
+                GET_TASKS - Gives us the number of app processes running, for debugging.
+
+                -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -50,36 +43,38 @@
 
     <application
         android:name="uk.co.armedpineapple.cth.CTHApplication"
-        android:backupAgent="CTHBackupAgent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppTheme">
+
+        <meta-data
+            android:name="SDL_ENV.SDL_HINT_RENDER_LOGICAL_SIZE_MODE"
+            android:value="1" />
+
         <activity
-            android:name="uk.co.armedpineapple.cth.SDLActivity"
-            android:configChanges="keyboard|uiMode|keyboardHidden"
+            android:name="uk.co.armedpineapple.cth.GameActivity"
+            android:configChanges="layoutDirection|locale|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:immersive="true"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:launchMode="singleInstance"
+            android:preferMinimalPostProcessing="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+
         <activity
-            android:name="uk.co.armedpineapple.cth.wizard.WizardActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.WizardTheme">
+            android:name="uk.co.armedpineapple.cth.setup.SetupActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="uk.co.armedpineapple.cth.PrefsActivity"
+            android:name="uk.co.armedpineapple.cth.settings.SettingsActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/Dialogs"/>
+            android:exported="false"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.SettingsTheme" />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="2c3cb65ca0b9c283a9fbd6d82f19f1a951dd2b20" />
     </application>
-
 </manifest>

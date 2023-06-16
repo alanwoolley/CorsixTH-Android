@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -37,13 +37,8 @@
 #include "SDL_vivantevideo.h"
 #include "SDL_vivanteplatform.h"
 #include "SDL_vivanteopengles.h"
+#include "SDL_vivantevulkan.h"
 
-
-static int
-VIVANTE_Available(void)
-{
-    return 1;
-}
 
 static void
 VIVANTE_Destroy(SDL_VideoDevice * device)
@@ -77,7 +72,7 @@ VIVANTE_Create()
 
     device->driverdata = data;
 
-    /* Setup amount of available displays and current display */
+    /* Setup amount of available displays */
     device->num_displays = 0;
 
     /* Set device free function */
@@ -88,7 +83,7 @@ VIVANTE_Create()
     device->VideoQuit = VIVANTE_VideoQuit;
     device->GetDisplayModes = VIVANTE_GetDisplayModes;
     device->SetDisplayMode = VIVANTE_SetDisplayMode;
-    device->CreateWindow = VIVANTE_CreateWindow;
+    device->CreateSDLWindow = VIVANTE_CreateWindow;
     device->SetWindowTitle = VIVANTE_SetWindowTitle;
     device->SetWindowPosition = VIVANTE_SetWindowPosition;
     device->SetWindowSize = VIVANTE_SetWindowSize;
@@ -97,6 +92,7 @@ VIVANTE_Create()
     device->DestroyWindow = VIVANTE_DestroyWindow;
     device->GetWindowWMInfo = VIVANTE_GetWindowWMInfo;
 
+#if SDL_VIDEO_OPENGL_EGL
     device->GL_LoadLibrary = VIVANTE_GLES_LoadLibrary;
     device->GL_GetProcAddress = VIVANTE_GLES_GetProcAddress;
     device->GL_UnloadLibrary = VIVANTE_GLES_UnloadLibrary;
@@ -106,6 +102,14 @@ VIVANTE_Create()
     device->GL_GetSwapInterval = VIVANTE_GLES_GetSwapInterval;
     device->GL_SwapWindow = VIVANTE_GLES_SwapWindow;
     device->GL_DeleteContext = VIVANTE_GLES_DeleteContext;
+#endif
+
+#if SDL_VIDEO_VULKAN
+    device->Vulkan_LoadLibrary = VIVANTE_Vulkan_LoadLibrary;
+    device->Vulkan_UnloadLibrary = VIVANTE_Vulkan_UnloadLibrary;
+    device->Vulkan_GetInstanceExtensions = VIVANTE_Vulkan_GetInstanceExtensions;
+    device->Vulkan_CreateSurface = VIVANTE_Vulkan_CreateSurface;
+#endif
 
     device->PumpEvents = VIVANTE_PumpEvents;
 
@@ -115,7 +119,6 @@ VIVANTE_Create()
 VideoBootStrap VIVANTE_bootstrap = {
     "vivante",
     "Vivante EGL Video Driver",
-    VIVANTE_Available,
     VIVANTE_Create
 };
 
@@ -152,6 +155,9 @@ VIVANTE_AddVideoDisplays(_THIS)
     switch (bpp)
     {
     default: /* Is another format used? */
+    case 32:
+        current_mode.format = SDL_PIXELFORMAT_ARGB8888;
+        break;
     case 16:
         current_mode.format = SDL_PIXELFORMAT_RGB565;
         break;
@@ -160,10 +166,11 @@ VIVANTE_AddVideoDisplays(_THIS)
     current_mode.refresh_rate = 60;
 
     SDL_zero(display);
+    display.name = VIVANTE_GetDisplayName(_this);
     display.desktop_mode = current_mode;
     display.current_mode = current_mode;
     display.driverdata = data;
-    SDL_AddVideoDisplay(&display);
+    SDL_AddVideoDisplay(&display, SDL_FALSE);
     return 0;
 }
 
@@ -207,6 +214,8 @@ VIVANTE_VideoInit(_THIS)
     if (VIVANTE_AddVideoDisplays(_this) < 0) {
         return -1;
     }
+
+    VIVANTE_UpdateDisplayScale(_this);
 
 #ifdef SDL_INPUT_LINUXEV
     if (SDL_EVDEV_Init() < 0) {
@@ -281,6 +290,7 @@ VIVANTE_CreateWindow(_THIS, SDL_Window * window)
         return SDL_SetError("VIVANTE: Can't create native window");
     }
 
+#if SDL_VIDEO_OPENGL_EGL
     if (window->flags & SDL_WINDOW_OPENGL) {
         data->egl_surface = SDL_EGL_CreateSurface(_this, data->native_window);
         if (data->egl_surface == EGL_NO_SURFACE) {
@@ -289,6 +299,7 @@ VIVANTE_CreateWindow(_THIS, SDL_Window * window)
     } else {
         data->egl_surface = EGL_NO_SURFACE;
     }
+#endif
 
     /* Window has been successfully created */
     return 0;
@@ -302,9 +313,11 @@ VIVANTE_DestroyWindow(_THIS, SDL_Window * window)
 
     data = window->driverdata;
     if (data) {
+#if SDL_VIDEO_OPENGL_EGL
         if (data->egl_surface != EGL_NO_SURFACE) {
             SDL_EGL_DestroySurface(_this, data->egl_surface);
         }
+#endif
 
         if (data->native_window) {
 #if SDL_VIDEO_DRIVER_VIVANTE_VDK
@@ -366,22 +379,19 @@ VIVANTE_HideWindow(_THIS, SDL_Window * window)
 SDL_bool
 VIVANTE_GetWindowWMInfo(_THIS, SDL_Window * window, struct SDL_SysWMinfo *info)
 {
-/*
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
+    SDL_DisplayData *displaydata = SDL_GetDisplayDriverData(0);
 
-    if (info->version.major == SDL_MAJOR_VERSION &&
-        info->version.minor == SDL_MINOR_VERSION) {
+    if (info->version.major == SDL_MAJOR_VERSION) {
         info->subsystem = SDL_SYSWM_VIVANTE;
+        info->info.vivante.display = displaydata->native_display;
         info->info.vivante.window = data->native_window;
         return SDL_TRUE;
     } else {
-        SDL_SetError("Application not compiled with SDL %d.%d\n",
-                     SDL_MAJOR_VERSION, SDL_MINOR_VERSION);
+        SDL_SetError("Application not compiled with SDL %d",
+                     SDL_MAJOR_VERSION);
         return SDL_FALSE;
     }
-*/
-    SDL_Unsupported();
-    return SDL_FALSE;
 }
 
 /*****************************************************************************/

@@ -1,95 +1,86 @@
+import com.android.build.gradle.internal.lint.AndroidLintAnalysisTask
+import com.android.build.gradle.internal.lint.AndroidLintTask
+import com.android.build.gradle.tasks.MergeSourceSetFolders
+
 buildscript {
+    ext.kotlin_version = '1.8.21'
+    ext.anko_version = '0.10.4'
+
     repositories {
         mavenCentral()
         jcenter()
+        google()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 project.ext.version = "0.9.3.0"
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply from: 'versioning.gradle'
 
 repositories {
     jcenter()
-
+    google()
     maven {
         url 'https://maven.google.com/'
         name 'Google'
     }
 }
 dependencies {
-    compile 'com.android.support:cardview-v7:27.0.2'
-    compile 'pub.devrel:easypermissions:0.4.2'
-    compile 'com.android.support:recyclerview-v7:27.0.2'
-    compile 'com.j256.ormlite:ormlite-android:4.48'
-    compile 'com.j256.ormlite:ormlite-core:4.48'
-    compile 'com.android.support:design:27.0.2'
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'commons-io:commons-io:2.4'
-    compile 'com.github.gabrielemariotti.changeloglib:library:1.5.2'
-    compile 'com.android.support:multidex:1.0.2'
-    compile fileTree(include: '*.jar', dir: 'jars')
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'com.j256.ormlite:ormlite-android:5.0'
+    implementation 'com.j256.ormlite:ormlite-core:5.0'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'commons-io:commons-io:2.12.0'
+    implementation("com.google.guava:guava:32.0.0-android")
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation "com.lazygeniouz:dfc:1.0.7"
+    implementation 'androidx.preference:preference-ktx:1.2.0'
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 33
+    buildToolsVersion '33.0.1'
+
+    namespace 'uk.co.armedpineapple.cth'
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 27
+        targetSdkVersion 33
 
         versionName project.ext.version
         versionCode buildVersionCode()
-
-        ndk {
-            abiFilters "armeabi-v7a"
-        }
-
-    }
-    Properties signingProperties = new Properties()
-
-    if (file("signing.properties").exists()) {
-        signingProperties.load(new FileInputStream(file("signing.properties")))
-        signingConfigs {
-            release {
-                storeFile file(signingProperties['signing.release.storeFile'])
-                storePassword signingProperties['signing.release.storePassword']
-                keyAlias signingProperties['signing.release.keyAlias']
-                keyPassword signingProperties['signing.release.keyPassword']
-            }
-        }
     }
 
-    signingConfigs {
-        release {
-
-        }
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
     }
 
 
     buildTypes {
         release {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-            signingConfig signingConfigs.release
         }
 
-        beta {
-            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-            versionNameSuffix "-BETA"
-        }
-
-        alpha {
-            buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
-            versionNameSuffix "-ALPHA-" + System.getenv("BUILD_NUMBER") ?: "9999"
-        }
 
         debug {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "true"
@@ -105,66 +96,55 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src/Java']
+            java.srcDirs = ['src/Java', 'jni/SDL/android-project/app/src/main/java']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-
-        beta.setRoot('build-types/beta')
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
+
+    applicationVariants.all { variant ->
+        tasks["merge${variant.name.capitalize()}Assets"]
+                .dependsOn(createGameZip)
+    }
+
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
+
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
     externalNativeBuild {
         ndkBuild {
             path 'jni/Android.mk'
         }
     }
-
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+        buildConfig true
+    }
 }
 
-// Create ZIP of CorsixTH Lua files
+// Create ZIP of CorsixTH game assets
 task createGameZip(type: Zip) {
 
-    destinationDir = file('assets')
-    archiveName = 'game.zip'
+    destinationDirectory = file('assets')
+    archiveFileName = 'game.zip'
 
     from('jni/src/CorsixTH') {
         include 'Levels/**'
         include 'Campaigns/**'
         include 'Lua/**'
         include 'CorsixTH.lua'
-        include 'Bitmap/aux_ui.*'
-        include 'Bitmap/tree_ctrl.*'
-        include 'Bitmap/mainmenu1080.dat'
-        include 'Bitmap/mainmenu1080.pal'
+        include 'Bitmap/**'
+        include 'Campaigns/**'
+        include 'Graphics/**'
 
     }
 }
-
-tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn createGameZip
-}
-

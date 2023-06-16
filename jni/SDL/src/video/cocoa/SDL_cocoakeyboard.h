@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,8 +20,8 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_cocoakeyboard_h
-#define _SDL_cocoakeyboard_h
+#ifndef SDL_cocoakeyboard_h_
+#define SDL_cocoakeyboard_h_
 
 extern void Cocoa_InitKeyboard(_THIS);
 extern void Cocoa_HandleKeyEvent(_THIS, NSEvent * event);
@@ -29,8 +29,10 @@ extern void Cocoa_QuitKeyboard(_THIS);
 
 extern void Cocoa_StartTextInput(_THIS);
 extern void Cocoa_StopTextInput(_THIS);
-extern void Cocoa_SetTextInputRect(_THIS, SDL_Rect *rect);
+extern void Cocoa_SetTextInputRect(_THIS, const SDL_Rect *rect);
 
-#endif /* _SDL_cocoakeyboard_h */
+extern void Cocoa_SetWindowKeyboardGrab(_THIS, SDL_Window * window, SDL_bool grabbed);
+
+#endif /* SDL_cocoakeyboard_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

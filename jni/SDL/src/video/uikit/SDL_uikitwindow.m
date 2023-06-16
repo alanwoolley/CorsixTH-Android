@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -22,11 +22,11 @@
 
 #if SDL_VIDEO_DRIVER_UIKIT
 
+#include "SDL_hints.h"
+#include "SDL_mouse.h"
+#include "SDL_system.h"
 #include "SDL_syswm.h"
 #include "SDL_video.h"
-#include "SDL_mouse.h"
-#include "SDL_assert.h"
-#include "SDL_hints.h"
 #include "../SDL_sysvideo.h"
 #include "../SDL_pixels_c.h"
 #include "../../events/SDL_events_c.h"
@@ -69,15 +69,23 @@
 
 - (void)layoutSubviews
 {
-    /* Workaround to fix window orientation issues in iOS 8+. */
-    self.frame = self.screen.bounds;
+    /* Workaround to fix window orientation issues in iOS 8. */
+    /* As of July 1 2019, I haven't been able to reproduce any orientation
+     * issues with this disabled on iOS 12. The issue this is meant to fix might
+     * only happen on iOS 8, or it might have been fixed another way with other
+     * code... This code prevents split view (iOS 9+) from working on iPads, so
+     * we want to avoid using it if possible. */
+    if (!UIKit_IsSystemVersionAtLeast(9.0)) {
+        self.frame = self.screen.bounds;
+    }
     [super layoutSubviews];
 }
 
 @end
 
 
-static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bool created)
+static int
+SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bool created)
 {
     SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
     SDL_DisplayData *displaydata = (__bridge SDL_DisplayData *) display->driverdata;
@@ -99,15 +107,22 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
     /* only one window on iOS, always shown */
     window->flags &= ~SDL_WINDOW_HIDDEN;
 
-    if (displaydata.uiscreen == [UIScreen mainScreen]) {
-        window->flags |= SDL_WINDOW_INPUT_FOCUS;  /* always has input focus */
-    } else {
+    if (displaydata.uiscreen != [UIScreen mainScreen]) {
         window->flags &= ~SDL_WINDOW_RESIZABLE;  /* window is NEVER resizable */
         window->flags &= ~SDL_WINDOW_INPUT_FOCUS;  /* never has input focus */
         window->flags |= SDL_WINDOW_BORDERLESS;  /* never has a status bar. */
     }
 
+#if !TARGET_OS_TV
     if (displaydata.uiscreen == [UIScreen mainScreen]) {
+        /* SDL_CreateWindow sets the window w&h to the display's bounds if the
+         * fullscreen flag is set. But the display bounds orientation might not
+         * match what we want, and GetSupportedOrientations call below uses the
+         * window w&h. They're overridden below anyway, so we'll just set them
+         * to the requested size for the purposes of determining orientation. */
+        window->w = window->windowed.w;
+        window->h = window->windowed.h;
+
         NSUInteger orients = UIKit_GetSupportedOrientations(window);
         BOOL supportsLandscape = (orients & UIInterfaceOrientationMaskLandscape) != 0;
         BOOL supportsPortrait = (orients & (UIInterfaceOrientationMaskPortrait|UIInterfaceOrientationMaskPortraitUpsideDown)) != 0;
@@ -119,9 +134,12 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
             height = temp;
         }
     }
+#endif /* !TARGET_OS_TV */
 
+#if 0 /* Don't set the x/y position, it's already placed on a display */
     window->x = 0;
     window->y = 0;
+#endif
     window->w = width;
     window->h = height;
 
@@ -137,12 +155,6 @@ static int SetupWindowData(_THIS, SDL_Window *window, UIWindow *uiwindow, SDL_bo
      * heirarchy. */
     [view setSDLWindow:window];
 
-    /* Make this window the current mouse focus for touch input */
-    if (displaydata.uiscreen == [UIScreen mainScreen]) {
-        SDL_SetMouseFocus(window);
-        SDL_SetKeyboardFocus(window);
-    }
-
     return 0;
 }
 
@@ -152,19 +164,20 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
     @autoreleasepool {
         SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
         SDL_DisplayData *data = (__bridge SDL_DisplayData *) display->driverdata;
-        const CGSize origsize = data.uiscreen.currentMode.size;
-
-        /* SDL currently puts this window at the start of display's linked list. We rely on this. */
-        SDL_assert(_this->windows == window);
+        SDL_Window *other;
 
         /* We currently only handle a single window per display on iOS */
-        if (window->next != NULL) {
-            return SDL_SetError("Only one window allowed per display.");
+        for (other = _this->windows; other; other = other->next) {
+            if (other != window && SDL_GetDisplayForWindow(other) == display) {
+                return SDL_SetError("Only one window allowed per display.");
+            }
         }
 
         /* If monitor has a resolution of 0x0 (hasn't been explicitly set by the
          * user, so it's in standby), try to force the display to a resolution
          * that most closely matches the desired window size. */
+#if !TARGET_OS_TV
+        const CGSize origsize = data.uiscreen.currentMode.size;
         if ((origsize.width == 0.0f) && (origsize.height == 0.0f)) {
             if (display->num_display_modes == 0) {
                 _this->GetDisplayModes(_this, display);
@@ -197,6 +210,7 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
                 [UIApplication sharedApplication].statusBarHidden = NO;
             }
         }
+#endif /* !TARGET_OS_TV */
 
         /* ignore the size user requested, and make a fullscreen window */
         /* !!! FIXME: can we have a smaller view? */
@@ -230,6 +244,14 @@ UIKit_ShowWindow(_THIS, SDL_Window * window)
     @autoreleasepool {
         SDL_WindowData *data = (__bridge SDL_WindowData *) window->driverdata;
         [data.uiwindow makeKeyAndVisible];
+
+        /* Make this window the current mouse focus for touch input */
+        SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
+        SDL_DisplayData *displaydata = (__bridge SDL_DisplayData *) display->driverdata;
+        if (displaydata.uiscreen == [UIScreen mainScreen]) {
+            SDL_SetMouseFocus(window);
+            SDL_SetKeyboardFocus(window);
+        }
     }
 }
 
@@ -258,6 +280,7 @@ UIKit_UpdateWindowBorder(_THIS, SDL_Window * window)
     SDL_WindowData *data = (__bridge SDL_WindowData *) window->driverdata;
     SDL_uikitviewcontroller *viewcontroller = data.viewcontroller;
 
+#if !TARGET_OS_TV
     if (data.uiwindow.screen == [UIScreen mainScreen]) {
         if (window->flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS)) {
             [UIApplication sharedApplication].statusBarHidden = YES;
@@ -265,14 +288,12 @@ UIKit_UpdateWindowBorder(_THIS, SDL_Window * window)
             [UIApplication sharedApplication].statusBarHidden = NO;
         }
 
-        /* iOS 7+ won't update the status bar until we tell it to. */
-        if ([viewcontroller respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-            [viewcontroller setNeedsStatusBarAppearanceUpdate];
-        }
+        [viewcontroller setNeedsStatusBarAppearanceUpdate];
     }
 
     /* Update the view's frame to account for the status bar change. */
     viewcontroller.view.frame = UIKit_ComputeViewFrame(window, data.uiwindow.screen);
+#endif /* !TARGET_OS_TV */
 
 #ifdef SDL_IPHONE_KEYBOARD
     /* Make sure the view is offset correctly when the keyboard is visible. */
@@ -300,6 +321,28 @@ UIKit_SetWindowFullscreen(_THIS, SDL_Window * window, SDL_VideoDisplay * display
 }
 
 void
+UIKit_SetWindowMouseGrab(_THIS, SDL_Window * window, SDL_bool grabbed)
+{
+    /* There really isn't a concept of window grab or cursor confinement on iOS */
+}
+
+void
+UIKit_UpdatePointerLock(_THIS, SDL_Window * window)
+{
+#if !TARGET_OS_TV
+#if defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0
+    @autoreleasepool {
+        SDL_WindowData *data = (__bridge SDL_WindowData *) window->driverdata;
+        SDL_uikitviewcontroller *viewcontroller = data.viewcontroller;
+        if (@available(iOS 14.0, *)) {
+            [viewcontroller setNeedsUpdateOfPrefersPointerLocked];
+        }
+    }
+#endif /* defined(__IPHONE_14_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_14_0 */
+#endif /* !TARGET_OS_TV */
+}
+
+void
 UIKit_DestroyWindow(_THIS, SDL_Window * window)
 {
     @autoreleasepool {
@@ -316,10 +359,36 @@ UIKit_DestroyWindow(_THIS, SDL_Window * window)
             for (SDL_uikitview *view in views) {
                 [view setSDLWindow:NULL];
             }
+
+            /* iOS may still hold a reference to the window after we release it.
+             * We want to make sure the SDL view controller isn't accessed in
+             * that case, because it would contain an invalid pointer to the old
+             * SDL window. */
+            data.uiwindow.rootViewController = nil;
+            data.uiwindow.hidden = YES;
         }
     }
     window->driverdata = NULL;
 }
+
+void
+UIKit_GetWindowSizeInPixels(_THIS, SDL_Window * window, int *w, int *h)
+{ @autoreleasepool
+{
+    SDL_WindowData *windata = (__bridge SDL_WindowData *) window->driverdata;
+    UIView *view = windata.viewcontroller.view;
+    CGSize size = view.bounds.size;
+    CGFloat scale = 1.0;
+
+    if (window->flags & SDL_WINDOW_ALLOW_HIGHDPI) {
+        scale = windata.uiwindow.screen.nativeScale;
+    }
+
+    /* Integer truncation of fractional values matches SDL_uikitmetalview and
+     * SDL_uikitopenglview. */
+    *w = size.width * scale;
+    *h = size.height * scale;
+}}
 
 SDL_bool
 UIKit_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
@@ -335,25 +404,32 @@ UIKit_GetWindowWMInfo(_THIS, SDL_Window * window, SDL_SysWMinfo * info)
 
             /* These struct members were added in SDL 2.0.4. */
             if (versionnum >= SDL_VERSIONNUM(2,0,4)) {
+#if SDL_VIDEO_OPENGL_ES || SDL_VIDEO_OPENGL_ES2
                 if ([data.viewcontroller.view isKindOfClass:[SDL_uikitopenglview class]]) {
                     SDL_uikitopenglview *glview = (SDL_uikitopenglview *)data.viewcontroller.view;
                     info->info.uikit.framebuffer = glview.drawableFramebuffer;
                     info->info.uikit.colorbuffer = glview.drawableRenderbuffer;
+                    info->info.uikit.resolveFramebuffer = glview.msaaResolveFramebuffer;
                 } else {
+#else
+                {
+#endif
                     info->info.uikit.framebuffer = 0;
                     info->info.uikit.colorbuffer = 0;
+                    info->info.uikit.resolveFramebuffer = 0;
                 }
             }
 
             return SDL_TRUE;
         } else {
-            SDL_SetError("Application not compiled with SDL %d.%d\n",
-                         SDL_MAJOR_VERSION, SDL_MINOR_VERSION);
+            SDL_SetError("Application not compiled with SDL %d",
+                         SDL_MAJOR_VERSION);
             return SDL_FALSE;
         }
     }
 }
 
+#if !TARGET_OS_TV
 NSUInteger
 UIKit_GetSupportedOrientations(SDL_Window * window)
 {
@@ -369,7 +445,7 @@ UIKit_GetSupportedOrientations(SDL_Window * window)
          * us, we get the orientations from Info.plist via UIApplication. */
         if ([app.delegate respondsToSelector:@selector(application:supportedInterfaceOrientationsForWindow:)]) {
             validOrientations = [app.delegate application:app supportedInterfaceOrientationsForWindow:data.uiwindow];
-        } else if ([app respondsToSelector:@selector(supportedInterfaceOrientationsForWindow:)]) {
+        } else {
             validOrientations = [app supportedInterfaceOrientationsForWindow:data.uiwindow];
         }
 
@@ -419,6 +495,7 @@ UIKit_GetSupportedOrientations(SDL_Window * window)
 
     return orientationMask;
 }
+#endif /* !TARGET_OS_TV */
 
 int
 SDL_iPhoneSetAnimationCallback(SDL_Window * window, int interval, void (*callback)(void*), void *callbackParam)

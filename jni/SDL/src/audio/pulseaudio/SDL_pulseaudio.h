@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,8 +20,8 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_pulseaudio_h
-#define _SDL_pulseaudio_h
+#ifndef SDL_pulseaudio_h_
+#define SDL_pulseaudio_h_
 
 #include <pulse/simple.h>
 
@@ -42,8 +42,13 @@ struct SDL_PrivateAudioData
     /* Raw mixing buffer */
     Uint8 *mixbuf;
     int mixlen;
+
+    int bytes_requested;  /* bytes of data the hardware wants _now_. */
+
+    const Uint8 *capturebuf;
+    int capturelen;
 };
 
-#endif /* _SDL_pulseaudio_h */
+#endif /* SDL_pulseaudio_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

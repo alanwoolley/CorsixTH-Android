@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,18 +18,31 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#ifndef _SDL_uikitvideo_h
-#define _SDL_uikitvideo_h
-
-#include <UIKit/UIKit.h>
+#ifndef SDL_uikitvideo_h_
+#define SDL_uikitvideo_h_
 
 #include "../SDL_sysvideo.h"
 
-void UIKit_SuspendScreenSaver(_THIS);
+#ifdef __OBJC__
 
-BOOL UIKit_IsSystemVersionAtLeast(double version);
+#include <UIKit/UIKit.h>
+
+@interface SDL_VideoData : NSObject
+
+@property (nonatomic, assign) id pasteboardObserver;
+
+@end
+
 CGRect UIKit_ComputeViewFrame(SDL_Window *window, UIScreen *screen);
 
-#endif /* _SDL_uikitvideo_h */
+#endif /* __OBJC__ */
+
+void UIKit_SuspendScreenSaver(_THIS);
+
+void UIKit_ForceUpdateHomeIndicator(void);
+
+SDL_bool UIKit_IsSystemVersionAtLeast(double version);
+
+#endif /* SDL_uikitvideo_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

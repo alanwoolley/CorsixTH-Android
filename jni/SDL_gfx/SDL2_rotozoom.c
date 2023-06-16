@@ -2,7 +2,7 @@
 
 SDL2_rotozoom.c: rotozoomer, zoomer and shrinker for 32bit or 8bit surfaces
 
-Copyright (C) 2012  Andreas Schiffler
+Copyright (C) 2012-2014  Andreas Schiffler
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -803,31 +803,46 @@ no scanning or interpolation takes place. Input surface must be 8/16/24/32 bit.
 SDL_Surface* rotateSurface90Degrees(SDL_Surface* src, int numClockwiseTurns) 
 {
 	int row, col, newWidth, newHeight;
-	int bpp;
+	int bpp, bpr;
 	SDL_Surface* dst;
 	Uint8* srcBuf;
 	Uint8* dstBuf;
+	int normalizedClockwiseTurns;
 
-	/* Has to be a valid surface pointer and be a 8/16/24/32-bit surface */
-	if (!src || !src->format ||
-		 !(src->format->BitsPerPixel == 8) || 
-		  (src->format->BitsPerPixel == 16) ||
-		  (src->format->BitsPerPixel == 24) ||
-		  (src->format->BitsPerPixel == 32)) { return NULL; }
+	/* Has to be a valid surface pointer and be a Nbit surface where n is divisible by 8 */
+	if (!src || 
+	    !src->format) {
+		SDL_SetError("NULL source surface or source surface format");
+	    return NULL; 
+	}
+
+	if ((src->format->BitsPerPixel % 8) != 0) {
+		SDL_SetError("Invalid source surface bit depth");
+	    return NULL; 
+	}
 
 	/* normalize numClockwiseTurns */
-	while(numClockwiseTurns < 0) { numClockwiseTurns += 4; }
-	numClockwiseTurns = (numClockwiseTurns % 4);
+	normalizedClockwiseTurns = (numClockwiseTurns % 4);
+	if (normalizedClockwiseTurns < 0) {
+		normalizedClockwiseTurns += 4;
+	}
 
-	/* if it's even, our new width will be the same as the source surface */
-	newWidth = (numClockwiseTurns % 2) ? (src->h) : (src->w);
-	newHeight = (numClockwiseTurns % 2) ? (src->w) : (src->h);
+	/* If turns are even, our new width/height will be the same as the source surface */
+	if (normalizedClockwiseTurns % 2) {
+		newWidth = src->h;
+		newHeight = src->w;
+	} else {
+		newWidth = src->w;
+		newHeight = src->h;
+	}
+
 	dst = SDL_CreateRGBSurface( src->flags, newWidth, newHeight, src->format->BitsPerPixel,
 		src->format->Rmask,
 		src->format->Gmask, 
 		src->format->Bmask, 
 		src->format->Amask);
 	if(!dst) {
+		SDL_SetError("Could not create destination surface"); 
 		return NULL;
 	}
 
@@ -841,7 +856,7 @@ SDL_Surface* rotateSurface90Degrees(SDL_Surface* src, int numClockwiseTurns)
 	/* Calculate byte-per-pixel */
 	bpp = src->format->BitsPerPixel / 8;
 
-	switch(numClockwiseTurns) {
+	switch(normalizedClockwiseTurns) {
 	case 0: /* Make a copy of the surface */
 		{
 			/* Unfortunately SDL_BlitSurface cannot be used to make a copy of the surface
@@ -856,12 +871,13 @@ SDL_Surface* rotateSurface90Degrees(SDL_Surface* src, int numClockwiseTurns)
 				/* If the pitch differs, copy each row separately */
 				srcBuf = (Uint8*)(src->pixels);
 				dstBuf = (Uint8*)(dst->pixels);
+				bpr = src->w * bpp;
 				for (row = 0; row < src->h; row++) {
-					memcpy(dstBuf, srcBuf, dst->w * bpp);
+					memcpy(dstBuf, srcBuf, bpr);
 					srcBuf += src->pitch;
 					dstBuf += dst->pitch;
-				} /* end for(col) */
-			} /* end for(row) */
+				}
+			}
 		}
 		break;
 
@@ -898,9 +914,9 @@ SDL_Surface* rotateSurface90Degrees(SDL_Surface* src, int numClockwiseTurns)
 		{
 			for (row = 0; row < src->h; ++row) {
 				srcBuf = (Uint8*)(src->pixels) + (row * src->pitch);
-				dstBuf = (Uint8*)(dst->pixels) + row + ((dst->h - 1) * dst->pitch);
+				dstBuf = (Uint8*)(dst->pixels) + (row * bpp) + ((dst->h - 1) * dst->pitch);
 				for (col = 0; col < src->w; ++col) {
-					*dstBuf = *srcBuf;
+					memcpy (dstBuf, srcBuf, bpp);
 					srcBuf += bpp;
 					dstBuf -= dst->pitch;
 				} 
@@ -950,7 +966,7 @@ void _rotozoomSurfaceSizeTrig(int width, int height, double angle, double zoomx,
 	*sanglezoom = sin(radangle);
 	*canglezoom = cos(radangle);
 	*sanglezoom *= zoomx;
-	*canglezoom *= zoomx;
+	*canglezoom *= zoomy;
 	x = (double)(width / 2);
 	y = (double)(height / 2);
 	cx = *canglezoom * x;

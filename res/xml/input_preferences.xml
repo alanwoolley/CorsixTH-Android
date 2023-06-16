@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:summary="@string/control_how_the_map_moves"
+        android:title="@string/scrolling">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/baseline_edgesensor_high_24"
+            android:key="@string/prefs_input_edge_scrolling"
+            android:summaryOff="@string/the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen"
+            android:summaryOn="@string/the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen"
+            android:title="@string/edge_scrolling" />
+        <SeekBarPreference
+            android:defaultValue="8"
+            android:icon="@drawable/baseline_speed_24"
+            android:key="@string/prefs_input_scroll_momentum"
+            android:max="10"
+            android:min="0"
+            android:summary="@string/change_how_fast_the_map_scrolls"
+            app:title="@string/scrolling_momentum" />
+    </PreferenceCategory>
+</PreferenceScreen>

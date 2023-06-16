@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 
 /* Get the name of the audio device we use for output */
 
-#if SDL_AUDIO_DRIVER_BSD || SDL_AUDIO_DRIVER_OSS || SDL_AUDIO_DRIVER_SUNAUDIO
+#if SDL_AUDIO_DRIVER_NETBSD || SDL_AUDIO_DRIVER_OSS || SDL_AUDIO_DRIVER_SUNAUDIO
 
 #include <fcntl.h>
 #include <sys/types.h>
@@ -51,7 +51,7 @@ test_device(const int iscapture, const char *fname, int flags, int (*test) (int 
 {
     struct stat sb;
     if ((stat(fname, &sb) == 0) && (S_ISCHR(sb.st_mode))) {
-        const int audio_fd = open(fname, flags, 0);
+        const int audio_fd = open(fname, flags | O_CLOEXEC, 0);
         if (audio_fd >= 0) {
             const int okay = test(audio_fd);
             close(audio_fd);
@@ -59,7 +59,13 @@ test_device(const int iscapture, const char *fname, int flags, int (*test) (int 
                 static size_t dummyhandle = 0;
                 dummyhandle++;
                 SDL_assert(dummyhandle != 0);
-                SDL_AddAudioDevice(iscapture, fname, (void *) dummyhandle);
+
+                /* Note that spec is NULL; while we are opening the device
+                 * endpoint here, the endpoint does not provide any mix format
+                 * information,  making this information inaccessible at
+                 * enumeration time
+                 */
+                SDL_AddAudioDevice(iscapture, fname, NULL, (void *) (uintptr_t) dummyhandle);
             }
         }
     }
@@ -103,9 +109,10 @@ SDL_EnumUnixAudioDevices_Internal(const int iscapture, const int classic, int (*
 
     if (SDL_strlen(audiodev) < (sizeof(audiopath) - 3)) {
         int instance = 0;
-        while (instance++ <= 64) {
+        while (instance <= 64) {
             SDL_snprintf(audiopath, SDL_arraysize(audiopath),
                          "%s%d", audiodev, instance);
+            instance++;
             test_device(iscapture, audiopath, flags, test);
         }
     }

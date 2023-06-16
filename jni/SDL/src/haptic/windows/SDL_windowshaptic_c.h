@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -20,13 +20,18 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_windowshaptic_c_h
-#define _SDL_windowshaptic_c_h
+#ifndef SDL_windowshaptic_c_h_
+#define SDL_windowshaptic_c_h_
 
 #include "SDL_thread.h"
 #include "../SDL_syshaptic.h"
 #include "../../core/windows/SDL_directx.h"
 #include "../../core/windows/SDL_xinput.h"
+
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Haptic system hardware data.
@@ -42,14 +47,15 @@ struct haptic_hwdata
     Uint8 userid; /* XInput userid index for this joystick */
     SDL_Thread *thread;
     SDL_mutex *mutex;
-    volatile Uint32 stopTicks;
-    volatile int stopThread;
+    Uint32 stopTicks;
+    SDL_atomic_t stopThread;
 };
 
 
 /*
  * Haptic system effect data.
  */
+#if SDL_HAPTIC_DINPUT || SDL_HAPTIC_XINPUT
 struct haptic_hweffect
 {
 #if SDL_HAPTIC_DINPUT
@@ -60,6 +66,7 @@ struct haptic_hweffect
     XINPUT_VIBRATION vibration;
 #endif
 };
+#endif
 
 /*
 * List of available haptic devices.
@@ -82,7 +89,12 @@ extern SDL_hapticlist_item *SDL_hapticlist;
 extern int SDL_SYS_AddHapticDevice(SDL_hapticlist_item *item);
 extern int SDL_SYS_RemoveHapticDevice(SDL_hapticlist_item *prev, SDL_hapticlist_item *item);
 
-#endif /* _SDL_windowshaptic_c_h */
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* SDL_windowshaptic_c_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */
 

@@ -1,4 +1,4 @@
-# Makefile to build and install the SDL_mixer library
+# Makefile to build and install the SDL_mixer library.
 
 top_builddir = .
 srcdir  = @srcdir@
@@ -13,23 +13,24 @@ datadir	= @datadir@
 mandir	= @mandir@
 auxdir	= @ac_aux_dir@
 distpath = $(srcdir)/..
-distdir = SDL2_mixer-@VERSION@
+distdir = @PACKAGE_NAME@-@PACKAGE_VERSION@
 distfile = $(distdir).tar.gz
 
 @SET_MAKE@
 EXE	= @EXE@
 SHELL	= @SHELL@
 CC      = @CC@
-CXX     = g++
+CXX     = @CXX@
 CFLAGS  = @BUILD_CFLAGS@
 EXTRA_CFLAGS = @EXTRA_CFLAGS@
 LDFLAGS = @BUILD_LDFLAGS@
 EXTRA_LDFLAGS = @EXTRA_LDFLAGS@
+MIXER_LIBS = @MIXER_LIBS@
 LIBTOOL = @LIBTOOL@
 INSTALL = @INSTALL@
 AR	= @AR@
 RANLIB	= @RANLIB@
-WINDRES	= @WINDRES@
+RC	= @RC@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_LIBS = @SDL_LIBS@
 
@@ -39,48 +40,82 @@ VERSION_OBJECTS = @VERSION_OBJECTS@
 PLAYWAVE_OBJECTS = @PLAYWAVE_OBJECTS@
 PLAYMUS_OBJECTS = @PLAYMUS_OBJECTS@
 
-DIST = *.txt Android.mk Makefile.in SDL2_mixer.pc.in SDL_mixer.h SDL2_mixer.spec SDL2_mixer.spec.in debian VisualC Xcode Xcode-iOS acinclude autogen.sh build-scripts configure configure.in dynamic_flac.c dynamic_flac.h dynamic_fluidsynth.c dynamic_fluidsynth.h dynamic_modplug.c dynamic_modplug.h dynamic_mod.c dynamic_mod.h dynamic_mp3.c dynamic_mp3.h dynamic_ogg.c dynamic_ogg.h effect_position.c effect_stereoreverse.c effects_internal.c effects_internal.h fluidsynth.c fluidsynth.h external gcc-fat.sh libmikmod-3.1.12.zip load_aiff.c load_aiff.h load_flac.c load_flac.h load_mp3.c load_mp3.h load_ogg.c load_ogg.h load_voc.c load_voc.h mixer.c music.c music_cmd.c music_cmd.h music_flac.c music_flac.h music_mad.c music_mad.h music_mod.c music_mod.h music_modplug.c music_modplug.h music_ogg.c music_ogg.h native_midi playmus.c playwave.c timidity wavestream.c wavestream.h version.rc
+SRC_DIST =			\
+	.gitmodules		\
+	Android.mk		\
+	CHANGES.txt		\
+	CMakeLists.txt		\
+	LICENSE.txt		\
+	Makefile.in		\
+	Makefile.os2		\
+	README.txt		\
+	SDL2_mixer.pc.in	\
+	SDL2_mixer.spec.in	\
+	SDL2_mixerConfig.cmake.in \
+	VisualC			\
+	VisualC-WinRT		\
+	Xcode			\
+	acinclude		\
+	autogen.sh		\
+	build-scripts		\
+	cmake			\
+	configure		\
+	configure.ac		\
+	external/download.sh	\
+	include/SDL_mixer.h	\
+	mingw			\
+	playmus.c		\
+	playwave.c		\
+	sdl2_mixer-config-version.cmake.in \
+	sdl2_mixer-config.cmake.in \
+	src			\
+	version.rc
+
+GEN_DIST = SDL2_mixer.spec
 
 LT_AGE      = @LT_AGE@
 LT_CURRENT  = @LT_CURRENT@
 LT_RELEASE  = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
-LT_LDFLAGS  = -no-undefined -rpath $(libdir) -release $(LT_RELEASE) -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+LT_EXTRA    = @LT_EXTRA@
+LT_LDFLAGS  = -no-undefined -rpath $(libdir) -release $(LT_RELEASE) -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) $(LT_EXTRA)
 
-all: $(srcdir)/configure Makefile $(objects) $(objects)/$(TARGET) $(objects)/playwave$(EXE) $(objects)/playmus$(EXE)
+all: $(srcdir)/configure Makefile $(objects)/$(TARGET) $(objects)/playwave$(EXE) $(objects)/playmus$(EXE)
 
-$(srcdir)/configure: $(srcdir)/configure.in
-	@echo "Warning, configure.in is out of date"
-	#(cd $(srcdir) && sh autogen.sh && sh configure)
-	@sleep 3
+$(srcdir)/configure: $(srcdir)/configure.ac
+	@echo "Warning, configure is out of date, please re-run autogen.sh"
 
 Makefile: $(srcdir)/Makefile.in
 	$(SHELL) config.status $@
 
-$(objects):
-	$(SHELL) $(auxdir)/mkinstalldirs $@
+$(objects)/.created:
+	$(SHELL) $(auxdir)/mkinstalldirs $(objects)
+	touch $@
 
 .PHONY: all install install-hdrs install-lib install-bin uninstall uninstall-hdrs uninstall-lib uninstall-bin clean distclean dist
 
 $(objects)/$(TARGET): $(OBJECTS) $(VERSION_OBJECTS)
-	$(LIBTOOL) --mode=link $(CC) -o $@ $(OBJECTS) $(VERSION_OBJECTS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(LT_LDFLAGS)
+	$(LIBTOOL) --mode=link $(CC) -o $@ $(OBJECTS) $(VERSION_OBJECTS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(LT_LDFLAGS) $(SDL_LIBS) $(MIXER_LIBS)
 
 $(objects)/playwave$(EXE): $(objects)/playwave.lo $(objects)/$(TARGET)
-	$(LIBTOOL) --mode=link $(CC) -o $@ $(objects)/playwave.lo $(SDL_CFLAGS) $(SDL_LIBS) $(LDFLAGS) $(objects)/$(TARGET)
+	$(LIBTOOL) --mode=link $(CC) -o $@ $(objects)/playwave.lo $(SDL_CFLAGS) $(objects)/$(TARGET) $(SDL_LIBS) $(LDFLAGS)
 
 $(objects)/playmus$(EXE): $(objects)/playmus.lo $(objects)/$(TARGET)
-	$(LIBTOOL) --mode=link $(CC) -o $@ $(objects)/playmus.lo $(SDL_CFLAGS) $(SDL_LIBS) $(LDFLAGS) $(objects)/$(TARGET)
+	$(LIBTOOL) --mode=link $(CC) -o $@ $(objects)/playmus.lo $(SDL_CFLAGS) $(objects)/$(TARGET) $(SDL_LIBS) $(LDFLAGS)
 
 install: all install-hdrs install-lib #install-bin
 install-hdrs:
 	$(SHELL) $(auxdir)/mkinstalldirs $(includedir)/SDL2
-	for src in $(srcdir)/SDL_mixer.h; do \
+	for src in $(srcdir)/include/SDL_mixer.h; do \
 	    file=`echo $$src | sed -e 's|^.*/||'`; \
 	    $(INSTALL) -m 644 $$src $(includedir)/SDL2/$$file; \
 	done
 	$(SHELL) $(auxdir)/mkinstalldirs $(libdir)/pkgconfig
 	$(INSTALL) -m 644 SDL2_mixer.pc $(libdir)/pkgconfig/
-install-lib: $(objects) $(objects)/$(TARGET)
+	$(SHELL) $(auxdir)/mkinstalldirs $(libdir)/cmake/SDL2_mixer/
+	$(INSTALL) -m 644 sdl2_mixer-config.cmake $(libdir)/cmake/SDL2_mixer
+	$(INSTALL) -m 644 sdl2_mixer-config-version.cmake $(libdir)/cmake/SDL2_mixer
+install-lib: $(objects)/$(TARGET)
 	$(SHELL) $(auxdir)/mkinstalldirs $(libdir)
 	$(LIBTOOL) --mode=install $(INSTALL) $(objects)/$(TARGET) $(libdir)/$(TARGET)
 install-bin:
@@ -90,13 +125,17 @@ install-bin:
 
 uninstall: uninstall-hdrs uninstall-lib uninstall-bin
 uninstall-hdrs:
-	for src in $(srcdir)/SDL_mixer.h; do \
+	for src in $(srcdir)/include/SDL_mixer.h; do \
 	    file=`echo $$src | sed -e 's|^.*/||'`; \
 	    rm -f $(includedir)/SDL2/$$file; \
 	done
 	-rmdir $(includedir)/SDL2
 	rm -f $(libdir)/pkgconfig/SDL2_mixer.pc
 	-rmdir $(libdir)/pkgconfig
+	rm -f $(libdir)/cmake/SDL2_mixer/sdl2_mixer-config.cmake
+	rm -f $(libdir)/cmake/SDL2_mixer/sdl2_mixer-config-version.cmake
+	-rmdir $(libdir)/cmake/SDL2_mixer
+	-rmdir $(libdir)/cmake
 uninstall-lib:
 	$(LIBTOOL) --mode=uninstall rm -f $(libdir)/$(TARGET)
 uninstall-bin:
@@ -122,10 +161,14 @@ distclean: clean
 
 dist $(distfile):
 	$(SHELL) $(auxdir)/mkinstalldirs $(distdir)
-	(cd $(srcdir); tar cf - $(DIST)) | (cd $(distdir); tar xf -)
-	rm -rf `find $(distdir) -name .svn`
-	rm -f `find $(distdir) -name '.#*'`
-	tar cvf - $(distdir) | gzip --best >$(distfile)
+	(cd $(srcdir); tar cf - $(SRC_DIST)) | (cd $(distdir); tar xf -)
+	tar cf - $(GEN_DIST) | (cd $(distdir); tar xf -)
+	-rm -rf `find $(distdir)/external -name '.git*'`
+	-rm -rf `find $(distdir)/external -name '.ci*'`
+	-rm -rf `find $(distdir)/external -name '*.yml'`
+	-rm -rf `find $(distdir)/external -name ci`
+	-rm -f `find $(distdir) -name '.#*'`
+	tar cf - $(distdir) | gzip --best >$(distfile)
 	rm -rf $(distdir)
 
 rpm: $(distfile)

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -26,14 +26,15 @@
    most of the API. */
 
 #include "SDL.h"
-#include "../../events/SDL_sysevents.h"
 #include "../../events/SDL_events_c.h"
 #include "../../events/SDL_keyboard_c.h"
+#include "../SDL_sysvideo.h"
 #include "SDL_pspvideo.h"
 #include "SDL_pspevents_c.h"
-#include "SDL_thread.h"
 #include "SDL_keyboard.h"
+#include "../../thread/SDL_systhread.h"
 #include <psphprm.h>
+#include <pspthreadman.h>
 
 #ifdef PSPIRKEYB
 #include <pspirkeyb.h>
@@ -42,7 +43,7 @@
 #define IRKBD_CONFIG_FILE     NULL    /* this will take ms0:/seplugins/pspirkeyb.ini */
 
 static int irkbd_ready = 0;
-static SDLKey keymap[256];
+static SDL_Keycode keymap[256];
 #endif
 
 static enum PspHprmKeys hprm = 0;
@@ -61,16 +62,17 @@ static struct {
     { PSP_HPRM_HOLD,      SDLK_F15 }
 };
 
-int EventUpdate(void *data)
+int
+EventUpdate(void *data)
 {
     while (running) {
-                SDL_SemWait(event_sem);
-                                sceHprmPeekCurrentKey(&hprm);
-                SDL_SemPost(event_sem);
-                /* Delay 1/60th of a second */
-                sceKernelDelayThread(1000000 / 60);
-        }
-        return 0;
+        SDL_SemWait(event_sem);
+        sceHprmPeekCurrentKey((u32 *) &hprm);
+        SDL_SemPost(event_sem);
+        /* Delay 1/60th of a second */
+        sceKernelDelayThread(1000000 / 60);
+    }
+    return 0;
 }
 
 void PSP_PumpEvents(_THIS)
@@ -79,7 +81,6 @@ void PSP_PumpEvents(_THIS)
     enum PspHprmKeys keys;
     enum PspHprmKeys changed;
     static enum PspHprmKeys old_keys = 0;
-    SDL_Keysym sym;
 
     SDL_SemWait(event_sem);
     keys = hprm;
@@ -91,14 +92,6 @@ void PSP_PumpEvents(_THIS)
     if(changed) {
         for(i=0; i<sizeof(keymap_psp)/sizeof(keymap_psp[0]); i++) {
             if(changed & keymap_psp[i].id) {
-                sym.scancode = keymap_psp[i].id;
-                sym.sym = keymap_psp[i].sym;
-
-                /* out of date
-                SDL_PrivateKeyboard((keys & keymap_psp[i].id) ?
-                            SDL_PRESSED : SDL_RELEASED,
-                            &sym);
-        */
                 SDL_SendKeyboardKey((keys & keymap_psp[i].id) ?
                                     SDL_PRESSED : SDL_RELEASED, SDL_GetScancodeFromKey(keymap_psp[i].sym));
             }
@@ -124,7 +117,7 @@ void PSP_PumpEvents(_THIS)
                 /* not tested */
                 /* SDL_PrivateKeyboard(pressed?SDL_PRESSED:SDL_RELEASED, &sym); */
                 SDL_SendKeyboardKey((keys & keymap_psp[i].id) ?
-                                    SDL_PRESSED : SDL_RELEASED, SDL_GetScancodeFromKey(keymap[raw]);
+                                    SDL_PRESSED : SDL_RELEASED, SDL_GetScancodeFromKey(keymap[raw]));
 
                 }
             }
@@ -260,12 +253,12 @@ void PSP_EventInit(_THIS)
 #endif
     /* Start thread to read data */
     if((event_sem =  SDL_CreateSemaphore(1)) == NULL) {
-        SDL_SetError("Can't create input semaphore\n");
+        SDL_SetError("Can't create input semaphore");
         return;
     }
     running = 1;
-    if((thread = SDL_CreateThread(EventUpdate, "PSPInputThread",NULL)) == NULL) {
-        SDL_SetError("Can't create input thread\n");
+    if((thread = SDL_CreateThreadInternal(EventUpdate, "PSPInputThread", 4096, NULL)) == NULL) {
+        SDL_SetError("Can't create input thread");
         return;
     }
 }

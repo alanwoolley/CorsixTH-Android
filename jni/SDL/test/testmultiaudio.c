@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +17,8 @@
 #include <emscripten/emscripten.h>
 #endif
 
+#include "testutils.h"
+
 static SDL_AudioSpec spec;
 static Uint8 *sound = NULL;     /* Pointer to wave data */
 static Uint32 soundlen = 0;     /* Length of wave data */
@@ -25,7 +27,7 @@ typedef struct
 {
     SDL_AudioDeviceID dev;
     int soundpos;
-    volatile int done;
+    SDL_atomic_t done;
 } callback_data;
 
 callback_data cbd[64];
@@ -33,27 +35,27 @@ callback_data cbd[64];
 void SDLCALL
 play_through_once(void *arg, Uint8 * stream, int len)
 {
-    callback_data *cbd = (callback_data *) arg;
-    Uint8 *waveptr = sound + cbd->soundpos;
-    int waveleft = soundlen - cbd->soundpos;
+    callback_data *cbdata = (callback_data *) arg;
+    Uint8 *waveptr = sound + cbdata->soundpos;
+    int waveleft = soundlen - cbdata->soundpos;
     int cpy = len;
     if (cpy > waveleft)
         cpy = waveleft;
 
     SDL_memcpy(stream, waveptr, cpy);
     len -= cpy;
-    cbd->soundpos += cpy;
+    cbdata->soundpos += cpy;
     if (len > 0) {
         stream += cpy;
         SDL_memset(stream, spec.silence, len);
-        cbd->done++;
+        SDL_AtomicSet(&cbdata->done, 1);
     }
 }
 
 void
 loop()
 {
-    if(cbd[0].done) {
+    if (SDL_AtomicGet(&cbd[0].done)) {
 #ifdef __EMSCRIPTEN__
         emscripten_cancel_main_loop();
 #endif
@@ -100,8 +102,7 @@ test_multi_audio(int devcount)
 #ifdef __EMSCRIPTEN__
             emscripten_set_main_loop(loop, 0, 1);
 #else
-            while (!cbd[0].done)
-            {
+            while (!SDL_AtomicGet(&cbd[0].done)) {
                 #ifdef __ANDROID__                
                 /* Empty queue, some application events would prevent pause. */
                 while (SDL_PollEvent(&event)){}
@@ -136,7 +137,7 @@ test_multi_audio(int devcount)
     while (keep_going) {
         keep_going = 0;
         for (i = 0; i < devcount; i++) {
-            if ((cbd[i].dev) && (!cbd[i].done)) {
+            if ((cbd[i].dev) && (!SDL_AtomicGet(&cbd[i].done))) {
                 keep_going = 1;
             }
         }
@@ -166,7 +167,7 @@ main(int argc, char **argv)
 {
     int devcount = 0;
 
-	/* Enable standard application logging */
+    /* Enable standard application logging */
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO);
 
     /* Load the SDL library */
@@ -181,18 +182,18 @@ main(int argc, char **argv)
     if (devcount < 1) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Don't see any specific audio devices!\n");
     } else {
-        if (argv[1] == NULL) {
-            argv[1] = "sample.wav";
-        }
+        char *file = GetResourceFilename(argc > 1 ? argv[1] : NULL, "sample.wav");
 
         /* Load the wave file into memory */
-        if (SDL_LoadWAV(argv[1], &spec, &sound, &soundlen) == NULL) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s\n", argv[1],
+        if (SDL_LoadWAV(file, &spec, &sound, &soundlen) == NULL) {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't load %s: %s\n", file,
                     SDL_GetError());
         } else {
             test_multi_audio(devcount);
             SDL_FreeWAV(sound);
         }
+
+        SDL_free(file);
     }
 
     SDL_Quit();

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2023 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -22,7 +22,6 @@
 
 #if SDL_HAPTIC_DINPUT || SDL_HAPTIC_XINPUT
 
-#include "SDL_assert.h"
 #include "SDL_thread.h"
 #include "SDL_mutex.h"
 #include "SDL_timer.h"
@@ -38,6 +37,10 @@
 #include "SDL_dinputhaptic_c.h"
 #include "SDL_xinputhaptic_c.h"
 
+/* Set up for C function definitions, even when using C++ */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Internal stuff.
@@ -53,12 +56,28 @@ static int numhaptics = 0;
 int
 SDL_SYS_HapticInit(void)
 {
+    JoyStick_DeviceData* device;
+
     if (SDL_DINPUT_HapticInit() < 0) {
         return -1;
     }
     if (SDL_XINPUT_HapticInit() < 0) {
         return -1;
     }
+
+    /* The joystick subsystem will usually be initialized before haptics,
+     * so the initial HapticMaybeAddDevice() calls from the joystick
+     * subsystem will arrive too early to create haptic devices. We will
+     * invoke those callbacks again here to pick up any joysticks that
+     * were added prior to haptics initialization. */
+    for (device = SYS_Joystick; device; device = device->pNext) {
+        if (device->bXInputDevice) {
+            SDL_XINPUT_HapticMaybeAddDevice(device->XInputUserId);
+        } else {
+            SDL_DINPUT_HapticMaybeAddDevice(&device->dxdevice);
+        }
+    }
+
     return numhaptics;
 }
 
@@ -98,7 +117,7 @@ SDL_SYS_RemoveHapticDevice(SDL_hapticlist_item *prev, SDL_hapticlist_item *item)
 }
 
 int
-SDL_SYS_NumHaptics()
+SDL_SYS_NumHaptics(void)
 {
     return numhaptics;
 }
@@ -157,7 +176,7 @@ SDL_SYS_HapticMouse(void)
 
     /* Grab the first mouse haptic device we find. */
     for (item = SDL_hapticlist; item != NULL; item = item->next) {
-        if (item->capabilities.dwDevType == DI8DEVCLASS_POINTER ) {
+        if (item->capabilities.dwDevType == DI8DEVCLASS_POINTER) {
             return index;
         }
         ++index;
@@ -173,14 +192,16 @@ SDL_SYS_HapticMouse(void)
 int
 SDL_SYS_JoystickIsHaptic(SDL_Joystick * joystick)
 {
-    const struct joystick_hwdata *hwdata = joystick->hwdata;
+    if (joystick->driver != &SDL_WINDOWS_JoystickDriver) {
+        return 0;
+    }
 #if SDL_HAPTIC_XINPUT
-    if (hwdata->bXInputHaptic) {
+    if (joystick->hwdata->bXInputHaptic) {
         return 1;
     }
 #endif
 #if SDL_HAPTIC_DINPUT
-    if (hwdata->Capabilities.dwFlags & DIDC_FORCEFEEDBACK) {
+    if (joystick->hwdata->Capabilities.dwFlags & DIDC_FORCEFEEDBACK) {
         return 1;
     }
 #endif
@@ -193,6 +214,9 @@ SDL_SYS_JoystickIsHaptic(SDL_Joystick * joystick)
 int
 SDL_SYS_JoystickSameHaptic(SDL_Haptic * haptic, SDL_Joystick * joystick)
 {
+    if (joystick->driver != &SDL_WINDOWS_JoystickDriver) {
+        return 0;
+    }
     if (joystick->hwdata->bXInputHaptic != haptic->hwdata->bXInputHaptic) {
         return 0;  /* one is XInput, one is not; not the same device. */
     } else if (joystick->hwdata->bXInputHaptic) {
@@ -208,6 +232,8 @@ SDL_SYS_JoystickSameHaptic(SDL_Haptic * haptic, SDL_Joystick * joystick)
 int
 SDL_SYS_HapticOpenFromJoystick(SDL_Haptic * haptic, SDL_Joystick * joystick)
 {
+    SDL_assert(joystick->driver == &SDL_WINDOWS_JoystickDriver);
+
     if (joystick->hwdata->bXInputDevice) {
         return SDL_XINPUT_HapticOpenFromJoystick(haptic, joystick);
     } else {
@@ -255,7 +281,7 @@ SDL_SYS_HapticQuit(void)
     for (hapticitem = SDL_haptics; hapticitem; hapticitem = hapticitem->next) {
         if ((hapticitem->hwdata->bXInputHaptic) && (hapticitem->hwdata->thread)) {
             /* we _have_ to stop the thread before we free the XInput DLL! */
-            hapticitem->hwdata->stopThread = 1;
+            SDL_AtomicSet(&hapticitem->hwdata->stopThread, 1);
             SDL_WaitThread(hapticitem->hwdata->thread, NULL);
             hapticitem->hwdata->thread = NULL;
         }
@@ -443,6 +469,11 @@ SDL_SYS_HapticStopAll(SDL_Haptic * haptic)
         return SDL_DINPUT_HapticStopAll(haptic);
     }
 }
+
+/* Ends C function definitions when using C++ */
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SDL_HAPTIC_DINPUT || SDL_HAPTIC_XINPUT */
 
