@@ -1,4 +1,4 @@
-<resources>
+<resources translatable="false">
     <array name="languages_labels" translatable="false">
         <item>@string/lang_brazilian_portuguese</item>
         <item>@string/lang_chinese_simplified</item>

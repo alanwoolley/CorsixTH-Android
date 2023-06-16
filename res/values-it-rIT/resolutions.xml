@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- These are encoded as a UInt with the first 16 bits being the width, with the second 16 bits
-    being the height -->
-</resources>
