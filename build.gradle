@@ -26,10 +26,12 @@ project.ext.version = "0.9.3.0"
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: 'versioning.gradle'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     jcenter()
     google()
+    mavenCentral()
     maven {
         url 'https://maven.google.com/'
         name 'Google'
@@ -55,16 +57,18 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation "com.lazygeniouz:dfc:1.0.7"
     implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'uk.co.armedpineapple.innoextract:service:2.1.0'
 }
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion '33.0.1'
+    compileSdkVersion 34
 
     namespace 'uk.co.armedpineapple.cth'
     defaultConfig {
         minSdkVersion 27
-        targetSdkVersion 33
+        targetSdkVersion 34
 
         versionName project.ext.version
         versionCode buildVersionCode()
@@ -145,6 +149,5 @@ task createGameZip(type: Zip) {
         include 'Bitmap/**'
         include 'Campaigns/**'
         include 'Graphics/**'
-
     }
 }
