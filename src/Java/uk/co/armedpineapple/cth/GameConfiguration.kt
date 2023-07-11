@@ -19,6 +19,7 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     AnkoLogger {
 
     val cthFiles: File = File(ctx.noBackupFilesDir, "cth")
+    val cthLaunchScript = File(cthFiles, "CorsixTH.lua")
     val gameConfigFile = File(cthFiles, "config.txt")
     val thFiles: File = File(ctx.noBackupFilesDir, "themehospital")
     private val unicodeFont = "/system/fonts/NotoSerif-Regular.ttf"
@@ -128,30 +129,6 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
             yield(Pair(prefName, preferences.getBoolean(ctx.getString(pref), false).toString()))
         }
     }
-
-//    private fun calculateResolutionForDisplayAspect(): Pair<Int, Int> {
-//
-//        var targetRes = decodeResolution(getStringPref(R.string.prefs_display_resolution).toUInt())
-//
-//        val display = ctx.displayMetrics
-//        val displayWidth = display.widthPixels
-//        val displayHeight = display.heightPixels
-//
-//        var targetWidth = 0
-//        var targetHeight = 0
-//
-//        var isWidthSmallestSide = displayWidth < displayHeight
-//
-//        targetWidth = 640
-//        targetHeight = (displayHeight / (displayWidth.toDouble() / targetWidth.toDouble())).toInt()
-//
-//        if (!isWidthSmallestSide) {
-//            targetWidth = targetHeight
-//            targetHeight = 640
-//        }
-//
-//        return Pair(targetWidth, targetHeight)
-//    }
 
     private fun <T, V> createReadOnlyOption(prefId: Int): ReadOnlyConfigOption<T, V> {
         return ReadOnlyConfigOption(ctx, prefId, preferences)

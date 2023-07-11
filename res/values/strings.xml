@@ -3,4 +3,8 @@
     <string name="app_name" translatable="false">CorsixTH</string>
 
     <string name="title_activity_settings">Game Settings</string>
+    <string name="loading_theme_hospital_failed">Loading Theme Hospital failed.</string>
+    <string name="unrecognised_file">Unrecognised file.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Invalid GOG installer. Are you sure this is Theme Hospital?</string>
+    <string name="installing_please_wait">Installing. Please wait.</string>
 </resources>

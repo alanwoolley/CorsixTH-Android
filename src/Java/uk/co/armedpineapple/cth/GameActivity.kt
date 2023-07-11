@@ -10,6 +10,7 @@ import com.google.common.io.ByteStreams
 import com.google.common.io.Closeables
 import org.jetbrains.anko.AnkoLogger
 import org.libsdl.app.SDLActivity
+import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.cth.settings.SettingsActivity
 import java.io.File
 import java.io.FileOutputStream
@@ -17,8 +18,6 @@ import java.io.InputStream
 import java.util.zip.ZipFile
 
 class GameActivity : SDLActivity(), AnkoLogger {
-
-    private val ENGINE_ZIP_FILE = "game.zip"
 
     @Keep
     private external fun startLogger();
@@ -32,40 +31,7 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
         startLogger();
 
-        var assetIn = application.assets.open(ENGINE_ZIP_FILE)
-        var assetOut = File(application.cacheDir, ENGINE_ZIP_FILE)
-        assetIn.copyTo(assetOut.outputStream())
-
-        var zipFile = ZipFile(assetOut)
-        var entries = zipFile.entries()
-        var target = configuration.cthFiles
-        while (entries.hasMoreElements()) {
-            val ze = entries.nextElement()
-
-            val f = File(target, ze.name)
-            if (!f.parentFile.exists()) {
-                f.parentFile.mkdirs()
-            }
-
-            if (ze.isDirectory) {
-
-                if (!f.isDirectory) {
-                    f.mkdirs()
-                }
-            } else {
-
-                var zin: InputStream? = null
-                var fout: FileOutputStream?
-                try {
-                    zin = zipFile.getInputStream(ze)
-                    fout = FileOutputStream(f)
-                    ByteStreams.copy(zin!!, fout)
-                } finally {
-                    Closeables.closeQuietly(zin)
-                }
-
-            }
-        }
+        val filesService = FilesService(this)
     }
 
     @Override
@@ -87,9 +53,8 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
     override fun getArguments(): Array<String> {
         return arrayOf(
-            "--interpreter=" + File(
-                application.noBackupFilesDir, "cth/CorsixTH.lua"
-            ).absolutePath, "--config-file=" + configuration.gameConfigFile.absolutePath
+            "--interpreter=${configuration.cthLaunchScript.absolutePath}",
+            "--config-file=${configuration.gameConfigFile.absolutePath}"
         )
     }
 
@@ -101,7 +66,7 @@ class GameActivity : SDLActivity(), AnkoLogger {
         fun showSettings() {
             Log.i("GameActivity", "Showing settings")
 
-            var intent = Intent(singleton, SettingsActivity::class.java)
+            val intent = Intent(singleton, SettingsActivity::class.java)
             singleton?.startActivity(intent);
         }
     }

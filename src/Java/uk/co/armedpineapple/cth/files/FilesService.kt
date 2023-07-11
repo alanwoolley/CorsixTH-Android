@@ -30,10 +30,10 @@ class FilesService(val ctx: Context) : AnkoLogger {
     data class EstimatedFileOperationProgress(val progress: Float)
 
     /**
-     * Has game files
+     * Checks whether the game files exist in the location given in the config.
      *
-     * @param config
-     * @return
+     * @param config The configuration
+     * @return whether the game files are installed
      */
     fun hasGameFiles(config: GameConfiguration): Boolean {
         // There's little  point searching for all the files here. If one is missing, then they
@@ -90,10 +90,21 @@ class FilesService(val ctx: Context) : AnkoLogger {
 
         try {
             val target = config.cthFiles
+            if (target.exists()) target.deleteRecursively()
             extractZipFile(assetOut, target, progress)
         } finally {
             assetOut.delete()
         }
+    }
+
+    /**
+     * Removes the original game files entirely.
+     *
+     * @param config The configuration the determines the installation location.
+     */
+    fun nukeOriginalFiles(config: GameConfiguration) {
+        val target = config.thFiles
+        if (target.exists()) target.deleteRecursively()
     }
 
     /**
@@ -108,10 +119,8 @@ class FilesService(val ctx: Context) : AnkoLogger {
         config: GameConfiguration,
         progress: SendChannel<EstimatedFileOperationProgress>? = null
     ) {
-        val target = config.thFiles
-        if (target.exists()) target.deleteRecursively()
-
-        copyDirectoryTree(source, target, progress)
+        nukeOriginalFiles(config)
+        copyDirectoryTree(source, config.thFiles, progress)
     }
 
     private suspend fun copyDirectoryTree(

@@ -1,29 +1,28 @@
-/*
- *   Copyright (C) 2012 Alan Woolley
- *   
- *   See LICENSE.TXT for full license
- */
 package uk.co.armedpineapple.cth
 
-import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import org.jetbrains.anko.defaultSharedPreferences
-import java.util.*
-import java.util.prefs.Preferences
+import uk.co.armedpineapple.cth.localisation.LanguageService
 
 class CTHApplication : android.app.Application() {
+
     lateinit var configuration: GameConfiguration
 
     override fun onCreate() {
         super.onCreate()
 
+        initConfiguration()
+    }
+
+    private fun initConfiguration() {
         val preferences = defaultSharedPreferences
 
-        if (!defaultSharedPreferences.getBoolean(
-                    PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES,
-                    false
-                )
+        val service = LanguageService(this)
+        preferences.edit().putString(this.getString(R.string.prefs_language), service.getCthLanguageFromAppConfig()).apply()
+
+        if (!preferences.getBoolean(
+                PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false
+            )
         ) {
             for (preferencesId in arrayOf(
                 R.xml.advanced_preferences,
