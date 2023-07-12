@@ -55,6 +55,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
     implementation "com.lazygeniouz:dfc:1.0.7"
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.core:core-ktx:1.10.1'
@@ -132,6 +133,9 @@ android {
         viewBinding true
         dataBinding true
         buildConfig true
+    }
+    aaptOptions {
+        noCompress "zip"
     }
 }
 

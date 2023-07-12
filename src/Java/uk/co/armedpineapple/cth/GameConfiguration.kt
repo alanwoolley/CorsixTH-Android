@@ -31,10 +31,9 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
 
     init {
         refresh()
-        persistGameConfigFile()
     }
 
-    private fun persistGameConfigFile() {
+    fun persist() {
         val tokenMap = hashMapOf<String, String>()
 
         tokenMap.putAll(getStringPrefs(arrayOf(R.string.prefs_language)))

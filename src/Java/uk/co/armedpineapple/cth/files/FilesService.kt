@@ -139,7 +139,9 @@ class FilesService(val ctx: Context) : AnkoLogger {
                 if (file.isDirectory()) {
                     val newDestination = File(destinationDirectory, file.name)
                     val childProgress =
-                        if (progress == null) null else Channel<EstimatedFileOperationProgress>(Channel.CONFLATED) { p ->
+                        if (progress == null) null else Channel<EstimatedFileOperationProgress>(
+                            Channel.CONFLATED
+                        ) { p ->
                             // Report the progress back up the chain.
                             progress.trySend(EstimatedFileOperationProgress((currentFile + p.progress) / totalContents.toFloat()))
                         }
@@ -220,14 +222,15 @@ class FilesService(val ctx: Context) : AnkoLogger {
     private fun copyAsset(
         asset: String, ctx: Context, target: File
     ) {
-        ctx.assets.openFd(asset).use { assetIn ->
+        ctx.assets.open(asset).use { assetInputStream ->
             target.deleteOnExit()
             target.outputStream().use { assetOutStream ->
-                allocateStorage(assetIn.length, assetOutStream.fd, storageManager)
-
-                assetIn.createInputStream().use { assetInputStream ->
-                    assetInputStream.copyTo(target.outputStream())
-                }
+                allocateStorage(
+                    bytes = assetInputStream.available().toLong(),
+                    fd = assetOutStream.fd,
+                    storageMgr = storageManager
+                )
+                assetInputStream.copyTo(assetOutStream)
             }
         }
     }
