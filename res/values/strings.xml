@@ -7,4 +7,10 @@
     <string name="unrecognised_file">Unrecognised file.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Invalid GOG installer. Are you sure this is Theme Hospital?</string>
     <string name="installing_please_wait">Installing. Please wait.</string>
+    <string name="screenshot_contentdesc">Game Screenshot</string>
+    <string name="money_contentdesc">Bank Balance</string>
+    <string name="rep_contentdesc">Reputation</string>
+    <string name="new_save">New Save</string>
+    <string name="save_game">Save Game</string>
+    <string name="load_game">Load Game</string>
 </resources>
