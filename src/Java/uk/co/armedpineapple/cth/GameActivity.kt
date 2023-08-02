@@ -3,40 +3,49 @@ package uk.co.armedpineapple.cth
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.Keep
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.viewModelScope
-import com.google.common.io.ByteStreams
-import com.google.common.io.Closeables
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
 import org.libsdl.app.SDLActivity
 import uk.co.armedpineapple.cth.files.FilesService
+import uk.co.armedpineapple.cth.files.SaveGameContract
+import uk.co.armedpineapple.cth.files.persistence.SaveData
 import uk.co.armedpineapple.cth.settings.SettingsActivity
 import uk.co.armedpineapple.cth.setup.SetupActivity
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.util.zip.ZipFile
+import java.nio.charset.Charset
 
 class GameActivity : SDLActivity(), AnkoLogger {
+    @Keep
+    private external fun startLogger()
 
     @Keep
-    private external fun startLogger();
+    private external fun nativeSave(saveName: String)
+
+    @Keep
+    private external fun nativeLoad(saveName: String)
+
 
     private val configuration: GameConfiguration
         get() = (application as CTHApplication).configuration
 
+    private val filesService: FilesService get() = (application as CTHApplication).filesService
+
+    private val saveDao get() = (application as CTHApplication).database.saveDao()
+
+    private val loadGameLauncher: ActivityResultLauncher<Boolean> =
+        registerForActivityResult(SaveGameContract()) { o -> doLoad(o) }
+    private val saveGameLauncher: ActivityResultLauncher<Boolean> =
+        registerForActivityResult(SaveGameContract()) { o -> doSave(o) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        singleton = this
         val filesService = FilesService(this)
 
         // Check whether the setup installation has run and the original TH files are available.
@@ -53,8 +62,13 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
         // Install the latest CTH game files in the background.
         var installJob: Job? = null
-        if (!filesService.hasGameFiles(configuration)) {
+        val alwaysUpgrade = true
+        if (alwaysUpgrade || !filesService.hasGameFiles(configuration)) {
             Toast.makeText(this, "Upgrading", Toast.LENGTH_SHORT).show()
+
+            val target = configuration.cthFiles
+            if (target.exists()) target.deleteRecursively()
+
             installJob = CoroutineScope(Dispatchers.IO).launch {
                 filesService.installGameFiles(configuration)
             }
@@ -66,13 +80,55 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
         super.onCreate(savedInstanceState)
         startLogger()
-        singleton = this
 
         // Make sure the game file installation installation has completed before moving on.
         if (installJob != null) {
             runBlocking {
                 installJob.join()
             }
+        }
+    }
+
+    private fun launchLoadGamePicker() {
+        loadGameLauncher.launch(true)
+    }
+
+    private fun launchSaveGamePicker() {
+        saveGameLauncher.launch(false)
+    }
+
+    private fun doLoad(saveName: String?) {
+        saveName?.let { save ->
+            val savePath = filesService.getSaveFile(save, configuration)
+
+            if (savePath.exists()) {
+                nativeLoad(savePath.absolutePath)
+            }
+        }
+
+    }
+
+    private fun doSave(saveName: String?) {
+        if (saveName != null) {
+            val savePath = File(configuration.saveFiles, saveName)
+            nativeSave(savePath.absolutePath)
+        }
+    }
+
+    private fun updateSaveGameDatabase(
+        filePath: String, rep: Int, money: Long, level: String, screenshot: String
+    ) {
+        val fileName = File(filePath).name
+        CoroutineScope(Dispatchers.IO).launch {
+            saveDao.upsert(
+                SaveData(
+                    saveName = fileName,
+                    screenshotPath = screenshot,
+                    rep = rep,
+                    money = money,
+                    levelName = level
+                )
+            )
         }
     }
 
@@ -101,7 +157,7 @@ class GameActivity : SDLActivity(), AnkoLogger {
     }
 
     companion object {
-        var singleton: GameActivity? = null
+        lateinit var singleton: GameActivity
 
         @Keep
         @JvmStatic
@@ -109,8 +165,33 @@ class GameActivity : SDLActivity(), AnkoLogger {
             Log.i("GameActivity", "Showing settings")
 
             val intent = Intent(singleton, SettingsActivity::class.java)
-            singleton?.startActivity(intent);
+            singleton.startActivity(intent);
+        }
+
+        @Keep
+        @JvmStatic
+        fun showLoad() {
+            singleton.launchLoadGamePicker()
+        }
+
+        @Keep
+        @JvmStatic
+        fun showSave() {
+            singleton.launchSaveGamePicker()
+        }
+
+        @Keep
+        @JvmStatic
+        fun onSaveGameChanged(
+            fileName: ByteArray, rep: Int, money: Long, level: ByteArray, screenshot: ByteArray
+        ) {
+            singleton.updateSaveGameDatabase(
+                filePath = String(fileName, Charset.forName("UTF-8")),
+                rep = rep,
+                money = money,
+                level = String(level, Charset.forName("UTF-8")),
+                screenshot = String(screenshot, Charset.forName("UTF-8"))
+            )
         }
     }
-
 }

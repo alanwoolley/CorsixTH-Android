@@ -1,12 +1,24 @@
 package uk.co.armedpineapple.cth
 
 import androidx.preference.PreferenceManager
+import androidx.room.Room
 import org.jetbrains.anko.defaultSharedPreferences
+import uk.co.armedpineapple.cth.files.FilesService
+import uk.co.armedpineapple.cth.files.persistence.GameDatabase
 import uk.co.armedpineapple.cth.localisation.LanguageService
 
 class CTHApplication : android.app.Application() {
 
     lateinit var configuration: GameConfiguration
+    val database: GameDatabase by lazy {
+        Room.databaseBuilder(
+            this, GameDatabase::class.java, "database"
+        ).build()
+    }
+
+    val filesService: FilesService by lazy {
+        FilesService(this)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -18,7 +30,9 @@ class CTHApplication : android.app.Application() {
         val preferences = defaultSharedPreferences
 
         val service = LanguageService(this)
-        preferences.edit().putString(this.getString(R.string.prefs_language), service.getCthLanguageFromAppConfig()).apply()
+        preferences.edit().putString(
+            this.getString(R.string.prefs_language), service.getCthLanguageFromAppConfig()
+        ).apply()
 
         if (!preferences.getBoolean(
                 PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false

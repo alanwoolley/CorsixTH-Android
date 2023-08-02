@@ -22,18 +22,22 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     val cthLaunchScript = File(cthFiles, "CorsixTH.lua")
     val gameConfigFile = File(cthFiles, "config.txt")
     val thFiles: File = File(ctx.noBackupFilesDir, "themehospital")
+    val saveFiles: File = File(ctx.filesDir, "saves")
+    val autosaveFiles : File = File(saveFiles, "Autosaves")
+    val screenshots : File = File(ctx.filesDir, "screenshots")
+
     private val unicodeFont = "/system/fonts/NotoSerif-Regular.ttf"
 
-    var resolution: Pair<UInt, UInt> = decodeResolution(getStringPref(R.string.prefs_display_resolution).toUInt())
+    var resolution: Pair<UInt, UInt> =
+        decodeResolution(getStringPref(R.string.prefs_display_resolution).toUInt())
     val fullscreen = true
 
     val language: String by createReadOnlyOption(R.string.prefs_language)
 
-    init {
-        refresh()
-    }
-
     fun persist() {
+        // Create save game directory if it doesn't already exist, otherwise CTH will use its own.
+
+        saveFiles.mkdirs()
         val tokenMap = hashMapOf<String, String>()
 
         tokenMap.putAll(getStringPrefs(arrayOf(R.string.prefs_language)))
@@ -71,6 +75,8 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
             (!getBoolPref(R.string.prefs_input_edge_scrolling)).toString()
 
         tokenMap["th_path"] = thFiles.absolutePath
+        tokenMap["save_path"] = saveFiles.absolutePath
+        tokenMap["screenshots_path"] = screenshots.absolutePath
         tokenMap["unicode_font_path"] = unicodeFont
         tokenMap["res_w"] = resolution.first.toString()
         tokenMap["res_h"] = resolution.second.toString()
@@ -95,10 +101,6 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         }
     }
 
-    fun refresh() {
-
-    }
-
     private fun decodeResolution(encodedValue: UInt): Pair<UInt, UInt> {
         val width = (encodedValue shr 16)
         val height = (encodedValue and 0xFFFFu)
@@ -108,12 +110,15 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     private fun getBoolPref(prefId: Int): Boolean {
         return preferences.getBoolean(ctx.getString(prefId), false)
     }
-    private fun getIntPref(prefId : Int) : Int {
+
+    private fun getIntPref(prefId: Int): Int {
         return preferences.getInt(ctx.getString(prefId), 0)
     }
-    private fun getStringPref(prefId : Int) : String {
+
+    private fun getStringPref(prefId: Int): String {
         return preferences.getString(ctx.getString(prefId), "") as String
     }
+
     private fun getStringPrefs(prefs: Array<Int>) = sequence {
         for (pref in prefs) {
             val prefName = ctx.getString(pref)

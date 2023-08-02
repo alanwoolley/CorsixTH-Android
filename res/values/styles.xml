@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.AppTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+    <style name="Theme.AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
-    <style name="Theme.SettingsTheme" parent="Theme.AppCompat.Light.Dialog">
+    <style name="Theme.FloatingTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowMinWidthMajor">65%</item>
-        <item name="windowMinWidthMinor">90%</item>"
+        <item name="windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="Theme.SettingsTheme" parent="Theme.FloatingTheme" />
+
+    <style name="Theme.SaveTheme" parent="Theme.FloatingTheme">
+        <item name="windowFixedHeightMinor">90%</item>
+        <item name="windowFixedHeightMajor">65%</item>
     </style>
 
     <color name="background">#000000</color>
@@ -29,9 +36,9 @@
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small"></style>
+    <style name="FilesFontSmall" parent="@android:style/TextAppearance.Small" />
 
-    <style name="MenuFont" parent="@android:style/TextAppearance.Medium"></style>
+    <style name="MenuFont" parent="@android:style/TextAppearance.Medium" />
 
     <style name="HelpFont" parent="@android:style/TextAppearance.Medium">
 
@@ -49,6 +56,4 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
-
-
 </resources>

@@ -19,4 +19,5 @@
     <string name="cancel">Cancel</string>
     <string name="s_deleted">%s deleted</string>
     <string name="undo">Undo</string>
+    <string name="new_save_name">New save name</string>
 </resources>

@@ -30,6 +30,26 @@ class FilesService(val ctx: Context) : AnkoLogger {
     data class EstimatedFileOperationProgress(val progress: Float)
 
     /**
+     * Gets all the save game files.
+     *
+     * @param config The configuration
+     * @return An array of save game files
+     */
+    fun getSaveGameFiles(config: GameConfiguration): Array<out File> {
+        return getSaveDirectoryContents(config.saveFiles)
+    }
+
+    /**
+     * Gets all the autosave game files.
+     *
+     * @param config The configuration
+     * @return An array of save game files
+     */
+    fun getAutoSaveGameFiles(config: GameConfiguration): Array<out File> {
+        return getSaveDirectoryContents(config.autosaveFiles)
+    }
+
+    /**
      * Checks whether the game files exist in the location given in the config.
      *
      * @param config The configuration
@@ -90,7 +110,6 @@ class FilesService(val ctx: Context) : AnkoLogger {
 
         try {
             val target = config.cthFiles
-            if (target.exists()) target.deleteRecursively()
             extractZipFile(assetOut, target, progress)
         } finally {
             assetOut.delete()
@@ -121,6 +140,21 @@ class FilesService(val ctx: Context) : AnkoLogger {
     ) {
         nukeOriginalFiles(config)
         copyDirectoryTree(source, config.thFiles, progress)
+    }
+
+    /**
+     * Gets a File corresponding to the given save name.
+     *
+     * @param saveName The save name.
+     * @param config The configuration that determines the save file locations.
+     * @return A file for the given save name.
+     */
+    fun getSaveFile(saveName : String, config: GameConfiguration) : File {
+        return if (saveName.startsWith("Autosave")) {
+            File(config.autosaveFiles, saveName)
+        } else {
+            File(config.saveFiles, saveName)
+        }
     }
 
     private suspend fun copyDirectoryTree(
@@ -245,7 +279,16 @@ class FilesService(val ctx: Context) : AnkoLogger {
         }
     }
 
+    private fun getSaveDirectoryContents(root: File): Array<out File> {
+        if (root.exists()) {
+            return root.listFiles { f -> f.isFile && f.extension.lowercase() == SAVE_GAME_EXTENSION } ?: arrayOf()
+        }
+        return arrayOf()
+    }
+
     companion object {
         private const val ENGINE_ZIP_FILE = "game.zip"
+        const val SAVE_GAME_EXTENSION = "sav"
+        const val SAVE_GAME_FILE_SUFFIX = ".$SAVE_GAME_EXTENSION"
     }
 }
