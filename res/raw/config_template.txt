@@ -146,6 +146,10 @@ movies = {{video_global}}
 --
 play_intro = {{video_intro}}
 
+-- Demo movie (played on idle at main menu): Enabled by default
+--
+play_demo = true
+
 -------------------------------------------------------------------------------
 -- Allow user actions while game is paused
 -- In Theme Hospital the player would only be allowed to use the top menu if
@@ -209,7 +213,7 @@ theme_hospital_install = [[{{th_path}}]]
 -- Specify a font file here if you wish to play the game in a language not
 -- present in the original game. Examples include Russian, Chinese and Polish.
 --
-unicode_font = nil -- [[{{unicode_font_path}}]]
+unicode_font = [[{{unicode_font_path}}]]
 
 -------------------------------------------------------------------------------
 -- Savegames. By default, the "Saves" directory alongside this config file will
@@ -217,7 +221,7 @@ unicode_font = nil -- [[{{unicode_font_path}}]]
 -- uncomment the following line, and point it to a directory which exists and
 -- is more suitable.
 --
-savegames = nil -- [[X:\ThemeHospital\Saves]]
+savegames = [[{{save_path}}]]
 
 -------------------------------------------------------------------------------
 -- Levels. By default, the "Levels" directory alongside this config file will
@@ -226,6 +230,7 @@ savegames = nil -- [[X:\ThemeHospital\Saves]]
 -- is more suitable.
 --
 levels = nil -- [[X:\ThemeHospital\Levels]]
+campaigns = nil -- [[X:\ThemeHospital\Campaigns]]
 
 -------------------------------------------------------------------------------
 -- Use new graphics. Whether to use the original graphics from Theme Hospital
@@ -247,7 +252,7 @@ new_graphics_folder = nil -- [[X:\ThemeHospital\Graphics]]
 -- uncomment the following line, and point it to a directory which exists and
 -- is more suitable.
 --
-screenshots = nil -- [[X:\ThemeHospital\Screenshots]]
+screenshots = [[{{screenshots_path}}]]
 
 -------------------------------------------------------------------------------
 -- If you want to listen to non-Theme-Hospital music, then follow these steps:
