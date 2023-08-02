@@ -17,4 +17,6 @@
     <string name="this_will_overwrite_saved_game_s_are_you_sure">This will overwrite saved game: %s. Are you sure?</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="s_deleted">%s deleted</string>
+    <string name="undo">Undo</string>
 </resources>
