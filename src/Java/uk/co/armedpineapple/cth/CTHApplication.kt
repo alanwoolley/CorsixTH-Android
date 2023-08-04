@@ -20,6 +20,16 @@ class CTHApplication : android.app.Application() {
         FilesService(this)
     }
 
+    val isFirstLaunchForVersion : Boolean by lazy {
+        val preferences = defaultSharedPreferences
+
+        val lastLaunchVersion = preferences.getInt("last_launch_version", -1)
+        val currentVersion = BuildConfig.VERSION_CODE
+        preferences.edit().putInt("last_launch_version", currentVersion).apply()
+
+        currentVersion > lastLaunchVersion
+    }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -30,9 +40,6 @@ class CTHApplication : android.app.Application() {
         val preferences = defaultSharedPreferences
 
         val service = LanguageService(this)
-        preferences.edit().putString(
-            this.getString(R.string.prefs_language), service.getCthLanguageFromAppConfig()
-        ).apply()
 
         if (!preferences.getBoolean(
                 PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false
@@ -51,6 +58,9 @@ class CTHApplication : android.app.Application() {
                 // only the first preferences file will have default values set.
                 PreferenceManager.setDefaultValues(this, preferencesId, true);
             }
+            preferences.edit().putString(
+                this.getString(R.string.prefs_language), service.getCthLanguageFromAppConfig()
+            ).apply()
         }
         configuration = GameConfiguration(this, preferences)
     }

@@ -1,5 +1,6 @@
 package uk.co.armedpineapple.cth
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -31,9 +32,9 @@ class GameActivity : SDLActivity(), AnkoLogger {
     @Keep
     private external fun nativeLoad(saveName: String)
 
-
     private val configuration: GameConfiguration
         get() = (application as CTHApplication).configuration
+
 
     private val filesService: FilesService get() = (application as CTHApplication).filesService
 
@@ -62,8 +63,7 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
         // Install the latest CTH game files in the background.
         var installJob: Job? = null
-        val alwaysUpgrade = true
-        if (alwaysUpgrade || !filesService.hasGameFiles(configuration)) {
+        if ((application as CTHApplication).isFirstLaunchForVersion || !filesService.hasGameFiles(configuration)) {
             Toast.makeText(this, "Upgrading", Toast.LENGTH_SHORT).show()
 
             val target = configuration.cthFiles
