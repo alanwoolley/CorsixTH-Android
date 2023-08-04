@@ -21,8 +21,6 @@ buildscript {
     }
 }
 
-project.ext.version = "0.9.3.0"
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: 'versioning.gradle'
@@ -40,7 +38,7 @@ repositories {
 dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'commons-io:commons-io:2.12.0'
@@ -77,8 +75,8 @@ android {
         minSdkVersion 27
         targetSdkVersion 34
 
-        versionName project.ext.version
-        versionCode buildVersionCode()
+        versionName = project.ext.buildVersion
+        versionCode = project.ext.buildVersionCode
     }
 
     compileOptions {
@@ -95,13 +93,6 @@ android {
 
         debug {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "true"
-            ext.enableCrashlytics = false
-        }
-
-
-        jnidebug.initWith(buildTypes.debug)
-        jnidebug {
-            jniDebuggable true
         }
     }
     sourceSets {
@@ -109,8 +100,6 @@ android {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src/Java', 'jni/SDL/android-project/app/src/main/java']
             resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
@@ -121,15 +110,11 @@ android {
                 .dependsOn(createGameZip)
     }
 
-    packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-    }
-
     lintOptions {
         abortOnError false
         checkReleaseBuilds false
     }
+
     externalNativeBuild {
         ndkBuild {
             path 'jni/Android.mk'

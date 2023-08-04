@@ -1,10 +1,4 @@
 ext {
-    buildVersionCode = {
-        def candidate = System.getenv("BUILD_NUMBER") ?: "9999"
-
-        def (major, minor, patch, incr) = version.toLowerCase().replaceAll('-', '').tokenize('.')
-        (major, minor, patch, incr, candidate) = [major, minor, patch, incr, candidate].collect{it.toInteger()}
-
-        (major * 1000000000) + (minor * 10000000) + (patch * 100000) + (incr * 10000) + candidate;
-    }
+    buildVersionCode = Integer.parseInt(System.getenv("BUILD_NUMBER") ?: "999999")
+    buildVersion = "1.0.0." + buildVersionCode
 }
