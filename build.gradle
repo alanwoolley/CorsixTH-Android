@@ -76,7 +76,7 @@ android {
         targetSdkVersion 34
 
         versionName = project.ext.buildVersion
-        versionCode = project.ext.buildVersionCode
+        versionCode = project.ext.offsetBuildVersionCode
     }
 
     compileOptions {
