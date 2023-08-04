@@ -14,9 +14,17 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.AppTheme">
 
+        <!-- Overscan, rather than letterboxing -->
         <meta-data
             android:name="SDL_ENV.SDL_HINT_RENDER_LOGICAL_SIZE_MODE"
             android:value="1" />
+
+        <!-- Don't generate synthetic mouse events from touch. We will handle this ourselves in lua
+        so that we get better control -->
+        <meta-data
+            android:name="SDL_ENV.SDL_TOUCH_MOUSE_EVENTS"
+            android:value="false">
+        </meta-data>
 
         <activity
             android:name="uk.co.armedpineapple.cth.GameActivity"
