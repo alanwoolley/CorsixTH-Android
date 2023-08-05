@@ -8,4 +8,5 @@ files:
       - /res/values/prefs.xml
       - /res/values/resolutions.xml
       - /res/values/languages.xml
+      - /res/values/ic_launcher_background.xml
     translation: /res/values-%android_code%/%original_file_name%
