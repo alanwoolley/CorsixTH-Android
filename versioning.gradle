@@ -1,5 +1,6 @@
 ext {
     buildVersionCode = Integer.parseInt(System.getenv("BUILD_NUMBER") ?: "999999")
     offsetBuildVersionCode = 100000000 + buildVersionCode
-    buildVersion = "1.0.0." + buildVersionCode
+    isSnapshot = Boolean.parseBoolean(System.getenv("IS_SNAPSHOT") ?: "false")
+    buildVersion = "1.0.0." + buildVersionCode.toString() + (isSnapshot ? "-SNAPSHOT" : "")
 }
