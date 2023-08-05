@@ -60,8 +60,10 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ env.VERSION }}
-        description: 'Snapshot release'
-        files: build/outputs/apk/release/*.apk README.md
+        body: 'Snapshot release'
+        files: |
+          build/outputs/apk/release/*.apk
+          README.md
         clear_attachments: true
         prerelease: true
         name: ${{ env.VERSION }}
