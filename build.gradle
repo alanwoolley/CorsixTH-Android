@@ -142,6 +142,13 @@ android {
     }
 }
 
+
+task saveVersion {
+    new File(projectDir, "version.txt").text = project.ext.buildVersion
+}
+
+preBuild.dependsOn(saveVersion)
+
 // Create ZIP of CorsixTH game assets
 task createGameZip(type: Zip) {
 
