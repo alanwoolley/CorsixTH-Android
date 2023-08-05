@@ -54,11 +54,14 @@ jobs:
       run: |
         VER=$(cat version.txt)
         echo "VERSION=$VER" >> $GITHUB_ENV
-    - name: Update snapshot release
-      uses: johnwbyrd/update-release@v1.0.0
+    - name: Create/Update Github Snapshot Release
+      uses: mini-bomba/create-github-release@v1.1.3
       if: github.ref == 'refs/heads/dev'
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        files: build/outputs/apk/release/CorsixTH-Android-release.apk README.md
+        tag: ${{ env.VERSION }}
+        description: 'Snapshot release'
+        files: build/outputs/apk/release/*.apk README.md
+        clear_attachments: true
         prerelease: true
-        release: ${{ env.VERSION }}
+        name: ${{ env.VERSION }}
