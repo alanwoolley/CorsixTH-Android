@@ -50,3 +50,15 @@ jobs:
       with:
         name: APK
         path: build/outputs/apk/release/*
+    - name: Set version variables
+      run: |
+        VER=$(cat version.txt)
+        echo "VERSION=$VER" >> $GITHUB_ENV
+    - name: Update snapshot release
+      uses: johnwbyrd/update-release@v1.0.0
+      if: github.ref == 'refs/heads/dev'
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: build/outputs/apk/release/CorsixTH-Android-release.apk README.md
+        prerelease: true
+        release: ${{ env.VERSION }}
