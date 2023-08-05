@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Peliasetukset</string>
+    <string name="loading_theme_hospital_failed">Theme Hospitalin lataaminen epäonnistui.</string>
+    <string name="unrecognised_file">Tunnistamaton tiedosto.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Virheellinen GOG-asennusohjelma. Oletko varma, että tämä on Theme Hospital?</string>
+    <string name="installing_please_wait">Asennetaan. Odota hetki.</string>
 </resources>
