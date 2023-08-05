@@ -31,7 +31,7 @@ jobs:
     - name: Build APK and app bundle
       run: ./gradlew bundleRelease assembleRelease
       env:
-        RELEASE_STORE_FILE: 'android_keystore.jks'
+        RELEASE_STORE_FILE: ${{ steps.decode_keystore.outputs.filePath }}
         RELEASE_STORE_PASSWORD : ${{ secrets.RELEASE_STORE_PASSWORD }}
         RELEASE_KEY_ALIAS : ${{ secrets.RELEASE_KEY_ALIAS }}
         RELEASE_KEY_PASSWORD : ${{ secrets.RELEASE_KEY_PASSWORD }}
