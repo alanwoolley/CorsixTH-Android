@@ -74,6 +74,12 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 }
 
+configurations.all {
+    exclude group: 'com.google.android.gms', module : 'play-services-ads'
+    exclude group: 'com.google.android.gms', module : 'play-services-ads-identifier'
+    exclude group: 'com.google.android.gms', module : 'play-services-ads-lite'
+}
+
 android {
     compileSdkVersion 34
 
