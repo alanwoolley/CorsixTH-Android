@@ -3,7 +3,7 @@ import com.android.build.gradle.internal.lint.AndroidLintTask
 import com.android.build.gradle.tasks.MergeSourceSetFolders
 
 buildscript {
-    ext.kotlin_version = '1.8.21'
+    ext.kotlin_version = '1.9.0'
     ext.anko_version = '0.10.4'
 
     repositories {
@@ -16,7 +16,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.0.2'
+        classpath 'com.android.tools.build:gradle:8.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.15'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.8'
@@ -59,7 +59,7 @@ dependencies {
     implementation "com.lazygeniouz:dfc:1.0.7"
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'uk.co.armedpineapple.innoextract:service:2.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.15.1'
@@ -134,10 +134,6 @@ android {
                 .dependsOn(createGameZip)
     }
 
-    lintOptions {
-        abortOnError false
-        checkReleaseBuilds false
-    }
 
     externalNativeBuild {
         ndkBuild {
@@ -149,8 +145,12 @@ android {
         dataBinding true
         buildConfig true
     }
-    aaptOptions {
-        noCompress "zip"
+    androidResources {
+        noCompress 'zip'
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 
