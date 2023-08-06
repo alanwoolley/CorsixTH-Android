@@ -42,6 +42,8 @@ jobs:
         RELEASE_KEY_ALIAS : ${{ secrets.RELEASE_KEY_ALIAS }}
         RELEASE_KEY_PASSWORD : ${{ secrets.RELEASE_KEY_PASSWORD }}
         BUILD_NUMBER: ${{ github.run_number }}
+    - name: Upload crashlytics symbols
+      run: ./gradlew uploadCrashlyticsSymbolFileRelease
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3.1.2
       with:
