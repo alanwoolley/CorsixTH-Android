@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Oyun Ayarları</string>
+    <string name="loading_theme_hospital_failed">Tema Hastanesi yüklemesi başarısız oldu.</string>
+    <string name="unrecognised_file">Tanınmayan dosya.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Geçersiz GOG yükleyicisi. Bunun Tema Hastanesi olduğuna emin misin?</string>
+    <string name="installing_please_wait">Yükleniyor. Lütfen bekleyin.</string>
+    <string name="screenshot_contentdesc">Oyun Ekran Görüntüsü</string>
+    <string name="money_contentdesc">Banka Bakiyesi</string>
+    <string name="rep_contentdesc">İtibar</string>
+    <string name="new_save">Yeni Tasarruf</string>
+    <string name="save_game">Oyunu Kaydet</string>
+    <string name="load_game">Oyun Yükle</string>
+    <string name="overwrite_save">Kaydetme üzerine yazma?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Bu, kayıtlı oyunun üzerine yazacaktır: %s. Emin misiniz?</string>
+    <string name="save">Kaydet</string>
+    <string name="cancel">İptal</string>
+    <string name="s_deleted">%s silindi</string>
+    <string name="undo">Geri al</string>
+    <string name="new_save_name">Yeni kaydetme adı</string>
 </resources>
