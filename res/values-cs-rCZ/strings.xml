@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Nastavení hry</string>
+    <string name="loading_theme_hospital_failed">Načítání tématu Nemocnice se nezdařilo.</string>
+    <string name="unrecognised_file">Nerozpoznaný soubor.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Neplatný instalační program GOG. Jste si jisti, že se jedná o Theme Hospital?</string>
+    <string name="installing_please_wait">Instalace. Počkejte prosím.</string>
+    <string name="screenshot_contentdesc">Snímek obrazovky hry</string>
+    <string name="money_contentdesc">Bankovní zůstatek</string>
+    <string name="rep_contentdesc">Reputace</string>
+    <string name="new_save">Nové uložení</string>
+    <string name="save_game">Uložit hru</string>
+    <string name="load_game">Načtení hry</string>
+    <string name="overwrite_save">Přepsat uložení?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Tím se přepíše uložená hra: %s. Jste si jisti?</string>
+    <string name="save">Uložit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="s_deleted">%s smazáno</string>
+    <string name="undo">Zrušit</string>
+    <string name="new_save_name">Nový název uložení</string>
 </resources>
