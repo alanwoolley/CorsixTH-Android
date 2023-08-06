@@ -5,4 +5,17 @@
     <string name="unrecognised_file">Tunnistamaton tiedosto.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Virheellinen GOG-asennusohjelma. Oletko varma, että tämä on Theme Hospital?</string>
     <string name="installing_please_wait">Asennetaan. Odota hetki.</string>
+    <string name="screenshot_contentdesc">Pelin kuvakaappaus</string>
+    <string name="money_contentdesc">Pankin saldo</string>
+    <string name="rep_contentdesc">Maine</string>
+    <string name="new_save">Uusi Tallenna</string>
+    <string name="save_game">Tallenna peli</string>
+    <string name="load_game">Lataa peli</string>
+    <string name="overwrite_save">Tallennuksen ylikirjoittaminen?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Tämä korvaa tallennetun pelin: %s. Oletko varma?</string>
+    <string name="save">Tallenna</string>
+    <string name="cancel">Peruuta</string>
+    <string name="s_deleted">%s poistettu</string>
+    <string name="undo">Kumoa</string>
+    <string name="new_save_name">Uusi tallennuksen nimi</string>
 </resources>
