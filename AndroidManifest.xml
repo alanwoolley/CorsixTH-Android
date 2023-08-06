@@ -23,8 +23,26 @@
         so that we get better control -->
         <meta-data
             android:name="SDL_ENV.SDL_TOUCH_MOUSE_EVENTS"
-            android:value="false">
-        </meta-data>
+            android:value="false" />
+
+        <!-- Don't enable crashlytics or analytics collection by default. Opt-in is used instead. -->
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+
+        <!-- Don't enable anything in analytics that we don't need or aren't interesting. -->
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_personalization_signals"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_ssaid_collection_enabled"
+            android:value="false" />
 
         <activity
             android:name="uk.co.armedpineapple.cth.GameActivity"
@@ -56,8 +74,8 @@
         <activity
             android:name="uk.co.armedpineapple.cth.files.SaveActivity"
             android:exported="false"
-            android:theme="@style/Theme.SaveTheme"
-            android:label="Save"/>
+            android:label="Save"
+            android:theme="@style/Theme.SaveTheme" />
 
     </application>
 </manifest>

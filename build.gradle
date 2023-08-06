@@ -18,6 +18,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.8'
     }
 }
 
@@ -25,6 +27,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: 'versioning.gradle'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 repositories {
     jcenter()
@@ -60,8 +64,10 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.15.1'
 
-    def room_version = "2.5.2"
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.0'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
 
+    def room_version = "2.5.2"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
@@ -100,6 +106,8 @@ android {
             buildConfigField "boolean", "ALWAYS_UPGRADE", "false"
             if (System.getenv('RELEASE_STORE_FILE') != null) {
                 signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
             }
         }
 

@@ -54,3 +54,4 @@ fabric.properties
 .externalNativeBuild
 *.jks
 version.txt
+google-services.json
