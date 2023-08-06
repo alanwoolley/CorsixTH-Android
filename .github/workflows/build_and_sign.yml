@@ -27,6 +27,7 @@ jobs:
       uses: timheuer/base64-to-file@v1.2
       with:
         fileName: 'android_keystore.jks'
+        encodedString: ${{ secrets.KEYSTORE }}
     - name: Decode Google Services Info
       uses: timheuer/base64-to-file@v1.2
       with:
