@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">ゲーム設定</string>
+    <string name="loading_theme_hospital_failed">テーマ病院の読み込みに失敗しました。</string>
+    <string name="unrecognised_file">ファイルが認識されません。</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">無効なGOGインストーラです。本当にTheme Hospitalですか？</string>
+    <string name="installing_please_wait">インストール中です。しばらくお待ちください。</string>
+    <string name="screenshot_contentdesc">ゲームのスクリーンショット</string>
+    <string name="money_contentdesc">銀行残高</string>
+    <string name="rep_contentdesc">評判</string>
+    <string name="new_save">ニューセーブ</string>
+    <string name="save_game">セーブゲーム</string>
+    <string name="load_game">ゲームをロードする</string>
+    <string name="overwrite_save">上書き保存？</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">これはセーブしたゲームを上書きします: %s.確かですか？</string>
+    <string name="save">セーブ</string>
+    <string name="cancel">キャンセル</string>
+    <string name="s_deleted">%s 削除</string>
+    <string name="undo">元に戻す</string>
+    <string name="new_save_name">新しいセーブ名</string>
 </resources>
