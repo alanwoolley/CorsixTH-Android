@@ -65,7 +65,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.15.1'
 
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ndk:18.4.8'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:18.4.0'
     implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
 
     def room_version = "2.5.2"
