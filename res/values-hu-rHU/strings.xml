@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Játékbeállítások</string>
+    <string name="loading_theme_hospital_failed">A Theme Hospital betöltése sikertelen.</string>
+    <string name="unrecognised_file">Nem ismert fájl.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Érvénytelen GOG telepítő. Biztos, hogy ez a Theme Hospital?</string>
+    <string name="installing_please_wait">Telepítés. Kérjük, várjon.</string>
+    <string name="screenshot_contentdesc">Játék Pillanatkép</string>
+    <string name="money_contentdesc">Banki egyenleg</string>
+    <string name="rep_contentdesc">Hírnév</string>
+    <string name="new_save">Új mentés</string>
+    <string name="save_game">Játék mentése</string>
+    <string name="load_game">Játék betöltése</string>
+    <string name="overwrite_save">Mentés felülírása?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Ez felülírja a mentett játékot: %s. Biztos vagy benne?</string>
+    <string name="save">Mentés</string>
+    <string name="cancel">Törölje</string>
+    <string name="s_deleted">%s törölve</string>
+    <string name="undo">Undo</string>
+    <string name="new_save_name">Új mentési név</string>
 </resources>
