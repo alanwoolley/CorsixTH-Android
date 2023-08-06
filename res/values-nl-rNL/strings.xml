@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Spelinstellingen</string>
+    <string name="loading_theme_hospital_failed">Laden van Themaziekenhuis mislukt.</string>
+    <string name="unrecognised_file">Niet-herkend bestand.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Ongeldig GOG-installatieprogramma. Weet u zeker dat dit Theme Hospital is?</string>
+    <string name="installing_please_wait">Installeren. Even geduld.</string>
+    <string name="screenshot_contentdesc">Screenshot spel</string>
+    <string name="money_contentdesc">Saldo bank</string>
+    <string name="rep_contentdesc">Reputatie</string>
+    <string name="new_save">Nieuw Opslaan</string>
+    <string name="save_game">Spel opslaan</string>
+    <string name="load_game">Spel laden</string>
+    <string name="overwrite_save">Opslaan overschrijven?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Hierdoor wordt opgeslagen spel overschreven: %s. Weet je het zeker?</string>
+    <string name="save">Sla</string>
+    <string name="cancel">Annuleren</string>
+    <string name="s_deleted">%s verwijderd</string>
+    <string name="undo">Ongedaan maken</string>
+    <string name="new_save_name">Nieuwe naam opslaan</string>
 </resources>
