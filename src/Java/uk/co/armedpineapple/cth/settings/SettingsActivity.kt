@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import uk.co.armedpineapple.cth.CTHApplication
 import uk.co.armedpineapple.cth.R
 
 
@@ -100,6 +101,19 @@ class SettingsActivity : AppCompatActivity(),
     class VideoFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.video_preferences, rootKey)
+        }
+    }
+
+    class AnalyticsFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.analytics_preferences, rootKey)
+
+            val context = requireContext()
+            val application = (context.applicationContext as CTHApplication)
+            findPreference<Preference>(context.getString(R.string.prefs_policy))?.setOnPreferenceClickListener {
+               application.reporting.openPrivacyPolicy()
+                true
+            }
         }
     }
 }

@@ -1,59 +1,78 @@
 package uk.co.armedpineapple.cth
 
-import android.content.*
-import android.util.*
-import android.widget.*
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.net.Uri
+import android.view.LayoutInflater
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
+import org.jetbrains.anko.defaultSharedPreferences
 
-object Reporting {
-    private val TAG = "CorsixTH"
 
-    fun reportWithToast(ctx: Context, msg: String, e: Exception?) {
-        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
-        Log.w(TAG, msg, e)
+/**
+ * Manages analyics and diagnostics reporting.
+ *
+ * @property context A valid context.
+ */
+class Reporting(private val context: Context) {
+
+    /**
+     * Whether consent has been granted by the user.
+     *
+     * @returns true if consent granted.
+     */
+    fun hasRequestedConsent(): Boolean {
+        return context.defaultSharedPreferences.getBoolean(
+            context.getString(R.string.pref_has_requested_consent), false
+        )
     }
 
-    fun event(msg: String) {
-        Log.i(TAG, msg)
+    /**
+     * Opens the privacy policy
+     */
+    fun openPrivacyPolicy() {
+        val url = "https://www.armedpineapple.co.uk/projects/corsixth-for-android/corsixth-for-android-privacy-policy"
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(url)
+        i.addFlags(FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(i)
     }
 
-    fun report(e: Exception?) {
-        Log.e(TAG, "Exception", e)
-
+    /**
+     * Requests consent for collection
+     *
+     * @param activity An activity to own the dialog.
+     */
+    fun requestConsent(activity: Activity) {
+        val layout = LayoutInflater.from(context).inflate(R.layout.dialog_consent, null, false);
+        layout.findViewById<Button>(R.id.privacy_policy_button).setOnClickListener {
+            openPrivacyPolicy()
+        }
+        AlertDialog.Builder(activity).setView(layout)
+            .setTitle(context.getString(R.string.diagnostics_and_analytics))
+            .setPositiveButton(context.getString(R.string.accept)) { _, _ ->
+                onConsentChanged(
+                    true
+                )
+            }.setNegativeButton(context.getString(R.string.decline)) { _, _ ->
+                onConsentChanged(
+                    false
+                )
+            }.setCancelable(false).create().show()
     }
 
-    fun report(log: String, e: Exception?) {
-        Log.e(TAG, log, e)
-    }
+    private fun onConsentChanged(consent: Boolean) {
+        val sharedPreferences = context.defaultSharedPreferences
+        sharedPreferences.edit()
+            .putBoolean(context.getString(R.string.pref_has_requested_consent), true)
+            .putBoolean(context.getString(R.string.prefs_consent), consent).apply()
 
-    fun getLogger(tag: String): Logger {
-        return Logger(tag)
-    }
-
-    class Logger internal constructor(private val tag: String) {
-
-        fun d(msg: String) {
-
-            Log.d(tag, msg)
-
-        }
-
-        fun e(msg: String) {
-            Log.e(tag, msg)
-
-        }
-
-        fun i(msg: String) {
-
-            Log.i(tag, msg)
-        }
-
-        fun w(msg: String) {
-            Log.w(tag, msg)
-        }
-
-        fun v(msg: String) {
-            Log.v(tag, msg)
-
-        }
+        Firebase.crashlytics.setCrashlyticsCollectionEnabled(consent)
+        Firebase.analytics.setAnalyticsCollectionEnabled(consent)
     }
 }

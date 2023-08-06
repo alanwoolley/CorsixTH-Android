@@ -22,7 +22,12 @@ jobs:
         java-version: '18'
         distribution: 'temurin'
         cache: gradle
-
+    - name: Decode Google Services Info
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'google-services.json'
+        fileDir: '.'
+        encodedString: ${{ secrets.GOOGLE_SERVICES_JSON }}
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build App bundle

@@ -20,4 +20,8 @@
     <string name="s_deleted">%s deleted</string>
     <string name="undo">Undo</string>
     <string name="new_save_name">New save name</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="diagnostics_and_analytics">Diagnostics and Analytics</string>
 </resources>

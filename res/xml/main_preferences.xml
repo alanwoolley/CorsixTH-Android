@@ -30,5 +30,10 @@
         app:icon="@drawable/baseline_science_24"
         app:summary="@string/for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things"
         app:title="@string/advanced" />
+    <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$AnalyticsFragment"
+        app:icon="@drawable/baseline_analytics_24"
+        app:summary="@string/change_analytics_and_diagnostics_preferences"
+        app:title="@string/analytics_and_diagnostics" />
 
 </PreferenceScreen>

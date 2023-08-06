@@ -27,7 +27,12 @@ jobs:
       uses: timheuer/base64-to-file@v1.2
       with:
         fileName: 'android_keystore.jks'
-        encodedString: ${{ secrets.KEYSTORE }}
+    - name: Decode Google Services Info
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'google-services.json'
+        fileDir: '.'
+        encodedString: ${{ secrets.GOOGLE_SERVICES_JSON }}
     - name: Set snapshot
       run: |
         echo "IS_SNAPSHOT=true" >> "$GITHUB_ENV"
@@ -42,6 +47,8 @@ jobs:
         RELEASE_KEY_ALIAS : ${{ secrets.RELEASE_KEY_ALIAS }}
         RELEASE_KEY_PASSWORD : ${{ secrets.RELEASE_KEY_PASSWORD }}
         BUILD_NUMBER: ${{ github.run_number }}
+    - name: Upload crashlytics symbols
+      run: ./gradlew uploadCrashlyticsSymbolFileRelease
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3.1.2
       with:

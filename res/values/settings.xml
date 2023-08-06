@@ -89,4 +89,8 @@
     <string name="language">Game Language</string>
     <string name="stretch_display">Stretch display</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Stretches the game to fill the screen, keeping the exact chosen resolution.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Allow collection of diagnostic and usage information.</string>
+    <string name="analytics_and_diagnostics">Analytics and Diagnostics</string>
+    <string name="collect_usage">Collect Usage</string>
+    <string name="change_analytics_and_diagnostics_preferences">Change analytics and diagnostics preferences</string>
 </resources>
