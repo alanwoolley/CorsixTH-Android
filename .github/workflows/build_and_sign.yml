@@ -27,7 +27,12 @@ jobs:
       uses: timheuer/base64-to-file@v1.2
       with:
         fileName: 'android_keystore.jks'
-        encodedString: ${{ secrets.KEYSTORE }}
+    - name: Decode Google Services Info
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        fileName: 'google-services.json'
+        fileDir: '.'
+        encodedString: ${{ secrets.GOOGLE_SERVICES_JSON }}
     - name: Set snapshot
       run: |
         echo "IS_SNAPSHOT=true" >> "$GITHUB_ENV"
