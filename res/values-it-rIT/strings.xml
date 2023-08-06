@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Impostazioni di gioco</string>
+    <string name="loading_theme_hospital_failed">Il caricamento del Theme Hospital non è riuscito.</string>
+    <string name="unrecognised_file">File non riconosciuto.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Programma di installazione GOG non valido. Sei sicuro che si tratti di Theme Hospital?</string>
+    <string name="installing_please_wait">Installazione. Attendere prego.</string>
+    <string name="screenshot_contentdesc">Schermata del gioco</string>
+    <string name="money_contentdesc">Saldo bancario</string>
+    <string name="rep_contentdesc">La reputazione</string>
+    <string name="new_save">Nuovo Salva</string>
+    <string name="save_game">Salva il gioco</string>
+    <string name="load_game">Caricare il gioco</string>
+    <string name="overwrite_save">Sovrascrivere il salvataggio?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Questo sovrascriverà la partita salvata: %s. Sei sicuro?</string>
+    <string name="save">Risparmiare</string>
+    <string name="cancel">Annullamento</string>
+    <string name="s_deleted">%s cancellato</string>
+    <string name="undo">Annullamento</string>
+    <string name="new_save_name">Nuovo nome del salvataggio</string>
 </resources>
