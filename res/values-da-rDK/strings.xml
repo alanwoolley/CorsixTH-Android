@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Spilindstillinger</string>
+    <string name="loading_theme_hospital_failed">Indlæsning af Theme Hospital mislykkedes.</string>
+    <string name="unrecognised_file">Ikke genkendt fil.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Ugyldigt GOG-installationsprogram. Er du sikker på, at det er Theme Hospital?</string>
+    <string name="installing_please_wait">Installation. Vent venligst.</string>
+    <string name="screenshot_contentdesc">Skærmbillede af spillet</string>
+    <string name="money_contentdesc">Banksaldo</string>
+    <string name="rep_contentdesc">Omdømme</string>
+    <string name="new_save">Ny besparelse</string>
+    <string name="save_game">Gem spillet</string>
+    <string name="load_game">Indlæs spil</string>
+    <string name="overwrite_save">Overskrive gem?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Dette vil overskrive det gemte spil: %s. Er du sikker?</string>
+    <string name="save">Gem</string>
+    <string name="cancel">Annuller</string>
+    <string name="s_deleted">%s slettet</string>
+    <string name="undo">Fortryd</string>
+    <string name="new_save_name">Nyt gemmenavn</string>
 </resources>
