@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">게임 설정</string>
+    <string name="loading_theme_hospital_failed">테마 병원을 로드하지 못했습니다.</string>
+    <string name="unrecognised_file">인식할 수 없는 파일입니다.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">잘못된 GOG 설치 프로그램입니다. 테마 병원이 맞습니까?</string>
+    <string name="installing_please_wait">설치 중입니다. 잠시만 기다려주세요.</string>
+    <string name="screenshot_contentdesc">게임 스크린샷</string>
+    <string name="money_contentdesc">은행 잔액</string>
+    <string name="rep_contentdesc">평판</string>
+    <string name="new_save">새 저장</string>
+    <string name="save_game">게임 저장</string>
+    <string name="load_game">게임 로드</string>
+    <string name="overwrite_save">저장 내용을 덮어쓰시겠습니까?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">저장된 게임을 덮어씁니다: %s. 확실하신가요?</string>
+    <string name="save">저장</string>
+    <string name="cancel">취소</string>
+    <string name="s_deleted">%s 삭제됨</string>
+    <string name="undo">실행 취소</string>
+    <string name="new_save_name">새 저장 이름</string>
 </resources>
