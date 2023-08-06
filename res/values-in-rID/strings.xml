@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Pengaturan Game</string>
+    <string name="loading_theme_hospital_failed">Memuat Tema Rumah Sakit gagal.</string>
+    <string name="unrecognised_file">File yang tidak dikenali.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Penginstal GOG tidak valid. Apakah Anda yakin ini adalah Theme Hospital?</string>
+    <string name="installing_please_wait">Menginstal. Mohon tunggu.</string>
+    <string name="screenshot_contentdesc">Tangkapan Layar Game</string>
+    <string name="money_contentdesc">Saldo Bank</string>
+    <string name="rep_contentdesc">Reputasi</string>
+    <string name="new_save">Simpan Baru</string>
+    <string name="save_game">Simpan Game</string>
+    <string name="load_game">Memuat Game</string>
+    <string name="overwrite_save">Menimpa penyimpanan?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Ini akan menimpa game yang disimpan: %s. Apakah Anda yakin?</string>
+    <string name="save">Simpan</string>
+    <string name="cancel">Batal</string>
+    <string name="s_deleted">%s dihapus</string>
+    <string name="undo">Membatalkan</string>
+    <string name="new_save_name">Nama penyimpanan baru</string>
 </resources>
