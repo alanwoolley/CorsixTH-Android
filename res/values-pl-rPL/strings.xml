@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Ustawienia gry</string>
+    <string name="loading_theme_hospital_failed">Ładowanie Theme Hospital nie powiodło się.</string>
+    <string name="unrecognised_file">Nierozpoznany plik.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Nieprawidłowy instalator GOG. Czy to na pewno Theme Hospital?</string>
+    <string name="installing_please_wait">Instalacja. Proszę czekać.</string>
+    <string name="screenshot_contentdesc">Zrzut ekranu z gry</string>
+    <string name="money_contentdesc">Saldo bankowe</string>
+    <string name="rep_contentdesc">Reputacja</string>
+    <string name="new_save">New Save</string>
+    <string name="save_game">Zapisz grę</string>
+    <string name="load_game">Załaduj grę</string>
+    <string name="overwrite_save">Nadpisać zapis?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Spowoduje to nadpisanie zapisanej gry: %s. Jesteś pewien?</string>
+    <string name="save">Zapisz</string>
+    <string name="cancel">Anuluj</string>
+    <string name="s_deleted">%s usunięty</string>
+    <string name="undo">Cofnij</string>
+    <string name="new_save_name">Nowa nazwa zapisu</string>
 </resources>
