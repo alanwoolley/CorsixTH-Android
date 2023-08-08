@@ -15,6 +15,7 @@ import java.io.FileDescriptor
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import java.util.zip.ZipFile
 
 /**
@@ -77,12 +78,8 @@ class FilesService(val ctx: Context) : AnkoLogger {
         // We should be a bit more thorough with checking for the original files, as we have less
         // opportunity to detect if there's an issue here.
         val expectedFiles = arrayOf(
-            "QDATAM/FACE01M.DAT",
-            "QDATAM/FONT100M.TAB",
-            "LEVELS/EASY00.SAM",
             "QDATA/AREA01V.DAT",
             "DATA/LANG-0.DAT",
-            "DATAM/MBLK-0.DAT"
         )
 
         for (expectedFile in expectedFiles) {
@@ -149,7 +146,7 @@ class FilesService(val ctx: Context) : AnkoLogger {
      * @param config The configuration that determines the save file locations.
      * @return A file for the given save name.
      */
-    fun getSaveFile(saveName : String, config: GameConfiguration) : File {
+    fun getSaveFile(saveName: String, config: GameConfiguration): File {
         return if (saveName.startsWith("Autosave")) {
             File(config.autosaveFiles, saveName)
         } else {
@@ -209,7 +206,7 @@ class FilesService(val ctx: Context) : AnkoLogger {
         }
     }
 
-    private suspend fun extractZipFile(
+    suspend fun extractZipFile(
         source: File, target: File, progress: SendChannel<DeterminateFileOperationProgress>?
     ) {
         withContext(Dispatchers.IO) {
@@ -244,13 +241,37 @@ class FilesService(val ctx: Context) : AnkoLogger {
         }
     }
 
-    private fun copyStreamToFile(
-        outputFile: File, size: Long, input: InputStream
+    fun copyStreamToFile(
+        outputFile: File,
+        size: Long,
+        input: InputStream,
+        progress: SendChannel<DeterminateFileOperationProgress>? = null
     ) {
         FileOutputStream(outputFile).use { fout ->
             allocateStorage(size, fout.fd, storageManager)
-            input.copyTo(fout)
+            copyStreamTo(input, fout, size, progress)
         }
+    }
+
+    private fun copyStreamTo(
+        input: InputStream,
+        out: OutputStream,
+        length: Long? = null,
+        progress: SendChannel<DeterminateFileOperationProgress>? = null,
+        bufferSize: Int = DEFAULT_BUFFER_SIZE
+    ): Long {
+        var bytesCopied: Long = 0
+        val buffer = ByteArray(bufferSize)
+        var bytes = input.read(buffer)
+        while (bytes >= 0) {
+            out.write(buffer, 0, bytes)
+            bytesCopied += bytes
+            length?.let { l ->
+                progress?.trySend(DeterminateFileOperationProgress(bytesCopied, l))
+            }
+            bytes = input.read(buffer)
+        }
+        return bytesCopied
     }
 
     private fun copyAsset(
@@ -281,7 +302,8 @@ class FilesService(val ctx: Context) : AnkoLogger {
 
     private fun getSaveDirectoryContents(root: File): Array<out File> {
         if (root.exists()) {
-            return root.listFiles { f -> f.isFile && f.extension.lowercase() == SAVE_GAME_EXTENSION } ?: arrayOf()
+            return root.listFiles { f -> f.isFile && f.extension.lowercase() == SAVE_GAME_EXTENSION }
+                ?: arrayOf()
         }
         return arrayOf()
     }
