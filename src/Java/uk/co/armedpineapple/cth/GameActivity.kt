@@ -54,7 +54,7 @@ class GameActivity : SDLActivity(), AnkoLogger {
         if (!filesService.hasOriginalFiles(configuration)) {
             finishAndRemoveTask()
             val intent = Intent(this, SetupActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
 
             super.onCreate(savedInstanceState)

@@ -45,6 +45,10 @@
 
     <!-- Analytics and Diagnostics -->
     <string name="prefs_consent" translatable="false">analytics_diag_consent</string>
-    <string name="pref_has_requested_consent">has_requested_consent</string>
+    <string name="prefs_has_requested_consent" translatable="false">has_requested_consent</string>
     <string name="prefs_policy" translatable="false">privacy_policy</string>
+
+    <!-- Upgrade -->
+    <string name="prefs_upgrade" translatable="false">upgrade</string>
+    <string name="prefs_reinstall" translatable="false">reinstall</string>
 </resources>

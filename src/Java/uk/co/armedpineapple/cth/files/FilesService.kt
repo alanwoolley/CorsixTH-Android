@@ -67,6 +67,16 @@ class FilesService(val ctx: Context) : AnkoLogger {
     }
 
     /**
+     * Gets whether the demo game files are installed.
+     *
+     * @param config The configuration
+     * @return Whether the demo game files are installed.
+     */
+    fun isDemoVersion(config: GameConfiguration) : Boolean {
+        return File(config.thFiles, "DATAM/DEMO.DAT").exists()
+    }
+
+    /**
      * Checks whether the original TH files are installed in the location given in the config.
      *
      * This doesn't do a thorough integrity check and is only indicative of missing files.
@@ -241,6 +251,14 @@ class FilesService(val ctx: Context) : AnkoLogger {
         }
     }
 
+    /**
+     * Copies a stream to a file
+     *
+     * @param outputFile The target file
+     * @param size The size of the input
+     * @param input The input stream to copy
+     * @param progress An optional progress channel
+     */
     fun copyStreamToFile(
         outputFile: File,
         size: Long,

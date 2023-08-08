@@ -1,6 +1,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
+        app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$UpgradeFragment"
+        app:icon="@drawable/baseline_upgrade_24"
+        app:key="@string/prefs_upgrade"
+        app:summary="@string/upgrade_to_the_full_version_of_theme_hospital"
+        app:title="@string/full_version" />
+    <Preference
         app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$GameplayFragment"
         app:icon="@drawable/baseline_videogame_asset_24"
         app:summary="@string/adjust_the_game_options"
