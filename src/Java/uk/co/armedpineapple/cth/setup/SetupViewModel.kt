@@ -2,6 +2,7 @@ package uk.co.armedpineapple.cth.setup
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,12 +14,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import org.jetbrains.anko.runOnUiThread
 import uk.co.armedpineapple.cth.CTHApplication
 import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.innoextract.service.Configuration
 import uk.co.armedpineapple.innoextract.service.ExtractCallback
 import uk.co.armedpineapple.innoextract.service.IExtractService
+import java.io.File
+import java.net.URL
 
 class SetupViewModel(application: Application) : AndroidViewModel(application), AnkoLogger {
 
@@ -78,6 +80,48 @@ class SetupViewModel(application: Application) : AndroidViewModel(application), 
         }
     }
 
+    fun downloadAndExtractDemo() {
+        val demoUrl = "https://www.armedpineapple.co.uk/wp-content/uploads/2023/08/HOSP_DEMO.zip"
+        val thLocation = getApplication<CTHApplication>().configuration.thFiles
+        val downloadTmp = File.createTempFile("tmp", ".zip")
+
+        mutableIsExtracting.postValue(true)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    val webConnection = URL(demoUrl).openConnection()
+                    val fileSize = webConnection.contentLengthLong
+                    webConnection.getInputStream().use { input ->
+                        val downloadProgress =
+                            Channel<FilesService.DeterminateFileOperationProgress>(Channel.CONFLATED) { (progress, max) ->
+                                val adjusted = ((50 * progress) / max).toInt()
+                                mutableExtractProgress.postValue(adjusted)
+                            }
+                        filesService.copyStreamToFile(
+                            downloadTmp, fileSize, input, downloadProgress
+                        )
+                    }
+
+                    val extractProgress =
+                        Channel<FilesService.DeterminateFileOperationProgress>(Channel.CONFLATED) { (progress, max) ->
+                            val adjusted = 50 + ((50 * progress) / max).toInt()
+                            mutableExtractProgress.postValue(adjusted)
+                        }
+
+                    filesService.nukeOriginalFiles(getApplication<CTHApplication>().configuration)
+                    filesService.extractZipFile(downloadTmp, thLocation, extractProgress)
+                    mutableExtractResult.postValue(ExtractResult.SUCCESS)
+                } catch (e: Exception) {
+                    Log.e("CorsixTH", "Failed to download and install", e)
+                    mutableExtractResult.postValue(ExtractResult.FAILURE)
+                } finally {
+                    downloadTmp.delete()
+                    mutableIsExtracting.postValue(false)
+                }
+            }
+        }
+    }
+
     private fun extractInstaller(uri: Uri, extractService: IExtractService) {
         mutableIsExtracting.postValue(true)
         val application = getApplication<CTHApplication>()
@@ -98,7 +142,7 @@ class SetupViewModel(application: Application) : AndroidViewModel(application), 
 
         }
         filesService.nukeOriginalFiles((application.configuration))
-        
+
         extractService.extract(
             uri, application.configuration.thFiles, extractCallback, Configuration(
                 showOngoingNotification = false, showFinalNotification = false

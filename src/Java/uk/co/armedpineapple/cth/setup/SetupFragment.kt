@@ -75,6 +75,10 @@ class SetupFragment : Fragment() {
         documentTreeResultHandler.launch(null)
     }
 
+    fun downloadAndExtractDemo() {
+        viewModel.downloadAndExtractDemo()
+    }
+
     fun importFromInstaller() {
         documentFileResultHandler.launch(
             arrayOf(

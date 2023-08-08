@@ -24,4 +24,11 @@
     <string name="decline">Decline</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="diagnostics_and_analytics">Diagnostics and Analytics</string>
+    <string name="play_demo">Play Demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">If you don\'t own Theme Hospital, you can play the demo without buying.</string>
+    <string name="install">Install</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">If you have bought and downloaded Theme Hospital from GOG.com, we can install it for you.</string>
+    <string name="import_game">Import</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">If you have copied the Theme Hospital game files to your device, you can import them directly.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Original Theme Hospital game files are required to play CorsixTH</string>
 </resources>

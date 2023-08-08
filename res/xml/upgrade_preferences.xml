@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:icon="@drawable/baseline_upgrade_24"
+        android:key="@string/prefs_reinstall"
+        android:summary="@string/if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game"
+        android:title="@string/reinstall_theme_hospital" />
+</PreferenceScreen>

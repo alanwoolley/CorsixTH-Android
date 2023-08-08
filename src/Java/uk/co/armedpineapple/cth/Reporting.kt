@@ -28,7 +28,7 @@ class Reporting(private val context: Context) {
      */
     fun hasRequestedConsent(): Boolean {
         return context.defaultSharedPreferences.getBoolean(
-            context.getString(R.string.pref_has_requested_consent), false
+            context.getString(R.string.prefs_has_requested_consent), false
         )
     }
 
@@ -69,7 +69,7 @@ class Reporting(private val context: Context) {
     private fun onConsentChanged(consent: Boolean) {
         val sharedPreferences = context.defaultSharedPreferences
         sharedPreferences.edit()
-            .putBoolean(context.getString(R.string.pref_has_requested_consent), true)
+            .putBoolean(context.getString(R.string.prefs_has_requested_consent), true)
             .putBoolean(context.getString(R.string.prefs_consent), consent).apply()
 
         Firebase.crashlytics.setCrashlyticsCollectionEnabled(consent)
