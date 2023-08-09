@@ -86,3 +86,4 @@ jobs:
         releaseFiles: build/outputs/bundle/release/*.aab
         track: beta
         whatsNewDirectory: distribution/snapshot
+        changesNotSentForReview: false
