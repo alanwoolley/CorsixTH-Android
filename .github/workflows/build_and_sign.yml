@@ -77,3 +77,12 @@ jobs:
         clear_attachments: true
         prerelease: true
         name: ${{ env.VERSION }}
+    - name: Publish Snapshot to Play Store
+      uses: swootte/upload-google-play@V1.1.5
+      if: github.ref == 'refs/heads/dev'
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        packageName: uk.co.armedpineapple.cth
+        releaseFiles: build/outputs/bundle/release/*.aab
+        track: beta
+        whatsNewDirectory: distribution/snapshot
