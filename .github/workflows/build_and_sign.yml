@@ -85,5 +85,6 @@ jobs:
         packageName: uk.co.armedpineapple.cth
         releaseFiles: build/outputs/bundle/release/*.aab
         track: alpha
+        status: completed
         whatsNewDirectory: distribution/snapshot
         changesNotSentForReview: false
