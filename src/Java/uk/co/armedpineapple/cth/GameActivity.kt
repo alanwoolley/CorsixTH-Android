@@ -63,7 +63,7 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
         // Install the latest CTH game files in the background.
         var installJob: Job? = null
-        if ((application as CTHApplication).isFirstLaunchForVersion || !filesService.hasGameFiles(configuration)) {
+        if ((application as CTHApplication).isFirstLaunchForVersion || !filesService.hasGameFiles(configuration) || BuildConfig.ALWAYS_UPGRADE) {
             Toast.makeText(this, "Upgrading", Toast.LENGTH_SHORT).show()
 
             val target = configuration.cthFiles
