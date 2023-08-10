@@ -31,7 +31,7 @@ SUPPORT_MOD_MODPLUG ?= false
 MODPLUG_LIBRARY_PATH := external/libmodplug
 
 # Enable this if you want to support TiMidity
-SUPPORT_MID_TIMIDITY ?= false
+SUPPORT_MID_TIMIDITY ?= true
 TIMIDITY_LIBRARY_PATH := src/codecs/timidity
 
 

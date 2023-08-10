@@ -74,17 +74,31 @@ class GameActivity : SDLActivity(), AnkoLogger {
             }
         }
 
+        // Install the music library in the background
+        var musicInstallJob : Job? = null
+        if (!filesService.hasMusicLibrary(configuration)) {
+            val target = configuration.musicLib
+            if (target.exists()) target.deleteRecursively()
+
+            musicInstallJob = CoroutineScope(Dispatchers.IO).launch {
+                filesService.installMusicLibrary(configuration)
+            }
+        }
+
         // Upgrading the game files will nuke the installation directory, so make sure that
         // the latest configuration exists in there.
         configuration.persist()
 
         super.onCreate(savedInstanceState)
+        nativeSetenv("TIMIDITY_CFG", File(configuration.musicLib, "timidity.cfg").absolutePath);
+
         startLogger()
 
         // Make sure the game file installation installation has completed before moving on.
-        if (installJob != null) {
+        if (installJob != null || musicInstallJob != null) {
             runBlocking {
-                installJob.join()
+                installJob?.join()
+                musicInstallJob?.join()
             }
         }
     }

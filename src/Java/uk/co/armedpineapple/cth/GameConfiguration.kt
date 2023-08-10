@@ -25,6 +25,7 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     val saveFiles: File = File(ctx.filesDir, "saves")
     val autosaveFiles : File = File(saveFiles, "Autosaves")
     val screenshots : File = File(ctx.filesDir, "screenshots")
+    val musicLib : File = File(ctx.noBackupFilesDir, "timidity")
 
     private val unicodeFont = "/system/fonts/NotoSerif-Regular.ttf"
 

@@ -103,6 +103,18 @@ class FilesService(val ctx: Context) : AnkoLogger {
     }
 
     /**
+     * Checks whether the music library is installed in the location given in the config.
+     *
+     * This doesn't do a thorough integrity check and is only indicative of missing files.
+     *
+     * @param config The configuration
+     * @return whether the music library is installed
+     */
+    fun hasMusicLibrary(config: GameConfiguration) : Boolean {
+        return File(config.musicLib, "timidity.cfg").exists()
+    }
+
+    /**
      * Installs the CorsixTH game files.
      *
      * @param config The configuration that determines the installation location.
@@ -117,6 +129,27 @@ class FilesService(val ctx: Context) : AnkoLogger {
 
         try {
             val target = config.cthFiles
+            extractZipFile(assetOut, target, progress)
+        } finally {
+            assetOut.delete()
+        }
+    }
+
+    /**
+     * Installs the music library.
+     *
+     * @param config The configuration that determines the installation location.
+     * @param ctx The context.
+     * @param progress An optional channel to send progress updates to.
+     */
+    suspend fun installMusicLibrary(
+        config: GameConfiguration, progress: SendChannel<DeterminateFileOperationProgress>? = null
+    ) {
+        val assetOut = File(ctx.cacheDir, MUSIC_ZIP_FILE)
+        copyAsset(MUSIC_ZIP_FILE, ctx, assetOut)
+
+        try {
+            val target = config.musicLib
             extractZipFile(assetOut, target, progress)
         } finally {
             assetOut.delete()
@@ -328,6 +361,7 @@ class FilesService(val ctx: Context) : AnkoLogger {
 
     companion object {
         private const val ENGINE_ZIP_FILE = "game.zip"
+        private const val MUSIC_ZIP_FILE = "timidity.zip"
         const val SAVE_GAME_EXTENSION = "sav"
         const val SAVE_GAME_FILE_SUFFIX = ".$SAVE_GAME_EXTENSION"
     }
