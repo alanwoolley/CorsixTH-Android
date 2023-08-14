@@ -2,6 +2,7 @@ package uk.co.armedpineapple.cth
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.Keep
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.info
@@ -23,17 +24,43 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     val gameConfigFile = File(cthFiles, "config.txt")
     val thFiles: File = File(ctx.noBackupFilesDir, "themehospital")
     val saveFiles: File = File(ctx.filesDir, "saves")
-    val autosaveFiles : File = File(saveFiles, "Autosaves")
-    val screenshots : File = File(ctx.filesDir, "screenshots")
-    val musicLib : File = File(ctx.noBackupFilesDir, "timidity")
+    val autosaveFiles: File = File(saveFiles, "Autosaves")
+    val screenshots: File = File(ctx.filesDir, "screenshots")
+    val musicLib: File = File(ctx.noBackupFilesDir, "timidity")
 
-    private val unicodeFont = "/system/fonts/NotoSerif-Regular.ttf"
+    val unicodeFont = File(ctx.noBackupFilesDir, "fonts/DroidSansFallbackFull.ttf")
 
     var resolution: Pair<UInt, UInt> =
         decodeResolution(getStringPref(R.string.prefs_display_resolution).toUInt())
     val fullscreen = true
 
+    @get:Keep
     val language: String by createReadOnlyOption(R.string.prefs_language)
+
+    @get:Keep
+    val advisorEnabled: Boolean by createReadOnlyOption(R.string.prefs_gameplay_advisor)
+
+    @get:Keep
+    val sfxEnabled: Boolean by createReadOnlyOption(R.string.prefs_audio_sounds)
+
+    @get:Keep
+    val musicEnabled: Boolean by createReadOnlyOption(R.string.prefs_audio_music)
+
+    @get:Keep
+    val announcerEnabled: Boolean by createReadOnlyOption(R.string.prefs_audio_announcements)
+
+    @get:Keep
+    val audioEnabled: Boolean by createReadOnlyOption(R.string.prefs_audio_global)
+
+    @get:Keep
+    val sfxVolume: Int by createReadOnlyOption(R.string.prefs_audio_sounds_volume)
+
+    @get:Keep
+    val musicVolume: Int by createReadOnlyOption(R.string.prefs_audio_music_volume)
+
+    @get:Keep
+    val announcerVolume: Int by createReadOnlyOption(R.string.prefs_audio_announcements_volume)
+
 
     fun persist() {
         // Create save game directory if it doesn't already exist, otherwise CTH will use its own.
@@ -78,7 +105,7 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         tokenMap["th_path"] = thFiles.absolutePath
         tokenMap["save_path"] = saveFiles.absolutePath
         tokenMap["screenshots_path"] = screenshots.absolutePath
-        tokenMap["unicode_font_path"] = unicodeFont
+        tokenMap["unicode_font_path"] = unicodeFont.absolutePath
         tokenMap["res_w"] = resolution.first.toString()
         tokenMap["res_h"] = resolution.second.toString()
         tokenMap["fullscreen"] = fullscreen.toString()

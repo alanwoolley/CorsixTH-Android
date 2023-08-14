@@ -1,11 +1,13 @@
 package uk.co.armedpineapple.cth.settings
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.get
+import org.jetbrains.anko.defaultSharedPreferences
 import uk.co.armedpineapple.cth.CTHApplication
 import uk.co.armedpineapple.cth.GameActivity
 import uk.co.armedpineapple.cth.R
@@ -14,6 +16,13 @@ import uk.co.armedpineapple.cth.setup.SetupActivity
 
 class SettingsActivity : AppCompatActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+
+    private val preferenceListener = { preferences: SharedPreferences, preference: String? ->
+        onPreferenceUpdated(
+            preferences,
+            preference
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +39,24 @@ class SettingsActivity : AppCompatActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onResume() {
+        super.onResume()
+        defaultSharedPreferences.registerOnSharedPreferenceChangeListener(preferenceListener)
+    }
+
+    private fun onPreferenceUpdated(preferences: SharedPreferences, preference: String?){
+        Log.i("SettingsActivity", "Setting updated: $preference")
+
+        GameActivity.singleton.updateGameConfig()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        defaultSharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceListener)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -60,7 +84,9 @@ class SettingsActivity : AppCompatActivity(),
         return true
     }
 
+
     class MainFragment : PreferenceFragmentCompat() {
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.main_preferences, rootKey)
 
@@ -128,7 +154,8 @@ class SettingsActivity : AppCompatActivity(),
             findPreference<Preference>(getString(R.string.prefs_reinstall))?.setOnPreferenceClickListener {
                 val currentActivity = requireActivity()
                 val intent = Intent(currentActivity, SetupActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 currentActivity.finish()
                 GameActivity.singleton.finish()

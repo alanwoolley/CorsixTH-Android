@@ -32,6 +32,9 @@ class GameActivity : SDLActivity(), AnkoLogger {
     @Keep
     private external fun nativeLoad(saveName: String)
 
+    @Keep
+    private external fun nativeUpdateConfig(config: GameConfiguration)
+
     private val configuration: GameConfiguration
         get() = (application as CTHApplication).configuration
 
@@ -54,7 +57,8 @@ class GameActivity : SDLActivity(), AnkoLogger {
         if (!filesService.hasOriginalFiles(configuration)) {
             finishAndRemoveTask()
             val intent = Intent(this, SetupActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
 
             super.onCreate(savedInstanceState)
@@ -63,7 +67,10 @@ class GameActivity : SDLActivity(), AnkoLogger {
 
         // Install the latest CTH game files in the background.
         var installJob: Job? = null
-        if ((application as CTHApplication).isFirstLaunchForVersion || !filesService.hasGameFiles(configuration) || BuildConfig.ALWAYS_UPGRADE) {
+        if ((application as CTHApplication).isFirstLaunchForVersion || !filesService.hasGameFiles(
+                configuration
+            ) || BuildConfig.ALWAYS_UPGRADE
+        ) {
             Toast.makeText(this, "Upgrading", Toast.LENGTH_SHORT).show()
 
             val target = configuration.cthFiles
@@ -75,13 +82,21 @@ class GameActivity : SDLActivity(), AnkoLogger {
         }
 
         // Install the music library in the background
-        var musicInstallJob : Job? = null
+        var musicInstallJob: Job? = null
         if (!filesService.hasMusicLibrary(configuration)) {
             val target = configuration.musicLib
             if (target.exists()) target.deleteRecursively()
 
             musicInstallJob = CoroutineScope(Dispatchers.IO).launch {
                 filesService.installMusicLibrary(configuration)
+            }
+        }
+
+        var fontInstallJob: Job? = null
+        if (!configuration.unicodeFont.exists()) {
+            fontInstallJob = CoroutineScope(Dispatchers.IO).launch {
+                configuration.unicodeFont.parentFile?.mkdirs()
+                filesService.copyAsset("DroidSansFallbackFull.ttf", singleton, configuration.unicodeFont)
             }
         }
 
@@ -95,10 +110,11 @@ class GameActivity : SDLActivity(), AnkoLogger {
         startLogger()
 
         // Make sure the game file installation installation has completed before moving on.
-        if (installJob != null || musicInstallJob != null) {
+        if (installJob != null || musicInstallJob != null || fontInstallJob != null) {
             runBlocking {
                 installJob?.join()
                 musicInstallJob?.join()
+                fontInstallJob?.join()
             }
         }
     }
@@ -168,6 +184,14 @@ class GameActivity : SDLActivity(), AnkoLogger {
             "--interpreter=${configuration.cthLaunchScript.absolutePath}",
             "--config-file=${configuration.gameConfigFile.absolutePath}"
         )
+    }
+
+    fun updateGameConfig() {
+        Log.i("GameActivity", "Updating game configuration")
+
+        nativeUpdateConfig(configuration)
+
+        Log.i("GameActivity", "Updated game config")
     }
 
     companion object {

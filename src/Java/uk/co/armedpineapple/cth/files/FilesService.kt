@@ -325,11 +325,17 @@ class FilesService(val ctx: Context) : AnkoLogger {
         return bytesCopied
     }
 
-    private fun copyAsset(
+    /**
+     * Copies an asset to a file.
+     *
+     * @param asset The asset name
+     * @param ctx The context
+     * @param target The target location
+     */
+    fun copyAsset(
         asset: String, ctx: Context, target: File
     ) {
         ctx.assets.open(asset).use { assetInputStream ->
-            target.deleteOnExit()
             target.outputStream().use { assetOutStream ->
                 allocateStorage(
                     bytes = assetInputStream.available().toLong(),
