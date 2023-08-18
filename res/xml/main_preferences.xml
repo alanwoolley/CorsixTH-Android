@@ -1,5 +1,8 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <Preference
+        app:persistent="false"
+        app:selectable="false"
+        app:summary="@string/changing_some_of_these_settings_may_require_you_to_restart_the_game" />
     <Preference
         app:fragment="uk.co.armedpineapple.cth.settings.SettingsActivity$UpgradeFragment"
         app:icon="@drawable/baseline_upgrade_24"

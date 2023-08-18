@@ -97,4 +97,5 @@
     <string name="upgrade_to_the_full_version_of_theme_hospital">Upgrade to the full version of Theme Hospital</string>
     <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">If you have bought a copy of Theme Hospital, you can upgrade to the full version. This will restart the game.</string>
     <string name="reinstall_theme_hospital">Reinstall Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Changing some of these settings may require you to restart the game.</string>
 </resources>
