@@ -7,9 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.warn
 import uk.co.armedpineapple.cth.GameConfiguration
+import uk.co.armedpineapple.cth.Loggable
+import uk.co.armedpineapple.cth.warn
 import java.io.File
 import java.io.FileDescriptor
 import java.io.FileOutputStream
@@ -23,7 +23,7 @@ import java.util.zip.ZipFile
  *
  * @constructor Create empty Files service
  */
-class FilesService(val ctx: Context) : AnkoLogger {
+class FilesService(val ctx: Context) : Loggable {
 
     private val storageManager: StorageManager = ctx.getSystemService(StorageManager::class.java)
 

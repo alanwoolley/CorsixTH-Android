@@ -2,7 +2,6 @@ package uk.co.armedpineapple.cth
 
 import androidx.preference.PreferenceManager
 import androidx.room.Room
-import org.jetbrains.anko.defaultSharedPreferences
 import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.cth.files.persistence.GameDatabase
 import uk.co.armedpineapple.cth.localisation.LanguageService

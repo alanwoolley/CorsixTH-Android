@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.anko.AnkoLogger
 import org.libsdl.app.SDLActivity
 import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.cth.files.SaveGameContract

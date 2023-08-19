@@ -2,9 +2,9 @@ package uk.co.armedpineapple.cth.localisation
 
 import android.content.Context
 import androidx.core.os.LocaleListCompat
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.warn
+import uk.co.armedpineapple.cth.Loggable
 import uk.co.armedpineapple.cth.R
+import uk.co.armedpineapple.cth.warn
 import java.util.Locale
 
 /**
@@ -13,7 +13,7 @@ import java.util.Locale
  * @property ctx  context
  * @constructor Create Language service
  */
-class LanguageService(private val ctx: Context) : AnkoLogger {
+class LanguageService(private val ctx: Context) : Loggable {
 
     /**
      * Gets a default CTH language that matches a locale from the app's resource configuration.

@@ -12,9 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
 import uk.co.armedpineapple.cth.CTHApplication
+import uk.co.armedpineapple.cth.Loggable
 import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.innoextract.service.Configuration
 import uk.co.armedpineapple.innoextract.service.ExtractCallback
@@ -22,7 +21,7 @@ import uk.co.armedpineapple.innoextract.service.IExtractService
 import java.io.File
 import java.net.URL
 
-class SetupViewModel(application: Application) : AndroidViewModel(application), AnkoLogger {
+class SetupViewModel(application: Application) : AndroidViewModel(application), Loggable {
 
     private val filesService: FilesService = FilesService(application)
 

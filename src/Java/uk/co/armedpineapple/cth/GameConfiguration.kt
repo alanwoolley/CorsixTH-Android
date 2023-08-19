@@ -3,9 +3,6 @@ package uk.co.armedpineapple.cth
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.Keep
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.displayMetrics
-import org.jetbrains.anko.info
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.File
@@ -17,7 +14,7 @@ import kotlin.reflect.full.starProjectedType
 
 
 class GameConfiguration(private val ctx: Context, private val preferences: SharedPreferences) :
-    AnkoLogger {
+    Loggable {
 
     val cthFiles: File = File(ctx.noBackupFilesDir, "cth")
     val cthLaunchScript = File(cthFiles, "CorsixTH.lua")

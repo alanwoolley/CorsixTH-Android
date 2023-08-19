@@ -7,10 +7,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import org.jetbrains.anko.defaultSharedPreferences
 import uk.co.armedpineapple.cth.CTHApplication
 import uk.co.armedpineapple.cth.GameActivity
 import uk.co.armedpineapple.cth.R
+import uk.co.armedpineapple.cth.defaultSharedPreferences
 import uk.co.armedpineapple.cth.setup.SetupActivity
 
 
