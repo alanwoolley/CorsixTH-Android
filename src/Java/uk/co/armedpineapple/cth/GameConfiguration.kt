@@ -122,7 +122,6 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
                     }
                     newLine
                 }.forEach { replacedLine ->
-                    info { replacedLine }
                     writer.write(replacedLine + "\n")
                 }
             }
@@ -157,7 +156,6 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     private fun getBoolPrefs(prefs: Array<Int>) = sequence {
         for (pref in prefs) {
             val prefName = ctx.getString(pref)
-            info { prefName }
             yield(Pair(prefName, preferences.getBoolean(ctx.getString(pref), false).toString()))
         }
     }

@@ -15,7 +15,7 @@ import org.jetbrains.anko.defaultSharedPreferences
 
 
 /**
- * Manages analyics and diagnostics reporting.
+ * Manages analytics and diagnostics reporting.
  *
  * @property context A valid context.
  */

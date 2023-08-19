@@ -1,12 +1,13 @@
 package uk.co.armedpineapple.cth
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.Keep
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,9 +21,8 @@ import uk.co.armedpineapple.cth.files.persistence.SaveData
 import uk.co.armedpineapple.cth.settings.SettingsActivity
 import uk.co.armedpineapple.cth.setup.SetupActivity
 import java.io.File
-import java.nio.charset.Charset
 
-class GameActivity : SDLActivity(), AnkoLogger {
+class GameActivity : SDLActivity(), Loggable {
     @Keep
     private external fun startLogger()
 
@@ -96,7 +96,9 @@ class GameActivity : SDLActivity(), AnkoLogger {
         if (!configuration.unicodeFont.exists()) {
             fontInstallJob = CoroutineScope(Dispatchers.IO).launch {
                 configuration.unicodeFont.parentFile?.mkdirs()
-                filesService.copyAsset("DroidSansFallbackFull.ttf", singleton, configuration.unicodeFont)
+                filesService.copyAsset(
+                    "DroidSansFallbackFull.ttf", singleton, configuration.unicodeFont
+                )
             }
         }
 
@@ -224,11 +226,23 @@ class GameActivity : SDLActivity(), AnkoLogger {
             fileName: ByteArray, rep: Int, money: Long, level: ByteArray, screenshot: ByteArray
         ) {
             singleton.updateSaveGameDatabase(
-                filePath = String(fileName, Charset.forName("UTF-8")),
+                filePath = fileName.toUtf8String(),
                 rep = rep,
                 money = money,
-                level = String(level, Charset.forName("UTF-8")),
-                screenshot = String(screenshot, Charset.forName("UTF-8"))
+                level = level.toUtf8String(),
+                screenshot = screenshot.toUtf8String()
+            )
+        }
+
+        @Keep
+        @JvmStatic
+        fun onGameError(handler: ByteArray?, stack: ByteArray?) {
+            Firebase.crashlytics.recordException(
+                if (handler != null) {
+                    NativeLuaHandlerException(handler, stack)
+                } else {
+                    NativeLuaException(stack, "Game Error")
+                }
             )
         }
     }
