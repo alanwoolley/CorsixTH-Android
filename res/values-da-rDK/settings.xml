@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Fjern ødelagte rum</string>
     <string name="control_how_the_map_moves">Styr, hvordan kortet bevæger sig</string>
     <string name="scrolling">Rulning</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kortet ruller ikke, når musen er ved kanten af skærmen.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kortet ruller, når musen er ved kanten af skærmen.</string>
+    <string name="edge_scrolling">Kantrulning (kun med mus)</string>
     <string name="change_how_fast_the_map_scrolls">Ændre, hvor hurtigt kortet ruller</string>
     <string name="scrolling_momentum">Rullende momentum</string>
     <string name="enable_videos">Aktivér videoer</string>
@@ -86,4 +89,15 @@
     <string name="language">Sprog til spil</string>
     <string name="stretch_display">Stræk display</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Strækker spillet, så det fylder hele skærmen, og bevarer den valgte opløsning.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Tillad indsamling af diagnose- og brugsoplysninger.</string>
+    <string name="analytics_and_diagnostics">Analyse og diagnosticering</string>
+    <string name="collect_usage">Indsaml brug</string>
+    <string name="change_analytics_and_diagnostics_preferences">Skift præferencer for analyse og diagnosticering</string>
+    <string name="full_version">Fuld version</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Opgrader til den fulde version af Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Hvis du har købt en kopi af Theme Hospital, kan du opgradere til den fulde version. Dette vil genstarte spillet.</string>
+    <string name="reinstall_theme_hospital">Geninstaller Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Hvis du ændrer nogle af disse indstillinger, kan det kræve, at du genstarter spillet.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Styrer, hvor mange fingre der skal bruges til at rulle kortet.</string>
+    <string name="scrolling_mode_touch_only">Rulletilstand (kun ved berøring)</string>
 </resources>
