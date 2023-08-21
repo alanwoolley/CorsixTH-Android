@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Menghapus ruangan yang hancur</string>
     <string name="control_how_the_map_moves">Mengontrol bagaimana peta bergerak</string>
     <string name="scrolling">Menggulir</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Peta tidak akan bergulir apabila mouse Anda berada di tepi layar.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Peta akan bergulir ketika mouse Anda berada di tepi layar.</string>
+    <string name="edge_scrolling">Pengguliran tepi (Khusus Mouse)</string>
     <string name="change_how_fast_the_map_scrolls">Mengubah seberapa cepat peta bergulir</string>
     <string name="scrolling_momentum">Momentum bergulir</string>
     <string name="enable_videos">Mengaktifkan video</string>
@@ -86,4 +89,15 @@
     <string name="language">Bahasa Permainan</string>
     <string name="stretch_display">Tampilan peregangan</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Meregangkan permainan untuk memenuhi layar, menjaga resolusi yang dipilih dengan tepat.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Memungkinkan pengumpulan informasi diagnostik dan penggunaan.</string>
+    <string name="analytics_and_diagnostics">Analisis dan Diagnostik</string>
+    <string name="collect_usage">Kumpulkan Penggunaan</string>
+    <string name="change_analytics_and_diagnostics_preferences">Mengubah preferensi analitik dan diagnostik</string>
+    <string name="full_version">Versi Lengkap</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Tingkatkan ke versi lengkap Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Jika Anda telah membeli salinan Theme Hospital, Anda dapat meningkatkan ke versi lengkap. Ini akan memulai ulang permainan.</string>
+    <string name="reinstall_theme_hospital">Instal ulang Rumah Sakit Tema</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Mengubah beberapa pengaturan ini mungkin mengharuskan Anda untuk memulai ulang permainan.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Mengontrol berapa banyak jari yang diperlukan untuk menggulir peta.</string>
+    <string name="scrolling_mode_touch_only">Mode Gulir (Hanya Sentuh)</string>
 </resources>
