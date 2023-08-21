@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Îndepărtați camerele distruse</string>
     <string name="control_how_the_map_moves">Controlați modul în care se mișcă harta</string>
     <string name="scrolling">Defilare</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Harta nu se va derula atunci când mouse-ul se află la marginea ecranului.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Harta se va derula atunci când mouse-ul se află la marginea ecranului.</string>
+    <string name="edge_scrolling">Defilare pe margini (numai cu mouse-ul)</string>
     <string name="change_how_fast_the_map_scrolls">Modificați viteza de derulare a hărții</string>
     <string name="scrolling_momentum">Impuls de defilare</string>
     <string name="enable_videos">Activați videoclipurile</string>
@@ -86,4 +89,15 @@
     <string name="language">Limba de joc</string>
     <string name="stretch_display">Afișaj stretch</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Întinde jocul pentru a umple ecranul, păstrând exact rezoluția aleasă.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">permite colectarea de informații de diagnosticare și de utilizare.</string>
+    <string name="analytics_and_diagnostics">Analiză și diagnosticare</string>
+    <string name="collect_usage">Colectați utilizarea</string>
+    <string name="change_analytics_and_diagnostics_preferences">Modificați preferințele de analiză și diagnosticare</string>
+    <string name="full_version">Versiunea completă</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Actualizați la versiunea completă a Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Dacă ați cumpărat o copie a Theme Hospital, puteți face upgrade la versiunea completă. Acest lucru va reporni jocul.</string>
+    <string name="reinstall_theme_hospital">Reinstalați Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Modificarea unora dintre aceste setări poate necesita repornirea jocului.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Controlează câte degete sunt necesare pentru a derula harta.</string>
+    <string name="scrolling_mode_touch_only">Modul de derulare (numai prin atingere)</string>
 </resources>
