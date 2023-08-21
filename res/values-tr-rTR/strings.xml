@@ -18,4 +18,15 @@
     <string name="s_deleted">%s silindi</string>
     <string name="undo">Geri al</string>
     <string name="new_save_name">Yeni kaydetme adı</string>
+    <string name="accept">Kabul et</string>
+    <string name="decline">Düşüş</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="diagnostics_and_analytics">Teşhis ve Analitik</string>
+    <string name="play_demo">Demo Oynat</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Theme Hospital\'a sahip değilseniz, satın almadan demoyu oynayabilirsiniz.</string>
+    <string name="install">Kurulum</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Theme Hospital\'ı GOG.com\'dan satın aldıysanız ve indirdiyseniz, sizin için yükleyebiliriz.</string>
+    <string name="import_game">İthalat</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Theme Hospital oyun dosyalarını cihazınıza kopyaladıysanız, bunları doğrudan içe aktarabilirsiniz.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">CorsixTH oyununu oynamak için Orijinal Theme Hospital oyun dosyaları gereklidir</string>
 </resources>
