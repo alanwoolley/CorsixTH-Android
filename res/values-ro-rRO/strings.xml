@@ -18,4 +18,15 @@
     <string name="s_deleted">%s șters</string>
     <string name="undo">Desfaceți</string>
     <string name="new_save_name">Nume nou de salvare</string>
+    <string name="accept">Acceptă</string>
+    <string name="decline">Declin</string>
+    <string name="privacy_policy">Politica de confidențialitate</string>
+    <string name="diagnostics_and_analytics">Diagnosticare și analiză</string>
+    <string name="play_demo">Joaca Demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Dacă nu dețineți Theme Hospital, puteți juca demo-ul fără să cumpărați.</string>
+    <string name="install">Instalați</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Dacă ați cumpărat și ați descărcat Theme Hospital de pe GOG.com, îl putem instala pentru dumneavoastră.</string>
+    <string name="import_game">Import</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Dacă ați copiat fișierele de joc Theme Hospital pe dispozitivul dvs., le puteți importa direct.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Fișierele de joc Original Theme Hospital sunt necesare pentru a juca CorsixTH</string>
 </resources>
