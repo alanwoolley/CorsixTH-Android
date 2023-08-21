@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">移除被破坏的房间</string>
     <string name="control_how_the_map_moves">控制地图的移动方式</string>
     <string name="scrolling">滚动</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">当你的手指或鼠标在屏幕边缘时，地图将不会滚动。</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">当你的手指或鼠标在屏幕的边缘时，地图会滚动。</string>
-    <string name="edge_scrolling">边缘滚动</string>
     <string name="change_how_fast_the_map_scrolls">改变地图滚动的速度</string>
     <string name="scrolling_momentum">滚动的势头</string>
     <string name="enable_videos">启用视频</string>
