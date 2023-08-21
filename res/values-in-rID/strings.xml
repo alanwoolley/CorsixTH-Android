@@ -18,4 +18,15 @@
     <string name="s_deleted">%s dihapus</string>
     <string name="undo">Membatalkan</string>
     <string name="new_save_name">Nama penyimpanan baru</string>
+    <string name="accept">Menerima</string>
+    <string name="decline">Menolak</string>
+    <string name="privacy_policy">Kebijakan Privasi</string>
+    <string name="diagnostics_and_analytics">Diagnostik dan Analisis</string>
+    <string name="play_demo">Mainkan Demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Jika Anda tidak memiliki Theme Hospital, Anda dapat memainkan demo tanpa membeli.</string>
+    <string name="install">Memasang</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Jika Anda telah membeli dan mengunduh Theme Hospital dari GOG.com, kami dapat menginstalnya untuk Anda.</string>
+    <string name="import_game">Impor</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Jika Anda telah menyalin file game Theme Hospital ke perangkat, Anda dapat mengimpornya secara langsung.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">File game Rumah Sakit Tema Asli diperlukan untuk memainkan CorsixTH</string>
 </resources>
