@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Rimuovere le stanze distrutte</string>
     <string name="control_how_the_map_moves">Controllare il movimento della mappa</string>
     <string name="scrolling">Scorrimento</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">La mappa non scorre quando il mouse si trova sul bordo dello schermo.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">La mappa scorre quando il mouse si trova sul bordo dello schermo.</string>
+    <string name="edge_scrolling">Scorrimento dei bordi (solo con il mouse)</string>
     <string name="change_how_fast_the_map_scrolls">Modificare la velocità di scorrimento della mappa</string>
     <string name="scrolling_momentum">Momento di scorrimento</string>
     <string name="enable_videos">Abilita i video</string>
@@ -86,4 +89,15 @@
     <string name="language">Lingua del gioco</string>
     <string name="stretch_display">Display allungato</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Allunga il gioco per riempire lo schermo, mantenendo l\'esatta risoluzione scelta.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Consentire la raccolta di informazioni diagnostiche e di utilizzo.</string>
+    <string name="analytics_and_diagnostics">Analisi e diagnostica</string>
+    <string name="collect_usage">Raccogliere l\'uso</string>
+    <string name="change_analytics_and_diagnostics_preferences">Modificare le preferenze di analisi e diagnostica</string>
+    <string name="full_version">Versione completa</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Aggiornamento alla versione completa di Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Se avete acquistato una copia di Theme Hospital, potete passare alla versione completa. In questo modo si riavvia il gioco.</string>
+    <string name="reinstall_theme_hospital">Reinstallare il tema Ospedale</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Per modificare alcune di queste impostazioni potrebbe essere necessario riavviare il gioco.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Controlla il numero di dita necessarie per scorrere la mappa.</string>
+    <string name="scrolling_mode_touch_only">Modalità di scorrimento (solo touch)</string>
 </resources>
