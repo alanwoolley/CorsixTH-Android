@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Verwoeste kamers verwijderen</string>
     <string name="control_how_the_map_moves">Bepaal hoe de kaart beweegt</string>
     <string name="scrolling">Scrollen</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">De kaart scrollt niet als je vinger of muis zich aan de rand van het scherm bevindt.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">De kaart scrolt wanneer je vinger of muis zich aan de rand van het scherm bevindt.</string>
-    <string name="edge_scrolling">Kant scrollen</string>
     <string name="change_how_fast_the_map_scrolls">Veranderen hoe snel de kaart scrolt</string>
     <string name="scrolling_momentum">Scrollend momentum</string>
     <string name="enable_videos">Video\'s inschakelen</string>
