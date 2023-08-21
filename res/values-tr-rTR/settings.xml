@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Yıkılan odaları kaldırın</string>
     <string name="control_how_the_map_moves">Haritanın nasıl hareket ettiğini kontrol edin</string>
     <string name="scrolling">Kaydırma</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Parmağınız veya fareniz ekranın kenarındayken harita kaydırılmayacaktır.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Parmağınız veya fareniz ekranın kenarına geldiğinde harita kayacaktır.</string>
-    <string name="edge_scrolling">Kenar kaydırma</string>
     <string name="change_how_fast_the_map_scrolls">Haritanın ne kadar hızlı kaydırılacağını değiştirme</string>
     <string name="scrolling_momentum">Kaydırma momentumu</string>
     <string name="enable_videos">Videoları etkinleştirin</string>
