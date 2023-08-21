@@ -1,0 +1,135 @@
+# Authors
+
+This is a list of all direct contributors to this project. It does not include contributors to CorsixTH, as they maintain a separate list [here](https://github.com/CorsixTH/CorsixTH/blob/master/LICENSE.txt).
+
+If you have contributed to this project and cannot find your name on this list, please open an [issue](https://github.com/alanwoolley/CorsixTH-Android/issues).
+
+## Programming
+
+ - [Alan Woolley](https://github.com/alanwoolley)
+ - István Nagy
+
+## Translations
+
+This list was last updated 2023-08-21 and lists all CrowdIn members that have contributed an accepted translation.
+
+ - abaranski12
+ - Agu Ratas (aguratas)
+ - agur
+ - Alan Woolley (alanwoolley)
+ - Alexis Mellone (Pixel166)
+ - amauri.felipe.7 (amaurifelipe_26)
+ - anders andersson (fetgrisen)
+ - Andrea Iruela Perea (halconladyaip)
+ - Andy Deng (andytimes)
+ - Ane ラーマワティ (quetra_halliwell)
+ - Bambinou
+ - bastiie
+ - benolot
+ - Besson
+ - Boonying
+ - Can İnce (canince)
+ - Carsten Braune (Carte)
+ - curtaintwitcher
+ - Daiky69
+ - Daniela (dadinada)
+ - DICI BF (kazymov1999)
+ - DJ Hasis (DJHasis)
+ - Dono027 (dono27)
+ - donout
+ - Dävid Përmanä (blinxuchulagi)
+ - efissh
+ - eraser2011
+ - Eugenio "Ryo567" Martínez Seguín (Ryo567)
+ - farisi
+ - farizqi
+ - Fenn
+ - Fernando Costa (ferdicoast)
+ - fetch
+ - Filip Křivánek (Martycz)
+ - Filip Machata (fmachata)
+ - FINEDAYS
+ - Gilles Chefsailles (mister_morteau)
+ - Giorgio Pomettini (GiorgioPomettini)
+ - Hayot Qoraboyev (hayotjon1988)
+ - hungery
+ - iannick H.I.M. (lilielletune)
+ - idalevan
+ - Jaco Weijts (Omni)
+ - Jiman Ryu (jimanr)
+ - jonathan.scarpa.10 (scarpajonathan41)
+ - Jorj
+ - Joshua Randiny (jrandiny2)
+ - Junseong Kim (junseong)
+ - Kabamaru
+ - kgello
+ - kissa
+ - KolesxD
+ - Kozlenko Dennis  (Delacrya)
+ - Kreys
+ - Kris Lambrechts (klambrec)
+ - krystian krol (kkqroolik)
+ - l3luel3ear
+ - lantash
+ - Lef1zh
+ - lewis.hulbert.1 (lhh)
+ - lordzik
+ - MaFE L (luimong724)
+ - maksCROWDIN
+ - maksCROWDIN2018
+ - MarleyC
+ - Mattia Martelli (hondrus)
+ - Mehmet Fatih Koksal (fkoksal)
+ - Michał Choina (choina363)
+ - Michel
+ - miguelkill
+ - Mior shahrial (shahrial1983)
+ - mirevg (nofxgirl)
+ - Mitus
+ - Mlucam
+ - Morshedul Alam (morshedintouch)
+ - mrtnptrs
+ - Muhafiza Amarullah (Dovahkiin1)
+ - nadia prisca (nadiaprisca38)
+ - Name
+ - Name Full (TarraUser28)
+ - nata91
+ - Nekser
+ - NelsonRomanoNeto
+ - neuripide
+ - nieke
+ - nursen_akdogan
+ - Olha Kuzmyn (Rebekke)
+ - powerman89
+ - Rafael Souza (faelzsouza)
+ - Raffox97 (Community volunteer) (Raffox97)
+ - rainbow0607
+ - ramiselin
+ - reflexters
+ - Ricardo Garza (ricardogg95)
+ - Robert “Trhanec” Suchomel (trhanec)
+ - Rprrr
+ - Shuhai Shen (sumhat)
+ - smels
+ - smokerholic
+ - Soul84
+ - speedrocket2110
+ - Stefan Joemagi (steffgaming)
+ - Stelios Philippou (stevoo82)
+ - thomaslinden
+ - Tins Felix (thinz1987)
+ - Tomáš T (taligatomas)
+ - uwe.thomsen1 (vedino)
+ - valeone
+ - Ville Aalto (ville2k)
+ - vschweiger
+ - Víctor Mayorga (thesniiker)
+ - Widder04
+ - YFdyh000
+ - youngwoo.moon.37 (losero)
+ - Андрей (band87)
+ - Гена Пяткин (pyatkagrish)
+ - Евгений Сабаев (mistersabaev)
+ - 推叫兽 (blackLstr)
+ - 정진우 (allcyber815)
+ - 하늘군 YouTube (choboumsu)
