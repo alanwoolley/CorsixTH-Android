@@ -18,4 +18,15 @@
     <string name="s_deleted">%s poistettu</string>
     <string name="undo">Kumoa</string>
     <string name="new_save_name">Uusi tallennuksen nimi</string>
+    <string name="accept">Hyväksy</string>
+    <string name="decline">Lasku</string>
+    <string name="privacy_policy">Tietosuojakäytäntö</string>
+    <string name="diagnostics_and_analytics">Diagnostiikka ja analytiikka</string>
+    <string name="play_demo">Toista demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Jos et omista Theme Hospitalia, voit pelata demoa ostamatta sitä.</string>
+    <string name="install">Asenna</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Jos olet ostanut ja ladannut Theme Hospitalin GOG.comista, voimme asentaa sen puolestasi.</string>
+    <string name="import_game">Tuo</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Jos olet kopioinut Theme Hospital -pelitiedostot laitteeseesi, voit tuoda ne suoraan.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">CorsixTH:n pelaaminen edellyttää alkuperäisiä Theme Hospital -pelitiedostoja.</string>
 </resources>
