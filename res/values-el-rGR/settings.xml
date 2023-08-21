@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Αφαιρέστε τα κατεστραμμένα δωμάτια</string>
     <string name="control_how_the_map_moves">Ελέγξτε τον τρόπο κίνησης του χάρτη</string>
     <string name="scrolling">Κύλιση</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Ο χάρτης δεν θα μετακινείται όταν το δάχτυλο ή το ποντίκι σας βρίσκεται στην άκρη της οθόνης.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Ο χάρτης θα μετακινηθεί όταν το δάχτυλο ή το ποντίκι σας βρεθεί στην άκρη της οθόνης.</string>
-    <string name="edge_scrolling">Κύλιση στην άκρη</string>
     <string name="change_how_fast_the_map_scrolls">Αλλαγή της ταχύτητας κύλισης του χάρτη</string>
     <string name="scrolling_momentum">Ορμή κύλισης</string>
     <string name="enable_videos">Ενεργοποίηση βίντεο</string>
