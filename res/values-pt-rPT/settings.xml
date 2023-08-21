@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Remover salas destruídas</string>
     <string name="control_how_the_map_moves">Controlar a deslocação do mapa</string>
     <string name="scrolling">Deslocação</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">O mapa não se desloca quando o seu dedo ou rato se encontra no limite do ecrã.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">O mapa desloca-se quando o seu dedo ou rato se encontra no limite do ecrã.</string>
-    <string name="edge_scrolling">Deslocação nas margens</string>
     <string name="change_how_fast_the_map_scrolls">Alterar a velocidade de deslocação do mapa</string>
     <string name="scrolling_momentum">Momento de deslocação</string>
     <string name="enable_videos">Ativar vídeos</string>
