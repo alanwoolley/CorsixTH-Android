@@ -18,4 +18,15 @@
     <string name="s_deleted">%s 删除</string>
     <string name="undo">撤消</string>
     <string name="new_save_name">新保存名称</string>
+    <string name="accept">接受</string>
+    <string name="decline">下降</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="diagnostics_and_analytics">诊断和分析</string>
+    <string name="play_demo">播放演示</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">如果您还没有《主题医院》，可以试玩而无需购买。</string>
+    <string name="install">安装</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">如果您从 GOG.com 购买并下载了主题医院，我们可以为您安装。</string>
+    <string name="import_game">进口</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">如果您已将 \"主题医院 \"游戏文件复制到设备上，则可以直接导入。</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">玩 CorsixTH 需要原始主题医院游戏文件</string>
 </resources>
