@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Eemaldage hävitatud ruumid</string>
     <string name="control_how_the_map_moves">Kontrollida, kuidas kaart liigub</string>
     <string name="scrolling">Kerimine</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kaart ei keri, kui teie sõrm või hiir on ekraani servas.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kaart kerib, kui teie sõrm või hiir on ekraani servas.</string>
-    <string name="edge_scrolling">Serva kerimine</string>
     <string name="change_how_fast_the_map_scrolls">Muutke kaardi kerimise kiirust</string>
     <string name="scrolling_momentum">Veeretamise impulss</string>
     <string name="enable_videos">Videote lubamine</string>
