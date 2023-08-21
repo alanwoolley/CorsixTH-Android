@@ -18,4 +18,15 @@
     <string name="s_deleted">%s dzēsts</string>
     <string name="undo">Atcelt</string>
     <string name="new_save_name">Jauns saglabāšanas nosaukums</string>
+    <string name="accept">Pieņemt</string>
+    <string name="decline">Samazinājums</string>
+    <string name="privacy_policy">Konfidencialitātes politika</string>
+    <string name="diagnostics_and_analytics">Diagnostika un analīze</string>
+    <string name="play_demo">Spēlēt demonstrējumu</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Ja jums nav Theme Hospital, varat spēlēt demo versiju bez pirkšanas.</string>
+    <string name="install">Uzstādīt</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Ja esat iegādājies un lejupielādējis Theme Hospital no GOG.com, mēs varam to instalēt jums.</string>
+    <string name="import_game">Importēt</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Ja esat nokopējis Theme Hospital spēles failus savā ierīcē, varat tos importēt tieši.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Lai spēlētu CorsixTH, ir nepieciešami oriģinālie Theme Hospital spēles faili</string>
 </resources>
