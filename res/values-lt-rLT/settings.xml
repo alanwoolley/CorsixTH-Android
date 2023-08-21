@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Pašalinti sunaikintus kambarius</string>
     <string name="control_how_the_map_moves">Valdykite, kaip juda žemėlapis</string>
     <string name="scrolling">Slinkimas</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Žemėlapis nebus slinkiamas, kai pirštu arba pele būsite pasiekę ekrano kraštą.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Žemėlapis slinksta, kai pirštu arba pele atsiduriate prie ekrano krašto.</string>
-    <string name="edge_scrolling">Briaunų slinkimas</string>
     <string name="change_how_fast_the_map_scrolls">Pakeiskite žemėlapio slinkimo greitį</string>
     <string name="scrolling_momentum">Slinkimo tempas</string>
     <string name="enable_videos">Įgalinti vaizdo įrašus</string>
