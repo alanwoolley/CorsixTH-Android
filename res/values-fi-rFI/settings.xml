@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Poista tuhoutuneet huoneet</string>
     <string name="control_how_the_map_moves">Hallitse kartan liikkumista</string>
     <string name="scrolling">Vieritys</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karttaa ei vieritetä, kun sormi tai hiiri on näytön reunalla.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karttaa vieritetään, kun sormi tai hiiri on näytön reunalla.</string>
-    <string name="edge_scrolling">Reunan vieritys</string>
     <string name="change_how_fast_the_map_scrolls">Muuta kartan vieritysnopeutta</string>
     <string name="scrolling_momentum">Vieritysvauhti</string>
     <string name="enable_videos">Ota videot käyttöön</string>
