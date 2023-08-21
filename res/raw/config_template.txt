@@ -67,19 +67,19 @@ free_build_mode = {{free_build_mode}}
 -- Sounds: By default enabled and set at level 0.5
 --
 play_sounds = {{audio_sounds}}
-sound_volume = 0.5
+sound_volume = {{sfx_volume}}
 
 -------------------------------------------------------------------------------
 -- Announcements: By default set at level 0.5
 --
 play_announcements = {{audio_announcements}}
-announcement_volume = 0.5
+announcement_volume = {{announcer_volume}}
 
 -------------------------------------------------------------------------------
 -- Background music: By default enabled and set at level 0.5
 --
 play_music = {{audio_music}}
-music_volume = 0.5
+music_volume = {{music_volume}}
 
 -------------------------------------------------------------------------------
 -- Edge scrolling: By default enabled (prevent_edge_scrolling = false).
@@ -347,3 +347,7 @@ new_machine_extra_info = {{show_machine_strength}}
 -- Note: space is limited in the game, so don't enter a name that is too long!
 --
 player_name = [[]]
+
+-- Android specific stuff
+
+scroll_mode = {{scroll_mode}}

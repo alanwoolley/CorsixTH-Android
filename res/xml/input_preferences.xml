@@ -5,19 +5,19 @@
         android:summary="@string/control_how_the_map_moves"
         android:title="@string/scrolling">
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:icon="@drawable/baseline_edgesensor_high_24"
             android:key="@string/prefs_input_edge_scrolling"
             android:summaryOff="@string/the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen"
             android:summaryOn="@string/the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen"
             android:title="@string/edge_scrolling" />
-        <SeekBarPreference
-            android:defaultValue="8"
-            android:icon="@drawable/baseline_speed_24"
-            android:key="@string/prefs_input_scroll_momentum"
-            android:max="10"
-            android:min="0"
-            android:summary="@string/change_how_fast_the_map_scrolls"
-            app:title="@string/scrolling_momentum" />
+        <ListPreference
+            android:defaultValue="@string/scroll_mode_one_finger"
+            android:entries="@array/scroll_mode_options"
+            android:entryValues="@array/scroll_mode_values"
+            android:icon="@drawable/baseline_touch_app_24"
+            android:key="@string/prefs_input_scroll_mode"
+            android:summary="@string/controls_how_many_fingers_are_required_to_scroll_the_map"
+            android:title="@string/scrolling_mode_touch_only" />
     </PreferenceCategory>
 </PreferenceScreen>

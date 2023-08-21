@@ -58,6 +58,10 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     @get:Keep
     val announcerVolume: Int by createReadOnlyOption(R.string.prefs_audio_announcements_volume)
 
+    @get:Keep
+    val scrollMode: Int by createReadOnlyOption(R.string.prefs_input_scroll_mode,
+        parseFromString = true
+    )
 
     fun persist() {
         // Create save game directory if it doesn't already exist, otherwise CTH will use its own.
@@ -106,6 +110,12 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         tokenMap["res_w"] = resolution.first.toString()
         tokenMap["res_h"] = resolution.second.toString()
         tokenMap["fullscreen"] = fullscreen.toString()
+
+        tokenMap["sfx_volume"] = (sfxVolume.toDouble() / 10.0f).toString()
+        tokenMap["announcer_volume"] = (announcerVolume.toDouble() / 10.0f).toString()
+        tokenMap["music_volume"] = (musicVolume.toDouble() / 10.0f).toString()
+
+        tokenMap["scroll_mode"] = scrollMode.toString()
 
         val templateIn = ctx.resources.openRawResource(R.raw.config_template)
 
@@ -157,8 +167,8 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         }
     }
 
-    private fun <T, V> createReadOnlyOption(prefId: Int): ReadOnlyConfigOption<T, V> {
-        return ReadOnlyConfigOption(ctx, prefId, preferences)
+    private fun <T, V> createReadOnlyOption(prefId: Int, parseFromString: Boolean = false): ReadOnlyConfigOption<T, V> {
+        return ReadOnlyConfigOption(ctx, prefId, preferences, parseFromString)
     }
 
     private fun <T, V> createReadWriteOption(prefId: Int): ReadWriteConfigOption<T, V> {
@@ -194,19 +204,25 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         }
     }
 
-    open class ReadOnlyConfigOption<in T, V>(val pref: String, val preferences: SharedPreferences) :
-        kotlin.properties.ReadOnlyProperty<T, V> {
+    open class ReadOnlyConfigOption<in T, V>(
+        val pref: String,
+        val preferences: SharedPreferences,
+        private val parseFromString: Boolean = false
+    ) : kotlin.properties.ReadOnlyProperty<T, V> {
 
         constructor(
-            context: Context, prefId: Int, preferences: SharedPreferences
-        ) : this(context.getString(prefId), preferences)
+            context: Context, prefId: Int, preferences: SharedPreferences, parseFromString: Boolean = false
+        ) : this(context.getString(prefId), preferences, parseFromString)
 
         override fun getValue(thisRef: T, property: KProperty<*>): V {
             return when (val returnType = property.returnType) {
                 String::class.starProjectedType -> preferences.getString(pref, null) as V
                 Boolean::class.starProjectedType -> preferences.getBoolean(pref, false) as V
                 Float::class.starProjectedType -> preferences.getFloat(pref, 0f) as V
-                Int::class.starProjectedType -> preferences.getInt(pref, 0) as V
+                (Int::class.starProjectedType) -> {
+                    (if (parseFromString) preferences.getString(pref, "0")
+                        ?.toInt() else preferences.getInt(pref, 0)) as V
+                }
                 Long::class.starProjectedType -> preferences.getLong(pref, 0L) as V
                 else -> throw IllegalArgumentException("Unsupported type: ${returnType}")
             }

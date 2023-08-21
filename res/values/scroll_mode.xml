@@ -1,0 +1,17 @@
+<resources>
+    <string name="scroll_mode_one_finger">One Finger</string>
+    <string name="scroll_mode_two_finger">Two Fingers</string>
+
+    <string name="scroll_mode_one_finger_value" translatable="false">1</string>
+    <string name="scroll_mode_two_finger_value" translatable="false">2</string>
+
+    <array name="scroll_mode_options">
+        <item>@string/scroll_mode_one_finger</item>
+        <item>@string/scroll_mode_two_finger</item>
+    </array>
+    <array name="scroll_mode_values" translatable="false">
+        <item>@string/scroll_mode_one_finger_value</item>
+        <item>@string/scroll_mode_two_finger_value</item>
+
+    </array>
+</resources>

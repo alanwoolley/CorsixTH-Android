@@ -37,6 +37,7 @@
 
     <!-- Input -->
     <string name="prefs_input_edge_scrolling" translatable="false">edge_scrolling</string>
+    <string name="prefs_input_scroll_mode" translatable="false">scroll_mode</string>
     <string name="prefs_input_scroll_momentum" translatable="false">scrolling_momentum</string>
 
     <!-- Video -->
