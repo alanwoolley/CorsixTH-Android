@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Yıkılan odaları kaldırın</string>
     <string name="control_how_the_map_moves">Haritanın nasıl hareket ettiğini kontrol edin</string>
     <string name="scrolling">Kaydırma</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Fareniz ekranın kenarındayken harita kaydırılmayacaktır.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Fareniz ekranın kenarına geldiğinde harita kayacaktır.</string>
+    <string name="edge_scrolling">Kenar kaydırma (Yalnızca Fare)</string>
     <string name="change_how_fast_the_map_scrolls">Haritanın ne kadar hızlı kaydırılacağını değiştirme</string>
     <string name="scrolling_momentum">Kaydırma momentumu</string>
     <string name="enable_videos">Videoları etkinleştirin</string>
@@ -86,4 +89,15 @@
     <string name="language">Oyun Dili</string>
     <string name="stretch_display">Streç ekran</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Seçilen çözünürlüğü tam olarak koruyarak oyunu ekranı dolduracak şekilde uzatır.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Tanılama ve kullanım bilgilerinin toplanmasına izin verin.</string>
+    <string name="analytics_and_diagnostics">Analitik ve Teşhis</string>
+    <string name="collect_usage">Kullanım Toplayın</string>
+    <string name="change_analytics_and_diagnostics_preferences">Analiz ve tanılama tercihlerini değiştirme</string>
+    <string name="full_version">Tam Sürüm</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Theme Hospital\'ın tam sürümüne yükseltin</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Theme Hospital\'ın bir kopyasını satın aldıysanız, tam sürüme yükseltebilirsiniz. Bu, oyunu yeniden başlatacaktır.</string>
+    <string name="reinstall_theme_hospital">Tema Hastanesini Yeniden Yükleyin</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Bu ayarlardan bazılarını değiştirmek oyunu yeniden başlatmanızı gerektirebilir.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Haritayı kaydırmak için kaç parmak gerektiğini kontrol eder.</string>
+    <string name="scrolling_mode_touch_only">Kaydırma Modu (Sadece Dokunmatik)</string>
 </resources>
