@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Menghapus ruangan yang hancur</string>
     <string name="control_how_the_map_moves">Mengontrol bagaimana peta bergerak</string>
     <string name="scrolling">Menggulir</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Peta tidak akan bergulir apabila jari atau mouse Anda berada di tepi layar.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Peta akan bergulir ketika jari atau mouse Anda berada di tepi layar.</string>
-    <string name="edge_scrolling">Pengguliran tepi</string>
     <string name="change_how_fast_the_map_scrolls">Mengubah seberapa cepat peta bergulir</string>
     <string name="scrolling_momentum">Momentum bergulir</string>
     <string name="enable_videos">Mengaktifkan video</string>
