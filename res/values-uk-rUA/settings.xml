@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Видалити зруйновані приміщення</string>
     <string name="control_how_the_map_moves">Керуйте рухом мапи</string>
     <string name="scrolling">Прокрутка</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Карта не прокручується, коли палець або миша знаходиться на краю екрана.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Карта буде прокручуватися, коли ваш палець або миша буде знаходитися на краю екрану.</string>
-    <string name="edge_scrolling">Прокрутка по краю</string>
     <string name="change_how_fast_the_map_scrolls">Змінити швидкість прокрутки мапи</string>
     <string name="scrolling_momentum">Імпульс прокрутки</string>
     <string name="enable_videos">Увімкнути відео</string>
