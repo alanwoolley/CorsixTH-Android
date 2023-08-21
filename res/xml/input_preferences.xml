@@ -12,7 +12,7 @@
             android:summaryOn="@string/the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen"
             android:title="@string/edge_scrolling" />
         <ListPreference
-            android:defaultValue="@string/scroll_mode_one_finger"
+            android:defaultValue="@string/scroll_mode_one_finger_value"
             android:entries="@array/scroll_mode_options"
             android:entryValues="@array/scroll_mode_values"
             android:icon="@drawable/baseline_touch_app_24"
