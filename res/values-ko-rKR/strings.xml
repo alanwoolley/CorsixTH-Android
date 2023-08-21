@@ -18,4 +18,15 @@
     <string name="s_deleted">%s 삭제됨</string>
     <string name="undo">실행 취소</string>
     <string name="new_save_name">새 저장 이름</string>
+    <string name="accept">동의</string>
+    <string name="decline">거절</string>
+    <string name="privacy_policy">개인정보 보호정책</string>
+    <string name="diagnostics_and_analytics">진단 및 분석</string>
+    <string name="play_demo">데모 재생</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">테마 병원을 소유하지 않은 경우 구매하지 않고 데모를 플레이할 수 있습니다.</string>
+    <string name="install">설치</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">GOG.com에서 테마 병원을 구매하고 다운로드한 경우, 저희가 대신 설치해 드립니다.</string>
+    <string name="import_game">가져오기</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">테마 병원 게임 파일을 장치에 복사한 경우 직접 가져올 수 있습니다.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">코식스를 플레이하려면 오리지널 테마 병원 게임 파일이 필요합니다.</string>
 </resources>
