@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Pašalinti sunaikintus kambarius</string>
     <string name="control_how_the_map_moves">Valdykite, kaip juda žemėlapis</string>
     <string name="scrolling">Slinkimas</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Žemėlapis nebus slenkamas, kai pelė bus prie ekrano krašto.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Žemėlapis slinksta, kai pelė atsiduria prie ekrano krašto.</string>
+    <string name="edge_scrolling">Slinkimas kraštais (tik pelė)</string>
     <string name="change_how_fast_the_map_scrolls">Pakeiskite žemėlapio slinkimo greitį</string>
     <string name="scrolling_momentum">Slinkimo tempas</string>
     <string name="enable_videos">Įgalinti vaizdo įrašus</string>
@@ -86,4 +89,15 @@
     <string name="language">Žaidimo kalba</string>
     <string name="stretch_display">Įtempimo ekranas</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Ištempia žaidimą, kad jis užpildytų ekraną, išlaikydamas tikslią pasirinktą skiriamąją gebą.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">leisti rinkti diagnostinę ir naudojimo informaciją.</string>
+    <string name="analytics_and_diagnostics">Analizė ir diagnostika</string>
+    <string name="collect_usage">Rinkti naudojimą</string>
+    <string name="change_analytics_and_diagnostics_preferences">Keisti analizės ir diagnostikos nuostatas</string>
+    <string name="full_version">Pilna versija</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Atnaujinti iki pilnos \"Theme Hospital\" versijos</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Jei įsigijote \"Theme Hospital\" kopiją, galite ją atnaujinti į pilną versiją. Taip žaidimas bus paleistas iš naujo.</string>
+    <string name="reinstall_theme_hospital">Iš naujo įdiegti temą ligoninė</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Keičiant kai kuriuos iš šių nustatymų gali tekti iš naujo paleisti žaidimą.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Nustato, kiek pirštų reikia žemėlapiui slinkti.</string>
+    <string name="scrolling_mode_touch_only">Slinkimo režimas (tik jutiklinis)</string>
 </resources>
