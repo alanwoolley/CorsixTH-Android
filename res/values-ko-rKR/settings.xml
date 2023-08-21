@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">파괴된 방 제거</string>
     <string name="control_how_the_map_moves">지도 이동 방식 제어</string>
     <string name="scrolling">스크롤</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">손가락이나 마우스가 화면 가장자리에 있으면 지도가 스크롤되지 않습니다.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">손가락이나 마우스를 화면 가장자리에 가져가면 지도가 스크롤됩니다.</string>
-    <string name="edge_scrolling">가장자리 스크롤</string>
     <string name="change_how_fast_the_map_scrolls">지도 스크롤 속도 변경</string>
     <string name="scrolling_momentum">스크롤 모멘텀</string>
     <string name="enable_videos">동영상 사용</string>
