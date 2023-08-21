@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Îndepărtați camerele distruse</string>
     <string name="control_how_the_map_moves">Controlați modul în care se mișcă harta</string>
     <string name="scrolling">Defilare</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Harta nu se va derula atunci când degetul sau mouse-ul se află la marginea ecranului.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Harta se va derula atunci când degetul sau mouse-ul se află la marginea ecranului.</string>
-    <string name="edge_scrolling">Defilare pe margini</string>
     <string name="change_how_fast_the_map_scrolls">Modificați viteza de derulare a hărții</string>
     <string name="scrolling_momentum">Impuls de defilare</string>
     <string name="enable_videos">Activați videoclipurile</string>
