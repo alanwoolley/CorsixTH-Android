@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">移除被破坏的房间</string>
     <string name="control_how_the_map_moves">控制地图的移动方式</string>
     <string name="scrolling">滚动</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">当鼠标位于屏幕边缘时，地图不会滚动。</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">当鼠标位于屏幕边缘时，地图会滚动。</string>
+    <string name="edge_scrolling">边缘滚动（仅限鼠标）</string>
     <string name="change_how_fast_the_map_scrolls">改变地图滚动的速度</string>
     <string name="scrolling_momentum">滚动的势头</string>
     <string name="enable_videos">启用视频</string>
@@ -86,4 +89,15 @@
     <string name="language">游戏语言</string>
     <string name="stretch_display">拉伸显示</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">拉长游戏以填满屏幕，保持所选择的准确分辨率。</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">允许收集诊断和使用信息。</string>
+    <string name="analytics_and_diagnostics">分析和诊断</string>
+    <string name="collect_usage">收集使用情况</string>
+    <string name="change_analytics_and_diagnostics_preferences">更改分析和诊断首选项</string>
+    <string name="full_version">完整版本</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">升级至主题医院完整版</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">如果您已经购买了《主题医院》，可以升级到完整版。这将重新启动游戏。</string>
+    <string name="reinstall_theme_hospital">重新安装主题医院</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">更改其中某些设置可能需要重新启动游戏。</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">控制滚动地图所需的手指数量。</string>
+    <string name="scrolling_mode_touch_only">滚动模式（仅限触摸）</string>
 </resources>
