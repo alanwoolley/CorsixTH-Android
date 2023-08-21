@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Rimuovere le stanze distrutte</string>
     <string name="control_how_the_map_moves">Controllare il movimento della mappa</string>
     <string name="scrolling">Scorrimento</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">La mappa non scorre quando il dito o il mouse si trova sul bordo dello schermo.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">La mappa scorre quando il dito o il mouse si trova sul bordo dello schermo.</string>
-    <string name="edge_scrolling">Scorrimento dei bordi</string>
     <string name="change_how_fast_the_map_scrolls">Modificare la velocità di scorrimento della mappa</string>
     <string name="scrolling_momentum">Momento di scorrimento</string>
     <string name="enable_videos">Abilita i video</string>
