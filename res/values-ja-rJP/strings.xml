@@ -18,4 +18,15 @@
     <string name="s_deleted">%s 削除</string>
     <string name="undo">元に戻す</string>
     <string name="new_save_name">新しいセーブ名</string>
+    <string name="accept">受け入れる</string>
+    <string name="decline">減少</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="diagnostics_and_analytics">診断と分析</string>
+    <string name="play_demo">プレイ・デモ</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Theme Hospitalをお持ちでない方は、購入せずにデモをプレイすることができる。</string>
+    <string name="install">インストール</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">GOG.comからTheme Hospitalを購入し、ダウンロードされた場合、私たちがインストールいたします。</string>
+    <string name="import_game">輸入</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Theme Hospitalのゲームファイルをデバイスにコピーした場合は、直接インポートできます。</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">CorsixTHをプレイするには、オリジナルのTheme Hospitalゲームファイルが必要です。</string>
 </resources>
