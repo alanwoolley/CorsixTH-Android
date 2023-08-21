@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Remove destroyed rooms</string>
     <string name="control_how_the_map_moves">Control how the map moves</string>
     <string name="scrolling">Scrolling</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">The map will not scroll when your finger or mouse is at the edge of the screen.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">The map will scroll when your finger or mouse is at the edge of the screen.</string>
-    <string name="edge_scrolling">Edge scrolling</string>
     <string name="change_how_fast_the_map_scrolls">Change how fast the map scrolls</string>
     <string name="scrolling_momentum">Scrolling momentum</string>
     <string name="enable_videos">Enable videos</string>
