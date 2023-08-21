@@ -33,9 +33,6 @@
     <string name="remove_destroyed_rooms">Fjern ødelagte rum</string>
     <string name="control_how_the_map_moves">Styr, hvordan kortet bevæger sig</string>
     <string name="scrolling">Rulning</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kortet ruller ikke, når din finger eller mus er ved kanten af skærmen.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kortet ruller, når din finger eller mus er ved kanten af skærmen.</string>
-    <string name="edge_scrolling">Rulning på kanten</string>
     <string name="change_how_fast_the_map_scrolls">Ændre, hvor hurtigt kortet ruller</string>
     <string name="scrolling_momentum">Rullende momentum</string>
     <string name="enable_videos">Aktivér videoer</string>
