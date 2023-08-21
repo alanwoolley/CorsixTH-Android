@@ -1,2 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="scroll_mode_one_finger">指1本</string>
+    <string name="scroll_mode_two_finger">本の指</string>
+</resources>
