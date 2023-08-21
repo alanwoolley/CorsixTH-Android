@@ -33,6 +33,9 @@
     <string name="remove_destroyed_rooms">Remover salas destruídas</string>
     <string name="control_how_the_map_moves">Controlar a deslocação do mapa</string>
     <string name="scrolling">Deslocação</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">O mapa não se desloca quando o rato se encontra na extremidade do ecrã.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">O mapa desloca-se quando o rato se encontra na extremidade do ecrã.</string>
+    <string name="edge_scrolling">Deslocação nas margens (apenas no rato)</string>
     <string name="change_how_fast_the_map_scrolls">Alterar a velocidade de deslocação do mapa</string>
     <string name="scrolling_momentum">Momento de deslocação</string>
     <string name="enable_videos">Ativar vídeos</string>
@@ -86,4 +89,15 @@
     <string name="language">Idioma do jogo</string>
     <string name="stretch_display">Ecrã de estiramento</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Estica o jogo para preencher o ecrã, mantendo a resolução exacta escolhida.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Permitir a recolha de informações de diagnóstico e de utilização.</string>
+    <string name="analytics_and_diagnostics">Análise e diagnóstico</string>
+    <string name="collect_usage">Recolher a utilização</string>
+    <string name="change_analytics_and_diagnostics_preferences">Alterar as preferências de análise e diagnóstico</string>
+    <string name="full_version">Versão completa</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Atualização para a versão completa do Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Se comprou uma cópia do Theme Hospital, pode atualizar para a versão completa. Isto irá reiniciar o jogo.</string>
+    <string name="reinstall_theme_hospital">Reinstalar o Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Para alterar algumas destas definições pode ser necessário reiniciar o jogo.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Controla quantos dedos são necessários para percorrer o mapa.</string>
+    <string name="scrolling_mode_touch_only">Modo de deslocação (apenas toque)</string>
 </resources>
