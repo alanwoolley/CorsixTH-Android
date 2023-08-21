@@ -18,4 +18,15 @@
     <string name="s_deleted">%s gelöscht</string>
     <string name="undo">Rückgängig machen</string>
     <string name="new_save_name">Neuer Speichername</string>
+    <string name="accept">Akzeptieren</string>
+    <string name="decline">Rückgang</string>
+    <string name="privacy_policy">Datenschutzbestimmungen</string>
+    <string name="diagnostics_and_analytics">Diagnostik und Analytik</string>
+    <string name="play_demo">Demo spielen</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Wenn Sie Theme Hospital noch nicht besitzen, können Sie die Demo auch ohne Kauf spielen.</string>
+    <string name="install">Installieren Sie</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Wenn Sie Theme Hospital von GOG.com gekauft und heruntergeladen haben, können wir es für Sie installieren.</string>
+    <string name="import_game">Importieren</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Wenn Sie die Dateien des Spiels Theme Hospital auf Ihr Gerät kopiert haben, können Sie sie direkt importieren.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Zum Spielen von CorsixTH werden die Originaldateien des Spiels Theme Hospital benötigt.</string>
 </resources>
