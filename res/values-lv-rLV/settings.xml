@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Noņemt iznīcinātās telpas</string>
     <string name="control_how_the_map_moves">Kontrolējiet, kā karte pārvietojas</string>
     <string name="scrolling">Ritināšana</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karte netiks ritināta, ja pirksts vai pele atrodas pie ekrāna malas.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karte tiks ritināta, kad pirksts vai pele būs pie ekrāna malas.</string>
-    <string name="edge_scrolling">Malu ritināšana</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karte netiks ritināta, ja pele atrodas pie ekrāna malas.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karte tiks ritināta, kad pele būs pie ekrāna malas.</string>
+    <string name="edge_scrolling">Robežu ritināšana (tikai ar peli)</string>
     <string name="change_how_fast_the_map_scrolls">Kartes ritināšanas ātruma maiņa</string>
     <string name="scrolling_momentum">Ritināšanas impulss</string>
     <string name="enable_videos">Iespējot videoklipus</string>
@@ -89,4 +89,15 @@
     <string name="language">Spēles valoda</string>
     <string name="stretch_display">Stretch displejs</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Izstiepj spēli, lai tā aizpildītu ekrānu, saglabājot precīzu izvēlēto izšķirtspēju.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">ļaut vākt diagnostikas un lietošanas informāciju.</string>
+    <string name="analytics_and_diagnostics">Analītika un diagnostika</string>
+    <string name="collect_usage">Apkopot lietošanu</string>
+    <string name="change_analytics_and_diagnostics_preferences">Analītikas un diagnostikas preferenču maiņa</string>
+    <string name="full_version">Pilna versija</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Atjaunināt uz pilnu Theme Hospital versiju</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Ja esat iegādājies Theme Hospital kopiju, varat atjaunināt to uz pilnu versiju. Tādējādi spēle sāksies no jauna.</string>
+    <string name="reinstall_theme_hospital">Pārinstalēt tēmu slimnīca</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Lai mainītu dažus no šiem iestatījumiem, var nākties no jauna palaist spēli.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Kontrolē, ar cik pirkstiem nepieciešams ritināt karti.</string>
+    <string name="scrolling_mode_touch_only">Ritināšanas režīms (tikai ar pieskārienu)</string>
 </resources>
