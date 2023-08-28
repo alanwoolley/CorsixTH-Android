@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Odstranění zničených místností</string>
     <string name="control_how_the_map_moves">Ovládání pohybu mapy</string>
     <string name="scrolling">Rolování</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Mapa se nebude posouvat, pokud se prst nebo myš nachází na okraji obrazovky.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Když se prstem nebo myší dostanete na okraj obrazovky, mapa se posune.</string>
-    <string name="edge_scrolling">Posouvání po okrajích</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Pokud je myš na okraji obrazovky, mapa se neposouvá.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Mapa se posune, když se myš nachází na okraji obrazovky.</string>
+    <string name="edge_scrolling">Posouvání po okrajích (pouze myš)</string>
     <string name="change_how_fast_the_map_scrolls">Změna rychlosti posouvání mapy</string>
     <string name="scrolling_momentum">Posouvání hybnosti</string>
     <string name="enable_videos">Povolení videí</string>
@@ -89,4 +89,15 @@
     <string name="language">Jazyk hry</string>
     <string name="stretch_display">Roztahovací displej</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Roztáhne hru tak, aby vyplnila obrazovku a zachovala přesně zvolené rozlišení.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Umožnit shromažďování diagnostických informací a informací o používání.</string>
+    <string name="analytics_and_diagnostics">Analýza a diagnostika</string>
+    <string name="collect_usage">Shromažďovat údaje o používání</string>
+    <string name="change_analytics_and_diagnostics_preferences">Změna předvoleb analytiky a diagnostiky</string>
+    <string name="full_version">Plná verze</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Upgrade na plnou verzi Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Pokud jste si zakoupili kopii Theme Hospital, můžete přejít na plnou verzi. Tím se hra restartuje.</string>
+    <string name="reinstall_theme_hospital">Přeinstalování tématu Nemocnice</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Změna některých z těchto nastavení může vyžadovat restart hry.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Ovládá, kolik prstů je potřeba k posouvání mapy.</string>
+    <string name="scrolling_mode_touch_only">Režim posouvání (pouze dotykem)</string>
 </resources>
