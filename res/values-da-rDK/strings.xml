@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Spilindstillinger</string>
+    <string name="loading_theme_hospital_failed">Indlæsning af Theme Hospital mislykkedes.</string>
+    <string name="unrecognised_file">Ikke genkendt fil.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Ugyldigt GOG-installationsprogram. Er du sikker på, at det er Theme Hospital?</string>
+    <string name="installing_please_wait">Installation. Vent venligst.</string>
+    <string name="screenshot_contentdesc">Skærmbillede af spillet</string>
+    <string name="money_contentdesc">Banksaldo</string>
+    <string name="rep_contentdesc">Omdømme</string>
+    <string name="new_save">Ny besparelse</string>
+    <string name="save_game">Gem spillet</string>
+    <string name="load_game">Indlæs spil</string>
+    <string name="overwrite_save">Overskrive gem?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Dette vil overskrive det gemte spil: %s. Er du sikker?</string>
+    <string name="save">Gem</string>
+    <string name="cancel">Annuller</string>
+    <string name="s_deleted">%s slettet</string>
+    <string name="undo">Fortryd</string>
+    <string name="new_save_name">Nyt gemmenavn</string>
+    <string name="accept">Accepter</string>
+    <string name="decline">Nedgang</string>
+    <string name="privacy_policy">Privatlivspolitik</string>
+    <string name="diagnostics_and_analytics">Diagnostik og analyse</string>
+    <string name="play_demo">Afspil demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Hvis du ikke ejer Theme Hospital, kan du spille demoen uden at købe.</string>
+    <string name="install">Installer</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Hvis du har købt og downloadet Theme Hospital fra GOG.com, kan vi installere det for dig.</string>
+    <string name="import_game">Import</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Hvis du har kopieret Theme Hospital-spilfilerne til din enhed, kan du importere dem direkte.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Original Theme Hospital-spilfiler er påkrævet for at spille CorsixTH</string>
 </resources>
