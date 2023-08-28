@@ -50,6 +50,9 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
     val audioEnabled: Boolean by createReadOnlyOption(R.string.prefs_audio_global)
 
     @get:Keep
+    val edgeScroll : Boolean by createReadOnlyOption(R.string.prefs_input_edge_scrolling)
+
+    @get:Keep
     val sfxVolume: Int by createReadOnlyOption(R.string.prefs_audio_sounds_volume)
 
     @get:Keep

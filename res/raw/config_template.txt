@@ -85,6 +85,8 @@ music_volume = {{music_volume}}
 -- Edge scrolling: By default enabled (prevent_edge_scrolling = false).
 --
 prevent_edge_scrolling = {{prevent_edge_scrolling}}
+-- We also duplicate this in an original value
+prevent_edge_scrolling_original = {{prevent_edge_scrolling}}
 
 -------------------------------------------------------------------------------
 -- Capture mouse: By default enabled (capture mouse = true).
