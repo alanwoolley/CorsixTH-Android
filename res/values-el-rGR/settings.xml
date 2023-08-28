@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Αφαιρέστε τα κατεστραμμένα δωμάτια</string>
     <string name="control_how_the_map_moves">Ελέγξτε τον τρόπο κίνησης του χάρτη</string>
     <string name="scrolling">Κύλιση</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Ο χάρτης δεν θα μετακινείται όταν το δάχτυλο ή το ποντίκι σας βρίσκεται στην άκρη της οθόνης.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Ο χάρτης θα μετακινηθεί όταν το δάχτυλο ή το ποντίκι σας βρεθεί στην άκρη της οθόνης.</string>
-    <string name="edge_scrolling">Κύλιση στην άκρη</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Ο χάρτης δεν θα μετακινείται όταν το ποντίκι σας βρίσκεται στην άκρη της οθόνης.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Ο χάρτης θα μετακινηθεί όταν το ποντίκι σας βρίσκεται στην άκρη της οθόνης.</string>
+    <string name="edge_scrolling">Κύλιση στις άκρες (μόνο με ποντίκι)</string>
     <string name="change_how_fast_the_map_scrolls">Αλλαγή της ταχύτητας κύλισης του χάρτη</string>
     <string name="scrolling_momentum">Ορμή κύλισης</string>
     <string name="enable_videos">Ενεργοποίηση βίντεο</string>
@@ -89,4 +89,15 @@
     <string name="language">Γλώσσα παιχνιδιού</string>
     <string name="stretch_display">Οθόνη Stretch</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Τεντώνει το παιχνίδι για να γεμίσει την οθόνη, διατηρώντας την ακριβή επιλεγμένη ανάλυση.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Να επιτρέπει τη συλλογή διαγνωστικών πληροφοριών και πληροφοριών χρήσης.</string>
+    <string name="analytics_and_diagnostics">Ανάλυση και διάγνωση</string>
+    <string name="collect_usage">Συλλογή χρήσης</string>
+    <string name="change_analytics_and_diagnostics_preferences">Αλλαγή προτιμήσεων ανάλυσης και διάγνωσης</string>
+    <string name="full_version">Πλήρης έκδοση</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Αναβαθμίστε στην πλήρη έκδοση του Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Εάν έχετε αγοράσει ένα αντίγραφο του Theme Hospital, μπορείτε να αναβαθμίσετε στην πλήρη έκδοση. Αυτό θα επανεκκινήσει το παιχνίδι.</string>
+    <string name="reinstall_theme_hospital">Επανεγκαταστήστε το Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Η αλλαγή ορισμένων από αυτές τις ρυθμίσεις μπορεί να απαιτήσει την επανεκκίνηση του παιχνιδιού.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Ελέγχει πόσα δάχτυλα απαιτούνται για την κύλιση του χάρτη.</string>
+    <string name="scrolling_mode_touch_only">Λειτουργία κύλισης (μόνο αφή)</string>
 </resources>

@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Spelinstellingen</string>
+    <string name="loading_theme_hospital_failed">Laden van Themaziekenhuis mislukt.</string>
+    <string name="unrecognised_file">Niet-herkend bestand.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Ongeldig GOG-installatieprogramma. Weet u zeker dat dit Theme Hospital is?</string>
+    <string name="installing_please_wait">Installeren. Even geduld.</string>
+    <string name="screenshot_contentdesc">Screenshot spel</string>
+    <string name="money_contentdesc">Saldo bank</string>
+    <string name="rep_contentdesc">Reputatie</string>
+    <string name="new_save">Nieuw Opslaan</string>
+    <string name="save_game">Spel opslaan</string>
+    <string name="load_game">Spel laden</string>
+    <string name="overwrite_save">Opslaan overschrijven?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Hierdoor wordt opgeslagen spel overschreven: %s. Weet je het zeker?</string>
+    <string name="save">Sla</string>
+    <string name="cancel">Annuleren</string>
+    <string name="s_deleted">%s verwijderd</string>
+    <string name="undo">Ongedaan maken</string>
+    <string name="new_save_name">Nieuwe naam opslaan</string>
+    <string name="accept">Accepteer</string>
+    <string name="decline">Daling</string>
+    <string name="privacy_policy">Privacybeleid</string>
+    <string name="diagnostics_and_analytics">Diagnostiek en analyse</string>
+    <string name="play_demo">Demo afspelen</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Als je Theme Hospital niet hebt, kun je de demo spelen zonder hem te kopen.</string>
+    <string name="install">Installeer</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Als je Theme Hospital hebt gekocht en gedownload van GOG.com, kunnen wij het voor je installeren.</string>
+    <string name="import_game">Importeren</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Als je de spelbestanden van Theme Hospital naar je apparaat hebt gekopieerd, kun je ze direct importeren.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Originele Theme Hospital spelbestanden zijn nodig om CorsixTH te spelen</string>
 </resources>

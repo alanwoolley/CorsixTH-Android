@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Eemaldage hävitatud ruumid</string>
     <string name="control_how_the_map_moves">Kontrollida, kuidas kaart liigub</string>
     <string name="scrolling">Kerimine</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kaart ei keri, kui teie sõrm või hiir on ekraani servas.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kaart kerib, kui teie sõrm või hiir on ekraani servas.</string>
-    <string name="edge_scrolling">Serva kerimine</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kaart ei keri, kui hiir on ekraani servas.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kaart keritakse, kui hiir on ekraani servas.</string>
+    <string name="edge_scrolling">Serva kerimine (ainult hiir)</string>
     <string name="change_how_fast_the_map_scrolls">Muutke kaardi kerimise kiirust</string>
     <string name="scrolling_momentum">Veeretamise impulss</string>
     <string name="enable_videos">Videote lubamine</string>
@@ -89,4 +89,15 @@
     <string name="language">Mängu keel</string>
     <string name="stretch_display">Stretch ekraan</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Pikendab mängu nii, et see täidaks ekraani, säilitades täpselt valitud resolutsiooni.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Võimaldab diagnostika- ja kasutusteabe kogumist.</string>
+    <string name="analytics_and_diagnostics">Analüüs ja diagnostika</string>
+    <string name="collect_usage">Kasutuse kogumine</string>
+    <string name="change_analytics_and_diagnostics_preferences">Analüütika ja diagnostika eelistuste muutmine</string>
+    <string name="full_version">Täielik versioon</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Täiendage teema haigla täisversiooniks</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Kui olete ostnud Theme Hospitali koopia, saate uuendada selle täisversiooniks. See käivitab mängu uuesti.</string>
+    <string name="reinstall_theme_hospital">Teemahaigla uuesti paigaldamine</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Mõne seadistuse muutmine võib nõuda mängu taaskäivitamist.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Reguleerib, mitu sõrme on vaja kaardi kerimiseks.</string>
+    <string name="scrolling_mode_touch_only">Sirvimisrežiim (ainult puudutus)</string>
 </resources>

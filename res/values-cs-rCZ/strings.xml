@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Nastavení hry</string>
+    <string name="loading_theme_hospital_failed">Načítání tématu Nemocnice se nezdařilo.</string>
+    <string name="unrecognised_file">Nerozpoznaný soubor.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Neplatný instalační program GOG. Jste si jisti, že se jedná o Theme Hospital?</string>
+    <string name="installing_please_wait">Instalace. Počkejte prosím.</string>
+    <string name="screenshot_contentdesc">Snímek obrazovky hry</string>
+    <string name="money_contentdesc">Bankovní zůstatek</string>
+    <string name="rep_contentdesc">Reputace</string>
+    <string name="new_save">Nové uložení</string>
+    <string name="save_game">Uložit hru</string>
+    <string name="load_game">Načtení hry</string>
+    <string name="overwrite_save">Přepsat uložení?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Tím se přepíše uložená hra: %s. Jste si jisti?</string>
+    <string name="save">Uložit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="s_deleted">%s smazáno</string>
+    <string name="undo">Zrušit</string>
+    <string name="new_save_name">Nový název uložení</string>
+    <string name="accept">Přijmout</string>
+    <string name="decline">Pokles</string>
+    <string name="privacy_policy">Zásady ochrany osobních údajů</string>
+    <string name="diagnostics_and_analytics">Diagnostika a analýza</string>
+    <string name="play_demo">Přehrát ukázku</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Pokud hru Theme Hospital nevlastníte, můžete si demo zahrát bez nutnosti nákupu.</string>
+    <string name="install">Instalace</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Pokud jste si zakoupili a stáhli hru Theme Hospital z GOG.com, můžeme ji nainstalovat.</string>
+    <string name="import_game">Import</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Pokud jste soubory hry Theme Hospital zkopírovali do svého zařízení, můžete je importovat přímo.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Ke hraní hry CorsixTH jsou nutné původní soubory hry Theme Hospital</string>
 </resources>
