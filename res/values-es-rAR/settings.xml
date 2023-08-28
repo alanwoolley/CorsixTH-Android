@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Eliminar las habitaciones destruidas</string>
     <string name="control_how_the_map_moves">Controla cómo se mueve el mapa</string>
     <string name="scrolling">Desplazamiento</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">El mapa no se desplazará cuando el dedo o el ratón estén en el borde de la pantalla.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">El mapa se desplazará cuando el dedo o el ratón estén en el borde de la pantalla.</string>
-    <string name="edge_scrolling">Desplazamiento por los bordes</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">El mapa no se desplazará cuando el ratón esté en el borde de la pantalla.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">El mapa se desplazará cuando el ratón esté en el borde de la pantalla.</string>
+    <string name="edge_scrolling">Desplazamiento por los bordes (sólo ratón)</string>
     <string name="change_how_fast_the_map_scrolls">Cambiar la velocidad de desplazamiento del mapa</string>
     <string name="scrolling_momentum">Impulso de desplazamiento</string>
     <string name="enable_videos">Activar vídeos</string>
@@ -89,4 +89,15 @@
     <string name="language">Lenguaje del juego</string>
     <string name="stretch_display">Pantalla extensible</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Estira el juego para llenar la pantalla, manteniendo la resolución exacta elegida.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Permitir la recopilación de información de diagnóstico y uso.</string>
+    <string name="analytics_and_diagnostics">Análisis y diagnóstico</string>
+    <string name="collect_usage">Recoger el uso</string>
+    <string name="change_analytics_and_diagnostics_preferences">Cambiar las preferencias de análisis y diagnóstico</string>
+    <string name="full_version">Versión completa</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Actualizar a la versión completa de Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Si has comprado una copia de Theme Hospital, puedes actualizar a la versión completa. Esto reiniciará el juego.</string>
+    <string name="reinstall_theme_hospital">Reinstalar Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Cambiar algunos de estos ajustes puede requerir que reinicies el juego.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Controla cuántos dedos son necesarios para desplazarse por el mapa.</string>
+    <string name="scrolling_mode_touch_only">Modo de desplazamiento (sólo táctil)</string>
 </resources>
