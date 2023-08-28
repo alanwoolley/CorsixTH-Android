@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Játékbeállítások</string>
+    <string name="loading_theme_hospital_failed">A Theme Hospital betöltése sikertelen.</string>
+    <string name="unrecognised_file">Nem ismert fájl.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Érvénytelen GOG telepítő. Biztos, hogy ez a Theme Hospital?</string>
+    <string name="installing_please_wait">Telepítés. Kérjük, várjon.</string>
+    <string name="screenshot_contentdesc">Játék Pillanatkép</string>
+    <string name="money_contentdesc">Banki egyenleg</string>
+    <string name="rep_contentdesc">Hírnév</string>
+    <string name="new_save">Új mentés</string>
+    <string name="save_game">Játék mentése</string>
+    <string name="load_game">Játék betöltése</string>
+    <string name="overwrite_save">Mentés felülírása?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Ez felülírja a mentett játékot: %s. Biztos vagy benne?</string>
+    <string name="save">Mentés</string>
+    <string name="cancel">Törölje</string>
+    <string name="s_deleted">%s törölve</string>
+    <string name="undo">Undo</string>
+    <string name="new_save_name">Új mentési név</string>
+    <string name="accept">Elfogadom</string>
+    <string name="decline">Hanyatlás</string>
+    <string name="privacy_policy">Adatvédelmi irányelvek</string>
+    <string name="diagnostics_and_analytics">Diagnosztika és analitika</string>
+    <string name="play_demo">Demo lejátszása</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Ha még nincs meg a Theme Hospital, akkor a demót vásárlás nélkül is kipróbálhatod.</string>
+    <string name="install">Telepítse a</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Ha megvásároltad és letöltötted a Theme Hospital-t a GOG.com-ról, mi telepíthetjük neked.</string>
+    <string name="import_game">Import</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Ha a Theme Hospital játékfájljait átmásolta a készülékére, akkor közvetlenül importálhatja azokat.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">A CorsixTH játékhoz eredeti Theme Hospital játékfájlok szükségesek.</string>
 </resources>
