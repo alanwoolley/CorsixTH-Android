@@ -10,8 +10,8 @@
     <string name="music">Music</string>
     <string name="play_music">Play music</string>
     <string name="music_volume">Music volume</string>
-    <string name="the_colour_scheme_to_use_for_displaying_warmth">The colour scheme to use for displaying warmth.</string>
-    <string name="warmth_colours">Warmth colours</string>
+    <string name="the_colour_scheme_to_use_for_displaying_warmth">The color scheme to use for displaying warmth.</string>
+    <string name="warmth_colours">Warmth colors</string>
     <string name="resolution">Resolution</string>
     <string name="keep_aspect_ratio">Keep aspect ratio</string>
     <string name="you_can_win_or_lose_in_custom_maps">You can win or lose in custom maps.</string>
@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Remove destroyed rooms</string>
     <string name="control_how_the_map_moves">Control how the map moves</string>
     <string name="scrolling">Scrolling</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">The map will not scroll when your finger or mouse is at the edge of the screen.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">The map will scroll when your finger or mouse is at the edge of the screen.</string>
-    <string name="edge_scrolling">Edge scrolling</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">The map will not scroll when your mouse is at the edge of the screen.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">The map will scroll when your mouse is at the edge of the screen.</string>
+    <string name="edge_scrolling">Edge scrolling (Mouse Only)</string>
     <string name="change_how_fast_the_map_scrolls">Change how fast the map scrolls</string>
     <string name="scrolling_momentum">Scrolling momentum</string>
     <string name="enable_videos">Enable videos</string>
@@ -70,7 +70,7 @@
     <string name="audio">Audio</string>
     <string name="enable_disable_in_game_video_cutscenes">Enable/disable in game video cutscenes.</string>
     <string name="video">Video</string>
-    <string name="change_the_display_resolution_and_colours">Change the display resolution and colours.</string>
+    <string name="change_the_display_resolution_and_colours">Change the display resolution and colors.</string>
     <string name="display">Display</string>
     <string name="change_how_the_game_responds_to_your_input">Change how the game responds to your input.</string>
     <string name="input_and_controls">Input and Controls</string>
@@ -82,11 +82,22 @@
     <string name="cutscene_videos_will_not_be_played">Cutscene videos will not be played.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">The intro video will be played. This can be skipped by pressing on the video.</string>
     <string name="the_intro_video_will_not_be_played">The intro video will not be played.</string>
-    <string name="colours">Colours</string>
+    <string name="colours">Colors</string>
     <string name="screen">Screen</string>
     <string name="alien_dna">Alien DNA</string>
     <string name="localisation">Localisation</string>
     <string name="language">Game Language</string>
     <string name="stretch_display">Stretch display</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Stretches the game to fill the screen, keeping the exact chosen resolution.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Allow collection of diagnostic and usage information.</string>
+    <string name="analytics_and_diagnostics">Analytics and Diagnostics</string>
+    <string name="collect_usage">Collect Usage</string>
+    <string name="change_analytics_and_diagnostics_preferences">Change analytics and diagnostics preferences</string>
+    <string name="full_version">Full Version</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Upgrade to the full version of Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">If you have bought a copy of Theme Hospital, you can upgrade to the full version. This will restart the game.</string>
+    <string name="reinstall_theme_hospital">Reinstall Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Changing some of these settings may require you to restart the game.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Controls how many fingers are required to scroll the map.</string>
+    <string name="scrolling_mode_touch_only">Scrolling Mode (Touch Only)</string>
 </resources>
