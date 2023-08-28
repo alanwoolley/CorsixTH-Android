@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Verwoeste kamers verwijderen</string>
     <string name="control_how_the_map_moves">Bepaal hoe de kaart beweegt</string>
     <string name="scrolling">Scrollen</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">De kaart scrollt niet als je vinger of muis zich aan de rand van het scherm bevindt.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">De kaart scrolt wanneer je vinger of muis zich aan de rand van het scherm bevindt.</string>
-    <string name="edge_scrolling">Kant scrollen</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">De kaart scrollt niet als je muis zich aan de rand van het scherm bevindt.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">De kaart scrolt wanneer je muis zich aan de rand van het scherm bevindt.</string>
+    <string name="edge_scrolling">Randscrollen (alleen met muis)</string>
     <string name="change_how_fast_the_map_scrolls">Veranderen hoe snel de kaart scrolt</string>
     <string name="scrolling_momentum">Scrollend momentum</string>
     <string name="enable_videos">Video\'s inschakelen</string>
@@ -89,4 +89,15 @@
     <string name="language">Taal van het spel</string>
     <string name="stretch_display">Display uitrekken</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Rek het spel uit om het scherm te vullen, met behoud van de exact gekozen resolutie.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Verzameling van diagnostische en gebruiksinformatie toestaan.</string>
+    <string name="analytics_and_diagnostics">Analyse en diagnose</string>
+    <string name="collect_usage">Gebruik verzamelen</string>
+    <string name="change_analytics_and_diagnostics_preferences">Voorkeuren voor analyse en diagnose wijzigen</string>
+    <string name="full_version">Volledige versie</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Upgrade naar de volledige versie van Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Als je een exemplaar van Theme Hospital hebt gekocht, kun je upgraden naar de volledige versie. Hierdoor wordt het spel opnieuw opgestart.</string>
+    <string name="reinstall_theme_hospital">Thema Ziekenhuis opnieuw installeren</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Als je sommige van deze instellingen wilt wijzigen, moet je het spel mogelijk opnieuw opstarten.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Bepaalt hoeveel vingers nodig zijn om door de kaart te scrollen.</string>
+    <string name="scrolling_mode_touch_only">Scrollmodus (alleen aanraken)</string>
 </resources>
