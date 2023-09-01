@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">게임 설정</string>
+    <string name="loading_theme_hospital_failed">테마 병원을 로드하지 못했습니다.</string>
+    <string name="unrecognised_file">인식할 수 없는 파일입니다.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">잘못된 GOG 설치 프로그램입니다. 테마 병원이 맞습니까?</string>
+    <string name="installing_please_wait">설치 중입니다. 잠시만 기다려주세요.</string>
+    <string name="screenshot_contentdesc">게임 스크린샷</string>
+    <string name="money_contentdesc">은행 잔액</string>
+    <string name="rep_contentdesc">평판</string>
+    <string name="new_save">새 저장</string>
+    <string name="save_game">게임 저장</string>
+    <string name="load_game">게임 로드</string>
+    <string name="overwrite_save">저장 내용을 덮어쓰시겠습니까?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">저장된 게임을 덮어씁니다: %s. 확실하신가요?</string>
+    <string name="save">저장</string>
+    <string name="cancel">취소</string>
+    <string name="s_deleted">%s 삭제됨</string>
+    <string name="undo">실행 취소</string>
+    <string name="new_save_name">새 저장 이름</string>
+    <string name="accept">동의</string>
+    <string name="decline">거절</string>
+    <string name="privacy_policy">개인정보 보호정책</string>
+    <string name="diagnostics_and_analytics">진단 및 분석</string>
+    <string name="play_demo">데모 재생</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">테마 병원을 소유하지 않은 경우 구매하지 않고 데모를 플레이할 수 있습니다.</string>
+    <string name="install">설치</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">GOG.com에서 테마 병원을 구매하고 다운로드한 경우, 저희가 대신 설치해 드립니다.</string>
+    <string name="import_game">가져오기</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">테마 병원 게임 파일을 장치에 복사한 경우 직접 가져올 수 있습니다.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">코식스를 플레이하려면 오리지널 테마 병원 게임 파일이 필요합니다.</string>
 </resources>

@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">파괴된 방 제거</string>
     <string name="control_how_the_map_moves">지도 이동 방식 제어</string>
     <string name="scrolling">스크롤</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">손가락이나 마우스가 화면 가장자리에 있으면 지도가 스크롤되지 않습니다.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">손가락이나 마우스를 화면 가장자리에 가져가면 지도가 스크롤됩니다.</string>
-    <string name="edge_scrolling">가장자리 스크롤</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">마우스가 화면 가장자리에 있을 때는 지도가 스크롤되지 않습니다.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">마우스가 화면 가장자리에 있으면 지도가 스크롤됩니다.</string>
+    <string name="edge_scrolling">가장자리 스크롤(마우스 전용)</string>
     <string name="change_how_fast_the_map_scrolls">지도 스크롤 속도 변경</string>
     <string name="scrolling_momentum">스크롤 모멘텀</string>
     <string name="enable_videos">동영상 사용</string>
@@ -89,4 +89,15 @@
     <string name="language">게임 언어</string>
     <string name="stretch_display">스트레치 디스플레이</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">선택한 해상도를 정확하게 유지하면서 화면을 가득 채우도록 게임을 늘립니다.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">진단 및 사용 정보 수집을 허용합니다.</string>
+    <string name="analytics_and_diagnostics">분석 및 진단</string>
+    <string name="collect_usage">사용량 수집</string>
+    <string name="change_analytics_and_diagnostics_preferences">분석 및 진단 기본 설정 변경</string>
+    <string name="full_version">정식 버전</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">테마 병원 정식 버전으로 업그레이드</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">테마 병원의 사본을 구입한 경우 정식 버전으로 업그레이드할 수 있습니다. 그러면 게임이 다시 시작됩니다.</string>
+    <string name="reinstall_theme_hospital">테마 병원 재설치</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">이러한 설정 중 일부를 변경하려면 게임을 다시 시작해야 할 수 있습니다.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">지도를 스크롤하는 데 필요한 손가락 수를 제어합니다.</string>
+    <string name="scrolling_mode_touch_only">스크롤 모드(터치 전용)</string>
 </resources>

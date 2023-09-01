@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Ta bort förstörda rum</string>
     <string name="control_how_the_map_moves">Kontrollera hur kartan rör sig</string>
     <string name="scrolling">Rullning</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kartan rullar inte när fingret eller musen befinner sig vid skärmens kant.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kartan rullar när fingret eller musen befinner sig vid skärmens kant.</string>
-    <string name="edge_scrolling">Rullning i kant</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kartan rullar inte när musen befinner sig vid kanten av skärmen.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Kartan rullar när musen befinner sig vid skärmens kant.</string>
+    <string name="edge_scrolling">Kantrullning (endast mus)</string>
     <string name="change_how_fast_the_map_scrolls">Ändra hur snabbt kartan rullar</string>
     <string name="scrolling_momentum">Momentum för rullning</string>
     <string name="enable_videos">Aktivera videor</string>
@@ -89,4 +89,15 @@
     <string name="language">Spelets språk</string>
     <string name="stretch_display">Stretch display</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Sträcker ut spelet så att det fyller skärmen och behåller den exakta valda upplösningen.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Tillåt insamling av diagnos- och användningsinformation.</string>
+    <string name="analytics_and_diagnostics">Analys och diagnostik</string>
+    <string name="collect_usage">Samla in användning</string>
+    <string name="change_analytics_and_diagnostics_preferences">Ändra inställningar för analys och diagnostik</string>
+    <string name="full_version">Fullständig version</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Uppgradera till den fullständiga versionen av Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Om du har köpt en kopia av Theme Hospital kan du uppgradera till den fullständiga versionen. Detta kommer att starta om spelet.</string>
+    <string name="reinstall_theme_hospital">Installera om Theme Hospital</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Om du ändrar några av dessa inställningar kan det krävas att du startar om spelet.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Styr hur många fingrar som krävs för att bläddra i kartan.</string>
+    <string name="scrolling_mode_touch_only">Rullningsläge (endast vid beröring)</string>
 </resources>

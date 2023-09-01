@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Poista tuhoutuneet huoneet</string>
     <string name="control_how_the_map_moves">Hallitse kartan liikkumista</string>
     <string name="scrolling">Vieritys</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karttaa ei vieritetä, kun sormi tai hiiri on näytön reunalla.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karttaa vieritetään, kun sormi tai hiiri on näytön reunalla.</string>
-    <string name="edge_scrolling">Reunan vieritys</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karttaa ei vieritetä, kun hiiri on näytön reunalla.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Karttaa vieritetään, kun hiiri on näytön reunalla.</string>
+    <string name="edge_scrolling">Reunan vieritys (vain hiiri)</string>
     <string name="change_how_fast_the_map_scrolls">Muuta kartan vieritysnopeutta</string>
     <string name="scrolling_momentum">Vieritysvauhti</string>
     <string name="enable_videos">Ota videot käyttöön</string>
@@ -89,4 +89,15 @@
     <string name="language">Pelin kieli</string>
     <string name="stretch_display">Stretch-näyttö</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Venyttää pelin täyttämään ruudun, säilyttäen tarkalleen valitun resoluution.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Salli diagnostiikka- ja käyttötietojen kerääminen.</string>
+    <string name="analytics_and_diagnostics">Analytiikka ja diagnostiikka</string>
+    <string name="collect_usage">Kerää käyttö</string>
+    <string name="change_analytics_and_diagnostics_preferences">Muuta analytiikan ja diagnostiikan asetuksia</string>
+    <string name="full_version">Täysi versio</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Päivitä Theme Hospitalin täysversioon</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Jos olet ostanut Theme Hospitalin, voit päivittää sen täysversioon. Tämä käynnistää pelin uudelleen.</string>
+    <string name="reinstall_theme_hospital">Asenna Theme Hospital uudelleen</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Joidenkin asetusten muuttaminen saattaa vaatia pelin käynnistämistä uudelleen.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Säätää, kuinka monta sormea tarvitaan kartan vierittämiseen.</string>
+    <string name="scrolling_mode_touch_only">Vieritystila (vain kosketus)</string>
 </resources>

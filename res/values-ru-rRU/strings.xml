@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Настройки игры</string>
+    <string name="loading_theme_hospital_failed">Загрузка Theme Hospital не удалась.</string>
+    <string name="unrecognised_file">Нераспознанный файл.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Неверный установщик GOG. Вы уверены, что это Theme Hospital?</string>
+    <string name="installing_please_wait">Установка. Пожалуйста, подождите.</string>
+    <string name="screenshot_contentdesc">Скриншот игры</string>
+    <string name="money_contentdesc">Банковский баланс</string>
+    <string name="rep_contentdesc">Репутация</string>
+    <string name="new_save">Новая экономия</string>
+    <string name="save_game">Сохранить игру</string>
+    <string name="load_game">Загрузить игру</string>
+    <string name="overwrite_save">Перезаписать сохранение?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">При этом будет перезаписана сохраненная игра: %s. Вы уверены?</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="s_deleted">%s удалено</string>
+    <string name="undo">Отменить</string>
+    <string name="new_save_name">Новое имя сохранения</string>
+    <string name="accept">Принять</string>
+    <string name="decline">Снижение</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="diagnostics_and_analytics">Диагностика и аналитика</string>
+    <string name="play_demo">Play Demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Если у вас нет Theme Hospital, вы можете поиграть в демо-версию без покупки.</string>
+    <string name="install">Установить</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Если вы купили и загрузили Theme Hospital с сайта GOG.com, мы можем установить ее для вас.</string>
+    <string name="import_game">Импорт</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Если вы скопировали файлы игры Theme Hospital на свое устройство, вы можете импортировать их напрямую.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Для игры в CorsixTH требуются файлы игры Original Theme Hospital</string>
 </resources>

@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Видалити зруйновані приміщення</string>
     <string name="control_how_the_map_moves">Керуйте рухом мапи</string>
     <string name="scrolling">Прокрутка</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Карта не прокручується, коли палець або миша знаходиться на краю екрана.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Карта буде прокручуватися, коли ваш палець або миша буде знаходитися на краю екрану.</string>
-    <string name="edge_scrolling">Прокрутка по краю</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Мапа не прокручується, коли миша знаходиться біля краю екрана.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Мапа прокручується, коли миша знаходиться біля краю екрана.</string>
+    <string name="edge_scrolling">Прокрутка по краю (тільки миша)</string>
     <string name="change_how_fast_the_map_scrolls">Змінити швидкість прокрутки мапи</string>
     <string name="scrolling_momentum">Імпульс прокрутки</string>
     <string name="enable_videos">Увімкнути відео</string>
@@ -89,4 +89,15 @@
     <string name="language">Мова гри</string>
     <string name="stretch_display">Розтяжний дисплей</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Розтягує гру на весь екран, зберігаючи точно вибрану роздільну здатність.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Дозволяє збирати діагностичну інформацію та інформацію про використання.</string>
+    <string name="analytics_and_diagnostics">Аналітика та діагностика</string>
+    <string name="collect_usage">Збирати використання</string>
+    <string name="change_analytics_and_diagnostics_preferences">Змінити налаштування аналітики та діагностики</string>
+    <string name="full_version">Повна версія</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Оновлення до повної версії Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Якщо ви придбали копію Theme Hospital, ви можете оновити її до повної версії. Це призведе до перезапуску гри.</string>
+    <string name="reinstall_theme_hospital">Перевстановити тематичну лікарню</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Зміна деяких з цих налаштувань може вимагати перезапуску гри.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Керує кількістю пальців, необхідних для прокрутки мапи.</string>
+    <string name="scrolling_mode_touch_only">Режим прокрутки (лише дотиком)</string>
 </resources>

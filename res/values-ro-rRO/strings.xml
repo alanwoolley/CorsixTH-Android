@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Setări de joc</string>
+    <string name="loading_theme_hospital_failed">Încărcarea Theme Hospital a eșuat.</string>
+    <string name="unrecognised_file">Fișier nerecunoscut.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Programul de instalare GOG invalid. Sunteți sigur că aceasta este Theme Hospital?</string>
+    <string name="installing_please_wait">Instalarea. Vă rugăm să așteptați.</string>
+    <string name="screenshot_contentdesc">Screenshot de joc</string>
+    <string name="money_contentdesc">Sold bancar</string>
+    <string name="rep_contentdesc">Reputație</string>
+    <string name="new_save">Nou Salvare</string>
+    <string name="save_game">Salvează jocul</string>
+    <string name="load_game">Încărcați jocul</string>
+    <string name="overwrite_save">Suprascrieți salvarea?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Acest lucru va suprascrie jocul salvat: %s. Sunteți sigur?</string>
+    <string name="save">Salvați</string>
+    <string name="cancel">Anulează</string>
+    <string name="s_deleted">%s șters</string>
+    <string name="undo">Desfaceți</string>
+    <string name="new_save_name">Nume nou de salvare</string>
+    <string name="accept">Acceptă</string>
+    <string name="decline">Declin</string>
+    <string name="privacy_policy">Politica de confidențialitate</string>
+    <string name="diagnostics_and_analytics">Diagnosticare și analiză</string>
+    <string name="play_demo">Joaca Demo</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Dacă nu dețineți Theme Hospital, puteți juca demo-ul fără să cumpărați.</string>
+    <string name="install">Instalați</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Dacă ați cumpărat și ați descărcat Theme Hospital de pe GOG.com, îl putem instala pentru dumneavoastră.</string>
+    <string name="import_game">Import</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Dacă ați copiat fișierele de joc Theme Hospital pe dispozitivul dvs., le puteți importa direct.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Fișierele de joc Original Theme Hospital sunt necesare pentru a juca CorsixTH</string>
 </resources>

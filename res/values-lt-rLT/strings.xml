@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">Žaidimo nustatymai</string>
+    <string name="loading_theme_hospital_failed">Nepavyko įkelti temos \"Theme Hospital\".</string>
+    <string name="unrecognised_file">Neatpažintas failas.</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Netinkama GOG diegimo programa. Ar esate tikri, kad tai yra Theme Hospital?</string>
+    <string name="installing_please_wait">Diegimas. Palaukite.</string>
+    <string name="screenshot_contentdesc">Žaidimo ekrano nuotrauka</string>
+    <string name="money_contentdesc">Banko balansas</string>
+    <string name="rep_contentdesc">Reputacija</string>
+    <string name="new_save">Naujas Išsaugoti</string>
+    <string name="save_game">Išsaugoti žaidimą</string>
+    <string name="load_game">Įkelti žaidimą</string>
+    <string name="overwrite_save">Perrašyti išsaugojimą?</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">Taip bus perrašytas išsaugotas žaidimas: %s. Ar esate tikri?</string>
+    <string name="save">Išsaugoti</string>
+    <string name="cancel">Atšaukti</string>
+    <string name="s_deleted">%s ištrinta</string>
+    <string name="undo">Panaikinti</string>
+    <string name="new_save_name">Naujas išsaugojimo pavadinimas</string>
+    <string name="accept">Priimti</string>
+    <string name="decline">Sumažėjimas</string>
+    <string name="privacy_policy">Privatumo politika</string>
+    <string name="diagnostics_and_analytics">Diagnostika ir analizė</string>
+    <string name="play_demo">Žaisti demonstracinę versiją</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">Jei neturite \"Theme Hospital\", galite žaisti demonstracinę versiją nepirkdami.</string>
+    <string name="install">Įdiekite</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">Jei nusipirkote ir atsisiuntėte \"Theme Hospital\" iš GOG.com, mes galime ją įdiegti už jus.</string>
+    <string name="import_game">Importas</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Jei nukopijavote \"Theme Hospital\" žaidimo failus į savo įrenginį, galite juos importuoti tiesiogiai.</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Norint žaisti \"CorsixTH\", reikia originalių \"Theme Hospital\" žaidimo failų</string>
 </resources>

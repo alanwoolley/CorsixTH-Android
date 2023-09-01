@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="title_activity_settings">游戏设置</string>
+    <string name="loading_theme_hospital_failed">加载主题医院失败。</string>
+    <string name="unrecognised_file">无法识别文件。</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">无效的 GOG 安装程序。您确定这是主题医院吗？</string>
+    <string name="installing_please_wait">正在安装。请稍候。</string>
+    <string name="screenshot_contentdesc">游戏截图</string>
+    <string name="money_contentdesc">银行余额</string>
+    <string name="rep_contentdesc">声誉</string>
+    <string name="new_save">新保存</string>
+    <string name="save_game">保存游戏</string>
+    <string name="load_game">加载游戏</string>
+    <string name="overwrite_save">重写保存？</string>
+    <string name="this_will_overwrite_saved_game_s_are_you_sure">这将覆盖已保存的游戏： %s。你确定吗？</string>
+    <string name="save">节省</string>
+    <string name="cancel">取消</string>
+    <string name="s_deleted">%s 删除</string>
+    <string name="undo">撤消</string>
+    <string name="new_save_name">新保存名称</string>
+    <string name="accept">接受</string>
+    <string name="decline">下降</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="diagnostics_and_analytics">诊断和分析</string>
+    <string name="play_demo">播放演示</string>
+    <string name="if_you_don_t_own_theme_hospital_you_can_play_the_demo_without_buying">如果您还没有《主题医院》，可以试玩而无需购买。</string>
+    <string name="install">安装</string>
+    <string name="if_you_have_bought_and_downloaded_theme_hospital_from_gog_com_we_can_install_it_for_you">如果您从 GOG.com 购买并下载了主题医院，我们可以为您安装。</string>
+    <string name="import_game">进口</string>
+    <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">如果您已将 \"主题医院 \"游戏文件复制到设备上，则可以直接导入。</string>
+    <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">玩 CorsixTH 需要原始主题医院游戏文件</string>
 </resources>

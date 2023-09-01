@@ -33,9 +33,9 @@
     <string name="remove_destroyed_rooms">Zerstörte Räume entfernen</string>
     <string name="control_how_the_map_moves">Steuern Sie, wie sich die Karte bewegt</string>
     <string name="scrolling">Bildlauf</string>
-    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Die Karte wird nicht gescrollt, wenn sich Ihr Finger oder Ihre Maus am Rand des Bildschirms befindet.</string>
-    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Die Karte wird gescrollt, wenn sich Ihr Finger oder Ihre Maus am Rand des Bildschirms befindet.</string>
-    <string name="edge_scrolling">Scrollen am Rand</string>
+    <string name="the_map_will_not_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Die Karte wird nicht gescrollt, wenn sich Ihre Maus am Rand des Bildschirms befindet.</string>
+    <string name="the_map_will_scroll_when_your_finger_or_mouse_is_at_the_edge_of_the_screen">Die Karte wird gescrollt, wenn sich Ihre Maus am Rand des Bildschirms befindet.</string>
+    <string name="edge_scrolling">Bildlauf an der Kante (nur Maus)</string>
     <string name="change_how_fast_the_map_scrolls">Ändern der Bildlaufgeschwindigkeit der Karte</string>
     <string name="scrolling_momentum">Schwungvolle Bewegung</string>
     <string name="enable_videos">Videos freigeben</string>
@@ -89,4 +89,15 @@
     <string name="language">Spielsprache</string>
     <string name="stretch_display">Anzeige strecken</string>
     <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Dehnt das Spiel so, dass es den Bildschirm ausfüllt, wobei die gewählte Auflösung exakt beibehalten wird.</string>
+    <string name="allow_collection_of_diagnostic_and_usage_information">Ermöglicht die Erfassung von Diagnose- und Nutzungsinformationen.</string>
+    <string name="analytics_and_diagnostics">Analytik und Diagnostik</string>
+    <string name="collect_usage">Verwendung sammeln</string>
+    <string name="change_analytics_and_diagnostics_preferences">Ändern von Analyse- und Diagnoseeinstellungen</string>
+    <string name="full_version">Vollversion</string>
+    <string name="upgrade_to_the_full_version_of_theme_hospital">Upgrade auf die Vollversion von Theme Hospital</string>
+    <string name="if_you_have_bought_a_copy_of_theme_hospital_you_can_upgrade_to_the_full_version_this_will_restart_the_game">Wenn Sie eine Kopie von Theme Hospital gekauft haben, können Sie auf die Vollversion upgraden. Dadurch wird das Spiel neu gestartet.</string>
+    <string name="reinstall_theme_hospital">Theme Hospital neu installieren</string>
+    <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Wenn Sie einige dieser Einstellungen ändern, müssen Sie das Spiel möglicherweise neu starten.</string>
+    <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Steuert, wie viele Finger zum Scrollen der Karte erforderlich sind.</string>
+    <string name="scrolling_mode_touch_only">Bildlaufmodus (nur Touch)</string>
 </resources>
