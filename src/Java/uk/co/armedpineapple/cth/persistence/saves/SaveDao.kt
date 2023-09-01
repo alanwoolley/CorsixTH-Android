@@ -1,4 +1,4 @@
-package uk.co.armedpineapple.cth.files.persistence
+package uk.co.armedpineapple.cth.persistence.saves
 
 import androidx.room.Dao
 import androidx.room.Delete

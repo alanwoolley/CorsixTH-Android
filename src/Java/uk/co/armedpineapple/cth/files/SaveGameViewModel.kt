@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uk.co.armedpineapple.cth.CTHApplication
-import uk.co.armedpineapple.cth.files.persistence.SaveData
+import uk.co.armedpineapple.cth.persistence.saves.SaveData
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
@@ -20,7 +20,7 @@ import java.time.ZoneId
  */
 class SaveGameViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val saveDao = getApplication<CTHApplication>().database.saveDao()
+    private val saveDao = getApplication<CTHApplication>().gameDatabase.saveDao()
     private val filesService = getApplication<CTHApplication>().filesService
     private val config = getApplication<CTHApplication>().configuration
     private val mutableSaves = MutableLiveData<List<SaveData>>()

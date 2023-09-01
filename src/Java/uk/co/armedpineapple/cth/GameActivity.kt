@@ -16,9 +16,10 @@ import kotlinx.coroutines.runBlocking
 import org.libsdl.app.SDLActivity
 import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.cth.files.SaveGameContract
-import uk.co.armedpineapple.cth.files.persistence.SaveData
+import uk.co.armedpineapple.cth.persistence.saves.SaveData
 import uk.co.armedpineapple.cth.settings.SettingsActivity
 import uk.co.armedpineapple.cth.setup.SetupActivity
+import uk.co.armedpineapple.cth.stats.StatisticsService
 import java.io.File
 
 class GameActivity : SDLActivity(), Loggable {
@@ -40,7 +41,12 @@ class GameActivity : SDLActivity(), Loggable {
 
     private val filesService: FilesService get() = (application as CTHApplication).filesService
 
-    private val saveDao get() = (application as CTHApplication).database.saveDao()
+    @get:Keep
+    val gameEventHandler by lazy {
+        GameEventHandler(StatisticsService((application as CTHApplication).statsDatabase))
+    }
+
+    private val saveDao get() = (application as CTHApplication).gameDatabase.saveDao()
 
     private val loadGameLauncher: ActivityResultLauncher<Boolean> =
         registerForActivityResult(SaveGameContract()) { o -> doLoad(o) }
@@ -196,6 +202,7 @@ class GameActivity : SDLActivity(), Loggable {
     }
 
     companion object {
+        @JvmStatic
         lateinit var singleton: GameActivity
 
         @Keep

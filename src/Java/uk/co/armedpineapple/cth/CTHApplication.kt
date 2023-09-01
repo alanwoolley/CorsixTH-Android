@@ -3,15 +3,28 @@ package uk.co.armedpineapple.cth
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import uk.co.armedpineapple.cth.files.FilesService
-import uk.co.armedpineapple.cth.files.persistence.GameDatabase
+import uk.co.armedpineapple.cth.persistence.saves.GameDatabase
 import uk.co.armedpineapple.cth.localisation.LanguageService
+import uk.co.armedpineapple.cth.persistence.stats.StatsDatabase
 
+/**
+ * The main Android application.
+ *
+ * This contains global references that are relevant for potentially multiple launches of the game.
+ */
 class CTHApplication : android.app.Application() {
 
     lateinit var configuration: GameConfiguration
-    val database: GameDatabase by lazy {
+
+    val gameDatabase: GameDatabase by lazy {
         Room.databaseBuilder(
             this, GameDatabase::class.java, "database"
+        ).build()
+    }
+
+    val statsDatabase: StatsDatabase by lazy {
+        Room.databaseBuilder(
+            this, StatsDatabase::class.java, "stats"
         ).build()
     }
 
