@@ -19,6 +19,9 @@
         android:gwpAsanMode="always"
         tools:targetApi="r">
 
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id"/>
+
         <!-- Overscan, rather than letterboxing -->
         <meta-data
             android:name="SDL_ENV.SDL_HINT_RENDER_LOGICAL_SIZE_MODE"

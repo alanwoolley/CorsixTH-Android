@@ -62,6 +62,7 @@ class StatisticsService(statsDatabase: StatsDatabase) : Loggable {
      */
     fun completeLevel(level: Int, completedOn: LocalDateTime) {
         campaignLevelsDao.upsert(CampaignLevelCompleted(level, completedOn))
+        notify(Statistic.LEVEL_COMPLETED, level.toLong());
     }
 
     private fun notify(stat: Statistic, newValue: Long) {

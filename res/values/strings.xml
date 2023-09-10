@@ -31,4 +31,5 @@
     <string name="import_game">Import</string>
     <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">If you have copied the Theme Hospital game files to your device, you can import them directly.</string>
     <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Original Theme Hospital game files are required to play CorsixTH</string>
+    <string name="upgrading">Upgrading</string>
 </resources>

@@ -1,0 +1,58 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "551ec4118c1fb025bf1355578a71cc9a",
+    "entities": [
+      {
+        "tableName": "saves",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`save_name` TEXT NOT NULL, `screenshot` TEXT, `rep` INTEGER, `money` INTEGER, `level_name` TEXT, PRIMARY KEY(`save_name`))",
+        "fields": [
+          {
+            "fieldPath": "saveName",
+            "columnName": "save_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenshotPath",
+            "columnName": "screenshot",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rep",
+            "columnName": "rep",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "money",
+            "columnName": "money",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "levelName",
+            "columnName": "level_name",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "save_name"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '551ec4118c1fb025bf1355578a71cc9a')"
+    ]
+  }
+}

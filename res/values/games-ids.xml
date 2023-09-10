@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Google Play game services IDs. Save this file as res/values/games-ids.xml in your project.-->
+<resources>
+  <!--app_id-->
+  <string name="app_id" translatable="false">391315825742</string>
+  <!--package_name-->
+  <string name="package_name" translatable="false">uk.co.armedpineapple.cth</string>
+  <!--achievement First-Aid Hero-->
+  <string name="achievement_firstaid_hero" translatable="false">CgkIzsj24bELEAIQIg</string>
+  <!--achievement Bucks for Bedsheets-->
+  <string name="achievement_bucks_for_bedsheets" translatable="false">CgkIzsj24bELEAIQAg</string>
+  <!--achievement Moolah from Make-Believe-->
+  <string name="achievement_moolah_from_makebelieve" translatable="false">CgkIzsj24bELEAIQAw</string>
+  <!--achievement Coins in the Coffers-->
+  <string name="achievement_coins_in_the_coffers" translatable="false">CgkIzsj24bELEAIQBA</string>
+  <!--achievement Million-Dollar Diagnosis-->
+  <string name="achievement_milliondollar_diagnosis" translatable="false">CgkIzsj24bELEAIQBQ</string>
+  <!--achievement Cashflow Carnival-->
+  <string name="achievement_cashflow_carnival" translatable="false">CgkIzsj24bELEAIQBg</string>
+  <!--achievement Deca-Dollar Doctoring-->
+  <string name="achievement_decadollar_doctoring" translatable="false">CgkIzsj24bELEAIQBw</string>
+  <!--achievement Centennial Savior-->
+  <string name="achievement_centennial_savior" translatable="false">CgkIzsj24bELEAIQCA</string>
+  <!--achievement Kilopatient Miracle Worker-->
+  <string name="achievement_kilopatient_miracle_worker" translatable="false">CgkIzsj24bELEAIQCQ</string>
+  <!--achievement Mega Remedies Maestro-->
+  <string name="achievement_mega_remedies_maestro" translatable="false">CgkIzsj24bELEAIQCg</string>
+  <!--achievement Half-Million Healing Hero-->
+  <string name="achievement_halfmillion_healing_hero" translatable="false">CgkIzsj24bELEAIQCw</string>
+  <!--achievement Million-Patient Virtuoso-->
+  <string name="achievement_millionpatient_virtuoso" translatable="false">CgkIzsj24bELEAIQDA</string>
+  <!--achievement First, Do No Harm-->
+  <string name="achievement_first_do_no_harm" translatable="false">CgkIzsj24bELEAIQDQ</string>
+  <!--achievement Oops, My Scalpel Slipped-->
+  <string name="achievement_oops_my_scalpel_slipped" translatable="false">CgkIzsj24bELEAIQDg</string>
+  <!--achievement Life's Little Accidents-->
+  <string name="achievement_lifes_little_accidents" translatable="false">CgkIzsj24bELEAIQDw</string>
+  <!--achievement Statistical Unlikelihood-->
+  <string name="achievement_statistical_unlikelihood" translatable="false">CgkIzsj24bELEAIQEA</string>
+  <!--achievement Master of the Macabre-->
+  <string name="achievement_master_of_the_macabre" translatable="false">CgkIzsj24bELEAIQEQ</string>
+  <!--achievement Budget Breaker-->
+  <string name="achievement_budget_breaker" translatable="false">CgkIzsj24bELEAIQHg</string>
+  <!--achievement Fiscal Feats-->
+  <string name="achievement_fiscal_feats" translatable="false">CgkIzsj24bELEAIQHw</string>
+  <!--achievement Opulent Outlays-->
+  <string name="achievement_opulent_outlays" translatable="false">CgkIzsj24bELEAIQIA</string>
+  <!--achievement Lavish Investments-->
+  <string name="achievement_lavish_investments" translatable="false">CgkIzsj24bELEAIQIQ</string>
+  <!--achievement Wasteland Wizard-->
+  <string name="achievement_wasteland_wizard" translatable="false">CgkIzsj24bELEAIQEg</string>
+  <!--achievement Nightmare Nixer-->
+  <string name="achievement_nightmare_nixer" translatable="false">CgkIzsj24bELEAIQEw</string>
+  <!--achievement Mega Mogul-->
+  <string name="achievement_mega_mogul" translatable="false">CgkIzsj24bELEAIQFA</string>
+  <!--achievement Cosmic Captain-->
+  <string name="achievement_cosmic_captain" translatable="false">CgkIzsj24bELEAIQFQ</string>
+  <!--achievement Zen Master-->
+  <string name="achievement_zen_master" translatable="false">CgkIzsj24bELEAIQFg</string>
+  <!--achievement Plague Pioneer-->
+  <string name="achievement_plague_pioneer" translatable="false">CgkIzsj24bELEAIQFw</string>
+  <!--achievement Epidemic Emperor-->
+  <string name="achievement_epidemic_emperor" translatable="false">CgkIzsj24bELEAIQGA</string>
+  <!--achievement Dirt Dynamo-->
+  <string name="achievement_dirt_dynamo" translatable="false">CgkIzsj24bELEAIQGQ</string>
+  <!--achievement Outbreak Obliterator-->
+  <string name="achievement_outbreak_obliterator" translatable="false">CgkIzsj24bELEAIQGg</string>
+  <!--achievement Clucking Conqueror-->
+  <string name="achievement_clucking_conqueror" translatable="false">CgkIzsj24bELEAIQGw</string>
+  <!--achievement Alien Alchemist-->
+  <string name="achievement_alien_alchemist" translatable="false">CgkIzsj24bELEAIQHA</string>
+  <!--achievement Cake Commander-->
+  <string name="achievement_cake_commander" translatable="false">CgkIzsj24bELEAIQHQ</string>
+</resources>

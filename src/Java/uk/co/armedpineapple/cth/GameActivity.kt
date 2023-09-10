@@ -41,9 +41,15 @@ class GameActivity : SDLActivity(), Loggable {
 
     private val filesService: FilesService get() = (application as CTHApplication).filesService
 
+    private val statisticsService :StatisticsService by lazy {
+        StatisticsService((application as CTHApplication).statsDatabase)
+    }
+
+    private lateinit var playGamesService :PlayGamesService
+
     @get:Keep
     val gameEventHandler by lazy {
-        GameEventHandler(StatisticsService((application as CTHApplication).statsDatabase))
+        GameEventHandler(statisticsService)
     }
 
     private val saveDao get() = (application as CTHApplication).gameDatabase.saveDao()
@@ -55,6 +61,8 @@ class GameActivity : SDLActivity(), Loggable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         singleton = this
+        playGamesService = PlayGamesService(this, statisticsService)
+
         val filesService = FilesService(this)
 
         // Check whether the setup installation has run and the original TH files are available.
@@ -76,7 +84,7 @@ class GameActivity : SDLActivity(), Loggable {
                 configuration
             ) || BuildConfig.ALWAYS_UPGRADE
         ) {
-            Toast.makeText(this, "Upgrading", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.upgrading), Toast.LENGTH_SHORT).show()
 
             val target = configuration.cthFiles
             if (target.exists()) target.deleteRecursively()

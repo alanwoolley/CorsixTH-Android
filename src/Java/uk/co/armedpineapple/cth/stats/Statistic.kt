@@ -27,5 +27,10 @@ enum class Statistic {
     /**
      * The total sum of loans taken.
      */
-    LOAN_TAKEN
+    LOAN_TAKEN,
+
+    /**
+     * Level Completed.
+     */
+    LEVEL_COMPLETED
 }
