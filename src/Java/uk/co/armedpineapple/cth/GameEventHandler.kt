@@ -8,6 +8,7 @@ import uk.co.armedpineapple.cth.stats.Statistic
 import uk.co.armedpineapple.cth.stats.StatisticsService
 import java.time.LocalDateTime
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 /**
@@ -45,6 +46,8 @@ class GameEventHandler(private val statsService: StatisticsService) : Loggable {
      */
     @Keep
     fun onCampaignLevelComplete(level: Int) {
+        if (level < 0 || level > 12) throw IllegalArgumentException("Invalid level: $level");
+
         doAsync { statsService.completeLevel(level, LocalDateTime.now()) }
     }
 
@@ -59,10 +62,14 @@ class GameEventHandler(private val statsService: StatisticsService) : Loggable {
     fun onBankBalanceChanged(delta: Long) {
         info { "Bank balance changed by: $delta" }
 
-        if (delta.sign == 1) {
-            doAsync { statsService.incrementStat(Statistic.MONEY_EARNED, delta) }
+        if (delta.absoluteValue < 10000000) {
+            if (delta.sign == 1) {
+                doAsync { statsService.incrementStat(Statistic.MONEY_EARNED, delta) }
+            } else {
+                doAsync { statsService.incrementStat(Statistic.MONEY_LOST, abs(delta)) }
+            }
         } else {
-            doAsync { statsService.incrementStat(Statistic.MONEY_LOST, abs(delta)) }
+            error { "Bank balance change ignored. Out of range. ($delta)" }
         }
     }
 
@@ -76,7 +83,12 @@ class GameEventHandler(private val statsService: StatisticsService) : Loggable {
     @Keep
     fun onLoanTaken(amount: Long) {
         info { "Loan taken: $amount" }
-        doAsync { statsService.incrementStat(Statistic.LOAN_TAKEN, amount) }
+
+        if (amount < 10000000) {
+            doAsync { statsService.incrementStat(Statistic.LOAN_TAKEN, amount) }
+        } else {
+            error { "Loan taken ignored. Out of range. ($amount)" }
+        }
     }
 
     private fun doAsync(action: () -> Unit) {
