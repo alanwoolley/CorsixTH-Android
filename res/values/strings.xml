@@ -32,4 +32,6 @@
     <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">If you have copied the Theme Hospital game files to your device, you can import them directly.</string>
     <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Original Theme Hospital game files are required to play CorsixTH</string>
     <string name="upgrading">Upgrading</string>
+    <string name="this_application_collects_anonymous_usage_data_including_details_about_crashes_and_the_way_you_use_this_application_this_is_used_to_help_improve_the_application">This application collects anonymous usage data, including details about crashes and the way you use this application. This is used to help improve the application.</string>
+    <string name="this_is_optional_and_does_not_affect_your_ability_to_play_your_choice_can_be_changed_at_any_time_from_the_game_settings">This is optional and does not affect your ability to play. Your choice can be changed at any time from the game settings.</string>
 </resources>

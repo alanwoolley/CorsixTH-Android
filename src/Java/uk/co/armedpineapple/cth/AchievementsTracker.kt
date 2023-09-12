@@ -44,7 +44,7 @@ class AchievementsTracker(
 
     private fun onLevelCompleted(statistic: Statistic, level: Long) {
         if (level >= levelAchievements.size) {
-            error { "Completed a level outside of the expected campaign levels. " }
+            error { "Completed a level outside of the expected campaign levels. ($level)" }
             return
         }
 
@@ -53,10 +53,10 @@ class AchievementsTracker(
 
     private fun onMoneyLost(statistic: Statistic, totalLost: Long) {
         val thousands = (totalLost / 1000).toInt()
-        client.setSteps(activity.getString(R.string.achievement_budget_breaker), thousands);
-        client.setSteps(activity.getString(R.string.achievement_fiscal_feats), thousands);
-        client.setSteps(activity.getString(R.string.achievement_opulent_outlays), thousands);
-        client.setSteps(activity.getString(R.string.achievement_lavish_investments), thousands);
+        client.setSteps(activity.getString(R.string.achievement_budget_breaker), thousands)
+        client.setSteps(activity.getString(R.string.achievement_fiscal_feats), thousands)
+        client.setSteps(activity.getString(R.string.achievement_opulent_outlays), thousands)
+        client.setSteps(activity.getString(R.string.achievement_lavish_investments), thousands)
     }
 
     private fun onLoanTaken(statistic: Statistic, totalBorrowed: Long) {
