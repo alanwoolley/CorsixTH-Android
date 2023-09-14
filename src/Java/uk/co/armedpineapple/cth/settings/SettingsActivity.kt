@@ -4,29 +4,36 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.Window
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import uk.co.armedpineapple.cth.CTHApplication
 import uk.co.armedpineapple.cth.GameActivity
+import uk.co.armedpineapple.cth.Loggable
 import uk.co.armedpineapple.cth.R
 import uk.co.armedpineapple.cth.defaultSharedPreferences
+import uk.co.armedpineapple.cth.info
 import uk.co.armedpineapple.cth.setup.SetupActivity
 
 
-class SettingsActivity : AppCompatActivity(),
+class SettingsActivity : AppCompatActivity(), Loggable,
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private val preferenceListener = { preferences: SharedPreferences, preference: String? ->
         onPreferenceUpdated(
-            preferences,
-            preference
+            preferences, preference
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.settings_activity)
+        setSupportActionBar(findViewById(R.id.toolbar))
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(R.id.settings, MainFragment())
                 .commit()
@@ -37,6 +44,7 @@ class SettingsActivity : AppCompatActivity(),
             }
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     override fun onResume() {
@@ -44,8 +52,20 @@ class SettingsActivity : AppCompatActivity(),
         defaultSharedPreferences.registerOnSharedPreferenceChangeListener(preferenceListener)
     }
 
-    private fun onPreferenceUpdated(preferences: SharedPreferences, preference: String?){
-        Log.i("SettingsActivity", "Setting updated: $preference")
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                if (supportFragmentManager.backStackEntryCount == 0) {
+                    finish()
+                    return true
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun onPreferenceUpdated(preferences: SharedPreferences, preference: String?) {
+        info { "Setting updated: $preference" }
 
         GameActivity.singleton.updateGameConfig()
     }
@@ -53,6 +73,11 @@ class SettingsActivity : AppCompatActivity(),
     override fun onPause() {
         super.onPause()
         defaultSharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceListener)
+    }
+
+    override fun setTitle(title: CharSequence?) {
+        super.setTitle(title)
+        (findViewById<TextView>(R.id.toolbar_title)).text = title
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

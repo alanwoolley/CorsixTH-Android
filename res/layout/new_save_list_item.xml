@@ -11,10 +11,11 @@
         android:id="@+id/imageView2"
         android:layout_width="120dp"
         android:layout_height="80dp"
+        android:contentDescription="Plus Icon"
+        android:scaleType="centerInside"
         android:src="@drawable/baseline_add_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="Plus Icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"

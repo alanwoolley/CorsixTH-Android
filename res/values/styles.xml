@@ -3,16 +3,99 @@
 
     <style name="Theme.AppTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
+    <style name="ToolbarStyle">
+        <item name="android:background">@color/cth_window_background</item>
+    </style>
+
+    <style name="ToolbarTitle">
+        <item name="android:textAppearance">@style/TextAppearance.Widget.AppCompat.Toolbar.Title
+        </item>
+        <item name="android:textColor">@color/cth_window_text</item>
+        <item name="android:layout_marginStart">40dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginEnd">40dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="ToolbarTitleBackground">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/lowered</item>
+    </style>
+
+    <style name="FloatingDialogTitle" parent="Base.DialogWindowTitle.AppCompat">
+        <item name="android:background">@color/cth_window_background</item>
+        <item name="android:textColor">@color/cth_window_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="FloatingDialogLoweredTitleBackground" parent="FloatingDialogTitle">
+        <item name="android:background">@drawable/lowered</item>
+    </style>
+
     <style name="Theme.FloatingTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowMinWidthMajor">65%</item>
         <item name="windowMinWidthMinor">90%</item>
+        <item name="android:windowBackground">@drawable/frame</item>
+        <item name="android:windowTitleStyle">@style/FloatingDialogTitle</item>
+        <item name="android:textViewStyle">@style/ShadowText</item>
+        <item name="android:textColorSecondary">@color/cth_window_secondary</item>
     </style>
 
-    <style name="Theme.SettingsTheme" parent="Theme.FloatingTheme" />
+    <style name="Theme.SettingsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/frame</item>
+        <item name="android:windowTitleStyle">@style/FloatingDialogLoweredTitleBackground</item>
+        <item name="android:textViewStyle">@style/ShadowText</item>
+        <item name="android:checkedTextViewStyle">@style/CheckedShadowText</item>
+        <item name="android:textColorSecondary">@color/cth_window_secondary</item>
+        <item name="android:background">@color/cth_window_background</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="textColorAlertDialogListItem">@color/cth_window_text</item>
+    </style>
+
+    <style name="Theme.SettingsTheme" parent="Theme.FloatingTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowFixedHeightMinor">90%</item>
+        <item name="windowFixedHeightMajor">80%</item>
+        <item name="preferenceCategoryTitleTextColor">@color/cth_window_text</item>
+        <item name="alertDialogTheme">@style/Theme.SettingsDialog</item>
+        <item name="android:tint">@color/cth_window_text_shadow</item>
+    </style>
 
     <style name="Theme.SaveTheme" parent="Theme.FloatingTheme">
         <item name="windowFixedHeightMinor">90%</item>
         <item name="windowFixedHeightMajor">65%</item>
+        <item name="alertDialogTheme">@style/Theme.SettingsDialog</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="CheckedShadowText" parent="android:Widget.Material.Light.CheckedTextView">
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:shadowColor">@color/cth_window_text_shadow</item>
+        <item name="android:textColor">@color/cth_window_text</item>
+        <item name="android:textColorSecondary">@color/cth_window_text</item>
+    </style>
+
+    <style name="ShadowText" parent="android:Widget.TextView">
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:shadowColor">@color/cth_window_text_shadow</item>
+        <item name="android:textColor">@color/cth_window_text</item>
+        <item name="android:textColorSecondary">@color/cth_window_text</item>
+        <item name="textColorAlertDialogListItem">@color/cth_window_text</item>
+    </style>
+
+    <style name="FloatingToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <!--Any text styling can be done here-->
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FloatingDialogActionBar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:titleTextStyle">@style/FloatingToolbarTitle</item>
     </style>
 
     <color name="background">#000000</color>
@@ -50,10 +133,5 @@
 
     <style name="activated" parent="Theme.AppTheme">
         <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
-    </style>
-
-    <style name="Widget.Theme.AppTheme.ButtonBar.Fullscreen" parent="">
-        <item name="android:background">@color/black_overlay</item>
-        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 </resources>

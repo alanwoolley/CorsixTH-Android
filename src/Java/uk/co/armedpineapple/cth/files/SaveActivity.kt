@@ -3,9 +3,13 @@ package uk.co.armedpineapple.cth.files
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.Window
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResultListener
 import uk.co.armedpineapple.cth.R
+
 
 /**
  * An activity for loading or saving games.
@@ -13,8 +17,9 @@ import uk.co.armedpineapple.cth.R
 class SaveActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.save_activity)
+        setSupportActionBar(findViewById(R.id.toolbar))
         val isLoad = intent.getBooleanExtra(EXTRA_IS_LOAD, false);
         if (savedInstanceState == null) {
             val newFragment = SaveLoadFragment.newInstance(isLoad)
@@ -32,6 +37,25 @@ class SaveActivity : AppCompatActivity() {
             false -> getString(R.string.save_game)
             true -> getString(R.string.load_game)
         }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    override fun setTitle(title: CharSequence?) {
+        super.setTitle(title)
+        (findViewById<TextView>(R.id.toolbar_title)).text = title
     }
 
     companion object {
