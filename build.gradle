@@ -173,7 +173,7 @@ tasks.register('createGameZip', Zip) {
     destinationDirectory = file('assets')
     archiveFileName = 'game.zip'
 
-    from('jni/src/CorsixTH') {
+    from('jni/CorsixTH/CorsixTH') {
         include 'Levels/**'
         include 'Campaigns/**'
         include 'Lua/**'
