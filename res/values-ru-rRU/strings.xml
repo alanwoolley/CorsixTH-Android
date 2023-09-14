@@ -2,7 +2,6 @@
 <resources>
     <string name="title_activity_settings">Настройки игры</string>
     <string name="loading_theme_hospital_failed">Загрузка Theme Hospital не удалась.</string>
-    <string name="unrecognised_file">Нераспознанный файл.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Неверный установщик GOG. Вы уверены, что это Theme Hospital?</string>
     <string name="installing_please_wait">Установка. Пожалуйста, подождите.</string>
     <string name="screenshot_contentdesc">Скриншот игры</string>
