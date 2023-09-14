@@ -2,7 +2,6 @@
 <resources>
     <string name="title_activity_settings">Spilindstillinger</string>
     <string name="loading_theme_hospital_failed">Indlæsning af Theme Hospital mislykkedes.</string>
-    <string name="unrecognised_file">Ikke genkendt fil.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Ugyldigt GOG-installationsprogram. Er du sikker på, at det er Theme Hospital?</string>
     <string name="installing_please_wait">Installation. Vent venligst.</string>
     <string name="screenshot_contentdesc">Skærmbillede af spillet</string>
