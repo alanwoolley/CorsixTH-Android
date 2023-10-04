@@ -1,6 +1,7 @@
 package uk.co.armedpineapple.cth
 
 import android.app.Activity
+import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.PlayGames
 import uk.co.armedpineapple.cth.stats.Statistic
 import uk.co.armedpineapple.cth.stats.StatisticsService
@@ -13,10 +14,8 @@ import uk.co.armedpineapple.cth.stats.StatisticsService
  * @param statisticsService The statistics service
  */
 class AchievementsTracker(
-    private val activity: Activity, statisticsService: StatisticsService
+    private val activity: Activity, statisticsService: StatisticsService, private val client: AchievementsClient
 ) : Loggable {
-
-    private var client = PlayGames.getAchievementsClient(activity)
 
     private val levelAchievements = arrayOf(
         R.string.achievement_wasteland_wizard,

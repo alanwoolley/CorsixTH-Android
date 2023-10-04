@@ -41,11 +41,11 @@ class GameActivity : SDLActivity(), Loggable {
 
     private val filesService: FilesService get() = (application as CTHApplication).filesService
 
-    private val statisticsService :StatisticsService by lazy {
+    private val statisticsService: StatisticsService by lazy {
         StatisticsService((application as CTHApplication).statsDatabase)
     }
 
-    private lateinit var playGamesService :PlayGamesService
+    private lateinit var playGamesService: PlayGamesService
 
     @get:Keep
     val gameEventHandler by lazy {
@@ -232,6 +232,18 @@ class GameActivity : SDLActivity(), Loggable {
         @JvmStatic
         fun showSave() {
             singleton.launchSaveGamePicker()
+        }
+
+        @Keep
+        @JvmStatic
+        fun signIn() {
+            singleton.playGamesService.signIn()
+        }
+
+        @Keep
+        @JvmStatic
+        fun showAchievements() {
+            singleton.playGamesService.showAchievements()
         }
 
         @Keep
