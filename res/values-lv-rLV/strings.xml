@@ -2,7 +2,6 @@
 <resources>
     <string name="title_activity_settings">Spēles iestatījumi</string>
     <string name="loading_theme_hospital_failed">Neizdevās ielādēt Theme Hospital.</string>
-    <string name="unrecognised_file">Neatpazīts fails.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Nederīgs GOG instalētājs. Vai esat pārliecināts, ka tas ir Theme Hospital?</string>
     <string name="installing_please_wait">Uzstādīšana. Lūdzu, uzgaidiet.</string>
     <string name="screenshot_contentdesc">Spēles ekrānšāviņš</string>
