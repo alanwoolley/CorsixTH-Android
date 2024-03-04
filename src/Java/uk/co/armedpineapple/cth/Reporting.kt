@@ -48,7 +48,7 @@ class Reporting(private val context: Context) {
      * @param activity An activity to own the dialog.
      */
     fun requestConsent(activity: Activity) {
-        val layout = LayoutInflater.from(context).inflate(R.layout.dialog_consent, null, false);
+        val layout = LayoutInflater.from(context).inflate(R.layout.dialog_consent, null, false)
         layout.findViewById<Button>(R.id.privacy_policy_button).setOnClickListener {
             openPrivacyPolicy()
         }
