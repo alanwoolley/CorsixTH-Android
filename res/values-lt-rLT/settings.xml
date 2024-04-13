@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Spalvų schema, kurią reikia naudoti šilumai rodyti.</string>
     <string name="warmth_colours">Šiltos spalvos</string>
     <string name="resolution">Rezoliucija</string>
-    <string name="keep_aspect_ratio">Išlaikyti kraštinių santykį</string>
     <string name="you_can_win_or_lose_in_custom_maps">Pasirinktiniuose žemėlapiuose galite laimėti arba pralaimėti.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Pasirinktiniuose žemėlapiuose negalima laimėti ar pralaimėti.</string>
     <string name="free_build_sandbox_mode">Laisvo kūrimo (smėlio dėžės) režimas</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Įvestis ir valdikliai</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Tik ekspertams! Šie nustatymai gali sugadinti žaidimą arba padaryti kitų netikėtų dalykų!</string>
     <string name="advanced">Išplėstinė</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Sureguliuoja žaidimo skiriamąją gebą, kad būtų užpildytas ekranas.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Mažesnės skiriamosios gebos vaizdiniai elementai bus didesni.</string>
     <string name="cutscene_videos_will_be_played">Bus rodomi scenos vaizdo įrašai.</string>
     <string name="cutscene_videos_will_not_be_played">Scenos vaizdo įrašai nebus atkuriami.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Bus paleistas įžanginis vaizdo įrašas. Jį galima praleisti paspaudus ant vaizdo įrašo.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Spalvos</string>
     <string name="screen">Ekranas</string>
     <string name="alien_dna">Užsieniečių DNR</string>
-    <string name="localisation">Vietovė</string>
     <string name="language">Žaidimo kalba</string>
-    <string name="stretch_display">Įtempimo ekranas</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Ištempia žaidimą, kad jis užpildytų ekraną, išlaikydamas tikslią pasirinktą skiriamąją gebą.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">leisti rinkti diagnostinę ir naudojimo informaciją.</string>
     <string name="analytics_and_diagnostics">Analizė ir diagnostika</string>
     <string name="collect_usage">Rinkti naudojimą</string>
