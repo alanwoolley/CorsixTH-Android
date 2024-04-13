@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">A melegség megjelenítéséhez használandó színséma.</string>
     <string name="warmth_colours">Meleg színek</string>
     <string name="resolution">Felbontás</string>
-    <string name="keep_aspect_ratio">Tartsa meg a képarányt</string>
     <string name="you_can_win_or_lose_in_custom_maps">Egyéni pályákon nyerhetsz vagy veszíthetsz.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Az egyéni pályákon nem lehet nyerni vagy veszíteni.</string>
     <string name="free_build_sandbox_mode">Szabad építési (sandbox) mód</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Bemenet és vezérlés</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Csak szakértőknek! Ezek a beállítások tönkretehetik a játékot, vagy más váratlan dolgokat okozhatnak!</string>
     <string name="advanced">Speciális</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">A játék felbontását úgy állítja be, hogy kitöltse a képernyőt.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Az alacsonyabb felbontás nagyobb vizuális elemeket eredményez.</string>
     <string name="cutscene_videos_will_be_played">Vágóképes videók kerülnek lejátszásra.</string>
     <string name="cutscene_videos_will_not_be_played">A vágóképes videók nem kerülnek lejátszásra.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">A bevezető videó lejátszásra kerül. Ezt a videóra való nyomással lehet kihagyni.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Színek</string>
     <string name="screen">Képernyő</string>
     <string name="alien_dna">Idegen DNS</string>
-    <string name="localisation">Lokalizáció</string>
     <string name="language">Játék nyelve</string>
-    <string name="stretch_display">Stretch kijelző</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">A játékot úgy nyújtja, hogy kitöltse a képernyőt, megtartva a pontosan kiválasztott felbontást.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Lehetővé teszi a diagnosztikai és használati információk gyűjtését.</string>
     <string name="analytics_and_diagnostics">Analitika és diagnosztika</string>
     <string name="collect_usage">Használat gyűjtése</string>
