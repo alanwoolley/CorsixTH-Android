@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Lo schema di colori da utilizzare per visualizzare il calore.</string>
     <string name="warmth_colours">Colori caldi</string>
     <string name="resolution">Risoluzione</string>
-    <string name="keep_aspect_ratio">Mantenere il rapporto d\'aspetto</string>
     <string name="you_can_win_or_lose_in_custom_maps">È possibile vincere o perdere nelle mappe personalizzate.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Non è possibile vincere o perdere nelle mappe personalizzate.</string>
     <string name="free_build_sandbox_mode">Modalità di costruzione libera (sandbox)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Ingresso e controlli</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Solo per gli esperti! Queste impostazioni possono rompere il gioco o provocare altre cose inaspettate!</string>
     <string name="advanced">Avanzate</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Regola la risoluzione del gioco per riempire lo schermo.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Una risoluzione più bassa si tradurrà in elementi visivi più grandi.</string>
     <string name="cutscene_videos_will_be_played">Verranno riprodotti video di scene tagliate.</string>
     <string name="cutscene_videos_will_not_be_played">I video delle scene tagliate non verranno riprodotti.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Verrà riprodotto il video introduttivo. Questo può essere saltato premendo sul video.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Colori</string>
     <string name="screen">Schermo</string>
     <string name="alien_dna">DNA alieno</string>
-    <string name="localisation">Localizzazione</string>
     <string name="language">Lingua del gioco</string>
-    <string name="stretch_display">Display allungato</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Allunga il gioco per riempire lo schermo, mantenendo l\'esatta risoluzione scelta.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Consentire la raccolta di informazioni diagnostiche e di utilizzo.</string>
     <string name="analytics_and_diagnostics">Analisi e diagnostica</string>
     <string name="collect_usage">Raccogliere l\'uso</string>
