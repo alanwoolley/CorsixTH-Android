@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Skema warna yang digunakan untuk menampilkan kehangatan.</string>
     <string name="warmth_colours">Warna-warna kehangatan</string>
     <string name="resolution">Resolusi</string>
-    <string name="keep_aspect_ratio">Pertahankan rasio aspek</string>
     <string name="you_can_win_or_lose_in_custom_maps">Anda bisa menang atau kalah dalam peta khusus.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Anda tidak bisa menang atau kalah dalam peta khusus.</string>
     <string name="free_build_sandbox_mode">Mode pembuatan gratis (kotak pasir)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Input dan Kontrol</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Hanya untuk para ahli! Pengaturan ini dapat merusak permainan atau melakukan hal tak terduga lainnya!</string>
     <string name="advanced">Lanjutan</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Menyesuaikan resolusi game untuk memenuhi layar.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Resolusi yang lebih rendah akan menghasilkan elemen visual yang lebih besar.</string>
     <string name="cutscene_videos_will_be_played">Video potongan adegan akan diputar.</string>
     <string name="cutscene_videos_will_not_be_played">Video yang dipotong tidak akan diputar.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Video intro akan diputar. Ini dapat dilewati dengan menekan video.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Warna</string>
     <string name="screen">Layar</string>
     <string name="alien_dna">DNA Alien</string>
-    <string name="localisation">Lokalisasi</string>
     <string name="language">Bahasa Permainan</string>
-    <string name="stretch_display">Tampilan peregangan</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Meregangkan permainan untuk memenuhi layar, menjaga resolusi yang dipilih dengan tepat.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Memungkinkan pengumpulan informasi diagnostik dan penggunaan.</string>
     <string name="analytics_and_diagnostics">Analisis dan Diagnostik</string>
     <string name="collect_usage">Kumpulkan Penggunaan</string>
