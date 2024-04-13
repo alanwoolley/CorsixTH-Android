@@ -8,11 +8,9 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModelProvider
 import uk.co.armedpineapple.cth.CTHApplication
 import uk.co.armedpineapple.cth.R
-import uk.co.armedpineapple.cth.Reporting
 import uk.co.armedpineapple.innoextract.service.ExtractService
 
 class SetupActivity : AppCompatActivity() {

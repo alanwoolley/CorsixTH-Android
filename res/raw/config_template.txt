@@ -353,3 +353,4 @@ player_name = [[]]
 -- Android specific stuff
 
 scroll_mode = {{scroll_mode}}
+keep_display_aspect_ratio = {{keep_display_aspect_ratio}}

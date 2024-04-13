@@ -32,19 +32,19 @@
             android:entries="@array/resolution_options"
             android:entryValues="@array/resolution_values"/>
         <SwitchPreference
-            android:defaultValue="false"
-            android:icon="@drawable/baseline_open_in_full_24"
-            android:key="@string/prefs_display_stretch"
-            android:summary="@string/stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution"
-            android:title="@string/stretch_display"
-            android:disableDependentsState="true" />
-        <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/baseline_fit_screen_24"
             android:key="@string/prefs_display_keep_aspect_ratio"
             android:summary="@string/adjusts_the_game_resolution_to_fill_the_screen"
-            android:title="@string/keep_aspect_ratio"
-            android:dependency="@string/prefs_display_stretch"/>
+            android:title="@string/keep_aspect_ratio" />
+        <SwitchPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="true"
+            android:icon="@drawable/baseline_stay_primary_portrait_24"
+            android:key="@string/prefs_rotate_portrait"
+            android:summary="@string/allow_rotation_desc"
+            android:title="@string/allow_rotation" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -25,7 +25,7 @@
     <string name="prefs_display_resolution" translatable="false">resolution</string>
     <string name="prefs_display_keep_aspect_ratio" translatable="false">keep_aspect_ratio</string>
     <string name="prefs_language" translatable="false">language</string>
-    <string name="prefs_display_stretch" translatable="false">stretch_display</string>
+    <string name="prefs_rotate_portrait" translatable="false">rotate_portrait</string>
 
     <!-- Gameplay -->
     <string name="prefs_gameplay_free_build" translatable="false">free_build_mode</string>

@@ -1,6 +1,8 @@
 package uk.co.armedpineapple.cth
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.libsdl.app.SDLActivity
+import org.libsdl.app.SDLSurface
 import uk.co.armedpineapple.cth.files.FilesService
 import uk.co.armedpineapple.cth.files.SaveGameContract
 import uk.co.armedpineapple.cth.persistence.saves.SaveData
@@ -141,6 +144,9 @@ class GameActivity : SDLActivity(), Loggable {
     private fun launchSaveGamePicker() {
         saveGameLauncher.launch(false)
     }
+    override fun createSDLSurface(context: Context?): SDLSurface {
+        return GameSurface(context)
+    }
 
     private fun doLoad(saveName: String?) {
         saveName?.let { save ->
@@ -150,7 +156,6 @@ class GameActivity : SDLActivity(), Loggable {
                 nativeLoad(savePath.absolutePath)
             }
         }
-
     }
 
     private fun doSave(saveName: String?) {
@@ -207,6 +212,14 @@ class GameActivity : SDLActivity(), Loggable {
         nativeUpdateConfig(configuration)
 
         Log.i("GameActivity", "Updated game config")
+    }
+
+    override fun setOrientationBis(w: Int, h: Int, resizable: Boolean, hint: String?) {
+        if (configuration.allowPortrait) {
+            super.setOrientationBis(w, h, resizable, hint);
+        } else {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
     }
 
     companion object {

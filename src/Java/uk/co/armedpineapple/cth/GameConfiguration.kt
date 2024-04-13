@@ -29,6 +29,10 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
 
     var resolution: Pair<UInt, UInt> =
         decodeResolution(getStringPref(R.string.prefs_display_resolution).toUInt())
+
+    val allowPortrait : Boolean by createReadOnlyOption(R.string.prefs_rotate_portrait)
+
+    @get:Keep
     val fullscreen = true
 
     @get:Keep
@@ -66,6 +70,9 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         parseFromString = true
     )
 
+    @get:Keep
+    val keepDisplayAspectRatio : Boolean by createReadOnlyOption(R.string.prefs_display_keep_aspect_ratio)
+
     fun persist() {
         // Create save game directory if it doesn't already exist, otherwise CTH will use its own.
 
@@ -102,9 +109,9 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
 
         tokenMap["disable_fractured_bones_females"] =
             (!getBoolPref(R.string.prefs_advanced_fractured_bones_allow_female)).toString()
-        tokenMap["adviser_disabled"] = (!getBoolPref(R.string.prefs_gameplay_advisor)).toString()
+        tokenMap["adviser_disabled"] = (!advisorEnabled).toString()
         tokenMap["prevent_edge_scrolling"] =
-            (!getBoolPref(R.string.prefs_input_edge_scrolling)).toString()
+            (!edgeScroll).toString()
 
         tokenMap["th_path"] = thFiles.absolutePath
         tokenMap["save_path"] = saveFiles.absolutePath
@@ -119,6 +126,7 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
         tokenMap["music_volume"] = (musicVolume.toDouble() / 10.0f).toString()
 
         tokenMap["scroll_mode"] = scrollMode.toString()
+        tokenMap["keep_display_aspect_ratio"] = keepDisplayAspectRatio.toString()
 
         val templateIn = ctx.resources.openRawResource(R.raw.config_template)
 
@@ -227,7 +235,7 @@ class GameConfiguration(private val ctx: Context, private val preferences: Share
                         ?.toInt() else preferences.getInt(pref, 0)) as V
                 }
                 Long::class.starProjectedType -> preferences.getLong(pref, 0L) as V
-                else -> throw IllegalArgumentException("Unsupported type: ${returnType}")
+                else -> throw IllegalArgumentException("Unsupported type: $returnType")
             }
         }
 
