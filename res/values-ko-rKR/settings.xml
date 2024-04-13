@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">따뜻함을 표시하는 데 사용할 색 구성표입니다.</string>
     <string name="warmth_colours">보온성 색상</string>
     <string name="resolution">해상도</string>
-    <string name="keep_aspect_ratio">화면 비율 유지</string>
     <string name="you_can_win_or_lose_in_custom_maps">사용자 지정 맵에서 승리하거나 패배할 수 있습니다.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">사용자 지정 맵에서는 승패를 가릴 수 없습니다.</string>
     <string name="free_build_sandbox_mode">무료 빌드(샌드박스) 모드</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">입력 및 제어</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">전문가만 사용하세요! 이러한 설정으로 인해 게임이 중단되거나 다른 예기치 않은 일이 발생할 수 있습니다!</string>
     <string name="advanced">고급</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">화면을 가득 채울 수 있도록 게임 해상도를 조정합니다.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">해상도가 낮을수록 시각적 요소가 커집니다.</string>
     <string name="cutscene_videos_will_be_played">컷신 동영상이 재생됩니다.</string>
     <string name="cutscene_videos_will_not_be_played">컷신 동영상이 재생되지 않습니다.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">인트로 동영상이 재생됩니다. 동영상을 누르면 건너뛸 수 있습니다.</string>
@@ -85,10 +82,7 @@
     <string name="colours">색상</string>
     <string name="screen">화면</string>
     <string name="alien_dna">외계인 DNA</string>
-    <string name="localisation">현지화</string>
     <string name="language">게임 언어</string>
-    <string name="stretch_display">스트레치 디스플레이</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">선택한 해상도를 정확하게 유지하면서 화면을 가득 채우도록 게임을 늘립니다.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">진단 및 사용 정보 수집을 허용합니다.</string>
     <string name="analytics_and_diagnostics">분석 및 진단</string>
     <string name="collect_usage">사용량 수집</string>
