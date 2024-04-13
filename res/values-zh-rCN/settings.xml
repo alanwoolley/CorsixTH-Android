@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">用来显示温暖的色彩方案。</string>
     <string name="warmth_colours">暖色系</string>
     <string name="resolution">决议</string>
-    <string name="keep_aspect_ratio">保持长宽比</string>
     <string name="you_can_win_or_lose_in_custom_maps">你可以在自定义地图中获胜或失败。</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">在自定义地图中，你不能赢或输。</string>
     <string name="free_build_sandbox_mode">自由构建（沙盒）模式</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">输入和控制</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">仅供专家使用!这些设置可能会破坏游戏或做其他意想不到的事情!</string>
     <string name="advanced">高级</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">调整游戏分辨率以填充屏幕。</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">较低的分辨率将导致更大的视觉元素。</string>
     <string name="cutscene_videos_will_be_played">将播放插曲视频。</string>
     <string name="cutscene_videos_will_not_be_played">割裂视频将不会被播放。</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">介绍视频将被播放。可以通过按压视频跳过。</string>
@@ -85,10 +82,7 @@
     <string name="colours">颜色</string>
     <string name="screen">屏幕</string>
     <string name="alien_dna">外星人DNA</string>
-    <string name="localisation">本地化</string>
     <string name="language">游戏语言</string>
-    <string name="stretch_display">拉伸显示</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">拉长游戏以填满屏幕，保持所选择的准确分辨率。</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">允许收集诊断和使用信息。</string>
     <string name="analytics_and_diagnostics">分析和诊断</string>
     <string name="collect_usage">收集使用情况</string>
