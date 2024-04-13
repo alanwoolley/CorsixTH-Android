@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">O esquema de cores a utilizar para mostrar o calor.</string>
     <string name="warmth_colours">Cores quentes</string>
     <string name="resolution">Resolução</string>
-    <string name="keep_aspect_ratio">Manter o rácio de aspeto</string>
     <string name="you_can_win_or_lose_in_custom_maps">Podes ganhar ou perder em mapas personalizados.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Não podes ganhar ou perder em mapas personalizados.</string>
     <string name="free_build_sandbox_mode">Modo de construção livre (sandbox)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Entrada e controlos</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Apenas para especialistas! Estas definições podem avariar o jogo ou fazer outras coisas inesperadas!</string>
     <string name="advanced">Avançado </string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Ajusta a resolução do jogo para preencher o ecrã.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Uma resolução mais baixa resultará em elementos visuais maiores.</string>
     <string name="cutscene_videos_will_be_played">São reproduzidos vídeos de cenas de corte.</string>
     <string name="cutscene_videos_will_not_be_played">Os vídeos das cenas não serão reproduzidos.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">O vídeo de introdução é reproduzido. Este pode ser saltado premindo sobre o vídeo.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Cores</string>
     <string name="screen">Ecrã</string>
     <string name="alien_dna">ADN extraterrestre</string>
-    <string name="localisation">Localização</string>
     <string name="language">Idioma do jogo</string>
-    <string name="stretch_display">Ecrã de estiramento</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Estica o jogo para preencher o ecrã, mantendo a resolução exacta escolhida.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Permitir a recolha de informações de diagnóstico e de utilização.</string>
     <string name="analytics_and_diagnostics">Análise e diagnóstico</string>
     <string name="collect_usage">Recolher a utilização</string>
