@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Barevné schéma pro zobrazení tepla.</string>
     <string name="warmth_colours">Teplé barvy</string>
     <string name="resolution">Rozlišení</string>
-    <string name="keep_aspect_ratio">Zachovat poměr stran</string>
     <string name="you_can_win_or_lose_in_custom_maps">Na vlastních mapách můžete vyhrát nebo prohrát.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Na vlastních mapách nelze vyhrát ani prohrát.</string>
     <string name="free_build_sandbox_mode">Režim volného sestavování (sandbox)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Vstup a ovládání</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Pouze pro odborníky! Tato nastavení mohou hru rozbít nebo způsobit jiné neočekávané věci!</string>
     <string name="advanced">Pokročilé</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Upraví rozlišení hry tak, aby vyplnila obrazovku.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Při nižším rozlišení budou vizuální prvky větší.</string>
     <string name="cutscene_videos_will_be_played">Přehrají se videa s vystřiženými scénami.</string>
     <string name="cutscene_videos_will_not_be_played">Videa s vystřiženými scénami se nebudou přehrávat.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Přehraje se úvodní video. To lze přeskočit stisknutím tlačítka na videu.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Barvy</string>
     <string name="screen">Obrazovka</string>
     <string name="alien_dna">Cizí DNA</string>
-    <string name="localisation">Lokalizace</string>
     <string name="language">Jazyk hry</string>
-    <string name="stretch_display">Roztahovací displej</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Roztáhne hru tak, aby vyplnila obrazovku a zachovala přesně zvolené rozlišení.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Umožnit shromažďování diagnostických informací a informací o používání.</string>
     <string name="analytics_and_diagnostics">Analýza a diagnostika</string>
     <string name="collect_usage">Shromažďovat údaje o používání</string>
