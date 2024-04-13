@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">La combinación de colores para mostrar calidez.</string>
     <string name="warmth_colours">Colores cálidos</string>
     <string name="resolution">Resolución</string>
-    <string name="keep_aspect_ratio">Mantener la relación de aspecto</string>
     <string name="you_can_win_or_lose_in_custom_maps">Puedes ganar o perder en mapas personalizados.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">En los mapas personalizados no se puede ganar ni perder.</string>
     <string name="free_build_sandbox_mode">Modo de construcción libre (sandbox)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Entradas y controles</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Sólo para expertos. ¡Estos ajustes pueden romper el juego o hacer otras cosas inesperadas!</string>
     <string name="advanced">Avanzado</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Ajusta la resolución del juego para llenar la pantalla.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Una resolución más baja dará lugar a elementos visuales más grandes.</string>
     <string name="cutscene_videos_will_be_played">Se reproducirán vídeos de escenas.</string>
     <string name="cutscene_videos_will_not_be_played">No se reproducirán los vídeos de las escenas.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Se reproducirá el vídeo de introducción. Puede saltarse pulsando sobre el vídeo.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Colores</string>
     <string name="screen">Pantalla</string>
     <string name="alien_dna">ADN alienígena</string>
-    <string name="localisation">Localización</string>
     <string name="language">Lenguaje del juego</string>
-    <string name="stretch_display">Pantalla extensible</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Estira el juego para llenar la pantalla, manteniendo la resolución exacta elegida.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Permitir la recopilación de información de diagnóstico y uso.</string>
     <string name="analytics_and_diagnostics">Análisis y diagnóstico</string>
     <string name="collect_usage">Recoger el uso</string>
