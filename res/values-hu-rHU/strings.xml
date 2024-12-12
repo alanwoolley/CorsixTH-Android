@@ -3,7 +3,7 @@
     <string name="title_activity_settings">Játékbeállítások</string>
     <string name="loading_theme_hospital_failed">A Theme Hospital betöltése sikertelen.</string>
     <string name="unrecognised_file">Felismerhetelen fájl.</string>
-    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Érvénytelen GOG telepítő. Biztos, hogy ez a Theme Hospital?</string>
+    <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Érvénytelen GOG telepítő. Biztos benne, hogy ez a Theme Hospital?</string>
     <string name="installing_please_wait">Telepítés. Kérjük, várjon.</string>
     <string name="screenshot_contentdesc">Játék Pillanatkép</string>
     <string name="money_contentdesc">Banki egyenleg</string>
@@ -19,7 +19,7 @@
     <string name="undo">Visszavonás</string>
     <string name="new_save_name">Új mentési név</string>
     <string name="accept">Elfogadás</string>
-    <string name="decline">Hanyatlás</string>
+    <string name="decline">Elutasítás</string>
     <string name="privacy_policy">Adatvédelmi irányelvek</string>
     <string name="diagnostics_and_analytics">Diagnosztika és analitika</string>
     <string name="play_demo">Demo lejátszása</string>
