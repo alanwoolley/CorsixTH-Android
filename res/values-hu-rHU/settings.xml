@@ -13,6 +13,7 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">A melegség megjelenítéséhez használandó színséma.</string>
     <string name="warmth_colours">Meleg színek</string>
     <string name="resolution">Felbontás</string>
+    <string name="keep_aspect_ratio">Kijelzőarány megtartása</string>
     <string name="you_can_win_or_lose_in_custom_maps">Egyéni pályákon nyerhetsz vagy veszíthetsz.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Az egyéni pályákon nem lehet nyerni vagy veszíteni.</string>
     <string name="free_build_sandbox_mode">Szabad építési (sandbox) mód</string>
@@ -82,7 +83,10 @@
     <string name="colours">Színek</string>
     <string name="screen">Képernyő</string>
     <string name="alien_dna">Idegen DNS</string>
+    <string name="localisation">Honosítás</string>
     <string name="language">Játék nyelve</string>
+    <string name="fill_screen">Képernyő kitöltése</string>
+    <string name="fill_screen_desc">Kitölti a teljes képernyőt méretezéssel vagy mérethez igazított nyújtással.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Lehetővé teszi a diagnosztikai és használati információk gyűjtését.</string>
     <string name="analytics_and_diagnostics">Analitika és diagnosztika</string>
     <string name="collect_usage">Használat gyűjtése</string>
@@ -94,4 +98,6 @@
     <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Néhány ilyen beállítás megváltoztatásához a játék újraindítása szükséges lehet.</string>
     <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Szabályozza, hogy hány ujj szükséges a térkép görgetéséhez.</string>
     <string name="scrolling_mode_touch_only">Görgetési mód (csak érintés)</string>
+    <string name="allow_rotation">Álló tájolás</string>
+    <string name="allow_rotation_desc">Lehetővé teszi a játék álló tájolásban történő játszását.</string>
 </resources>
