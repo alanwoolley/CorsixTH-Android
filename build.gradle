@@ -2,23 +2,20 @@ buildscript {
     ext.kotlin_version = '2.0.21'
 
     repositories {
-        mavenCentral()
         google()
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-        }
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.7.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.4.2'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+        classpath 'com.google.firebase:perf-plugin:1.4.2'
     }
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '2.0.0-1.0.23'
+    id 'com.google.devtools.ksp' version '2.0.21-1.0.28'
 }
 
 apply plugin: 'com.android.application'
@@ -27,14 +24,11 @@ apply from: 'versioning.gradle'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 repositories {
     google()
     mavenCentral()
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
-    }
 }
 dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
