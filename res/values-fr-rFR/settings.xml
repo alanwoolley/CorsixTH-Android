@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">La palette de couleurs à utiliser pour afficher la chaleur.</string>
     <string name="warmth_colours">Couleurs chaudes</string>
     <string name="resolution">Résolution</string>
-    <string name="keep_aspect_ratio">Conserver le rapport hauteur/largeur</string>
     <string name="you_can_win_or_lose_in_custom_maps">Vous pouvez gagner ou perdre sur des cartes personnalisées.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Vous ne pouvez ni gagner ni perdre dans les cartes personnalisées.</string>
     <string name="free_build_sandbox_mode">Mode de construction libre (bac à sable)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Entrées et contrôles</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Réservé aux experts ! Ces paramètres peuvent casser le jeu ou provoquer d\'autres effets inattendus !</string>
     <string name="advanced">Avancé</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Ajuste la résolution du jeu pour remplir l\'écran.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Une résolution plus faible se traduira par des éléments visuels plus grands.</string>
     <string name="cutscene_videos_will_be_played">Des vidéos de coupures seront jouées.</string>
     <string name="cutscene_videos_will_not_be_played">Les vidéos de la scène ne seront pas jouées.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">La vidéo d\'introduction est diffusée. Elle peut être sautée en appuyant sur la vidéo.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Couleurs</string>
     <string name="screen">Écran</string>
     <string name="alien_dna">ADN extraterrestre</string>
-    <string name="localisation">Localisation</string>
     <string name="language">Langue du jeu</string>
-    <string name="stretch_display">Affichage de l\'étirement</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Etire le jeu pour qu\'il remplisse l\'écran, tout en conservant la résolution exacte choisie.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Permettre la collecte d\'informations de diagnostic et d\'utilisation.</string>
     <string name="analytics_and_diagnostics">Analyse et diagnostic</string>
     <string name="collect_usage">Collecter l\'utilisation</string>

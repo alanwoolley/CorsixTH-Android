@@ -2,7 +2,6 @@
 <resources>
     <string name="title_activity_settings">Spelinstellingen</string>
     <string name="loading_theme_hospital_failed">Laden van Themaziekenhuis mislukt.</string>
-    <string name="unrecognised_file">Niet-herkend bestand.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Ongeldig GOG-installatieprogramma. Weet u zeker dat dit Theme Hospital is?</string>
     <string name="installing_please_wait">Installeren. Even geduld.</string>
     <string name="screenshot_contentdesc">Screenshot spel</string>

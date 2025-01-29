@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Krāsu shēma, kas jāizmanto, lai parādītu siltumu.</string>
     <string name="warmth_colours">Siltās krāsas</string>
     <string name="resolution">Rezolūcija</string>
-    <string name="keep_aspect_ratio">Saglabāt malu attiecību</string>
     <string name="you_can_win_or_lose_in_custom_maps">Pielāgotajās kartēs varat uzvarēt vai zaudēt.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Pielāgotajās kartēs nevar uzvarēt vai zaudēt.</string>
     <string name="free_build_sandbox_mode">Bezmaksas būvēšanas (smilšu kastes) režīms</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Ievade un vadības ierīces</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Tikai ekspertiem! Šie iestatījumi var sabojāt spēli vai veikt citas neparedzētas darbības!</string>
     <string name="advanced">Advanced</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Pielāgo spēles izšķirtspēju, lai aizpildītu ekrānu.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Zemākas izšķirtspējas rezultātā vizuālie elementi būs lielāki.</string>
     <string name="cutscene_videos_will_be_played">Tiks atskaņoti videoklipi.</string>
     <string name="cutscene_videos_will_not_be_played">Cutscene video netiks atskaņoti.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Tiks atskaņots sākuma video. To var izlaist, nospiežot uz video.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Krāsas</string>
     <string name="screen">Ekrāns</string>
     <string name="alien_dna">Svešzemju DNS</string>
-    <string name="localisation">Lokalizācija</string>
     <string name="language">Spēles valoda</string>
-    <string name="stretch_display">Stretch displejs</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Izstiepj spēli, lai tā aizpildītu ekrānu, saglabājot precīzu izvēlēto izšķirtspēju.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">ļaut vākt diagnostikas un lietošanas informāciju.</string>
     <string name="analytics_and_diagnostics">Analītika un diagnostika</string>
     <string name="collect_usage">Apkopot lietošanu</string>

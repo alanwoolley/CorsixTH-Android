@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Het kleurenschema om warmte weer te geven.</string>
     <string name="warmth_colours">Warme kleuren</string>
     <string name="resolution">Resolutie</string>
-    <string name="keep_aspect_ratio">Hoogte-breedteverhouding behouden</string>
     <string name="you_can_win_or_lose_in_custom_maps">Je kunt winnen of verliezen in aangepaste kaarten.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Je kunt niet winnen of verliezen in aangepaste kaarten.</string>
     <string name="free_build_sandbox_mode">Vrije bouwmodus (zandbak)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Invoer en bediening</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Alleen voor experts! Deze instellingen kunnen het spel breken of andere onverwachte dingen doen!</string>
     <string name="advanced">Geavanceerd</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Past de spelresolutie aan om het scherm te vullen.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Een lagere resolutie resulteert in grotere visuele elementen.</string>
     <string name="cutscene_videos_will_be_played">Er worden cutscènevideo\'s afgespeeld.</string>
     <string name="cutscene_videos_will_not_be_played">Cutscènevideo\'s worden niet afgespeeld.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">De introvideo wordt afgespeeld. Deze kan worden overgeslagen door op de video te drukken.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Kleuren</string>
     <string name="screen">Scherm</string>
     <string name="alien_dna">Buitenaards DNA</string>
-    <string name="localisation">Lokalisatie</string>
     <string name="language">Taal van het spel</string>
-    <string name="stretch_display">Display uitrekken</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Rek het spel uit om het scherm te vullen, met behoud van de exact gekozen resolutie.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Verzameling van diagnostische en gebruiksinformatie toestaan.</string>
     <string name="analytics_and_diagnostics">Analyse en diagnose</string>
     <string name="collect_usage">Gebruik verzamelen</string>

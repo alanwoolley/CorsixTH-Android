@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Det farveskema, der skal bruges til at vise varme.</string>
     <string name="warmth_colours">Varme farver</string>
     <string name="resolution">Opløsning</string>
-    <string name="keep_aspect_ratio">Bevar størrelsesforholdet</string>
     <string name="you_can_win_or_lose_in_custom_maps">Du kan vinde eller tabe i brugerdefinerede kort.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Du kan hverken vinde eller tabe i brugerdefinerede kort.</string>
     <string name="free_build_sandbox_mode">Fri opbygning (sandkasse)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Input og kontrolelementer</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Kun for eksperter! Disse indstillinger kan ødelægge spillet eller gøre andre uventede ting!</string>
     <string name="advanced">Avanceret</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Justerer spillets opløsning, så den fylder hele skærmen.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">En lavere opløsning vil resultere i større visuelle elementer.</string>
     <string name="cutscene_videos_will_be_played">Cutscene-videoer vil blive afspillet.</string>
     <string name="cutscene_videos_will_not_be_played">Cutscene-videoer vil ikke blive afspillet.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Introvideoen vil blive afspillet. Den kan springes over ved at trykke på videoen.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Farver</string>
     <string name="screen">Skærm</string>
     <string name="alien_dna">Alien DNA</string>
-    <string name="localisation">Lokalisering</string>
     <string name="language">Sprog til spil</string>
-    <string name="stretch_display">Stræk display</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Strækker spillet, så det fylder hele skærmen, og bevarer den valgte opløsning.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Tillad indsamling af diagnose- og brugsoplysninger.</string>
     <string name="analytics_and_diagnostics">Analyse og diagnosticering</string>
     <string name="collect_usage">Indsaml brug</string>

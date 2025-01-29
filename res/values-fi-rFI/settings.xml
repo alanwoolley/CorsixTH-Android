@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Värimaailma, jota kannattaa käyttää lämmön näyttämiseen.</string>
     <string name="warmth_colours">Lämpimät värit</string>
     <string name="resolution">Resoluutio</string>
-    <string name="keep_aspect_ratio">Säilytä kuvasuhde</string>
     <string name="you_can_win_or_lose_in_custom_maps">Voit voittaa tai hävitä mukautetuissa kartoissa.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Et voi voittaa tai hävitä mukautetuissa kartoissa.</string>
     <string name="free_build_sandbox_mode">Vapaa rakentaminen (hiekkalaatikko)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Syöttö ja ohjauslaitteet</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Vain asiantuntijoille! Nämä asetukset voivat rikkoa pelin tai tehdä muita odottamattomia asioita!</string>
     <string name="advanced">Lisäasetukset</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Säätää pelin resoluution täyttämään näytön.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Pienempi resoluutio johtaa suurempiin visuaalisiin elementteihin.</string>
     <string name="cutscene_videos_will_be_played">Välivideoita toistetaan.</string>
     <string name="cutscene_videos_will_not_be_played">Välivideoita ei toisteta.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Esittelyvideo toistetaan. Tämän voi ohittaa painamalla videota.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Värit</string>
     <string name="screen">Näyttö</string>
     <string name="alien_dna">Muukalaisten DNA</string>
-    <string name="localisation">Käännös</string>
     <string name="language">Pelin kieli</string>
-    <string name="stretch_display">Stretch-näyttö</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Venyttää pelin täyttämään ruudun, säilyttäen tarkalleen valitun resoluution.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Salli diagnostiikka- ja käyttötietojen kerääminen.</string>
     <string name="analytics_and_diagnostics">Analytiikka ja diagnostiikka</string>
     <string name="collect_usage">Kerää käyttö</string>

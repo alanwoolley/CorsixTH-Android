@@ -2,7 +2,6 @@
 <resources>
     <string name="title_activity_settings">Setări de joc</string>
     <string name="loading_theme_hospital_failed">Încărcarea Theme Hospital a eșuat.</string>
-    <string name="unrecognised_file">Fișier nerecunoscut.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Programul de instalare GOG invalid. Sunteți sigur că aceasta este Theme Hospital?</string>
     <string name="installing_please_wait">Instalarea. Vă rugăm să așteptați.</string>
     <string name="screenshot_contentdesc">Screenshot de joc</string>

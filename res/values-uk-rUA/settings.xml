@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Кольорова гама для відображення тепла.</string>
     <string name="warmth_colours">Теплі кольори</string>
     <string name="resolution">Резолюція</string>
-    <string name="keep_aspect_ratio">Зберігайте співвідношення сторін</string>
     <string name="you_can_win_or_lose_in_custom_maps">Ви можете виграти або програти на користувацьких картах.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Ви не можете виграти або програти на користувацьких картах.</string>
     <string name="free_build_sandbox_mode">Режим вільної збірки (пісочниця)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Вхід і керування</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Тільки для експертів! Ці налаштування можуть зламати гру або зробити інші несподівані речі!</string>
     <string name="advanced">Розширений</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Налаштовує роздільну здатність гри для заповнення екрана.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Нижча роздільна здатність призведе до більших візуальних елементів.</string>
     <string name="cutscene_videos_will_be_played">Будуть відтворюватися відеозаписи.</string>
     <string name="cutscene_videos_will_not_be_played">Відео із заставками не відтворюватимуться.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Буде відтворено вступне відео. Його можна пропустити, натиснувши на відео.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Кольори</string>
     <string name="screen">Екран</string>
     <string name="alien_dna">Чужа ДНК</string>
-    <string name="localisation">Локалізація</string>
     <string name="language">Мова гри</string>
-    <string name="stretch_display">Розтяжний дисплей</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Розтягує гру на весь екран, зберігаючи точно вибрану роздільну здатність.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Дозволяє збирати діагностичну інформацію та інформацію про використання.</string>
     <string name="analytics_and_diagnostics">Аналітика та діагностика</string>
     <string name="collect_usage">Збирати використання</string>

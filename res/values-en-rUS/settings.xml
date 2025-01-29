@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">The color scheme to use for displaying warmth.</string>
     <string name="warmth_colours">Warmth colors</string>
     <string name="resolution">Resolution</string>
-    <string name="keep_aspect_ratio">Keep aspect ratio</string>
     <string name="you_can_win_or_lose_in_custom_maps">You can win or lose in custom maps.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">You cannot win or lose in custom maps.</string>
     <string name="free_build_sandbox_mode">Free build (sandbox) mode</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Input and Controls</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">For experts only! These settings may break the game or do other unexpected things!</string>
     <string name="advanced">Advanced</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Adjusts the game resolution to fill the screen.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">A lower resolution will result in larger visual elements.</string>
     <string name="cutscene_videos_will_be_played">Cutscene videos will be played.</string>
     <string name="cutscene_videos_will_not_be_played">Cutscene videos will not be played.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">The intro video will be played. This can be skipped by pressing on the video.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Colors</string>
     <string name="screen">Screen</string>
     <string name="alien_dna">Alien DNA</string>
-    <string name="localisation">Localisation</string>
     <string name="language">Game Language</string>
-    <string name="stretch_display">Stretch display</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Stretches the game to fill the screen, keeping the exact chosen resolution.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Allow collection of diagnostic and usage information.</string>
     <string name="analytics_and_diagnostics">Analytics and Diagnostics</string>
     <string name="collect_usage">Collect Usage</string>

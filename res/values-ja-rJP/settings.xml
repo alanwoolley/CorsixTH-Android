@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">暖かさを表現するために使う配色。</string>
     <string name="warmth_colours">暖かみのある色</string>
     <string name="resolution">解像度</string>
-    <string name="keep_aspect_ratio">アスペクト比を保つ</string>
     <string name="you_can_win_or_lose_in_custom_maps">カスタムマップで勝敗をつけることができます。</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">カスタムマップでは勝敗はつけられません。</string>
     <string name="free_build_sandbox_mode">フリービルド（サンドボックス）モード</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">入力と制御</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">上級者向けです！これらの設定は、ゲームを破壊したり、その他の予期しないことをする可能性があります！</string>
     <string name="advanced">アドバンスド</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">画面いっぱいに表示されるように、ゲームの解像度を調整します。</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">解像度が低いと、視覚的な要素が大きくなります。</string>
     <string name="cutscene_videos_will_be_played">カットシーン動画が再生されます。</string>
     <string name="cutscene_videos_will_not_be_played">カットシーンの動画は再生されません。</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">イントロビデオが再生されます。これは、ビデオの上を押すことでスキップすることができます。</string>
@@ -85,10 +82,7 @@
     <string name="colours">カラーズ</string>
     <string name="screen">スクリーン</string>
     <string name="alien_dna">エイリアンDNA</string>
-    <string name="localisation">ローカライゼーション</string>
     <string name="language">ゲーム言語</string>
-    <string name="stretch_display">ストレッチの表示</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">選択した解像度を正確に維持したまま、画面いっぱいにゲームを引き伸ばします。</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">診断情報と使用情報の収集を許可する。</string>
     <string name="analytics_and_diagnostics">分析・診断</string>
     <string name="collect_usage">使用量の収集</string>

@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Schema de culori care trebuie utilizată pentru a afișa căldura.</string>
     <string name="warmth_colours">Culori calde</string>
     <string name="resolution">Rezoluția</string>
-    <string name="keep_aspect_ratio">Păstrați raportul de aspect</string>
     <string name="you_can_win_or_lose_in_custom_maps">Puteți câștiga sau pierde în hărțile personalizate.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Nu puteți câștiga sau pierde în hărțile personalizate.</string>
     <string name="free_build_sandbox_mode">Modul de construcție liberă (sandbox)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Intrare și controale</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Numai pentru experți! Aceste setări pot strica jocul sau pot face alte lucruri neașteptate!</string>
     <string name="advanced">Avansat</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Reglează rezoluția jocului pentru a umple ecranul.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">O rezoluție mai mică va avea ca rezultat elemente vizuale mai mari.</string>
     <string name="cutscene_videos_will_be_played">Vor fi redate videoclipuri cu secvențe.</string>
     <string name="cutscene_videos_will_not_be_played">Videoclipurile cu secvențe nu vor fi redate.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Se va reda videoclipul introductiv. Aceasta poate fi sărită apăsând pe videoclip.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Culori</string>
     <string name="screen">Ecran</string>
     <string name="alien_dna">ADN extraterestru</string>
-    <string name="localisation">Localizare</string>
     <string name="language">Limba de joc</string>
-    <string name="stretch_display">Afișaj stretch</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Întinde jocul pentru a umple ecranul, păstrând exact rezoluția aleasă.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">permite colectarea de informații de diagnosticare și de utilizare.</string>
     <string name="analytics_and_diagnostics">Analiză și diagnosticare</string>
     <string name="collect_usage">Colectați utilizarea</string>

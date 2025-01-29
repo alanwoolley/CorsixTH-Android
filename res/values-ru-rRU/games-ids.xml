@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Google Play game services IDs. Save this file as res/values/games-ids.xml in your project.-->
+<resources>
+  <!--app_id-->
+  <!--package_name-->
+  <!--achievement First-Aid Hero-->
+  <!--achievement Bucks for Bedsheets-->
+  <!--achievement Moolah from Make-Believe-->
+  <!--achievement Coins in the Coffers-->
+  <!--achievement Million-Dollar Diagnosis-->
+  <!--achievement Cashflow Carnival-->
+  <!--achievement Deca-Dollar Doctoring-->
+  <!--achievement Centennial Savior-->
+  <!--achievement Kilopatient Miracle Worker-->
+  <!--achievement Mega Remedies Maestro-->
+  <!--achievement Half-Million Healing Hero-->
+  <!--achievement Million-Patient Virtuoso-->
+  <!--achievement First, Do No Harm-->
+  <!--achievement Oops, My Scalpel Slipped-->
+  <!--achievement Life's Little Accidents-->
+  <!--achievement Statistical Unlikelihood-->
+  <!--achievement Master of the Macabre-->
+  <!--achievement Budget Breaker-->
+  <!--achievement Fiscal Feats-->
+  <!--achievement Opulent Outlays-->
+  <!--achievement Lavish Investments-->
+  <!--achievement Wasteland Wizard-->
+  <!--achievement Nightmare Nixer-->
+  <!--achievement Mega Mogul-->
+  <!--achievement Cosmic Captain-->
+  <!--achievement Zen Master-->
+  <!--achievement Plague Pioneer-->
+  <!--achievement Epidemic Emperor-->
+  <!--achievement Dirt Dynamo-->
+  <!--achievement Outbreak Obliterator-->
+  <!--achievement Clucking Conqueror-->
+  <!--achievement Alien Alchemist-->
+  <!--achievement Cake Commander-->
+</resources>

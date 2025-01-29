@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Värviskeem, mida kasutada soojuse näitamiseks.</string>
     <string name="warmth_colours">Soojad värvid</string>
     <string name="resolution">Resolutsioon</string>
-    <string name="keep_aspect_ratio">Säilita kuvasuhe</string>
     <string name="you_can_win_or_lose_in_custom_maps">Sa võid võita või kaotada kohandatud kaartidel.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Kohandatud kaartidel ei saa võita ega kaotada.</string>
     <string name="free_build_sandbox_mode">Vaba ehitamise režiim (liivakast)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Sisend ja juhtimisseadmed</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Ainult ekspertidele! Need seaded võivad mängu rikkuda või teha muid ootamatuid asju!</string>
     <string name="advanced">Täpsemad</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Reguleerib mängu resolutsiooni, et see täidaks ekraani.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Madalama eraldusvõime tulemuseks on suuremad visuaalsed elemendid.</string>
     <string name="cutscene_videos_will_be_played">Mängitakse katkendvideod.</string>
     <string name="cutscene_videos_will_not_be_played">Lõikevideoid ei mängita.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Esitlusvideo mängitakse. Seda saab vahele jätta, kui vajutada videole.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Värvid</string>
     <string name="screen">Ekraan</string>
     <string name="alien_dna">Võõras DNA</string>
-    <string name="localisation">Lokaliseerimine</string>
     <string name="language">Mängu keel</string>
-    <string name="stretch_display">Stretch ekraan</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Pikendab mängu nii, et see täidaks ekraani, säilitades täpselt valitud resolutsiooni.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Võimaldab diagnostika- ja kasutusteabe kogumist.</string>
     <string name="analytics_and_diagnostics">Analüüs ja diagnostika</string>
     <string name="collect_usage">Kasutuse kogumine</string>

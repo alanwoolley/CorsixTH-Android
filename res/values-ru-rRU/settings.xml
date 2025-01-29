@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Цветовая гамма, которую следует использовать для отображения тепла.</string>
     <string name="warmth_colours">Теплые цвета</string>
     <string name="resolution">Разрешение</string>
-    <string name="keep_aspect_ratio">Сохраняйте соотношение сторон</string>
     <string name="you_can_win_or_lose_in_custom_maps">Вы можете побеждать или проигрывать в пользовательских картах.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Вы не можете победить или проиграть в пользовательских картах.</string>
     <string name="free_build_sandbox_mode">Режим свободной сборки (песочница)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Ввод и управление</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Только для экспертов! Эти настройки могут сломать игру или сделать другие неожиданные вещи!</string>
     <string name="advanced">Дополнительно</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Регулирует разрешение игры для заполнения экрана.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">При меньшем разрешении визуальные элементы будут крупнее.</string>
     <string name="cutscene_videos_will_be_played">Будут воспроизводиться видеоролики с кадрами.</string>
     <string name="cutscene_videos_will_not_be_played">Видеоролики со сценами не будут воспроизводиться.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Будет воспроизведено вступительное видео. Его можно пропустить, нажав на видео.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Цвета</string>
     <string name="screen">Экран</string>
     <string name="alien_dna">ДНК пришельцев</string>
-    <string name="localisation">Локализация</string>
     <string name="language">Язык игры</string>
-    <string name="stretch_display">Растягивающийся дисплей</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Растягивает игру, чтобы заполнить экран, сохраняя точное выбранное разрешение.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Разрешить сбор диагностической и пользовательской информации.</string>
     <string name="analytics_and_diagnostics">Аналитика и диагностика</string>
     <string name="collect_usage">Сбор информации об использовании</string>

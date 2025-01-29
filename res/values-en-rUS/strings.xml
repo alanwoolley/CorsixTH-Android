@@ -2,7 +2,6 @@
 <resources>
     <string name="title_activity_settings">Game Settings</string>
     <string name="loading_theme_hospital_failed">Loading Theme Hospital failed.</string>
-    <string name="unrecognised_file">Unrecognised file.</string>
     <string name="invalid_gog_installer_are_you_sure_this_is_theme_hospital">Invalid GOG installer. Are you sure this is Theme Hospital?</string>
     <string name="installing_please_wait">Installing. Please wait.</string>
     <string name="screenshot_contentdesc">Game Screenshot</string>
@@ -29,4 +28,6 @@
     <string name="import_game">Import</string>
     <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">If you have copied the Theme Hospital game files to your device, you can import them directly.</string>
     <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Original Theme Hospital game files are required to play CorsixTH</string>
+    <string name="this_application_collects_anonymous_usage_data_including_details_about_crashes_and_the_way_you_use_this_application_this_is_used_to_help_improve_the_application">Questa applicazione raccoglie dati di utilizzo anonimi, inclusi dettagli sugli arresti anomali e sul modo in cui utilizzi questa applicazione. Questi vengono utilizzati per migliorare l\'applicazione.</string>
+    <string name="this_is_optional_and_does_not_affect_your_ability_to_play_your_choice_can_be_changed_at_any_time_from_the_game_settings">Questo è facoltativo e non influisce sulla tua capacità di giocare. La tua scelta può essere modificata in qualsiasi momento dalle impostazioni del gioco.</string>
 </resources>

@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Färgschema som ska användas för att visa värme.</string>
     <string name="warmth_colours">Färger för värme</string>
     <string name="resolution">Upplösning</string>
-    <string name="keep_aspect_ratio">Behåll bildförhållande</string>
     <string name="you_can_win_or_lose_in_custom_maps">Du kan vinna eller förlora i anpassade kartor.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Du kan varken vinna eller förlora i anpassade kartor.</string>
     <string name="free_build_sandbox_mode">Fritt byggande (sandlådeläge)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Inmatning och kontroller</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Endast för experter! Dessa inställningar kan bryta spelet eller göra andra oväntade saker!</string>
     <string name="advanced">Avancerat</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Justerar spelets upplösning för att fylla skärmen.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">En lägre upplösning resulterar i större visuella element.</string>
     <string name="cutscene_videos_will_be_played">Videor med cutscener kommer att spelas upp.</string>
     <string name="cutscene_videos_will_not_be_played">Videor med cutscene spelas inte upp.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Introduktionsvideon spelas upp. Du kan hoppa över den genom att trycka på videon.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Färger</string>
     <string name="screen">Skärm</string>
     <string name="alien_dna">DNA från utomjordingar</string>
-    <string name="localisation">Plats</string>
     <string name="language">Spelets språk</string>
-    <string name="stretch_display">Stretch display</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Sträcker ut spelet så att det fyller skärmen och behåller den exakta valda upplösningen.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Tillåt insamling av diagnos- och användningsinformation.</string>
     <string name="analytics_and_diagnostics">Analys och diagnostik</string>
     <string name="collect_usage">Samla in användning</string>

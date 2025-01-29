@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Schemat kolorów używany do wyświetlania ciepła.</string>
     <string name="warmth_colours">Ciepłe kolory</string>
     <string name="resolution">Rozdzielczość</string>
-    <string name="keep_aspect_ratio">Zachowaj współczynnik proporcji</string>
     <string name="you_can_win_or_lose_in_custom_maps">Możesz wygrać lub przegrać na niestandardowych mapach.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Na mapach niestandardowych nie można wygrać ani przegrać.</string>
     <string name="free_build_sandbox_mode">Tryb swobodnego budowania (piaskownica)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Wejście i elementy sterujące</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Tylko dla ekspertów! Te ustawienia mogą zepsuć grę lub spowodować inne nieoczekiwane rzeczy!</string>
     <string name="advanced">Zaawansowane</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Dostosowuje rozdzielczość gry, aby wypełnić ekran.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Niższa rozdzielczość będzie skutkować większymi elementami wizualnymi.</string>
     <string name="cutscene_videos_will_be_played">Odtwarzane będą przerywniki filmowe.</string>
     <string name="cutscene_videos_will_not_be_played">Filmy przerywnikowe nie będą odtwarzane.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Zostanie odtworzone wideo wprowadzające. Można je pominąć, naciskając przycisk wideo.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Kolory</string>
     <string name="screen">Ekran</string>
     <string name="alien_dna">Obce DNA</string>
-    <string name="localisation">Lokalizacja</string>
     <string name="language">Język gry</string>
-    <string name="stretch_display">Rozciągnięty wyświetlacz</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Rozciąga grę, aby wypełnić ekran, zachowując dokładnie wybraną rozdzielczość.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Zezwalaj na gromadzenie informacji diagnostycznych i użytkowych.</string>
     <string name="analytics_and_diagnostics">Analityka i diagnostyka</string>
     <string name="collect_usage">Zbieraj informacje o użyciu</string>

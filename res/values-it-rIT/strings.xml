@@ -29,4 +29,5 @@
     <string name="import_game">Importazione</string>
     <string name="if_you_have_copied_the_theme_hospital_game_files_to_your_device_you_can_import_them_directly">Se avete copiato i file di gioco di Theme Hospital sul vostro dispositivo, potete importarli direttamente.</string>
     <string name="original_theme_hospital_game_files_are_required_to_play_corsixth">Per giocare a CorsixTH sono necessari i file di gioco originali di Theme Hospital.</string>
+    <string name="upgrading">Aggiornamento</string>
 </resources>

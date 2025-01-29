@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Sıcaklığı göstermek için kullanılacak renk şeması.</string>
     <string name="warmth_colours">Sıcaklık renkleri</string>
     <string name="resolution">Çözünürlük</string>
-    <string name="keep_aspect_ratio">En boy oranını koru</string>
     <string name="you_can_win_or_lose_in_custom_maps">Özel haritalarda kazanabilir veya kaybedebilirsiniz.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Özel haritalarda kazanamaz veya kaybedemezsiniz.</string>
     <string name="free_build_sandbox_mode">Serbest yapı (sandbox) modu</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Giriş ve Kontroller</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Sadece uzmanlar için! Bu ayarlar oyunu bozabilir veya beklenmedik başka şeyler yapabilir!</string>
     <string name="advanced">Gelişmiş</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Oyun çözünürlüğünü ekranı dolduracak şekilde ayarlar.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Daha düşük bir çözünürlük daha büyük görsel öğelerle sonuçlanacaktır.</string>
     <string name="cutscene_videos_will_be_played">Kesit videoları oynatılacaktır.</string>
     <string name="cutscene_videos_will_not_be_played">Kesit videoları oynatılmayacaktır.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Giriş videosu oynatılacaktır. Bu video üzerine basılarak atlanabilir.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Renkler</string>
     <string name="screen">Ekran</string>
     <string name="alien_dna">Uzaylı DNA\'sı</string>
-    <string name="localisation">Yerelleştirme</string>
     <string name="language">Oyun Dili</string>
-    <string name="stretch_display">Streç ekran</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Seçilen çözünürlüğü tam olarak koruyarak oyunu ekranı dolduracak şekilde uzatır.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Tanılama ve kullanım bilgilerinin toplanmasına izin verin.</string>
     <string name="analytics_and_diagnostics">Analitik ve Teşhis</string>
     <string name="collect_usage">Kullanım Toplayın</string>

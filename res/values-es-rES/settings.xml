@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android" translatable="true">
     <string name="enable_audio">Activar audio</string>
-    <string name="sounds">Suena</string>
+    <string name="sounds">Sonidos</string>
     <string name="play_sounds">Reproducir sonidos</string>
     <string name="sounds_volume">Volumen de los sonidos</string>
     <string name="announcements">Anuncios</string>
-    <string name="play_announcements">Anuncios de obras</string>
+    <string name="play_announcements">Reproducir anuncios</string>
     <string name="announcements_volume">Volumen de anuncios</string>
     <string name="music">Música</string>
     <string name="play_music">Reproducir música</string>
@@ -13,7 +13,7 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">La combinación de colores para mostrar calidez.</string>
     <string name="warmth_colours">Colores cálidos</string>
     <string name="resolution">Resolución</string>
-    <string name="keep_aspect_ratio">Mantener la relación de aspecto</string>
+    <string name="keep_aspect_ratio">Mantener relación de aspecto</string>
     <string name="you_can_win_or_lose_in_custom_maps">Puedes ganar o perder en mapas personalizados.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">En los mapas personalizados no se puede ganar ni perder.</string>
     <string name="free_build_sandbox_mode">Modo de construcción libre (sandbox)</string>
@@ -76,8 +76,8 @@
     <string name="input_and_controls">Entradas y controles</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Sólo para expertos. ¡Estos ajustes pueden romper el juego o hacer otras cosas inesperadas!</string>
     <string name="advanced">Avanzado</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Ajusta la resolución del juego para llenar la pantalla.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Una resolución más baja dará lugar a elementos visuales más grandes.</string>
+    <string name="adjusts_the_game_resolution_to_fill_the_screen">Aumenta la resolución del juego para mantener la relación de pantalla en lugar de estirarla.</string>
+    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Una resolución más baja dará lugar a elementos visuales más grandes, pero de menor calidad en general.</string>
     <string name="cutscene_videos_will_be_played">Se reproducirán vídeos de escenas.</string>
     <string name="cutscene_videos_will_not_be_played">No se reproducirán los vídeos de las escenas.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Se reproducirá el vídeo de introducción. Puede saltarse pulsando sobre el vídeo.</string>
@@ -87,8 +87,8 @@
     <string name="alien_dna">ADN alienígena</string>
     <string name="localisation">Localización</string>
     <string name="language">Lenguaje del juego</string>
-    <string name="stretch_display">Pantalla extensible</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Estira el juego para llenar la pantalla, manteniendo la resolución exacta elegida.</string>
+    <string name="fill_screen">Rellenar pantalla</string>
+    <string name="fill_screen_desc">Rellena toda la pantalla escalando o estirando para ajustarse.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Permitir la recopilación de información de diagnóstico y uso.</string>
     <string name="analytics_and_diagnostics">Análisis y diagnóstico</string>
     <string name="collect_usage">Recoger el uso</string>
@@ -100,4 +100,6 @@
     <string name="changing_some_of_these_settings_may_require_you_to_restart_the_game">Cambiar algunos de estos ajustes puede requerir que reinicies el juego.</string>
     <string name="controls_how_many_fingers_are_required_to_scroll_the_map">Controla cuántos dedos son necesarios para desplazarse por el mapa.</string>
     <string name="scrolling_mode_touch_only">Modo de desplazamiento (sólo táctil)</string>
+    <string name="allow_rotation">Orientación vertical</string>
+    <string name="allow_rotation_desc">Permite jugar en orientación vertical.</string>
 </resources>

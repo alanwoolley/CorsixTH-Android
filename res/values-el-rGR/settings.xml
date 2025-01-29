@@ -13,7 +13,6 @@
     <string name="the_colour_scheme_to_use_for_displaying_warmth">Ο χρωματικός συνδυασμός που πρέπει να χρησιμοποιηθεί για την προβολή της ζεστασιάς.</string>
     <string name="warmth_colours">Ζεστά χρώματα</string>
     <string name="resolution">Ψήφισμα</string>
-    <string name="keep_aspect_ratio">Διατηρήστε την αναλογία διαστάσεων</string>
     <string name="you_can_win_or_lose_in_custom_maps">Μπορείτε να κερδίσετε ή να χάσετε σε προσαρμοσμένους χάρτες.</string>
     <string name="you_cannot_win_or_lose_in_custom_maps">Δεν μπορείτε να κερδίσετε ή να χάσετε σε προσαρμοσμένους χάρτες.</string>
     <string name="free_build_sandbox_mode">Λειτουργία ελεύθερης κατασκευής (sandbox)</string>
@@ -76,8 +75,6 @@
     <string name="input_and_controls">Είσοδος και έλεγχοι</string>
     <string name="for_experts_only_these_settings_may_break_the_game_or_do_other_unexpected_things">Μόνο για ειδικούς! Αυτές οι ρυθμίσεις μπορεί να χαλάσουν το παιχνίδι ή να προκαλέσουν άλλα απροσδόκητα πράγματα!</string>
     <string name="advanced">Προχωρημένο</string>
-    <string name="adjusts_the_game_resolution_to_fill_the_screen">Ρυθμίζει την ανάλυση του παιχνιδιού ώστε να γεμίζει την οθόνη.</string>
-    <string name="a_lower_resolution_will_result_in_larger_visual_elements">Μια χαμηλότερη ανάλυση θα έχει ως αποτέλεσμα μεγαλύτερα οπτικά στοιχεία.</string>
     <string name="cutscene_videos_will_be_played">Θα αναπαραχθούν βίντεο με σκηνές.</string>
     <string name="cutscene_videos_will_not_be_played">Τα βίντεο με τις σκηνές τομής δεν θα αναπαράγονται.</string>
     <string name="the_intro_video_will_be_played_this_can_be_skipped_by_pressing_on_the_video">Θα αναπαραχθεί το εισαγωγικό βίντεο. Αυτό μπορεί να παραλειφθεί πατώντας πάνω στο βίντεο.</string>
@@ -85,10 +82,7 @@
     <string name="colours">Χρώματα</string>
     <string name="screen">Οθόνη</string>
     <string name="alien_dna">Εξωγήινο DNA</string>
-    <string name="localisation">Εντοπισμός</string>
     <string name="language">Γλώσσα παιχνιδιού</string>
-    <string name="stretch_display">Οθόνη Stretch</string>
-    <string name="stretches_the_game_to_fill_the_screen_keeping_the_exact_chosen_resolution">Τεντώνει το παιχνίδι για να γεμίσει την οθόνη, διατηρώντας την ακριβή επιλεγμένη ανάλυση.</string>
     <string name="allow_collection_of_diagnostic_and_usage_information">Να επιτρέπει τη συλλογή διαγνωστικών πληροφοριών και πληροφοριών χρήσης.</string>
     <string name="analytics_and_diagnostics">Ανάλυση και διάγνωση</string>
     <string name="collect_usage">Συλλογή χρήσης</string>
